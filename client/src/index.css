@@ -12,7 +12,7 @@
   --muted-foreground: 0 0% 95%; /* Almost white muted text */
   --popover: 220 50% 11%; /* Dark popover #10182D */
   --popover-foreground: 0 0% 100%; /* White popover text */
-  --card: 220 30% 25%; /* Much lighter card background for readability */
+  --card: 220 25% 20%; /* Balanced card background */
   --card-foreground: 0 0% 100%; /* Pure white card text */
   --border: 220 20% 40%; /* Much lighter borders */
   --input: 220 25% 30%; /* Much lighter input background */
@@ -75,10 +75,28 @@
     @apply border-border;
   }
 
+  /* Fix zoom scaling for proper 100% display */
+  html {
+    font-size: 14px; /* Smaller base font for better scaling */
+    zoom: 1;
+  }
+
   body {
     @apply bg-background text-foreground font-sans antialiased;
     font-family: 'Vazirmatn', Inter, system-ui, sans-serif;
     direction: rtl;
+    font-size: 1rem;
+    line-height: 1.5;
+    min-height: 100vh;
+    transform: scale(0.85);
+    transform-origin: top right;
+    width: 117.6%;
+  }
+
+  /* Container adjustments for proper scaling */
+  .main-container {
+    transform: scale(1.18);
+    transform-origin: top right;
   }
 
   /* Persian number styles - Fixed text reversal */
@@ -94,6 +112,43 @@
     direction: rtl;
     unicode-bidi: normal;
     display: inline-block;
+  }
+
+  /* Force readable text in dark cards */
+  .text-readable {
+    color: #FFFFFF !important;
+    font-weight: 500;
+  }
+
+  /* Improve pagination visibility */
+  .pagination-controls {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .pagination-controls button {
+    background: hsl(var(--primary));
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .pagination-controls button:hover {
+    background: hsl(var(--primary) / 0.8);
+    transform: translateY(-1px);
+  }
+
+  .pagination-info {
+    color: #FFFFFF;
+    font-weight: 500;
   }
 
   /* RTL-specific adjustments */

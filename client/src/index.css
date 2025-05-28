@@ -1,0 +1,301 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222 84% 4.9%;
+  --muted: 210 40% 98%;
+  --muted-foreground: 215 16% 46.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 84% 4.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 222 84% 4.9%;
+  --border: 214 32% 91%;
+  --input: 214 32% 91%;
+  --primary: 221 83% 53%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 210 40% 96%;
+  --secondary-foreground: 222 84% 4.9%;
+  --accent: 210 40% 96%;
+  --accent-foreground: 222 84% 4.9%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 210 40% 98%;
+  --ring: 221 83% 53%;
+  --radius: 0.5rem;
+  --success: 142 76% 36%;
+  --warning: 38 92% 50%;
+  --sidebar-background: 0 0% 100%;
+  --sidebar-foreground: 222 84% 4.9%;
+  --sidebar-primary: 221 83% 53%;
+  --sidebar-primary-foreground: 210 40% 98%;
+  --sidebar-accent: 210 40% 96%;
+  --sidebar-accent-foreground: 222 84% 4.9%;
+  --sidebar-border: 214 32% 91%;
+  --sidebar-ring: 221 83% 53%;
+}
+
+.dark {
+  --background: 222 84% 4.9%;
+  --foreground: 210 40% 98%;
+  --muted: 217 32% 17%;
+  --muted-foreground: 215 20% 65%;
+  --popover: 222 84% 4.9%;
+  --popover-foreground: 210 40% 98%;
+  --card: 222 84% 4.9%;
+  --card-foreground: 210 40% 98%;
+  --border: 217 32% 17%;
+  --input: 217 32% 17%;
+  --primary: 221 83% 53%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 217 32% 17%;
+  --secondary-foreground: 210 40% 98%;
+  --accent: 217 32% 17%;
+  --accent-foreground: 210 40% 98%;
+  --destructive: 0 62% 30%;
+  --destructive-foreground: 210 40% 98%;
+  --ring: 221 83% 53%;
+  --success: 142 76% 36%;
+  --warning: 38 92% 50%;
+  --sidebar-background: 222 84% 4.9%;
+  --sidebar-foreground: 210 40% 98%;
+  --sidebar-primary: 221 83% 53%;
+  --sidebar-primary-foreground: 210 40% 98%;
+  --sidebar-accent: 217 32% 17%;
+  --sidebar-accent-foreground: 210 40% 98%;
+  --sidebar-border: 217 32% 17%;
+  --sidebar-ring: 221 83% 53%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Vazirmatn', Inter, system-ui, sans-serif;
+    direction: rtl;
+  }
+
+  /* Persian number styles */
+  .persian-nums {
+    font-variant-numeric: tabular-nums;
+    direction: ltr;
+    unicode-bidi: bidi-override;
+  }
+
+  /* RTL-specific adjustments */
+  .rtl {
+    direction: rtl;
+  }
+
+  .ltr {
+    direction: ltr;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.3);
+  }
+
+  /* Form inputs RTL */
+  input, textarea, select {
+    direction: rtl;
+    text-align: right;
+  }
+
+  input::placeholder, textarea::placeholder {
+    text-align: right;
+    opacity: 0.6;
+  }
+
+  /* Button adjustments for RTL */
+  .btn-icon-left {
+    @apply flex-row-reverse;
+  }
+
+  /* Card hover effects */
+  .card-hover {
+    @apply transition-all duration-200 hover:shadow-md hover:scale-[1.02];
+  }
+
+  /* Stats card animations */
+  .stats-card {
+    @apply transform transition-all duration-300 hover:scale-105 hover:shadow-lg;
+  }
+
+  /* Loading spinner */
+  .spinner {
+    @apply animate-spin rounded-full border-2 border-muted border-t-primary;
+  }
+
+  /* Upload zone styles */
+  .upload-zone {
+    @apply border-2 border-dashed border-muted-foreground/25 hover:border-primary/50 transition-colors duration-200;
+  }
+
+  .upload-zone.dragover {
+    @apply border-primary bg-primary/5;
+  }
+
+  /* Table alternating rows */
+  .table-row-hover {
+    @apply hover:bg-muted/50 transition-colors duration-150;
+  }
+
+  /* Status badges */
+  .status-active {
+    @apply bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400;
+  }
+
+  .status-inactive {
+    @apply bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400;
+  }
+
+  .status-pending {
+    @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400;
+  }
+
+  .status-paid {
+    @apply bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400;
+  }
+
+  .status-overdue {
+    @apply bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400;
+  }
+
+  /* Navigation active state */
+  .nav-active {
+    @apply bg-primary/10 text-primary border-r-2 border-primary;
+  }
+
+  /* Persian typography improvements */
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  /* Form validation styles */
+  .form-error {
+    @apply border-destructive focus:ring-destructive focus:border-destructive;
+  }
+
+  .form-success {
+    @apply border-green-500 focus:ring-green-500 focus:border-green-500;
+  }
+
+  /* Modal backdrop */
+  .modal-backdrop {
+    @apply fixed inset-0 bg-black/50 backdrop-blur-sm z-50;
+  }
+
+  /* Toast animations */
+  .toast-enter {
+    @apply animate-in slide-in-from-right-full;
+  }
+
+  .toast-exit {
+    @apply animate-out slide-out-to-right-full;
+  }
+
+  /* Print styles */
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+    
+    .print-only {
+      display: block !important;
+    }
+  }
+}
+
+/* Animation keyframes */
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutToRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+.animate-slide-in-right {
+  animation: slideInFromRight 0.3s ease-out;
+}
+
+/* Custom utility classes */
+.text-persian {
+  font-family: 'Vazirmatn', Inter, system-ui, sans-serif;
+}
+
+.shadow-persian {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.border-persian {
+  border-width: 1px;
+  border-style: solid;
+}
+
+/* Success/Error states */
+.success-state {
+  @apply bg-green-50 border-green-200 text-green-800;
+}
+
+.error-state {
+  @apply bg-red-50 border-red-200 text-red-800;
+}
+
+.warning-state {
+  @apply bg-yellow-50 border-yellow-200 text-yellow-800;
+}
+
+.info-state {
+  @apply bg-blue-50 border-blue-200 text-blue-800;
+}

@@ -107,9 +107,9 @@ export default function Dashboard() {
               </div>
               <div className="mr-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">مجموع فروش این ماه</dt>
-                  <dd className="text-2xl font-bold text-gray-900 persian-nums">
-                    {formatPersianNumber(stats?.monthlyRevenue || '0')} تومان
+                  <dt className="text-sm font-medium text-muted-foreground truncate">مجموع فروش این ماه</dt>
+                  <dd className="text-2xl font-bold text-foreground currency-display">
+                    <span className="persian-nums">{formatPersianNumber(stats?.monthlyRevenue || '0')}</span> تومان
                   </dd>
                 </dl>
               </div>

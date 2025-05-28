@@ -6,35 +6,35 @@
 
 :root {
   --background: 220 25% 12%; /* Dark navy blue like marfanet.com */
-  --foreground: 0 0% 95%; /* Light text */
+  --foreground: 0 0% 98%; /* Very light text for better readability */
   --muted: 220 20% 15%; /* Darker muted background */
-  --muted-foreground: 220 10% 65%; /* Muted text */
+  --muted-foreground: 220 10% 75%; /* Lighter muted text for better contrast */
   --popover: 220 25% 15%; /* Dark popover */
-  --popover-foreground: 0 0% 95%; /* Light popover text */
-  --card: 220 20% 16%; /* Card background */
-  --card-foreground: 0 0% 95%; /* Card text */
-  --border: 220 15% 25%; /* Subtle borders */
-  --input: 220 20% 18%; /* Input background */
-  --primary: 195 100% 50%; /* Cyan blue accent */
+  --popover-foreground: 0 0% 98%; /* Very light popover text */
+  --card: 220 20% 18%; /* Slightly lighter card background */
+  --card-foreground: 0 0% 98%; /* Very light card text */
+  --border: 220 15% 30%; /* More visible borders */
+  --input: 220 20% 20%; /* Lighter input background */
+  --primary: 195 100% 60%; /* Brighter cyan for better visibility */
   --primary-foreground: 220 25% 12%; /* Dark text on primary */
-  --secondary: 220 15% 20%; /* Secondary background */
-  --secondary-foreground: 0 0% 95%; /* Secondary text */
-  --accent: 195 100% 50%; /* Accent cyan */
+  --secondary: 220 15% 22%; /* Lighter secondary background */
+  --secondary-foreground: 0 0% 98%; /* Very light secondary text */
+  --accent: 195 100% 60%; /* Brighter accent cyan */
   --accent-foreground: 220 25% 12%; /* Dark text on accent */
-  --destructive: 0 84% 60%; /* Red for errors */
+  --destructive: 0 84% 65%; /* Brighter red for visibility */
   --destructive-foreground: 0 0% 98%; /* Light text on destructive */
-  --ring: 195 100% 50%; /* Focus ring cyan */
+  --ring: 195 100% 60%; /* Brighter focus ring */
   --radius: 0.75rem; /* Rounded corners like marfanet */
-  --success: 142 76% 45%; /* Green success */
-  --warning: 38 92% 50%; /* Orange warning */
+  --success: 142 76% 50%; /* Brighter green success */
+  --warning: 38 92% 55%; /* Brighter orange warning */
   --sidebar-background: 220 25% 12%; /* Dark sidebar */
-  --sidebar-foreground: 0 0% 95%; /* Light sidebar text */
-  --sidebar-primary: 195 100% 50%; /* Cyan primary */
+  --sidebar-foreground: 0 0% 98%; /* Very light sidebar text */
+  --sidebar-primary: 195 100% 60%; /* Brighter cyan primary */
   --sidebar-primary-foreground: 220 25% 12%; /* Dark text on primary */
-  --sidebar-accent: 220 20% 18%; /* Sidebar accent */
-  --sidebar-accent-foreground: 0 0% 95%; /* Light accent text */
-  --sidebar-border: 220 15% 25%; /* Sidebar borders */
-  --sidebar-ring: 195 100% 50%; /* Sidebar focus ring */
+  --sidebar-accent: 220 20% 20%; /* Lighter sidebar accent */
+  --sidebar-accent-foreground: 0 0% 98%; /* Very light accent text */
+  --sidebar-border: 220 15% 30%; /* More visible sidebar borders */
+  --sidebar-ring: 195 100% 60%; /* Brighter sidebar focus ring */
 }
 
 .dark {
@@ -80,11 +80,19 @@
     direction: rtl;
   }
 
-  /* Persian number styles */
+  /* Persian number styles - Fixed text reversal */
   .persian-nums {
     font-variant-numeric: tabular-nums;
-    direction: ltr;
-    unicode-bidi: bidi-override;
+    direction: rtl;
+    unicode-bidi: normal;
+    text-align: right;
+  }
+
+  /* Fix currency display */
+  .currency-display {
+    direction: rtl;
+    unicode-bidi: normal;
+    display: inline-block;
   }
 
   /* RTL-specific adjustments */

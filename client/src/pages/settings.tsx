@@ -211,10 +211,138 @@ export default function Settings() {
         </CardContent>
       </Card>
 
-      {/* Telegram Settings */}
-      <Card>
+      {/* AI Tools Section */}
+      <Card className="bg-card border-border">
         <CardHeader>
-          <CardTitle>تنظیمات تلگرام</CardTitle>
+          <CardTitle className="text-primary flex items-center gap-2">
+            <i className="fas fa-robot"></i>
+            ابزارهای هوش مصنوعی
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Smart Analytics Configuration */}
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+                  <i className="fas fa-chart-line text-primary"></i>
+                  تحلیل‌گر هوشمند
+                </h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-muted-foreground mb-2">نوع AI Engine</label>
+                    <select className="w-full py-2 px-3 border border-border bg-input text-foreground rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
+                      <option value="grok">Grok AI</option>
+                      <option value="openai">OpenAI GPT</option>
+                      <option value="claude">Claude AI</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-muted-foreground mb-2">API Key</label>
+                    <Input
+                      type="password"
+                      placeholder="کلید API هوش مصنوعی"
+                      className="bg-input border-border text-foreground"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      کلید API برای دسترسی به سرویس‌های تحلیل هوشمند
+                    </p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-muted-foreground mb-3">قابلیت‌های تحلیل</label>
+                    <div className="space-y-3">
+                      <label className="flex items-center gap-3">
+                        <input type="checkbox" className="rounded border-border bg-input" defaultChecked />
+                        <span className="text-sm text-foreground">تحلیل خودکار فروش</span>
+                      </label>
+                      <label className="flex items-center gap-3">
+                        <input type="checkbox" className="rounded border-border bg-input" defaultChecked />
+                        <span className="text-sm text-foreground">پیش‌بینی روند درآمد</span>
+                      </label>
+                      <label className="flex items-center gap-3">
+                        <input type="checkbox" className="rounded border-border bg-input" />
+                        <span className="text-sm text-foreground">هشدارهای هوشمند</span>
+                      </label>
+                      <label className="flex items-center gap-3">
+                        <input type="checkbox" className="rounded border-border bg-input" />
+                        <span className="text-sm text-foreground">تحلیل عملکرد نمایندگان</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* AI-Powered Reporting */}
+            <div className="space-y-6">
+              <div>
+                <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+                  <i className="fas fa-file-chart-line text-primary"></i>
+                  گزارش‌گیری هوشمند
+                </h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-muted-foreground mb-2">زمان‌بندی گزارش‌ها</label>
+                    <select className="w-full py-2 px-3 border border-border bg-input text-foreground rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
+                      <option value="daily">روزانه</option>
+                      <option value="weekly">هفتگی</option>
+                      <option value="monthly">ماهانه</option>
+                      <option value="custom">سفارشی</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-muted-foreground mb-3">نوع گزارش‌ها</label>
+                    <div className="space-y-3">
+                      <label className="flex items-center gap-3">
+                        <input type="checkbox" className="rounded border-border bg-input" defaultChecked />
+                        <span className="text-sm text-foreground">تحلیل عملکرد نمایندگان</span>
+                      </label>
+                      <label className="flex items-center gap-3">
+                        <input type="checkbox" className="rounded border-border bg-input" defaultChecked />
+                        <span className="text-sm text-foreground">گزارش مالی هوشمند</span>
+                      </label>
+                      <label className="flex items-center gap-3">
+                        <input type="checkbox" className="rounded border-border bg-input" />
+                        <span className="text-sm text-foreground">پیشنهادات بهینه‌سازی</span>
+                      </label>
+                      <label className="flex items-center gap-3">
+                        <input type="checkbox" className="rounded border-border bg-input" />
+                        <span className="text-sm text-foreground">آنالیز ترندهای بازار</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-muted-foreground mb-2">زبان گزارش‌ها</label>
+                    <select className="w-full py-2 px-3 border border-border bg-input text-foreground rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
+                      <option value="fa">فارسی</option>
+                      <option value="en">انگلیسی</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div className="mt-8 flex gap-4">
+            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
+              <i className="fas fa-robot ml-2"></i>
+              ذخیره تنظیمات AI
+            </Button>
+            <Button variant="outline" className="border-primary text-primary hover:bg-primary/10">
+              <i className="fas fa-vial ml-2"></i>
+              تست عملکرد AI
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Enhanced Telegram Settings */}
+      <Card className="bg-card border-border">
+        <CardHeader>
+          <CardTitle className="text-primary flex items-center gap-2">
+            <i className="fab fa-telegram"></i>
+            ادغام تلگرام و گزارش‌گیری خودکار
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">

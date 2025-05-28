@@ -75,28 +75,13 @@
     @apply border-border;
   }
 
-  /* Fix zoom scaling for proper 100% display */
-  html {
-    font-size: 14px; /* Smaller base font for better scaling */
-    zoom: 1;
-  }
-
   body {
     @apply bg-background text-foreground font-sans antialiased;
     font-family: 'Vazirmatn', Inter, system-ui, sans-serif;
     direction: rtl;
-    font-size: 1rem;
+    font-size: 0.875rem; /* Slightly smaller base font for better fit */
     line-height: 1.5;
     min-height: 100vh;
-    transform: scale(0.85);
-    transform-origin: top right;
-    width: 117.6%;
-  }
-
-  /* Container adjustments for proper scaling */
-  .main-container {
-    transform: scale(1.18);
-    transform-origin: top right;
   }
 
   /* Persian number styles - Fixed text reversal */

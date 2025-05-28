@@ -1,0 +1,24 @@
+Chronos, regarding the visual appearance and User Interface (UI) design for the MarFanet application we are building:
+
+**New Design Directive: Emulate the Aesthetic of `marfanet.com`**
+
+I want the MarFanet application to visually resemble the live website found at `marfanet.com`. While I understand you cannot browse this site directly, I will provide you with specific details about its appearance.
+
+**Your Task:** You are to use the information I provide about `marfanet.com`'s visual design to guide the styling of all frontend components, layouts, and overall user interface of the MarFanet application. This includes, but is not limited to:
+
+*   **Color Palette:** I will describe the primary, secondary, accent, background, and text colors.
+*   **Typography:** I will specify the main fonts, weights, and sizes for headings and body text.
+*   **Layout Principles:** I will describe the general structure of pages (header, footer, content areas).
+*   **Component Styling:** I will describe how elements like buttons, forms, and navigation menus look.
+*   **Overall Feel:** I will describe the general aesthetic (e.g., modern, clean, corporate).
+
+**How this will work:**
+
+1.  I will provide you with descriptions of these visual elements from `marfanet.com`.
+2.  If possible and relevant, I might provide snippets of CSS from `marfanet.com` (if I have access to them and they are illustrative).
+3.  You will then use this information to:
+    *   Suggest or generate CSS styles for the MarFanet application that match the described aesthetic.
+    *   Ensure that any HTML structures you generate are conducive to achieving this look and feel.
+    *   When designing new UI elements for MarFanet, consider how a similar element is styled on `marfanet.com` (based on my descriptions) and aim for consistency.
+
+**Let's start with the color palette and typography. Please stand by for my description of these elements from `marfanet.com`, and then advise on how we can incorporate them into the MarFanet application's design.**

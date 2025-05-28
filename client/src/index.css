@@ -5,36 +5,36 @@
 @tailwind utilities;
 
 :root {
-  --background: 0 0% 100%;
-  --foreground: 222 84% 4.9%;
-  --muted: 210 40% 98%;
-  --muted-foreground: 215 16% 46.9%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 222 84% 4.9%;
-  --card: 0 0% 100%;
-  --card-foreground: 222 84% 4.9%;
-  --border: 214 32% 91%;
-  --input: 214 32% 91%;
-  --primary: 221 83% 53%;
-  --primary-foreground: 210 40% 98%;
-  --secondary: 210 40% 96%;
-  --secondary-foreground: 222 84% 4.9%;
-  --accent: 210 40% 96%;
-  --accent-foreground: 222 84% 4.9%;
-  --destructive: 0 84% 60%;
-  --destructive-foreground: 210 40% 98%;
-  --ring: 221 83% 53%;
-  --radius: 0.5rem;
-  --success: 142 76% 36%;
-  --warning: 38 92% 50%;
-  --sidebar-background: 0 0% 100%;
-  --sidebar-foreground: 222 84% 4.9%;
-  --sidebar-primary: 221 83% 53%;
-  --sidebar-primary-foreground: 210 40% 98%;
-  --sidebar-accent: 210 40% 96%;
-  --sidebar-accent-foreground: 222 84% 4.9%;
-  --sidebar-border: 214 32% 91%;
-  --sidebar-ring: 221 83% 53%;
+  --background: 220 25% 12%; /* Dark navy blue like marfanet.com */
+  --foreground: 0 0% 95%; /* Light text */
+  --muted: 220 20% 15%; /* Darker muted background */
+  --muted-foreground: 220 10% 65%; /* Muted text */
+  --popover: 220 25% 15%; /* Dark popover */
+  --popover-foreground: 0 0% 95%; /* Light popover text */
+  --card: 220 20% 16%; /* Card background */
+  --card-foreground: 0 0% 95%; /* Card text */
+  --border: 220 15% 25%; /* Subtle borders */
+  --input: 220 20% 18%; /* Input background */
+  --primary: 195 100% 50%; /* Cyan blue accent */
+  --primary-foreground: 220 25% 12%; /* Dark text on primary */
+  --secondary: 220 15% 20%; /* Secondary background */
+  --secondary-foreground: 0 0% 95%; /* Secondary text */
+  --accent: 195 100% 50%; /* Accent cyan */
+  --accent-foreground: 220 25% 12%; /* Dark text on accent */
+  --destructive: 0 84% 60%; /* Red for errors */
+  --destructive-foreground: 0 0% 98%; /* Light text on destructive */
+  --ring: 195 100% 50%; /* Focus ring cyan */
+  --radius: 0.75rem; /* Rounded corners like marfanet */
+  --success: 142 76% 45%; /* Green success */
+  --warning: 38 92% 50%; /* Orange warning */
+  --sidebar-background: 220 25% 12%; /* Dark sidebar */
+  --sidebar-foreground: 0 0% 95%; /* Light sidebar text */
+  --sidebar-primary: 195 100% 50%; /* Cyan primary */
+  --sidebar-primary-foreground: 220 25% 12%; /* Dark text on primary */
+  --sidebar-accent: 220 20% 18%; /* Sidebar accent */
+  --sidebar-accent-foreground: 0 0% 95%; /* Light accent text */
+  --sidebar-border: 220 15% 25%; /* Sidebar borders */
+  --sidebar-ring: 195 100% 50%; /* Sidebar focus ring */
 }
 
 .dark {

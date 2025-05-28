@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -57,7 +57,7 @@ export default function Settings() {
   });
 
   // Load current settings
-  React.useEffect(() => {
+  useEffect(() => {
     if (settings) {
       const settingsMap = settings.reduce((acc, setting) => {
         acc[setting.key] = setting.value;
@@ -133,7 +133,7 @@ export default function Settings() {
 
   return (
     <div className="p-6 space-y-6">
-      <CardTitle className="text-lg font-medium text-gray-900">تنظیمات سیستم</CardTitle>
+      <h1 className="text-lg font-medium text-gray-900">تنظیمات سیستم</h1>
 
       {/* General Settings */}
       <Card>

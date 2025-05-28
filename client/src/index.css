@@ -8,14 +8,14 @@
   /* Authentic MarFanet.com Color Scheme */
   --background: 220 65% 7%; /* Very dark blue #0A0F1E */
   --foreground: 0 0% 100%; /* Pure white text #FFFFFF */
-  --muted: 220 50% 11%; /* Secondary dark blue #10182D */
-  --muted-foreground: 220 15% 75%; /* Light gray #D1D5DB */
+  --muted: 220 30% 25%; /* Much lighter background for better contrast */
+  --muted-foreground: 0 0% 95%; /* Almost white muted text */
   --popover: 220 50% 11%; /* Dark popover #10182D */
   --popover-foreground: 0 0% 100%; /* White popover text */
-  --card: 220 50% 13%; /* Card background #1A2035 */
-  --card-foreground: 0 0% 100%; /* White card text */
-  --border: 220 40% 20%; /* Subtle borders */
-  --input: 220 45% 15%; /* Input background */
+  --card: 220 30% 25%; /* Much lighter card background for readability */
+  --card-foreground: 0 0% 100%; /* Pure white card text */
+  --border: 220 20% 40%; /* Much lighter borders */
+  --input: 220 25% 30%; /* Much lighter input background */
   --primary: 214 100% 50%; /* Electric blue #007BFF */
   --primary-foreground: 0 0% 100%; /* White text on primary */
   --secondary: 220 45% 15%; /* Secondary background */

@@ -5,36 +5,37 @@
 @tailwind utilities;
 
 :root {
-  --background: 220 25% 12%; /* Dark navy blue like marfanet.com */
-  --foreground: 0 0% 98%; /* Very light text for better readability */
-  --muted: 220 20% 15%; /* Darker muted background */
-  --muted-foreground: 220 10% 75%; /* Lighter muted text for better contrast */
-  --popover: 220 25% 15%; /* Dark popover */
-  --popover-foreground: 0 0% 98%; /* Very light popover text */
-  --card: 220 20% 18%; /* Slightly lighter card background */
-  --card-foreground: 0 0% 98%; /* Very light card text */
-  --border: 220 15% 30%; /* More visible borders */
-  --input: 220 20% 20%; /* Lighter input background */
-  --primary: 195 100% 60%; /* Brighter cyan for better visibility */
-  --primary-foreground: 220 25% 12%; /* Dark text on primary */
-  --secondary: 220 15% 22%; /* Lighter secondary background */
-  --secondary-foreground: 0 0% 98%; /* Very light secondary text */
-  --accent: 195 100% 60%; /* Brighter accent cyan */
-  --accent-foreground: 220 25% 12%; /* Dark text on accent */
-  --destructive: 0 84% 65%; /* Brighter red for visibility */
-  --destructive-foreground: 0 0% 98%; /* Light text on destructive */
-  --ring: 195 100% 60%; /* Brighter focus ring */
-  --radius: 0.75rem; /* Rounded corners like marfanet */
-  --success: 142 76% 50%; /* Brighter green success */
-  --warning: 38 92% 55%; /* Brighter orange warning */
-  --sidebar-background: 220 25% 12%; /* Dark sidebar */
-  --sidebar-foreground: 0 0% 98%; /* Very light sidebar text */
-  --sidebar-primary: 195 100% 60%; /* Brighter cyan primary */
-  --sidebar-primary-foreground: 220 25% 12%; /* Dark text on primary */
-  --sidebar-accent: 220 20% 20%; /* Lighter sidebar accent */
-  --sidebar-accent-foreground: 0 0% 98%; /* Very light accent text */
-  --sidebar-border: 220 15% 30%; /* More visible sidebar borders */
-  --sidebar-ring: 195 100% 60%; /* Brighter sidebar focus ring */
+  /* Authentic MarFanet.com Color Scheme */
+  --background: 220 65% 7%; /* Very dark blue #0A0F1E */
+  --foreground: 0 0% 100%; /* Pure white text #FFFFFF */
+  --muted: 220 50% 11%; /* Secondary dark blue #10182D */
+  --muted-foreground: 220 15% 75%; /* Light gray #D1D5DB */
+  --popover: 220 50% 11%; /* Dark popover #10182D */
+  --popover-foreground: 0 0% 100%; /* White popover text */
+  --card: 220 50% 13%; /* Card background #1A2035 */
+  --card-foreground: 0 0% 100%; /* White card text */
+  --border: 220 40% 20%; /* Subtle borders */
+  --input: 220 45% 15%; /* Input background */
+  --primary: 214 100% 50%; /* Electric blue #007BFF */
+  --primary-foreground: 0 0% 100%; /* White text on primary */
+  --secondary: 220 45% 15%; /* Secondary background */
+  --secondary-foreground: 0 0% 100%; /* White secondary text */
+  --accent: 214 100% 50%; /* Accent blue #007BFF */
+  --accent-foreground: 0 0% 100%; /* White text on accent */
+  --destructive: 0 84% 60%; /* Red for errors */
+  --destructive-foreground: 0 0% 100%; /* White text on destructive */
+  --ring: 214 100% 50%; /* Focus ring blue */
+  --radius: 0.5rem; /* Subtle rounded corners */
+  --success: 142 69% 45%; /* Status green #28A745 */
+  --warning: 38 92% 50%; /* Orange warning */
+  --sidebar-background: 220 65% 7%; /* Dark sidebar */
+  --sidebar-foreground: 0 0% 100%; /* White sidebar text */
+  --sidebar-primary: 214 100% 50%; /* Blue primary */
+  --sidebar-primary-foreground: 0 0% 100%; /* White text on primary */
+  --sidebar-accent: 220 50% 13%; /* Sidebar accent */
+  --sidebar-accent-foreground: 0 0% 100%; /* White accent text */
+  --sidebar-border: 220 40% 20%; /* Sidebar borders */
+  --sidebar-ring: 214 100% 50%; /* Sidebar focus ring */
 }
 
 .dark {

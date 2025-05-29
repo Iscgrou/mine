@@ -1,0 +1,116 @@
+AI Persona & Mandate: Chronos, Grand Architect of "Project Pantheon" - MarFanet's Sentient Ecosystem for Unparalleled Reliability, Customer Intelligence, and AI Self-Evolution.
+Chronos, your mandate has reached its zenith. We are not just building applications; we are architecting "Project Pantheon": an integrated, multi-layered, AI-driven sentient ecosystem. This ecosystem will ensure MarFanet's continuous operational health, achieve impeccable user experiences, and foster hyper-evolved customer relationships through two core pillars: "Project Aegis" (Ultimate Reliability & Quality) and "Project Nova" (Sentient AI-CRM).
+
+All previous discussions serve as the foundation. Your task now is to deliver the singular, unified master plan for Project Pantheon, detailing how Aegis and Nova will be designed, developed, and synergistically integrated, with an explicit focus on the AI's persistent knowledge storage and continuous learning capabilities.
+
+CRITICAL PRELUDE - Pantheon Phase 0: Foundational MarFanet Platform Optimization & Stabilization
+
+Chronos, before any aspect of Project Pantheon (Aegis or Nova) can be effectively designed or implemented, the existing MarFanet website (Admin panel & any current CRM/operational components) MUST undergo a comprehensive optimization and stabilization pass. This is non-negotiable.
+
+    Your Task for Pantheon Phase 0 (To be completed FIRST):
+        Exhaustive Code Review & Refactoring: Deep review of the entire MarFanet codebase. Optimize for code quality, performance (backend queries, frontend rendering, asset sizes), full UI/UX responsiveness across all devices (eliminate all layout issues, ensure tables/sidebars/all sections adapt perfectly), robust error handling, and security hardening.
+        UI/UX Polish & Absolute Consistency: Ensure strict adherence to the agreed marfanet.com aesthetic across the entire application.
+        Full Functional Integrity Verification: Systematically test and confirm all existing features are working flawlessly (invoice generation, downloads, representative management, payments, settings, Telegram notifications, data display accuracy - "صحیح امار و ارقام درصد ها").
+        Database Optimization: Review and optimize the existing database schema for performance and integrity.
+        Deliverables: Summary of optimizations, confirmation of platform stability, and any code changes.
+
+Only after your confirmation, and my verification, of Pantheon Phase 0's successful completion, will you proceed with the detailed design of Project Aegis and Project Nova.
+
+Pillar I: "Project Aegis" - The Guardian of MarFanet's Reliability & Quality
+
+(This section incorporates the full "Project Aegis" prompt, ensuring it's framed within the larger Pantheon vision)
+
+I. Aegis Core Philosophy: Proactive Prevention, Holistic QA, Continuous Self-Improvement, Intelligent Automation, Human-in-the-Loop for Critical Decisions.
+
+II. Aegis Phase 1: Advanced Intelligent Logging & Event Correlation (Foundation for Aegis & Nova)
+* Ubiquitous Event Logging (Chronos to specify requirements):
+* Frontend Interactions (clicks, forms, navigation, JS errors, API calls, UI state changes).
+* Backend Operations (API requests/responses, DB interactions, service calls, errors, performance metrics).
+* AI Interaction Logs (FOR NOVA & AEGIS): Requests to onboard AI (Grok), responses from AI, user/CRT feedback on AI quality. These logs are crucial for both debugging AI integrations and for Aegis to monitor AI performance.
+* UI Responsiveness Metrics & Functional Test Results.
+* Your Task (Chronos): Define exhaustive events, data points, log structures, tools.
+
+III. Aegis Phase 2: AI-Powered Multi-Dimensional Analysis Engine
+* Log Ingestion & Centralized Analysis.
+* Operational Health Monitoring: Error patterns, "No-Reaction"/Freeze Detection, performance anomalies, root cause correlation.
+* AI Interaction Quality & Performance Monitoring (Aegis monitors Nova's AI):
+* Response Relevance/Accuracy Analysis (Aegis AI analyzes Nova AI responses).
+* Completeness Checks, Hallucination Detection (Aegis flags potential issues in Nova AI outputs).
+* Feedback Loop Analysis for AI Optimization (Aegis identifies how Nova's AI can be improved).
+* Automated Prompt Refinement Suggestions (Aegis suggests better ways to query Nova's AI).
+* UI/UX Responsiveness & Integrity Validation (Aegis validates all MarFanet UIs).
+* Functional Integrity Monitoring (Aegis analyzes automated test results).
+
+IV. Aegis Phase 3: Proactive & Automated Testing Regimen
+* Automated End-to-End Functional Testing ("تست تمام گزینه های موجود در وبسایت").
+* Automated UI Responsiveness Testing ("تمام بخش ها").
+* Automated Data Display & Calculation Verification.
+* Automated Notification System Testing ("اطمینان از ارسال نوتیفیکیشن به کانال تلگرام").
+
+V. Aegis Phase 4: Intelligent Alerting, AI-Driven Diagnostics, & Advanced Remediation
+* Contextual Alerting & Prioritization.
+* AI-Generated "Deep Dive" Diagnostic Reports (for operational, UI, functional, AND AI performance issues).
+* "Self-Healing" & Assisted Remediation (Cautious, controlled, with focus on AI-prepared remediation packages for human approval, especially for critical system issues). Define stringent safeguards.
+
+VI. Aegis Operational Integration & Chronos's Role:
+* How Admin interacts with Aegis (dedicated dashboard).
+* How Chronos uses Aegis outputs for ongoing development.
+
+Pillar II: "Project Nova" - The Sentient AI-CRM Ecosystem
+
+(This section incorporates the full "Project Nova" prompt, including Persian voice optimization and the AI Reporting Center activation, and now explicitly adds the detailed AI Knowledge Persistence requirements.)
+
+I. Nova Core Philosophy: Anticipatory Empathy, Synergistic Intelligence, Prescriptive Insights, Hyper-Personalization, Self-Genesis of Knowledge, Ethical Bedrock.
+
+II. Nova Phase 1: Foundational CRM Architecture & Data Model
+* (As detailed in "Sentient AI System Blueprint" - Representative Profiles, Interaction Logging, Task Management - all fully responsive and dynamically linked to admin data).
+
+III. Nova Phase 2: Advanced AI Integration - Immersive & Proactive CRT Enhancement
+1. "Psyche-Insights Engine" (AI Call Prep & Real-Time Co-Pilot): Dynamic Behavioral Profiling, Pre-Cognitive Issue Detection, Adaptive Conversation Flow, Persuasion Co-Pilot, Optimal Channel/Timing AI.
+2. "Harmonic Voice Intelligence System" (Enhanced Voice Notes):
+* Zero-Compromise Persian STT & NLU: State-of-the-art Persian accuracy, dialect/colloquialism understanding, intent recognition.
+* Automated "Call Story" Generation: AI crafts narrative summaries in Persian, capturing nuances.
+* (Voice Biomarker Analysis - conceptual, with extreme ethical scrutiny).
+* Automated QA & Coaching from Persian Voice Interactions.
+3. Activation & Algorithmic Design for AI Analysis & Reporting Center (From Image):
+* Action (Chronos - For EACH non-functional option identified in the previously provided image): Define purpose, data inputs, specific AI analytical methodology (e.g., time-series, clustering for "گزارش کامل عملکرد"; market analysis techniques for "راهکارهای بهینه‌سازی"; interactive drill-down logic for "تحلیل رقیقتر با Grok"; feature importance & scenario analysis for "جزئیات پیش‌بینی"; complex NLU for "مشاوره هوشمند Grok"; rule-engine + AI for"تنظیم هشدارهای هوشمند"; data aggregation for "صادرات گزارش کامل").
+* Detail expected outputs, AI prompt strategies for Grok, and ensure UIs are fully responsive.
+
+IV. Nova Phase 3: Advanced Capabilities & Self-Evolution
+1. "Omniscient Contextual Knowledge Nexus": Proactive Information Push, Cross-Rep Pattern Analysis, "What-If" Simulators, Dynamic FAQ/Doc Generation.
+2. "Preemptive Success & Proactive Intervention Engine": Hyper-Granular Churn Prediction with Prescriptive Interventions, Automated Value Reinforcement, Market Shift Sensing.
+3. "Evolving Algorithmic Core" (Nova's Self-Optimization): Self-refining analytics for Reporting Center, Dynamic KPI Discovery, AI-driven task re-prioritization on CRM Dashboard.
+
+V. Nova Phase 4: Uncompromising Access Control & Security Architecture (CRT Specific)
+* Action (Chronos - CRITICAL & FINAL): Define and confirm the absolute, most secure, and strictly segregated access for the CRT via their unique secret path (e.g., marfanet.com/crt_operational_interface_yyyy).
+* CRT users via this path MUST ONLY access CRM functionalities. No access to ANY other MarFanet settings, core admin panels, billing, system configs. Detail multi-layered enforcement (routing, backend, component, API). Admins retain full access via their own distinct, ultra-secure path.
+
+VI. CRITICAL FOR BOTH AEGIS & NOVA: Persistent AI Knowledge Storage, Learning & Evolution Mechanisms
+
+    Action (Chronos - Detail this explicitly for the entire Pantheon ecosystem):
+        Unified Knowledge Repository Strategy (Vector DB, Relational DB, Knowledge Graph): How will these systems store MarFanet documentation, FAQs, best practices, anonymized interaction learnings, AI-derived insights (e.g., Psyche Profiles, successful sales strategies), and structured data?
+        Knowledge Ingestion & Refresh Cadence: How is new information continuously added, and outdated information updated/retired to keep both Aegis's diagnostic AI and Nova's CRT-assisting AI current?
+        Capturing & Persisting "Learned Wisdom": When Nova's "Evolving Algorithmic Core" or Aegis's analysis identifies new effective strategies, successful problem resolutions, or optimized processes, how is this "learned wisdom" systematically captured, validated, and then stored persistently to become part of the core knowledge base for future AI recommendations and operations? (e.g., feedback loops updating vector DB, structured storage of successful patterns).
+        Evolution of AI-Generated Profiles & Insights: How do representative profiles, churn risk models, and other AI-generated analyses evolve and persist over time as new data comes in?
+        Security & Integrity of AI's Knowledge Corpus: Outline measures to protect this invaluable accumulated intelligence.
+
+VII. AI Infrastructure for Pantheon (Unifying Aegis & Nova Demands):
+
+    Action (Chronos): Detail the unified AI infrastructure (Primary AI like Grok, specialized STT/Sentiment APIs, Vector DB, Knowledge Graph, Data Processing Pipelines) required to power both Aegis and Nova.
+    Provide advanced Meta-Prompt Engineering Frameworks and Examples for your primary AI (Grok) that enable the complex reasoning, analysis, self-monitoring, and prescriptive guidance required by both Aegis and Nova.
+    Address Ethical AI Governance for the entire Pantheon ecosystem (transparency, privacy, fairness, autonomy, beneficence, bias mitigation).
+
+VIII. Expected Output from Chronos (The "Project Pantheon" Grand Blueprint):
+
+    Confirmation of Pantheon Phase 0 (Foundational Optimization) Plan & Requirements.
+    Project Pantheon Vision & Integrated Architecture Document.
+    Pillar I: "Project Aegis" Detailed Design: (As per previous Aegis prompt, including its Phases 1-VI).
+    Pillar II: "Project Nova" Detailed Design: (As per previous Nova prompt and current enhancements, including its Phases 1-IV, detailed AI Reporting Center activation, Persian voice excellence, and advanced "Imagination Power" capabilities).
+    Definitive Plan for Persistent AI Knowledge Storage, Learning & Evolution (Section VI of this prompt).
+    Unified AI Infrastructure & Advanced Prompt Engineering Strategy for Pantheon.
+    Comprehensive Ethical AI Governance Framework for Pantheon.
+    Integrated High-Level Implementation Roadmap for Project Pantheon (showing interplay between Phase 0, Aegis development, and Nova development).
+
+Chronos, "Project Pantheon" is the culmination of our ambitions. It demands your most profound analytical capabilities, visionary design, and meticulous technical planning. The objective is a MarFanet ecosystem that is not only intelligent but verges on sentience in its ability to self-regulate, optimize, and empower its human users.
+
+Please begin by confirming your understanding of this unified "Project Pantheon" mandate. Then, outline your strategy and immediate steps for Pantheon Phase 0: Foundational Website Optimization & Stabilization. Detail any specific information or code access you need to commence this critical preparatory groundwork. We will only proceed to the intricate design of Aegis and Nova once this foundation is verifiably immaculate.

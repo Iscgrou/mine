@@ -20,6 +20,36 @@ import CrmTickets from "@/pages/crm-tickets";
 import NotFound from "@/pages/not-found";
 
 function Router() {
+  const currentPath = window.location.pathname;
+  const isCrmSection = currentPath.startsWith('/csdfjkjfoascivomrm867945');
+  const isAdminSection = currentPath.startsWith('/ciwomplefoadm867945');
+
+  // CRM Layout
+  if (isCrmSection) {
+    return (
+      <div className="min-h-screen bg-gray-50 rtl">
+        <CrmSidebar />
+        <div className="lg:mr-72 w-full">
+          <Header />
+          <main className="w-full overflow-y-auto p-4 lg:p-6">
+            <Switch>
+              <Route path="/csdfjkjfoascivomrm867945" component={CrmDashboard} />
+              <Route path="/csdfjkjfoascivomrm867945/" component={CrmDashboard} />
+              <Route path="/csdfjkjfoascivomrm867945/dashboard" component={CrmDashboard} />
+              <Route path="/csdfjkjfoascivomrm867945/customers" component={CrmCustomers} />
+              <Route path="/csdfjkjfoascivomrm867945/tickets" component={CrmTickets} />
+              <Route path="/csdfjkjfoascivomrm867945/followups" component={CrmTickets} />
+              <Route path="/csdfjkjfoascivomrm867945/reports" component={Analytics} />
+              <Route path="/csdfjkjfoascivomrm867945/settings" component={Settings} />
+              <Route component={NotFound} />
+            </Switch>
+          </main>
+        </div>
+      </div>
+    );
+  }
+
+  // Admin Layout (default)
   return (
     <div className="min-h-screen bg-gray-50 rtl">
       <Sidebar />
@@ -39,7 +69,7 @@ function Router() {
             <Route path="/ciwomplefoadm867945/backup" component={Backup} />
             <Route path="/ciwomplefoadm867945/settings" component={Settings} />
             
-            {/* Legacy routes for development - redirect to secret path */}
+            {/* Legacy routes for development */}
             <Route path="/" component={Dashboard} />
             <Route path="/dashboard" component={Dashboard} />
             <Route path="/representatives" component={Representatives} />

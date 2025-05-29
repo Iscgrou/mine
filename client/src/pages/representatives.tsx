@@ -15,7 +15,12 @@ interface Representative {
   telegramId?: string;
   phoneNumber?: string;
   storeName?: string;
-  pricePerGB?: string;
+  limitedPrice1Month?: string;
+  limitedPrice2Month?: string;
+  limitedPrice3Month?: string;
+  limitedPrice4Month?: string;
+  limitedPrice5Month?: string;
+  limitedPrice6Month?: string;
   unlimitedMonthlyPrice?: string;
   status: string;
   createdAt: string;

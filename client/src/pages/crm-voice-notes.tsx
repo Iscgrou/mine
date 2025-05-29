@@ -98,24 +98,71 @@ export default function CrmVoiceNotes() {
     }
   });
 
-  // Start recording
+  // Start recording with Safari compatibility
   const startRecording = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      mediaRecorderRef.current = new MediaRecorder(stream);
+      // Check if MediaRecorder is supported
+      if (!window.MediaRecorder) {
+        toast({
+          title: "خطا",
+          description: "مرورگر شما از ضبط صدا پشتیبانی نمی‌کند",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          sampleRate: 44100
+        }
+      });
+
+      // Safari compatibility: Check supported MIME types
+      let mimeType = 'audio/webm';
+      if (!MediaRecorder.isTypeSupported('audio/webm')) {
+        if (MediaRecorder.isTypeSupported('audio/mp4')) {
+          mimeType = 'audio/mp4';
+        } else if (MediaRecorder.isTypeSupported('audio/wav')) {
+          mimeType = 'audio/wav';
+        } else {
+          mimeType = ''; // Let browser choose
+        }
+      }
+
+      const options = mimeType ? { mimeType } : {};
+      mediaRecorderRef.current = new MediaRecorder(stream, options);
       audioChunksRef.current = [];
 
       mediaRecorderRef.current.ondataavailable = (event) => {
-        audioChunksRef.current.push(event.data);
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
+        }
       };
 
       mediaRecorderRef.current.onstop = () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        const audioBlob = new Blob(audioChunksRef.current, { type: mimeType || 'audio/wav' });
         handleAudioProcessing(audioBlob);
-        stream.getTracks().forEach(track => track.stop());
+        // Clean up stream
+        stream.getTracks().forEach(track => {
+          track.stop();
+          track.enabled = false;
+        });
       };
 
-      mediaRecorderRef.current.start();
+      mediaRecorderRef.current.onerror = (event) => {
+        console.error('MediaRecorder error:', event);
+        toast({
+          title: "خطا",
+          description: "خطا در ضبط صدا",
+          variant: "destructive"
+        });
+        setIsRecording(false);
+      };
+
+      // Start recording with time slice for Safari
+      mediaRecorderRef.current.start(1000); // Record in 1-second chunks
       setIsRecording(true);
       setRecordingTime(0);
 
@@ -125,21 +172,39 @@ export default function CrmVoiceNotes() {
       }, 1000);
 
     } catch (error) {
+      console.error('Recording error:', error);
+      const errorMessage = error instanceof Error && error.name === 'NotAllowedError' 
+        ? "دسترسی به میکروفون رد شد" 
+        : "دسترسی به میکروفون امکان‌پذیر نیست";
+      
       toast({
         title: "خطا",
-        description: "دسترسی به میکروفون امکان‌پذیر نیست",
+        description: errorMessage,
         variant: "destructive"
       });
     }
   };
 
-  // Stop recording
+  // Stop recording with Safari compatibility
   const stopRecording = () => {
     if (mediaRecorderRef.current && isRecording) {
-      mediaRecorderRef.current.stop();
-      setIsRecording(false);
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
+      try {
+        // Check if recorder is in a valid state
+        if (mediaRecorderRef.current.state === 'recording') {
+          mediaRecorderRef.current.stop();
+        }
+        setIsRecording(false);
+        if (timerRef.current) {
+          clearInterval(timerRef.current);
+          timerRef.current = null;
+        }
+      } catch (error) {
+        console.error('Error stopping recording:', error);
+        setIsRecording(false);
+        if (timerRef.current) {
+          clearInterval(timerRef.current);
+          timerRef.current = null;
+        }
       }
     }
   };

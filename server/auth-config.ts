@@ -18,14 +18,24 @@ export const AUTH_CONFIG = {
   }
 };
 
-// Path validation functions
+// Path validation functions with Safari compatibility
 export function isValidAdminPath(path: string): boolean {
-  return path === `/${AUTH_CONFIG.ADMIN_SECRET_PATH}` || 
+  const normalizedPath = path.toLowerCase().replace(/\/+$/, ''); // Remove trailing slashes and normalize case
+  const adminPath = `/${AUTH_CONFIG.ADMIN_SECRET_PATH}`.toLowerCase();
+  
+  return normalizedPath === adminPath || 
+         normalizedPath.startsWith(`${adminPath}/`) ||
+         path === `/${AUTH_CONFIG.ADMIN_SECRET_PATH}` || 
          path.startsWith(`/${AUTH_CONFIG.ADMIN_SECRET_PATH}/`);
 }
 
 export function isValidCrmPath(path: string): boolean {
-  return path === `/${AUTH_CONFIG.CRM_SECRET_PATH}` || 
+  const normalizedPath = path.toLowerCase().replace(/\/+$/, ''); // Remove trailing slashes and normalize case
+  const crmPath = `/${AUTH_CONFIG.CRM_SECRET_PATH}`.toLowerCase();
+  
+  return normalizedPath === crmPath || 
+         normalizedPath.startsWith(`${crmPath}/`) ||
+         path === `/${AUTH_CONFIG.CRM_SECRET_PATH}` || 
          path.startsWith(`/${AUTH_CONFIG.CRM_SECRET_PATH}/`);
 }
 

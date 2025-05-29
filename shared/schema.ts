@@ -201,32 +201,239 @@ export type InsertSetting = z.infer<typeof insertSettingSchema>;
 export type Backup = typeof backups.$inferSelect;
 export type InsertBackup = z.infer<typeof insertBackupSchema>;
 
-// CRM Module Tables - AI-Powered Customer Relations Management
+// =============================================================================
+// CRM MODULE - AI-POWERED CUSTOMER RELATIONS MANAGEMENT SCHEMA
+// =============================================================================
 
-// CRM Users (separate from main admin users for access control)
+// CRM Users - Separate authentication for CRM team access
 export const crmUsers = pgTable("crm_users", {
   id: serial("id").primaryKey(),
-  username: varchar("username", { length: 50 }).notNull().unique(),
-  fullName: varchar("full_name", { length: 100 }).notNull(),
-  email: varchar("email", { length: 100 }),
-  phoneNumber: varchar("phone_number", { length: 20 }),
-  role: varchar("role", { length: 30 }).notNull().default("crm_agent"), // crm_agent, crm_supervisor
+  username: text("username").notNull().unique(),
+  fullName: text("full_name").notNull(),
+  email: text("email"),
+  phoneNumber: text("phone_number"),
+  role: text("role").notNull().default("crm_agent"), // crm_agent, crm_supervisor
   isActive: boolean("is_active").notNull().default(true),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull()
 });
 
-// CRM Interaction Types and Categories
+// CRM Interaction Types
 export const crmInteractionTypes = pgTable("crm_interaction_types", {
   id: serial("id").primaryKey(),
-  name: varchar("name", { length: 50 }).notNull(),
-  nameEn: varchar("name_en", { length: 50 }).notNull(),
-  category: varchar("category", { length: 30 }).notNull(), // call, message, meeting, email
+  name: text("name").notNull(), // تماس تلفنی، پیام تلگرام، ایمیل، جلسه
+  nameEn: text("name_en").notNull(), // call, telegram, email, meeting
+  category: text("category").notNull(), // call, message, meeting
   isActive: boolean("is_active").notNull().default(true)
 });
 
-// CRM Interactions - Comprehensive logging system
+// CRM Interactions - Core logging system for all customer touchpoints
 export const crmInteractions = pgTable("crm_interactions", {
+  id: serial("id").primaryKey(),
+  representativeId: integer("representative_id").references(() => representatives.id).notNull(),
+  crmUserId: integer("crm_user_id").references(() => crmUsers.id).notNull(),
+  interactionTypeId: integer("interaction_type_id").references(() => crmInteractionTypes.id).notNull(),
+  direction: text("direction").notNull(), // inbound, outbound
+  subject: text("subject"),
+  summary: text("summary"), // AI-generated or manual summary
+  manualNotes: text("manual_notes"), // CRT manual notes
+  outcome: text("outcome"), // resolved, escalated, follow_up_needed, sale_completed
+  sentimentScore: decimal("sentiment_score", { precision: 3, scale: 2 }), // -1.00 to 1.00
+  sentimentAnalysis: text("sentiment_analysis"), // AI detailed sentiment analysis
+  urgencyLevel: text("urgency_level").default("medium"), // low, medium, high, critical
+  duration: integer("duration"), // in minutes
+  followUpDate: timestamp("follow_up_date"),
+  voiceNoteUrl: text("voice_note_url"), // URL to stored voice recording
+  transcription: text("transcription"), // Speech-to-text result
+  keyTopics: text("key_topics").array().default([]), // AI-extracted topics
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull()
+});
+
+// CRM Tasks - AI-assisted task management
+export const crmTasks = pgTable("crm_tasks", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  description: text("description"),
+  representativeId: integer("representative_id").references(() => representatives.id),
+  assignedToCrmUserId: integer("assigned_to_crm_user_id").references(() => crmUsers.id).notNull(),
+  createdByCrmUserId: integer("created_by_crm_user_id").references(() => crmUsers.id).notNull(),
+  relatedInteractionId: integer("related_interaction_id").references(() => crmInteractions.id),
+  status: text("status").notNull().default("open"), // open, in_progress, completed, overdue
+  priority: text("priority").notNull().default("medium"), // low, medium, high, urgent
+  dueDate: timestamp("due_date"),
+  aiGenerated: boolean("ai_generated").notNull().default(false),
+  aiContext: text("ai_context"), // AI reasoning for task creation
+  completedAt: timestamp("completed_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull()
+});
+
+// CRM Call Preparations - AI-powered call briefings
+export const crmCallPreparations = pgTable("crm_call_preparations", {
+  id: serial("id").primaryKey(),
+  representativeId: integer("representative_id").references(() => representatives.id).notNull(),
+  crmUserId: integer("crm_user_id").references(() => crmUsers.id).notNull(),
+  callPurpose: text("call_purpose").notNull(), // support, sales, follow_up, demo
+  aiTalkingPoints: text("ai_talking_points"), // JSON array of suggested points
+  communicationStyle: text("communication_style"), // AI tone recommendations
+  potentialObjections: text("potential_objections"), // JSON objections & responses
+  opportunityInsights: text("opportunity_insights"), // AI upsell opportunities
+  historicalContext: text("historical_context"), // AI interaction summary
+  psychologicalProfile: text("psychological_profile"), // AI communication preferences
+  actualCallInteractionId: integer("actual_call_interaction_id").references(() => crmInteractions.id),
+  createdAt: timestamp("created_at").defaultNow().notNull()
+});
+
+// CRM Representative Profiles - Enhanced customer profiles for CRM context
+export const crmRepresentativeProfiles = pgTable("crm_representative_profiles", {
+  id: serial("id").primaryKey(),
+  representativeId: integer("representative_id").references(() => representatives.id).notNull().unique(),
+  communicationPreference: text("communication_preference"), // call, telegram, email
+  bestContactTime: text("best_contact_time"),
+  languagePreference: text("language_preference").default("persian"),
+  personalityNotes: text("personality_notes"), // CRT observations
+  aiPersonalityProfile: text("ai_personality_profile"), // AI insights
+  lastContactAttempt: timestamp("last_contact_attempt"),
+  nextScheduledContact: timestamp("next_scheduled_contact"),
+  totalInteractions: integer("total_interactions").default(0),
+  averageSentiment: decimal("average_sentiment", { precision: 3, scale: 2 }),
+  riskScore: decimal("risk_score", { precision: 3, scale: 2 }), // AI churn risk
+  opportunityScore: decimal("opportunity_score", { precision: 3, scale: 2 }), // AI upsell potential
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull()
+});
+
+// =============================================================================
+// CRM RELATIONS
+// =============================================================================
+
+export const crmUsersRelations = relations(crmUsers, ({ many }) => ({
+  interactions: many(crmInteractions),
+  assignedTasks: many(crmTasks, { relationName: "assignedTasks" }),
+  createdTasks: many(crmTasks, { relationName: "createdTasks" }),
+  callPreparations: many(crmCallPreparations)
+}));
+
+export const crmInteractionTypesRelations = relations(crmInteractionTypes, ({ many }) => ({
+  interactions: many(crmInteractions)
+}));
+
+export const crmInteractionsRelations = relations(crmInteractions, ({ one, many }) => ({
+  representative: one(representatives, {
+    fields: [crmInteractions.representativeId],
+    references: [representatives.id]
+  }),
+  crmUser: one(crmUsers, {
+    fields: [crmInteractions.crmUserId],
+    references: [crmUsers.id]
+  }),
+  interactionType: one(crmInteractionTypes, {
+    fields: [crmInteractions.interactionTypeId],
+    references: [crmInteractionTypes.id]
+  }),
+  tasks: many(crmTasks),
+  callPreparations: many(crmCallPreparations)
+}));
+
+export const crmTasksRelations = relations(crmTasks, ({ one }) => ({
+  representative: one(representatives, {
+    fields: [crmTasks.representativeId],
+    references: [representatives.id]
+  }),
+  assignedTo: one(crmUsers, {
+    fields: [crmTasks.assignedToCrmUserId],
+    references: [crmUsers.id],
+    relationName: "assignedTasks"
+  }),
+  createdBy: one(crmUsers, {
+    fields: [crmTasks.createdByCrmUserId],
+    references: [crmUsers.id],
+    relationName: "createdTasks"
+  }),
+  relatedInteraction: one(crmInteractions, {
+    fields: [crmTasks.relatedInteractionId],
+    references: [crmInteractions.id]
+  })
+}));
+
+export const crmCallPreparationsRelations = relations(crmCallPreparations, ({ one }) => ({
+  representative: one(representatives, {
+    fields: [crmCallPreparations.representativeId],
+    references: [representatives.id]
+  }),
+  crmUser: one(crmUsers, {
+    fields: [crmCallPreparations.crmUserId],
+    references: [crmUsers.id]
+  }),
+  actualCallInteraction: one(crmInteractions, {
+    fields: [crmCallPreparations.actualCallInteractionId],
+    references: [crmInteractions.id]
+  })
+}));
+
+export const crmRepresentativeProfilesRelations = relations(crmRepresentativeProfiles, ({ one }) => ({
+  representative: one(representatives, {
+    fields: [crmRepresentativeProfiles.representativeId],
+    references: [representatives.id]
+  })
+}));
+
+// =============================================================================
+// CRM INSERT SCHEMAS AND TYPES
+// =============================================================================
+
+export const insertCrmUserSchema = createInsertSchema(crmUsers).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true
+});
+
+export const insertCrmInteractionTypeSchema = createInsertSchema(crmInteractionTypes).omit({
+  id: true
+});
+
+export const insertCrmInteractionSchema = createInsertSchema(crmInteractions).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true
+});
+
+export const insertCrmTaskSchema = createInsertSchema(crmTasks).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true
+});
+
+export const insertCrmCallPreparationSchema = createInsertSchema(crmCallPreparations).omit({
+  id: true,
+  createdAt: true
+});
+
+export const insertCrmRepresentativeProfileSchema = createInsertSchema(crmRepresentativeProfiles).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true
+});
+
+// CRM Types
+export type CrmUser = typeof crmUsers.$inferSelect;
+export type InsertCrmUser = z.infer<typeof insertCrmUserSchema>;
+
+export type CrmInteractionType = typeof crmInteractionTypes.$inferSelect;
+export type InsertCrmInteractionType = z.infer<typeof insertCrmInteractionTypeSchema>;
+
+export type CrmInteraction = typeof crmInteractions.$inferSelect;
+export type InsertCrmInteraction = z.infer<typeof insertCrmInteractionSchema>;
+
+export type CrmTask = typeof crmTasks.$inferSelect;
+export type InsertCrmTask = z.infer<typeof insertCrmTaskSchema>;
+
+export type CrmCallPreparation = typeof crmCallPreparations.$inferSelect;
+export type InsertCrmCallPreparation = z.infer<typeof insertCrmCallPreparationSchema>;
+
+export type CrmRepresentativeProfile = typeof crmRepresentativeProfiles.$inferSelect;
+export type InsertCrmRepresentativeProfile = z.infer<typeof insertCrmRepresentativeProfileSchema>;
   id: serial("id").primaryKey(),
   representativeId: integer("representative_id").references(() => representatives.id).notNull(),
   crmUserId: integer("crm_user_id").references(() => crmUsers.id).notNull(),

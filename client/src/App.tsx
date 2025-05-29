@@ -29,6 +29,39 @@ function Router() {
   const isCrmSection = currentPath.startsWith('/csdfjkjfoascivomrm867945');
   const isAdminSection = currentPath.startsWith('/ciwomplefoadm867945');
 
+  // Safari URL Security Check: Prevent access if secure path was stripped
+  if (currentPath === '/' || currentPath === '/index.html') {
+    return (
+      <div style={{
+        fontFamily: 'Tahoma',
+        direction: 'rtl',
+        textAlign: 'center',
+        padding: '50px',
+        background: '#f5f5f5',
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <div style={{
+          background: 'white',
+          padding: '40px',
+          borderRadius: '8px',
+          maxWidth: '400px',
+          boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
+        }}>
+          <h1 style={{ color: '#d32f2f', marginBottom: '20px' }}>🚫 خطای دسترسی</h1>
+          <p style={{ color: '#666', lineHeight: '1.6' }}>URL امنیتی حذف شده است.</p>
+          <p style={{ color: '#666', lineHeight: '1.6' }}>لطفاً از لینک کامل و صحیح استفاده کنید.</p>
+          <p style={{ color: '#ff6b35', fontWeight: 'bold', marginTop: '15px' }}>
+            ⚠️ Safari: حتماً لینک کامل را وارد کنید
+          </p>
+          <small style={{ color: '#999' }}>Security Error - Use Complete URL</small>
+        </div>
+      </div>
+    );
+  }
+
   // CRM Layout
   if (isCrmSection) {
     return (

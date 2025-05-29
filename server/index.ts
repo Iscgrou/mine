@@ -24,8 +24,20 @@ app.use((req: Request, res: Response, next: NextFunction) => {
     return next();
   }
 
-  // Check if accessing root path or any unauthorized path
+  // Safari URL Security Fix: Prevent automatic redirections
+  // Log unauthorized access attempts for security monitoring
   if (req.path === '/' || req.path === '/index.html' || !isAuthorizedPath(req.path)) {
+    console.log(`[SECURITY] Unauthorized access attempt: ${req.path} from ${req.ip} - User-Agent: ${req.get('User-Agent')}`);
+    
+    // Add cache prevention headers and Safari-specific security headers
+    res.set({
+      'Cache-Control': 'no-cache, no-store, must-revalidate, private',
+      'Pragma': 'no-cache',
+      'Expires': '0',
+      'X-Safari-No-Redirect': '1',
+      'Strict-Transport-Security': 'max-age=31536000; includeSubDomains'
+    });
+    
     return res.status(403).send(`
       <!DOCTYPE html>
       <html dir="rtl" lang="fa">

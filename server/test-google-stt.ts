@@ -14,8 +14,20 @@ async function testGoogleCloudSTT(): Promise<void> {
     // Test 1: Verify Google Cloud authentication
     console.log('\n🔐 Testing Google Cloud Authentication...');
     
+    // Load stored credentials from database
+    const { storage } = await import('./storage');
+    const credentialsSetting = await storage.getSetting('google_cloud_credentials');
+    
+    if (!credentialsSetting?.value) {
+      throw new Error('Google Cloud credentials not found in database. Please configure credentials first.');
+    }
+
+    const credentials = JSON.parse(credentialsSetting.value);
+    console.log(`📋 Project ID: ${credentials.project_id}`);
+    
     const { GoogleAuth } = await import('google-auth-library');
     const auth = new GoogleAuth({
+      credentials,
       scopes: ['https://www.googleapis.com/auth/cloud-platform']
     });
     

@@ -180,26 +180,23 @@ export default function Representatives() {
               ))}
             </div>
           ) : (
-            <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-              <table className="min-w-full divide-y divide-gray-300">
+            <div className="overflow-x-auto shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+              <table className="w-full divide-y divide-gray-300">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      نام کامل
+                    <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      نام / نام کاربری
                     </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      نام کاربری
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
                       تلفن
                     </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
                       فروشگاه
                     </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                       وضعیت
                     </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                       عملیات
                     </th>
                   </tr>
@@ -207,51 +204,41 @@ export default function Representatives() {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {filteredRepresentatives?.map((rep) => (
                     <tr key={rep.id} className="table-row-hover">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div className="h-10 w-10 bg-gray-200 rounded-full flex items-center justify-center">
-                            <i className="fas fa-user text-gray-500"></i>
-                          </div>
-                          <div className="mr-4">
-                            <div className="text-sm font-medium text-gray-900">{rep.fullName}</div>
-                            <div className="text-sm text-gray-500">
-                              {rep.telegramId || "بدون شناسه"}
-                            </div>
-                          </div>
-                        </div>
+                      <td className="px-3 py-4">
+                        <div className="text-sm font-medium text-gray-900">{rep.fullName}</div>
+                        <div className="text-xs text-gray-500">@{rep.adminUsername}</div>
+                        <div className="text-xs text-gray-400 md:hidden">{rep.phoneNumber || '-'}</div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {rep.adminUsername}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 persian-nums">
+                      <td className="px-3 py-4 text-sm text-gray-500 persian-nums hidden md:table-cell">
                         {rep.phoneNumber || "-"}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-3 py-4 text-sm text-gray-500 hidden lg:table-cell">
                         {rep.storeName || "-"}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td className="px-3 py-4">
                         {getStatusBadge(rep.status)}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <div className="flex space-x-2 space-x-reverse">
+                      <td className="px-3 py-4">
+                        <div className="flex space-x-1 space-x-reverse">
                           <Button
                             variant="ghost" 
                             size="sm"
                             onClick={() => handleEdit(rep)}
+                            className="text-xs px-2 py-1"
                           >
                             ویرایش
                           </Button>
                           <Button
                             variant="ghost" 
                             size="sm"
-                            className="text-blue-600 hover:text-blue-900"
+                            className="text-blue-600 hover:text-blue-900 text-xs px-2 py-1"
                           >
-                            صورتحساب
+                            فاکتور
                           </Button>
                           <Button
                             variant="ghost" 
                             size="sm"
-                            className="text-red-600 hover:text-red-900"
+                            className="text-red-600 hover:text-red-900 text-xs px-2 py-1"
                             onClick={() => handleDelete(rep.id)}
                           >
                             حذف

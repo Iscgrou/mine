@@ -64,7 +64,8 @@ class NovaAIEngine {
       aegisLogger.info('NovaAIEngine', 'AI configuration loaded', {
         grokConfigured: !!this.aiConfig.grokApiKey,
         sttConfigured: !!this.aiConfig.speechToTextApiKey,
-        sentimentConfigured: !!this.aiConfig.sentimentApiKey
+        sentimentConfigured: !!this.aiConfig.sentimentApiKey,
+        googleCloudSTT: 'Vertex AI configured via service account'
       });
 
     } catch (error) {
@@ -329,20 +330,16 @@ class NovaAIEngine {
   }
 
   private async convertSpeechToText(audioUrl: string): Promise<string> {
-    if (!this.aiConfig.speechToTextApiKey) {
-      throw new Error('Speech-to-text API key not configured');
-    }
-
     const startTime = Date.now();
     
     try {
-      // First, download the audio file
+      // Download the audio file
       aegisLogger.log({
         eventType: EventType.FILE_OPERATION,
         level: LogLevel.INFO,
         source: 'NovaAIEngine',
-        message: 'Downloading audio file for STT processing',
-        metadata: { audioUrl }
+        message: 'Downloading audio file for Google Cloud STT processing',
+        metadata: { audioUrl, service: 'Google Cloud Vertex AI' }
       });
 
       const audioResponse = await fetch(audioUrl);
@@ -351,64 +348,100 @@ class NovaAIEngine {
       }
       
       const audioBuffer = await audioResponse.arrayBuffer();
+      const audioBase64 = Buffer.from(audioBuffer).toString('base64');
       
-      // Convert to FormData for STT API
-      const formData = new FormData();
-      formData.append('file', new Blob([audioBuffer]), 'audio.wav');
-      formData.append('model', 'whisper-1');
-      formData.append('language', 'fa'); // Persian language code
-
-      aegisLogger.logAIRequest('NovaAIEngine', 'OpenAI-Whisper', 'Persian audio transcription', {
+      aegisLogger.logAIRequest('NovaAIEngine', 'Google-Cloud-STT', 'Persian V2Ray audio transcription', {
         audioSize: audioBuffer.byteLength,
-        language: 'fa'
+        language: 'fa-IR',
+        customVocabulary: 'V2Ray terminology enabled'
       });
 
-      // Use xAI Grok for speech-to-text since we have xAI credentials
-      // For now, simulate STT processing as xAI doesn't have direct audio endpoints yet
-      const response = await fetch('https://api.x.ai/v1/chat/completions', {
+      // Get access token for Google Cloud API
+      const { GoogleAuth } = await import('google-auth-library');
+      const auth = new GoogleAuth({
+        scopes: ['https://www.googleapis.com/auth/cloud-platform']
+      });
+      const accessToken = await auth.getAccessToken();
+
+      // Call Google Cloud Speech-to-Text API with V2Ray custom vocabulary
+      const response = await fetch('https://speech.googleapis.com/v1/speech:recognize', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${this.aiConfig.speechToTextApiKey}`,
+          'Authorization': `Bearer ${accessToken}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          messages: [
-            {
-              role: "system",
-              content: "شما یک سیستم تبدیل صدا به متن فارسی هستید. فایل صوتی دریافت شده را تحلیل کرده و متن فارسی مربوطه را استخراج کنید."
-            },
-            {
-              role: "user",
-              content: `لطفاً این متن نمونه فارسی را به عنوان نتیجه تبدیل صوت به متن ارائه دهید: "سلام، من نماینده شماره ۱۲۳۴ هستم. مشکلی با سرویس اینترنت دارم که سرعت آن کند شده است."`
-            }
-          ],
-          model: "grok-beta",
-          temperature: 0.1,
-          max_tokens: 500
+          config: {
+            encoding: 'WEBM_OPUS',
+            sampleRateHertz: 16000,
+            languageCode: 'fa-IR', // Persian (Iran)
+            model: 'phone_call', // Optimized for customer calls
+            enableWordTimeOffsets: true,
+            enableWordConfidence: true,
+            maxAlternatives: 1,
+            profanityFilter: false,
+            speechContexts: [{
+              phrases: [
+                // V2Ray Technical Terms
+                'کانفیگ', 'پورت', 'شادوساکس', 'تروجان', 'وی‌راهی', 'پروکسی',
+                'سینک شدن', 'ساب‌سکریپشن', 'سرور', 'لوکیشن', 'محدودیت حجم',
+                // MarFanet Business Terms  
+                'نماینده', 'نمایندگی', 'پنل', 'فروش', 'مشتری', 'پشتیبانی',
+                'پلن نامحدود', 'پلن حجمی', 'تمدید', 'فعال‌سازی',
+                // Iranian ISPs and Technical Context
+                'ایرانسل', 'همراه اول', 'رایتل', 'مخابرات', 'ADSL', 'فیبر',
+                'فیلترشکن', 'تنظیمات', 'اتصال', 'قطعی', 'کندی اینترنت',
+                // Common Support Issues
+                'کار نمی‌کنه', 'وصل نمی‌شه', 'قطع می‌شه', 'کند شده',
+                'تنظیم کنم', 'نصب کنم', 'راه‌اندازی', 'آپدیت'
+              ],
+              boost: 20.0 // Boost recognition of these terms
+            }]
+          },
+          audio: {
+            content: audioBase64
+          }
         })
       });
 
       if (!response.ok) {
-        throw new Error(`STT API error: ${response.status} ${response.statusText}`);
+        const errorText = await response.text();
+        throw new Error(`Google Cloud STT API error: ${response.status} ${response.statusText} - ${errorText}`);
       }
 
       const result = await response.json();
-      const transcription = result.choices?.[0]?.message?.content || 'متن استخراج شده از صوت';
+      const transcription = result.results?.[0]?.alternatives?.[0]?.transcript || '';
+      const confidence = result.results?.[0]?.alternatives?.[0]?.confidence || 0;
 
-      aegisLogger.logAIResponse('NovaAIEngine', 'xAI-STT', { transcription }, Date.now() - startTime, {
+      aegisLogger.logAIResponse('NovaAIEngine', 'Google-Cloud-STT', { 
+        transcription, 
+        confidence,
+        wordsDetected: result.results?.[0]?.alternatives?.[0]?.words?.length || 0
+      }, Date.now() - startTime, {
         transcriptionLength: transcription.length,
-        audioProcessed: true
+        audioProcessed: true,
+        v2rayTermsDetected: this.detectV2RayTerms(transcription)
       });
 
       return transcription;
 
     } catch (error) {
-      aegisLogger.logAIError('NovaAIEngine', 'OpenAI-Whisper', error, {
+      aegisLogger.logAIError('NovaAIEngine', 'Google-Cloud-STT', error, {
         duration: Date.now() - startTime,
-        audioUrl
+        audioUrl,
+        service: 'Google Cloud Vertex AI'
       });
       throw error;
     }
+  }
+
+  private detectV2RayTerms(text: string): string[] {
+    const v2rayTerms = [
+      'کانفیگ', 'پورت', 'شادوساکس', 'تروجان', 'وی‌راهی', 'پروکسی',
+      'سینک', 'ساب‌سکریپشن', 'سرور', 'پنل', 'پلن', 'فیلترشکن'
+    ];
+    
+    return v2rayTerms.filter(term => text.includes(term));
   }
 
   private async analyzeSentiment(text: string): Promise<{ score: number; label: string; confidence: number }> {

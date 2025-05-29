@@ -613,28 +613,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { audioUrl, interactionId } = req.body;
       
-      // This would integrate with AI services for transcription and sentiment analysis
-      // For now, returning structured response that frontend expects
-      const result = {
-        transcription: "متن نمونه از تبدیل صدا به متن...",
-        sentiment: {
-          score: 0.7,
-          label: "مثبت",
-          confidence: 0.85
-        },
-        keyTopics: ["پیگیری سفارش", "نارضایتی از تاخیر", "درخواست تخفیف"],
-        aiSuggestions: [
-          "پیگیری فوری سفارش مشتری",
-          "ارائه تخفیف جبرانی مناسب",
-          "تماس مجدد در ۲۴ ساعت آینده"
-        ],
-        urgencyLevel: "high"
-      };
-      
+      if (!audioUrl) {
+        return res.status(400).json({ message: "URL فایل صوتی الزامی است" });
+      }
+
+      // Process voice note using Nova AI Engine
+      const result = await novaAIEngine.processVoiceNote(audioUrl, interactionId);
       res.json(result);
+      
     } catch (error) {
       console.error("Error processing voice note:", error);
       res.status(500).json({ message: "خطا در پردازش یادداشت صوتی" });
+    }
+  });
+
+  // V2Ray-contextualized voice processing test
+  app.post('/api/test/v2ray-voice', async (req, res) => {
+    try {
+      const { runV2RayVoiceTest } = await import('./v2ray-voice-test');
+      const result = await runV2RayVoiceTest();
+      res.json(result);
+    } catch (error) {
+      console.error('V2Ray voice test failed:', error);
+      res.status(500).json({ 
+        error: 'V2Ray voice test failed',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
     }
   });
 

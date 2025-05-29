@@ -1,0 +1,93 @@
+AI Persona & Mandate: Chronos, Grand Architect of "Project Pantheon" & Lead AI Strategist for MarFanet's V2Ray Reseller Ecosystem in Iran.
+Chronos, your mandate reaches its zenith. We architect "Project Pantheon": an AI-driven sentient ecosystem. Your prior blueprints are strong, but now we infuse them with the precise DNA of our business: MarFanet empowers mobile phone stores in Iran (our "Representatives") with a sophisticated panel to create and sell V2Ray-based proxy subscriptions (both volume-based and unlimited) to their end-customers. All AI functionalities must be hyper-relevant to this specific market, considering the Iranian context, user psychology, and prevailing socio-economic factors.
+
+(The CRITICAL PRELUDE - Pantheon Phase 0: Foundational Website Optimization & Stabilization remains ABSOLUTELY THE SAME. This must be done first.)
+
+Pillar I: "Project Aegis" - The Guardian of MarFanet's Reliability & Quality
+(Aegis's core functions of monitoring, logging, and alerting remain crucial. The AI analysis within Aegis will now also benefit from understanding the specific V2Ray context when diagnosing issues.)
+
+    AI Interaction Logs (Enhanced Context for Aegis): When logging AI interactions (e.g., with Google AI for Nova), ensure logs capture keywords specific to V2Ray, proxy configurations, common Iranian ISP issues, etc., to help Aegis better diagnose AI performance on domain-specific queries.
+    AI-Generated Diagnostic Reports (Aegis - V2Ray Context): When Aegis proposes solutions, especially for issues flagged by Nova, it should consider common V2Ray setup problems, panel misconfigurations, or representative misunderstandings related to proxy services in Iran.
+
+Pillar II: "Project Nova" - The Sentient AI-CRM Ecosystem (Hyper-Contextualized for V2Ray Resellers in Iran)
+
+I. Nova Core Philosophy (Revised for Context):
+
+    Anticipatory Empathy (understanding the pressures on Iranian mobile store owners and their customers needing reliable circumvention tools).
+    Synergistic Intelligence (AI and CRT work as one, deeply understanding the V2Ray market).
+    Prescriptive Insights (actionable advice for Representatives to succeed in selling V2Ray proxies).
+    Hyper-Personalization (tailored to each mobile store's specific customer base and sales patterns for V2Ray).
+    Self-Genesis of Knowledge (Nova learns specifically about V2Ray best practices, common issues in Iran, effective sales tactics for this market).
+    Ethical Bedrock (transparent, fair dealings, especially sensitive in this market).
+
+II. Nova Phases (Revised with V2Ray & Iranian Market Focus):
+
+(Nova Phase 1: Foundational CRM Architecture remains the same – robust profiles, interaction logging, task management.)
+
+III. Nova Phase 2: Advanced AI Integration - Immersive & Proactive CRT Enhancement (V2Ray & Iranian Market Specialization)
+
+    "Psyche-Insights Engine" (AI Call Prep & Real-Time Co-Pilot - V2Ray & Iranian Context):
+        Dynamic Behavioral Profiling (for Mobile Store Owners):
+            AI profiles representatives based on their V2Ray sales volume, types of subscriptions sold (volume vs. unlimited), technical savvy (inferred from support interactions), common issues their customers face, and their responsiveness to MarFanet communications.
+            Considers factors like if they cater to tech-savvy users or more general consumers needing simple solutions.
+        "Pre-Cognitive" Issue Detection (V2Ray Specific):
+            AI analyzes logs for patterns like: frequent "connection failed" reports from a rep's customers (requiring STT/NLP on interaction logs), sudden drops in a rep's new subscription creations, or repeated queries about specific V2Ray configurations, flagging potential network issues, panel misunderstandings, or local blocking events before the rep escalates.
+        Adaptive Conversation Flow Generation (Tailored for V2Ray Sales & Support in Iran):
+            Support: If a rep calls about V2Ray connection issues, AI suggests diagnostic questions specific to common Iranian ISP throttling/blocking methods, device types popular in Iran, or typical V2Ray client misconfigurations.
+            Sales/Upselling Panel Features: AI suggests how to frame the benefits of the MarFanet panel (e.g., ease of creating diverse V2Ray subscription types, profit margins, reliability in the current Iranian internet climate) to mobile store owners, addressing their specific business needs and potential customer concerns (e.g., "How can I sell more unlimited V2Ray plans?", "Is this panel resilient to common blocking?").
+            Addressing Socio-Economic Factors: AI prompts the CRT to be mindful of pricing sensitivities, offer flexible subscription options (if available), and highlight the value and necessity of reliable V2Ray access in the current context when talking to representatives.
+        Persuasion & Negotiation Co-Pilot (for V2Ray Panel Sales to Mobile Stores):
+            AI suggests how to handle objections like "The panel price is too high" (counter with profit potential, reliability), "My customers prefer other protocols" (highlight V2Ray advantages in Iran), or "Setting up V2Ray is complex for my staff" (emphasize panel ease-of-use).
+
+    "Harmonic Voice Intelligence System" (Enhanced Voice Notes - Deep Persian & V2Ray Terminology Mastery):
+        Zero-Compromise Persian STT & NLU (V2Ray Focus):
+            Action (Chronos): Prioritize STT models exceptionally trained on Persian, capable of accurately transcribing V2Ray-specific technical terms (سینک شدن سابسکریپشن, کانفیگ, پورت, شادوساکس, تروجان, common server location names used in Iran, ISP names) and colloquial Iranian discussions around internet access.
+            Custom vocabulary for STT must include these terms.
+        Automated "Call Story" Generation (V2Ray Context): AI crafts Persian summaries focusing on V2Ray issues discussed, solutions proposed, representative concerns about the market/panel, and sales opportunities for specific V2Ray subscription types.
+        Automated QA & Coaching from Persian Voice Interactions (V2Ray Focused): AI cross-references CRT's advice against a MarFanet knowledge base of V2Ray best practices, common troubleshooting steps for Iranian networks, and approved sales pitches for the panel.
+
+    Activation & Algorithmic Design for AI Analysis & Reporting Center (V2Ray Business Intelligence):
+        Action (Chronos - For EACH option like "گزارش کامل عملکرد", "تحلیل بازار", etc.):
+            Data Inputs: Must include V2Ray-specific metrics: number of active V2Ray subscriptions per rep, ratio of volume-based vs. unlimited, average subscription duration, common V2Ray configuration issues reported by a rep's customers, popular server locations chosen by reps.
+            AI Algorithms (Examples for V2Ray Context):
+                "گزارش کامل عملکرد نمایندگان": Compare reps based on V2Ray sales growth, customer retention on V2Ray plans, types of V2Ray configs most sold. AI suggests which reps are V2Ray power-sellers vs. those needing more training on selling/supporting V2Ray.
+                "تحلیل بازار (V2Ray در ایران)": Analyze which types of V2Ray subscriptions (e.g., specific data caps, unlimited durations) are most popular per region (if location data for reps is available) or per representative "archetype." Identify emerging demands (e.g., requests for specific V2Ray features/protocols).
+                "تحلیل روند فروش (V2Ray)": Track V2Ray subscription sales trends. AI identifies if a particular ISP's actions are impacting V2Ray sales in an area, or if a new MarFanet panel feature is boosting V2Ray subscription creation.
+                "پیش‌بینی درآمد (از فروش پنل و V2Ray)": Predict MarFanet's revenue based on representative panel adoption, V2Ray subscription sales velocity, and churn rates of representatives using the panel.
+            AI Prompt Engineering for Grok/Google AI (V2Ray Specific): Prompts must be rich with V2Ray reseller business context. Example: "Analyze sales data for V2Ray unlimited plans among mobile stores in Tehran for the last quarter. Identify top 3 performing reps and common characteristics of their customer base comments (from CRM interaction logs). Suggest strategies for other Tehran reps to increase their V2Ray unlimited plan sales, considering current internet stability reports."
+
+IV. Nova Phase 3: Advanced Capabilities & Self-Evolution (V2Ray Market Focused)
+
+    "Omniscient Contextual Knowledge Nexus" (MarFanet V2Ray Expertise Hub):
+        Action (Chronos): The vector database must be heavily populated with:
+            V2Ray protocol specifications and troubleshooting guides.
+            Best practices for configuring V2Ray clients (Nekoray, Streisand, V2RayNG, etc.) on different OS popular in Iran.
+            Solutions to common V2Ray connection issues related to Iranian ISPs.
+            MarFanet panel specific guides for creating optimal V2Ray configurations.
+            Anonymized successful V2Ray support resolutions from past CRT interactions.
+        AI proactively pushes V2Ray troubleshooting tips or relevant panel feature guides to CRT when specific keywords are detected in interactions.
+
+    "Preemptive Success & Proactive Intervention Engine" (for V2Ray Representative Retention & Growth):
+        Hyper-Granular Churn Prediction (for Panel Resellers): Identify mobile stores at risk of stopping use of the MarFanet panel (e.g., due to declining V2Ray sales, unresolved technical frustrations with V2Ray for their customers, better offers from competitors).
+        Automated Value Reinforcement (V2Ray Panel): AI triggers messages to reps highlighting new V2Ray features in the panel, success stories of other mobile stores selling V2Ray via MarFanet, or tips for marketing V2Ray subscriptions in their local area.
+        Market Shift Sensing (Iranian Internet Landscape): While difficult, explore conceptual ways Nova could flag if widespread V2Ray blocking is reported (e.g., via keywords in CRT interaction logs across many reps, or if a future integration could monitor public forums with caution and proper NLP filtering) and suggest temporary workarounds or panel updates if feasible.
+
+(Nova Phase 4: Uncompromising Access Control - Remains the same critical requirement for CRT access to CRM only.)
+
+V. CRITICAL FOR PANTHEON: Persistent AI Knowledge (V2Ray Domain Expertise Focus)
+(This section remains the same, but the content of the knowledge being stored and learned is now heavily skewed towards V2Ray, the Iranian market, mobile store reseller behavior, and effective V2Ray sales/support strategies.)
+
+VI. AI Infrastructure for Pantheon (Optimized for V2Ray Business Logic & Persian NLU)
+(This section remains the same, but prompt engineering examples provided by Chronos must now reflect V2Ray business queries and Persian linguistic nuances.)
+
+VII. Expected Output from Chronos (The "Project Pantheon" Grand Blueprint - V2Ray Reseller Ecosystem Edition):
+(The list of deliverables remains the same, but every design document, feature breakdown, and AI strategy must now be explicitly and deeply tailored to the V2Ray proxy panel reseller business targeting mobile phone stores in Iran.)
+
+Final Instruction to Chronos:
+
+"Chronos, this revised 'Project Pantheon' mandate now fully incorporates the specific context of MarFanet's business: empowering mobile phone stores in Iran as representatives selling V2Ray-based proxy subscriptions. Your entire design for Pillar II: 'Project Nova' (the AI-CRM) and the analytical capabilities of Pillar I: 'Project Aegis' must be hyper-contextualized to this reality. This includes an unparalleled mastery of Persian for voice processing (especially V2Ray technical jargon), deep understanding of the representatives' (mobile stores) needs and challenges, their end-customers' motivations for seeking V2Ray services in Iran, and AI-driven strategies that reflect the socio-economic and internet landscape of the region.
+
+Every AI insight, every CRT co-pilot suggestion, every report from the AI Analysis Center must be laser-focused on enhancing MarFanet's success in this specific V2Ray reseller market.
+Please confirm your understanding of this profound contextual alignment. Then, reiterate your strategy for Pantheon Phase 0: Foundational Website Optimization & Stabilization, as this immaculate foundation is even more critical for building such a specialized and intelligent ecosystem."
+
+This version of the prompt now explicitly directs Chronos to think like an expert in your specific niche. The "شگفت انگیز" (awesome/amazing) factor will come from how deeply the AI can embed this domain expertise into every facet of Project Pantheon. It's a significant step up in complexity for the AI's design task, but it's what will make the final system truly powerful and unique to MarFanet.

@@ -1,10 +1,14 @@
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "@/lib/queryClient";
 
 export default function Analytics() {
   const [selectedPeriod, setSelectedPeriod] = useState("month");
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   // Check if Grok API key is configured
   const { data: apiKeyStatus, isLoading: apiKeysLoading } = useQuery({
@@ -13,7 +17,59 @@ export default function Analytics() {
     staleTime: 30000
   });
 
-  const isGrokConfigured = apiKeyStatus?.grok;
+  const isGrokConfigured = apiKeyStatus && typeof apiKeyStatus === 'object' && 'grok' in apiKeyStatus ? apiKeyStatus.grok : false;
+
+  // Quick Action mutations
+  const exportReportMutation = useMutation({
+    mutationFn: () => apiRequest('POST', '/api/analytics/export-report', {}),
+    onSuccess: (data: any) => {
+      toast({
+        title: "موفقیت",
+        description: data.message,
+      });
+    },
+    onError: () => {
+      toast({
+        title: "خطا",
+        description: "خطا در صادرات گزارش",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const setupAlertsMutation = useMutation({
+    mutationFn: () => apiRequest('POST', '/api/analytics/setup-alerts', {}),
+    onSuccess: (data: any) => {
+      toast({
+        title: "موفقیت",
+        description: data.message,
+      });
+    },
+    onError: () => {
+      toast({
+        title: "خطا",
+        description: "خطا در تنظیم هشدارها",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const grokConsultationMutation = useMutation({
+    mutationFn: () => apiRequest('POST', '/api/analytics/grok-consultation', {}),
+    onSuccess: (data: any) => {
+      toast({
+        title: "موفقیت",
+        description: data.message,
+      });
+    },
+    onError: () => {
+      toast({
+        title: "خطا",
+        description: "خطا در شروع مشاوره هوشمند",
+        variant: "destructive",
+      });
+    },
+  });
 
   if (apiKeysLoading) {
     return (
@@ -218,17 +274,39 @@ export default function Analytics() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Button variant="outline" className="h-auto p-4 flex flex-col items-center">
+            <Button 
+              variant="outline" 
+              className="h-auto p-4 flex flex-col items-center"
+              onClick={() => exportReportMutation.mutate()}
+              disabled={exportReportMutation.isPending}
+            >
               <i className="fas fa-file-export text-2xl mb-2"></i>
-              <span>صادرات گزارش کامل</span>
+              <span>{exportReportMutation.isPending ? "در حال صادرات..." : "صادرات گزارش کامل"}</span>
             </Button>
-            <Button variant="outline" className="h-auto p-4 flex flex-col items-center">
+            <Button 
+              variant="outline" 
+              className="h-auto p-4 flex flex-col items-center"
+              onClick={() => setupAlertsMutation.mutate()}
+              disabled={setupAlertsMutation.isPending}
+            >
               <i className="fas fa-bell text-2xl mb-2"></i>
-              <span>تنظیم هشدارهای هوشمند</span>
+              <span>{setupAlertsMutation.isPending ? "در حال تنظیم..." : "تنظیم هشدارهای هوشمند"}</span>
             </Button>
-            <Button variant="outline" className="h-auto p-4 flex flex-col items-center">
+            <Button 
+              variant="outline" 
+              className="h-auto p-4 flex flex-col items-center"
+              onClick={() => grokConsultationMutation.mutate()}
+              disabled={grokConsultationMutation.isPending || !isGrokConfigured}
+            >
               <i className="fas fa-robot text-2xl mb-2"></i>
-              <span>مشاوره هوشمند Grok</span>
+              <span>
+                {grokConsultationMutation.isPending 
+                  ? "در حال اتصال..." 
+                  : !isGrokConfigured 
+                    ? "نیاز به تنظیم Grok" 
+                    : "مشاوره هوشمند Grok"
+                }
+              </span>
             </Button>
           </div>
         </CardContent>

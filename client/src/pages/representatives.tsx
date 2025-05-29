@@ -180,75 +180,62 @@ export default function Representatives() {
               ))}
             </div>
           ) : (
-            <div className="overflow-x-auto shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-              <table className="w-full divide-y divide-gray-300">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      نام / نام کاربری
-                    </th>
-                    <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
-                      تلفن
-                    </th>
-                    <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell">
-                      فروشگاه
-                    </th>
-                    <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      وضعیت
-                    </th>
-                    <th className="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      عملیات
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredRepresentatives?.map((rep) => (
-                    <tr key={rep.id} className="table-row-hover">
-                      <td className="px-3 py-4">
-                        <div className="text-sm font-medium text-gray-900">{rep.fullName}</div>
-                        <div className="text-xs text-gray-500">@{rep.adminUsername}</div>
-                        <div className="text-xs text-gray-400 md:hidden">{rep.phoneNumber || '-'}</div>
-                      </td>
-                      <td className="px-3 py-4 text-sm text-gray-500 persian-nums hidden md:table-cell">
-                        {rep.phoneNumber || "-"}
-                      </td>
-                      <td className="px-3 py-4 text-sm text-gray-500 hidden lg:table-cell">
-                        {rep.storeName || "-"}
-                      </td>
-                      <td className="px-3 py-4">
+            <div className="space-y-3">
+              {filteredRepresentatives?.map((rep) => (
+                <div key={rep.id} className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <div className="text-sm font-medium text-gray-900 mb-1">
+                        {rep.fullName || rep.adminUsername}
+                      </div>
+                      <div className="text-xs text-gray-500 mb-2">
+                        نام کاربری: {rep.adminUsername}
+                      </div>
+                      <div className="flex flex-wrap gap-4 text-xs text-gray-600">
+                        {rep.phoneNumber && (
+                          <span className="persian-nums">📞 {rep.phoneNumber}</span>
+                        )}
+                        {rep.storeName && (
+                          <span>🏪 {rep.storeName}</span>
+                        )}
+                        {rep.telegramId && (
+                          <span>📱 {rep.telegramId}</span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="text-center">
                         {getStatusBadge(rep.status)}
-                      </td>
-                      <td className="px-3 py-4">
-                        <div className="flex space-x-1 space-x-reverse">
-                          <Button
-                            variant="ghost" 
-                            size="sm"
-                            onClick={() => handleEdit(rep)}
-                            className="text-xs px-2 py-1"
-                          >
-                            ویرایش
-                          </Button>
-                          <Button
-                            variant="ghost" 
-                            size="sm"
-                            className="text-blue-600 hover:text-blue-900 text-xs px-2 py-1"
-                          >
-                            فاکتور
-                          </Button>
-                          <Button
-                            variant="ghost" 
-                            size="sm"
-                            className="text-red-600 hover:text-red-900 text-xs px-2 py-1"
-                            onClick={() => handleDelete(rep.id)}
-                          >
-                            حذف
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <Button
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => handleEdit(rep)}
+                          className="text-xs px-3 py-1 h-7"
+                        >
+                          ویرایش
+                        </Button>
+                        <Button
+                          variant="outline" 
+                          size="sm"
+                          className="text-blue-600 hover:text-blue-900 text-xs px-3 py-1 h-7"
+                        >
+                          فاکتور
+                        </Button>
+                        <Button
+                          variant="outline" 
+                          size="sm"
+                          className="text-red-600 hover:text-red-900 text-xs px-3 py-1 h-7"
+                          onClick={() => handleDelete(rep.id)}
+                        >
+                          حذف
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </CardContent>

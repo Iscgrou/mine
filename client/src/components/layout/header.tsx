@@ -2,21 +2,46 @@ import { useMemo } from "react";
 import { useLocation } from "wouter";
 
 const pageNames: Record<string, string> = {
-  "/": "داشبورد",
-  "/dashboard": "داشبورد", 
-  "/representatives": "مدیریت نمایندگان",
-  "/invoices": "صورتحساب‌ها",
-  "/analytics": "مرکز تحلیل و گزارش",
-  "/import": "آپلود فایل ODS",
-  "/payments": "پیگیری پرداخت‌ها",
-  "/backup": "پشتیبان‌گیری",
-  "/settings": "تنظیمات",
+  "dashboard": "داشبورد",
+  "representatives": "مدیریت نمایندگان",
+  "invoices": "صورتحساب‌ها",
+  "analytics": "مرکز تحلیل و گزارش",
+  "import": "آپلود فایل ODS",
+  "payments": "پیگیری پرداخت‌ها",
+  "backup": "پشتیبان‌گیری",
+  "settings": "تنظیمات",
+  // CRM specific pages
+  "customers": "مدیریت مشتریان",
+  "tickets": "مدیریت تیکت‌ها",
+  "followups": "پیگیری‌ها",
+  "reports": "گزارشات CRM",
 };
+
+// Helper function to extract page name from path
+function getPageFromPath(path: string): string {
+  // Remove secret path prefixes
+  let cleanPath = path
+    .replace(/^\/ciwomplefoadm867945/, '') // Admin secret path
+    .replace(/^\/csdfjkjfoascivomrm867945/, ''); // CRM secret path
+  
+  // Remove leading slash
+  cleanPath = cleanPath.replace(/^\//, '');
+  
+  // If empty or root, it's dashboard
+  if (!cleanPath || cleanPath === '/') {
+    return 'dashboard';
+  }
+  
+  return cleanPath;
+}
 
 export default function Header() {
   const [location] = useLocation();
   
-  const currentPageTitle = pageNames[location] || "صفحه ناشناخته";
+  const currentPageTitle = useMemo(() => {
+    const pageName = getPageFromPath(location);
+    return pageNames[pageName] || "صفحه ناشناخته";
+  }, [location]);
   
   const currentDate = useMemo(() => {
     const now = new Date();

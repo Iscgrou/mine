@@ -187,8 +187,8 @@ export default function CrmCustomers() {
         </Card>
       </div>
 
-      {/* Customers Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Customers Grid - Responsive Layout */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
         {filteredCustomers.map((customer) => (
           <Card key={customer.id} className="hover:shadow-md transition-shadow">
             <CardHeader className="pb-3">

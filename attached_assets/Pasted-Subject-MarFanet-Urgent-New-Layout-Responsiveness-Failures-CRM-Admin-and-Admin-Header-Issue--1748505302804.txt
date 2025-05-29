@@ -1,0 +1,47 @@
+Subject: MarFanet - Urgent: New Layout/Responsiveness Failures (CRM & Admin) and Admin Header Issue
+
+Chronos, we have some new pressing issues that need your immediate attention, similar in nature to our previous responsiveness challenges, plus a critical problem with the admin website's header display.
+
+I. CRM Section - Layout and Responsiveness Issues:
+
+    Problem: CRM Page Layout and Composition is Disordered ("صفحه بندی و ترکیب صفحه نمایش crm بهم ریخته است")
+        Description: The overall layout and arrangement of elements within the CRM section (if a preliminary version has been implemented based on our CRM plan) is disorganized and not user-friendly.
+        Your Task (Chronos):
+            If you have code for a preliminary CRM layout, review it.
+            Based on the "AI-Powered CRM Module Development Plan" we discussed (specifically the UI/UX aspects for representative profiles, interaction logs, task management, AI insights display, and the dashboard), identify discrepancies between the plan and the current (presumably disordered) state.
+            Propose a clean, organized, and user-friendly layout for the CRM section, providing HTML structure and CSS. Ensure it aligns with the MarFanet dark theme aesthetic discussed previously.
+
+    Problem: CRM Tables Not Responding to Layout Adjustments ("برخی جدول ها نسبت به تغییر تنظیمات پاسخگو نیستند")
+        Description: Similar to the previous general website responsiveness problem (where the sidebar was static), specific tables within the CRM section are not adapting correctly when the page layout should change (e.g., on window resize, or if other elements reflow). They might be overflowing, causing horizontal scrollbars, or not resizing their columns appropriately.
+        Your Task (Chronos):
+            Analyze the HTML structure and CSS for any tables within the CRM section.
+            Identify why these tables are not responsive (e.g., fixed column widths, table-layout: fixed without proper handling, lack of overflow-x: auto on parent containers for tables that must be wide).
+            Provide specific CSS (and HTML modifications if necessary) to make these CRM tables responsive. They should adapt gracefully to available width, perhaps by allowing horizontal scrolling within the table itself on smaller viewports if content cannot be wrapped effectively.
+
+II. Main Admin Website - Header Display Failure:
+
+    Problem: Headers Not Displaying in Top Bar; Unknown Page Shown Instead ("در تاپ بار وبسایت هدرها نمایش داده نمیشود و به جای آن صفحه ناشناخته نمایش داده میشود!")
+        Description: When navigating the main admin website, the expected headers/titles for the current page or section are NOT appearing in the top bar/header area. Instead, an "unknown page" indicator or incorrect/blank content is displayed there.
+        Criticality: This severely impacts navigation and user orientation.
+        Your Task (Chronos):
+            Deep Dive Diagnosis: This could be caused by various issues:
+                Routing Problem: The routing logic might not be correctly passing page titles/context to the header component.
+                State Management Issue: The application's state (which should hold the current page title) might not be updating correctly or being read correctly by the header.
+                Header Component Logic Error: The header component itself might have a bug preventing it from rendering the correct title.
+                JavaScript Error: A JS error elsewhere on the page could be breaking the script that updates the header.
+            Code Review: Review the code for:
+                The main application router.
+                The top bar/header component.
+                Any state management solution in use (e.g., Vuex, Redux, Context API, or simple props drilling).
+                The parts of each page/view component responsible for setting or emitting the page title.
+            Propose a Robust Solution:
+                Clearly explain the root cause of the header display failure.
+                Provide the specific code modifications (JavaScript, HTML, backend if relevant) to ensure the correct page/section headers are consistently and accurately displayed in the top bar across the entire admin website.
+
+General Instructions for Chronos:
+
+    Prioritize: The admin header display failure (Part II) is likely the most critical as it affects core usability. Please indicate if you recommend tackling that first.
+    Context: I will provide specific code snippets for the problematic CRM layout/tables and the admin header component/routing logic if you require them to make an accurate diagnosis. Please let me know what you need.
+    Solutions: As always, aim for robust, maintainable solutions with clear explanations.
+
+Please acknowledge these new issues and outline your approach for investigating and resolving them, starting with your recommended priority.

@@ -3,8 +3,8 @@ export const AUTH_CONFIG = {
   // Admin access secret path - change this to your desired secret
   ADMIN_SECRET_PATH: process.env.ADMIN_SECRET_PATH || 'ciwomplefoadm867945',
   
-  // CRM access secret path - for future Phase 4 implementation  
-  CRM_SECRET_PATH: process.env.CRM_SECRET_PATH || 'crmsecretpathXYZ789',
+  // CRM access secret path - for CRM team access
+  CRM_SECRET_PATH: process.env.CRM_SECRET_PATH || 'csdfjkjfoascivomrm867945',
   
   // Base URL rejection message
   ACCESS_DENIED_MESSAGE: 'دسترسی غیرمجاز - Access Denied',

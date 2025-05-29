@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Sidebar from "@/components/layout/sidebar";
+import CrmSidebar from "@/components/layout/crm-sidebar";
 import Header from "@/components/layout/header";
 import Dashboard from "@/pages/dashboard";
 import Representatives from "@/pages/representatives";
@@ -13,6 +14,9 @@ import ImportOds from "@/pages/import-ods";
 import Payments from "@/pages/payments";
 import Backup from "@/pages/backup";
 import Settings from "@/pages/settings";
+import CrmDashboard from "@/pages/crm-dashboard";
+import CrmCustomers from "@/pages/crm-customers";
+import CrmTickets from "@/pages/crm-tickets";
 import NotFound from "@/pages/not-found";
 
 function Router() {

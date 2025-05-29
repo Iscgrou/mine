@@ -5,21 +5,21 @@
 @tailwind utilities;
 
 :root {
-  /* MarFanet Professional Deep Blue Theme - Matching marfanet.com */
-  --background: 219 100% 6%; /* #0A0F1E - Deep professional blue */
-  --foreground: 0 0% 100%; /* #FFFFFF - Pure white text */
-  --muted: 218 39% 11%; /* #10182D - Secondary dark blue */
-  --muted-foreground: 210 17% 82%; /* #D1D5DB - Light gray text */
-  --popover: 218 39% 11%; /* #10182D - Dark popover */
-  --popover-foreground: 0 0% 100%; /* #FFFFFF - White popover text */
-  --card: 218 39% 11%; /* #10182D - Professional card background */
-  --card-foreground: 0 0% 100%; /* #FFFFFF - Pure white card text */
-  --border: 218 39% 20%; /* #242B3D - Subtle borders */
-  --input: 218 39% 13%; /* #151B29 - Input background */
+  /* MarFanet Clean White Theme - High Contrast */
+  --background: 0 0% 100%; /* #FFFFFF - Pure white background */
+  --foreground: 0 0% 0%; /* #000000 - Pure black text */
+  --muted: 0 0% 96%; /* #F5F5F5 - Light gray background */
+  --muted-foreground: 0 0% 25%; /* #404040 - Dark gray text */
+  --popover: 0 0% 100%; /* #FFFFFF - White popover */
+  --popover-foreground: 0 0% 0%; /* #000000 - Black popover text */
+  --card: 0 0% 100%; /* #FFFFFF - White card background */
+  --card-foreground: 0 0% 0%; /* #000000 - Black card text */
+  --border: 0 0% 90%; /* #E5E5E5 - Light gray borders */
+  --input: 0 0% 98%; /* #FAFAFA - Very light input background */
   --primary: 211 100% 50%; /* #007BFF - Electric blue accent */
   --primary-foreground: 0 0% 100%; /* #FFFFFF - White text on primary */
-  --secondary: 218 39% 15%; /* #1A2332 - Slightly lighter secondary */
-  --secondary-foreground: 0 0% 100%; /* #FFFFFF - White secondary text */
+  --secondary: 0 0% 96%; /* #F5F5F5 - Light gray secondary */
+  --secondary-foreground: 0 0% 0%; /* #000000 - Black secondary text */
   --accent: 134 61% 41%; /* #28A745 - Status green */
   --accent-foreground: 0 0% 100%; /* #FFFFFF - White text on accent */
   --destructive: 0 84% 60%; /* #EF4444 - Error red */
@@ -28,32 +28,32 @@
   --radius: 0.5rem; /* Subtle rounded corners */
   --success: 134 61% 41%; /* #28A745 - Status green */
   --warning: 38 92% 50%; /* #FD7E14 - Orange warning */
-  --sidebar-background: 219 100% 6%; /* #0A0F1E - Dark sidebar */
-  --sidebar-foreground: 0 0% 100%; /* #FFFFFF - White sidebar text */
+  --sidebar-background: 0 0% 100%; /* #FFFFFF - White sidebar */
+  --sidebar-foreground: 0 0% 0%; /* #000000 - Black sidebar text */
   --sidebar-primary: 211 100% 50%; /* #007BFF - Blue primary */
   --sidebar-primary-foreground: 0 0% 100%; /* #FFFFFF - White text on primary */
-  --sidebar-accent: 218 39% 13%; /* #151B29 - Sidebar accent */
-  --sidebar-accent-foreground: 0 0% 100%; /* #FFFFFF - White accent text */
-  --sidebar-border: 218 39% 20%; /* #242B3D - Sidebar borders */
+  --sidebar-accent: 0 0% 96%; /* #F5F5F5 - Light gray sidebar accent */
+  --sidebar-accent-foreground: 0 0% 0%; /* #000000 - Black accent text */
+  --sidebar-border: 0 0% 90%; /* #E5E5E5 - Light gray borders */
   --sidebar-ring: 211 100% 50%; /* #007BFF - Sidebar focus ring */
 }
 
 .dark {
-  /* Inherit MarFanet professional theme for dark mode consistency */
-  --background: 219 100% 6%; /* #0A0F1E - Deep professional blue */
-  --foreground: 0 0% 100%; /* #FFFFFF - Pure white text */
-  --muted: 218 39% 11%; /* #10182D - Secondary dark blue */
-  --muted-foreground: 210 17% 82%; /* #D1D5DB - Light gray text */
-  --popover: 218 39% 11%; /* #10182D - Dark popover */
-  --popover-foreground: 0 0% 100%; /* #FFFFFF - White popover text */
-  --card: 218 39% 11%; /* #10182D - Professional card background */
-  --card-foreground: 0 0% 100%; /* #FFFFFF - Pure white card text */
-  --border: 218 39% 20%; /* #242B3D - Subtle borders */
-  --input: 218 39% 13%; /* #151B29 - Input background */
+  /* MarFanet Clean White Theme - Same as light mode for consistency */
+  --background: 0 0% 100%; /* #FFFFFF - Pure white background */
+  --foreground: 0 0% 0%; /* #000000 - Pure black text */
+  --muted: 0 0% 96%; /* #F5F5F5 - Light gray background */
+  --muted-foreground: 0 0% 25%; /* #404040 - Dark gray text */
+  --popover: 0 0% 100%; /* #FFFFFF - White popover */
+  --popover-foreground: 0 0% 0%; /* #000000 - Black popover text */
+  --card: 0 0% 100%; /* #FFFFFF - White card background */
+  --card-foreground: 0 0% 0%; /* #000000 - Black card text */
+  --border: 0 0% 90%; /* #E5E5E5 - Light gray borders */
+  --input: 0 0% 98%; /* #FAFAFA - Very light input background */
   --primary: 211 100% 50%; /* #007BFF - Electric blue accent */
   --primary-foreground: 0 0% 100%; /* #FFFFFF - White text on primary */
-  --secondary: 218 39% 15%; /* #1A2332 - Slightly lighter secondary */
-  --secondary-foreground: 0 0% 100%; /* #FFFFFF - White secondary text */
+  --secondary: 0 0% 96%; /* #F5F5F5 - Light gray secondary */
+  --secondary-foreground: 0 0% 0%; /* #000000 - Black secondary text */
   --accent: 134 61% 41%; /* #28A745 - Status green */
   --accent-foreground: 0 0% 100%; /* #FFFFFF - White text on accent */
   --destructive: 0 84% 60%; /* #EF4444 - Error red */
@@ -61,13 +61,13 @@
   --ring: 211 100% 50%; /* #007BFF - Focus ring blue */
   --success: 134 61% 41%; /* #28A745 - Status green */
   --warning: 38 92% 50%; /* #FD7E14 - Orange warning */
-  --sidebar-background: 219 100% 6%; /* #0A0F1E - Dark sidebar */
-  --sidebar-foreground: 0 0% 100%; /* #FFFFFF - White sidebar text */
+  --sidebar-background: 0 0% 100%; /* #FFFFFF - White sidebar */
+  --sidebar-foreground: 0 0% 0%; /* #000000 - Black sidebar text */
   --sidebar-primary: 211 100% 50%; /* #007BFF - Blue primary */
   --sidebar-primary-foreground: 0 0% 100%; /* #FFFFFF - White text on primary */
-  --sidebar-accent: 218 39% 13%; /* #151B29 - Sidebar accent */
-  --sidebar-accent-foreground: 0 0% 100%; /* #FFFFFF - White accent text */
-  --sidebar-border: 218 39% 20%; /* #242B3D - Sidebar borders */
+  --sidebar-accent: 0 0% 96%; /* #F5F5F5 - Light gray sidebar accent */
+  --sidebar-accent-foreground: 0 0% 0%; /* #000000 - Black accent text */
+  --sidebar-border: 0 0% 90%; /* #E5E5E5 - Light gray borders */
   --sidebar-ring: 211 100% 50%; /* #007BFF - Sidebar focus ring */
 }
 
@@ -83,11 +83,8 @@
     font-size: 0.875rem; /* Slightly smaller base font for better fit */
     line-height: 1.5;
     min-height: 100vh;
-    background: hsl(var(--background));
-    /* Add subtle texture and depth */
-    background-image: 
-      radial-gradient(circle at 25% 25%, hsl(218 39% 13%) 0%, transparent 50%),
-      radial-gradient(circle at 75% 75%, hsl(218 39% 8%) 0%, transparent 50%);
+    background: #FFFFFF; /* Pure white background */
+    color: #000000; /* Pure black text */
   }
 
   /* Persian number styles - Fixed text reversal */

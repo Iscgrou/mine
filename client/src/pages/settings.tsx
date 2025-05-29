@@ -27,6 +27,7 @@ export default function Settings() {
   const [includeNotes, setIncludeNotes] = useState(false);
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [outputFormat, setOutputFormat] = useState("pdf");
+  const [showPreview, setShowPreview] = useState(false);
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -305,14 +306,129 @@ export default function Settings() {
                 {/* Preview Area */}
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-2">پیش‌نمایش قالب</label>
-                  <div className="border border-gray-200 rounded-lg p-6 bg-gray-50 text-center">
-                    <i className="fas fa-eye text-2xl text-gray-400 mb-2"></i>
-                    <p className="text-sm text-gray-600 mb-3">پیش‌نمایش فاکتور با تنظیمات انتخاب شده</p>
-                    <Button variant="outline" className="text-sm">
-                      <i className="fas fa-search ml-2"></i>
-                      مشاهده پیش‌نمایش
-                    </Button>
-                  </div>
+                  {!showPreview ? (
+                    <div className="border border-gray-200 rounded-lg p-6 bg-gray-50 text-center">
+                      <i className="fas fa-eye text-2xl text-gray-400 mb-2"></i>
+                      <p className="text-sm text-gray-600 mb-3">پیش‌نمایش فاکتور با تنظیمات انتخاب شده</p>
+                      <Button 
+                        variant="outline" 
+                        className="text-sm"
+                        onClick={() => setShowPreview(true)}
+                      >
+                        <i className="fas fa-search ml-2"></i>
+                        مشاهده پیش‌نمایش
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="border border-gray-200 rounded-lg p-4 bg-white">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="font-medium text-gray-800">پیش‌نمایش فاکتور - قالب {templateStyle === 'modern' ? 'مدرن' : templateStyle === 'classic' ? 'کلاسیک' : 'فارسی'}</h3>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => setShowPreview(false)}
+                        >
+                          <i className="fas fa-times ml-1"></i>
+                          بستن
+                        </Button>
+                      </div>
+                      
+                      {/* Sample Invoice Preview */}
+                      <div className={`invoice-preview ${templateStyle} bg-white border p-6 rounded text-right`} dir="rtl">
+                        {/* Header */}
+                        <div className="flex justify-between items-start mb-6">
+                          <div>
+                            <div className="flex items-center gap-3 mb-2">
+                              <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                                <i className="fas fa-chart-line text-white"></i>
+                              </div>
+                              <h1 className="text-2xl font-bold text-gray-800">{companyName}</h1>
+                            </div>
+                            <p className="text-gray-600">تهران، خیابان ولیعصر، پلاک ۱۲۳</p>
+                            <p className="text-gray-600">تلفن: ۰۲۱-۱۲۳۴۵۶۷۸</p>
+                          </div>
+                          <div className="text-left">
+                            <h2 className="text-xl font-bold text-primary mb-2">فاکتور</h2>
+                            <p className="text-gray-600">شماره: {invoicePrefix}-۲۰۲۵-۰۰۱۲۳</p>
+                            <p className="text-gray-600">تاریخ: ۱۴۰۳/۱۰/۰۹</p>
+                          </div>
+                        </div>
+
+                        {/* Representative Info */}
+                        <div className="bg-gray-50 p-4 rounded-lg mb-6">
+                          <h3 className="font-semibold text-gray-800 mb-3">اطلاعات نماینده</h3>
+                          <div className="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                              <span className="text-gray-600">نام کامل:</span>
+                              <span className="font-medium mr-2">احمد محمدی</span>
+                            </div>
+                            <div>
+                              <span className="text-gray-600">نام کاربری ادمین:</span>
+                              <span className="font-medium mr-2">ahmad_admin</span>
+                            </div>
+                            {includeStoreName && (
+                              <div>
+                                <span className="text-gray-600">نام فروشگاه:</span>
+                                <span className="font-medium mr-2">فروشگاه تکنولوژی محمدی</span>
+                              </div>
+                            )}
+                            {includeTelegramId && (
+                              <div>
+                                <span className="text-gray-600">تلگرام:</span>
+                                <span className="font-medium mr-2">@ahmad_tech</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Items Table */}
+                        <div className="mb-6">
+                          <table className="w-full border-collapse">
+                            <thead>
+                              <tr className="bg-primary text-white">
+                                <th className="border p-2 text-right">شرح خدمات</th>
+                                <th className="border p-2 text-center">تعداد</th>
+                                <th className="border p-2 text-center">قیمت واحد</th>
+                                <th className="border p-2 text-center">مبلغ کل</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td className="border p-2">اشتراک استاندارد - ماه ۱</td>
+                                <td className="border p-2 text-center">۱۰</td>
+                                <td className="border p-2 text-center">۵۰,۰۰۰ {currency}</td>
+                                <td className="border p-2 text-center">۵۰۰,۰۰۰ {currency}</td>
+                              </tr>
+                              <tr className="bg-gray-50">
+                                <td className="border p-2">اشتراک نامحدود - ماه ۱</td>
+                                <td className="border p-2 text-center">۵</td>
+                                <td className="border p-2 text-center">۱۲۰,۰۰۰ {currency}</td>
+                                <td className="border p-2 text-center">۶۰۰,۰۰۰ {currency}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+
+                        {/* Total */}
+                        <div className="flex justify-end">
+                          <div className="w-64">
+                            <div className="flex justify-between py-2 border-b">
+                              <span>جمع کل:</span>
+                              <span className="font-semibold">۱,۱۰۰,۰۰۰ {currency}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Notes */}
+                        {includeNotes && (
+                          <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded">
+                            <h4 className="font-medium text-gray-800 mb-2">یادداشت:</h4>
+                            <p className="text-sm text-gray-600">لطفاً مبلغ فاکتور را تا تاریخ سررسید پرداخت نمایید.</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Save Settings */}

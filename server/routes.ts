@@ -244,8 +244,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
               phoneNumber: row[2]?.toString() || null,
               telegramId: row[3]?.toString() || null,
               storeName: row[4]?.toString() || null,
-              pricePerGB: row[5] ? parseFloat(row[5].toString()) : null,
-              unlimitedMonthlyPrice: row[6] ? parseFloat(row[6].toString()) : null
+              limitedPrice1Month: row[5] ? row[5].toString() : null,
+              unlimitedMonthlyPrice: row[6] ? row[6].toString() : null
             });
           }
 
@@ -262,20 +262,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
           let totalAmount = 0;
           const invoiceItems = [];
 
-          // Part 1: Standard Subscriptions (Columns H-M)
-          if (hasStandardSubscriptions && representative.pricePerGB) {
+          // Part 1: Limited Subscriptions (Columns H-M) with individual pricing
+          if (hasStandardSubscriptions) {
+            const limitedPrices = [
+              representative.limitedPrice1Month,
+              representative.limitedPrice2Month, 
+              representative.limitedPrice3Month,
+              representative.limitedPrice4Month,
+              representative.limitedPrice5Month,
+              representative.limitedPrice6Month
+            ];
+            
             for (let col = 7; col < 13; col++) { // H to M
               const quantity = parseFloat(row[col]?.toString() || '0');
-              if (quantity > 0) {
-                const price = parseFloat(representative.pricePerGB) * quantity;
+              const monthIndex = col - 7;
+              const unitPrice = limitedPrices[monthIndex];
+              
+              if (quantity > 0 && unitPrice) {
+                const price = parseFloat(unitPrice) * quantity;
                 totalAmount += price;
                 invoiceItems.push({
-                  description: `اشتراک ${col - 6} ماهه محدود`,
-                  quantity: quantity,
-                  unitPrice: parseFloat(representative.pricePerGB),
-                  totalPrice: price,
-                  subscriptionType: 'standard',
-                  durationMonths: col - 6
+                  description: `اشتراک ${monthIndex + 1} ماهه حجمی`,
+                  quantity: quantity.toString(),
+                  unitPrice: unitPrice,
+                  totalPrice: price.toString(),
+                  subscriptionType: 'limited',
+                  durationMonths: monthIndex + 1
                 });
               }
             }
@@ -287,13 +299,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
               const quantity = parseFloat(row[col]?.toString() || '0');
               if (quantity > 0) {
                 const months = col - 18;
-                const price = parseFloat(representative.unlimitedMonthlyPrice) * months * quantity;
+                const unitPrice = parseFloat(representative.unlimitedMonthlyPrice) * months;
+                const price = unitPrice * quantity;
                 totalAmount += price;
                 invoiceItems.push({
                   description: `اشتراک ${months} ماهه نامحدود`,
-                  quantity: quantity,
-                  unitPrice: parseFloat(representative.unlimitedMonthlyPrice) * months,
-                  totalPrice: price,
+                  quantity: quantity.toString(),
+                  unitPrice: unitPrice.toString(),
+                  totalPrice: price.toString(),
                   subscriptionType: 'unlimited',
                   durationMonths: months
                 });

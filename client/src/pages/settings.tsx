@@ -194,12 +194,23 @@ export default function Settings() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {apiKeyStatus && (
+                {!apiKeysLoading && apiKeyStatus && (
                   <div className={`p-3 rounded-lg border ${apiKeyStatus.grok ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
                     <div className="flex items-center gap-2">
                       <i className={`fas ${apiKeyStatus.grok ? 'fa-check-circle text-green-600' : 'fa-exclamation-triangle text-red-600'}`}></i>
                       <span className={`text-sm font-medium ${apiKeyStatus.grok ? 'text-green-800' : 'text-red-800'}`}>
-                        {apiKeyStatus.grok ? 'کلید Grok تنظیم شده' : 'کلید Grok تنظیم نشده'}
+                        {apiKeyStatus.grok ? 'کلید Grok تنظیم شده و آماده استفاده' : 'کلید Grok تنظیم نشده - لطفاً کلید API را وارد کنید'}
+                      </span>
+                    </div>
+                  </div>
+                )}
+                
+                {apiKeysLoading && (
+                  <div className="p-3 rounded-lg border bg-gray-50 border-gray-200">
+                    <div className="flex items-center gap-2">
+                      <i className="fas fa-spinner fa-spin text-gray-600"></i>
+                      <span className="text-sm font-medium text-gray-800">
+                        در حال بررسی وضعیت کلیدها...
                       </span>
                     </div>
                   </div>

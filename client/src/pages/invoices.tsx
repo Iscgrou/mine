@@ -204,90 +204,69 @@ export default function Invoices() {
               ))}
             </div>
           ) : (
-            <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-              <table className="min-w-full divide-y divide-gray-300">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      شماره فاکتور
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      نماینده
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      تاریخ
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      مبلغ
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      وضعیت
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      عملیات
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredInvoices?.map((invoice) => (
-                    <tr key={invoice.id} className="table-row-hover">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 persian-nums">
-                        {invoice.invoiceNumber}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {invoice.representative?.fullName || 'نامشخص'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 persian-nums">
-                        {formatPersianDate(invoice.createdAt)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 persian-nums">
+            <div className="space-y-3">
+              {filteredInvoices?.map((invoice) => (
+                <div key={invoice.id} className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <div className="text-sm font-medium text-gray-900 mb-1">
+                        فاکتور: {invoice.invoiceNumber}
+                      </div>
+                      <div className="text-sm text-gray-600 mb-1">
+                        نماینده: {invoice.representative?.fullName || 'نامشخص'}
+                      </div>
+                      <div className="text-lg font-bold text-blue-600 persian-nums mb-2">
                         {formatPersianNumber(invoice.totalAmount)} تومان
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {getStatusBadge(invoice.status)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <div className="flex space-x-2 space-x-reverse">
+                      </div>
+                      <div className="flex flex-wrap gap-4 text-xs text-gray-600">
+                        <span className="persian-nums">📅 {formatPersianDate(invoice.createdAt)}</span>
+                        <div>{getStatusBadge(invoice.status)}</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="flex flex-col gap-1">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleViewInvoice(invoice)}
+                          className="text-xs px-2 py-1 h-7"
+                          title="مشاهده"
+                        >
+                          👁️ مشاهده
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="text-xs px-2 py-1 h-7"
+                          title="دانلود PDF"
+                        >
+                          📄 دانلود
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => generateTelegramLink(invoice)}
+                          className="text-xs px-2 py-1 h-7"
+                          title="ارسال تلگرام"
+                        >
+                          📱 تلگرام
+                        </Button>
+                        {invoice.status === 'pending' && (
                           <Button
-                            variant="ghost"
+                            variant="outline"
                             size="sm"
-                            onClick={() => handleViewInvoice(invoice)}
-                            title="مشاهده"
+                            onClick={() => handleStatusChange(invoice.id, 'paid')}
+                            className="text-green-600 hover:text-green-800 text-xs px-2 py-1 h-7"
+                            title="علامت‌گذاری به عنوان پرداخت شده"
                           >
-                            <i className="fas fa-eye text-blue-600"></i>
+                            ✅ پرداخت شد
                           </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            title="دانلود PDF"
-                          >
-                            <i className="fas fa-download text-green-600"></i>
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => generateTelegramLink(invoice)}
-                            title="ارسال تلگرام"
-                          >
-                            <i className="fab fa-telegram text-blue-500"></i>
-                          </Button>
-                          {invoice.status === 'pending' && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleStatusChange(invoice.id, 'paid')}
-                              title="علامت‌گذاری به عنوان پرداخت شده"
-                              className="text-green-600 hover:text-green-800"
-                            >
-                              <i className="fas fa-check"></i>
-                            </Button>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </CardContent>

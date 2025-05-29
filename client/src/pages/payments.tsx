@@ -386,57 +386,40 @@ export default function Payments() {
               ))}
             </div>
           ) : (
-            <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-              <table className="min-w-full divide-y divide-gray-300">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      نماینده
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      مبلغ
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      تاریخ
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      نوع
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      روش پرداخت
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      عملیات
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredPayments?.map((payment) => (
-                    <tr key={payment.id} className="table-row-hover">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+            <div className="space-y-3">
+              {filteredPayments?.map((payment) => (
+                <div key={payment.id} className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm hover:shadow-md transition-shadow">
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <div className="text-sm font-medium text-gray-900 mb-1">
                         {payment.representative?.fullName || 'نامشخص'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 persian-nums">
+                      </div>
+                      <div className="text-lg font-bold text-green-600 persian-nums mb-2">
                         {formatPersianNumber(payment.amount)} تومان
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 persian-nums">
-                        {formatPersianDate(payment.createdAt)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {payment.paymentType === 'full' ? 'پرداخت کامل' : 'پرداخت جزئی'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {payment.paymentMethod || '-'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <Button variant="ghost" size="sm">
-                          مشاهده جزئیات
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                      </div>
+                      <div className="flex flex-wrap gap-4 text-xs text-gray-600">
+                        <span className="persian-nums">📅 {formatPersianDate(payment.createdAt)}</span>
+                        <span>🔹 {payment.paymentType === 'full' ? 'پرداخت کامل' : 'پرداخت جزئی'}</span>
+                        {payment.paymentMethod && (
+                          <span>💳 {payment.paymentMethod}</span>
+                        )}
+                        {payment.invoice && (
+                          <span>📄 {payment.invoice.invoiceNumber}</span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center">
+                      <Button
+                        variant="outline" 
+                        size="sm"
+                        className="text-xs px-3 py-1 h-7"
+                      >
+                        مشاهده جزئیات
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           )}
         </CardContent>

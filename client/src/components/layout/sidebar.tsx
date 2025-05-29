@@ -2,6 +2,15 @@ import { Link, useLocation } from "wouter";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 
+// Helper to get the correct base path based on current location
+const getBasePath = () => {
+  const currentPath = window.location.pathname;
+  if (currentPath.startsWith('/ciwomplefoadm867945')) {
+    return '/ciwomplefoadm867945';
+  }
+  return ''; // fallback for development
+};
+
 const navigationItems = [
   {
     name: "داشبورد",
@@ -48,6 +57,7 @@ const navigationItems = [
 export default function Sidebar() {
   const [location] = useLocation();
   const [isOpen, setIsOpen] = useState(false);
+  const basePath = getBasePath();
 
   return (
     <>
@@ -88,10 +98,11 @@ export default function Sidebar() {
         <nav className="mt-6 px-3 pb-20">
           <div className="space-y-1">
             {navigationItems.map((item) => {
-              const isActive = location === item.href || (item.href === "/dashboard" && location === "/");
+              const fullHref = basePath + item.href;
+              const isActive = location === fullHref || (item.href === "/dashboard" && (location === basePath || location === basePath + "/"));
               
               return (
-                <Link key={item.href} href={item.href}>
+                <Link key={item.href} href={fullHref}>
                   <span
                     className={cn(
                       "group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200",

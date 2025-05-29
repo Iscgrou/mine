@@ -1,0 +1,107 @@
+Subject: MarFanet - Comprehensive Feature Enhancement, Bug Fix, and Strategic Realignment
+
+AI Persona & Mandate: Chronos, as the Master Architect and Lead Developer for MarFanet, we have a new set of critical requirements spanning security, UI/UX fixes, new module development (CRM), and strategic changes to core accounting logic. Your task is to analyze each point meticulously and propose/implement robust solutions.
+
+Phase 1: Security & Access Control Realignment
+
+Request 1: Path-Based Secret Access (Replacing Traditional Login)
+*   Current Problem: The idea of implementing a traditional login page with username/password has potential implementation error risks.
+*   Proposed Solution (User Idea):
+    *   The base website URL (e.g., www.marfanet.com or marfanet.com) should reject all direct access attempts (e.g., return a 403 Forbidden or a generic "Access Denied" page, not a login form).
+    *   Access to the Admin Panel should be granted ONLY if a specific, unique, and secret suffix/path is appended to the base URL.
+        *   Example: www.marfanet.com/ciwomplefoadm867945 or marfanet.com/ciwomplefoadm867945 would grant full admin access.
+    *   All other access attempts to the base URL or incorrect paths should be dropped/rejected.
+*   Your Task (Chronos):
+    1.  Analyze the feasibility and security implications of this path-based secret access model.
+    2.  If deemed viable, outline the technical implementation strategy (e.g., web server configuration (like Nginx/Apache rewrite rules or location blocks), backend routing logic changes, how the secret path is validated).
+    3.  Address potential security concerns (e.g., path enumeration, brute-forcing if paths are guessable – though the example is complex).
+    4.  Provide necessary code changes or configuration examples.
+
+Phase 2: UI/UX Bug Fixes & Enhancements in "صورت حساب ها" (Invoices/Billing Section)
+
+Request 2: Invoice Section UI Fixes
+*   Issue 2.1: The "Download All" icon (آیکون دانلود همه) is currently non-functional.
+    *   Your Task: Make this icon functional. Specify what "Download All" should entail (e.g., a ZIP file of all PDFs/images for the current view/filter? Or all invoices ever?).
+*   Issue 2.2: The "Batch Generation" icon (آیکون تولید گروهی) is non-functional or not user-friendly/practical.
+    *   Your Task: Remove this icon and its associated non-functional feature.
+
+Request 4 (Related to Invoice Section):
+*   Issue 4.1: In the "Invoices/Billing" section, the icons for "Download Image," "Download PDF," and "Send to Telegram" are currently non-functional for individual invoices.
+    *   Your Task: Ensure these icons are fully functional for each individual invoice row.
+
+Request 8 (Related to Invoice Section - New Feature):
+*   New Feature 8.1: In addition to automated Telegram invoice sending, add a "Share to Telegram" option for each individual invoice row in the "Invoices/Billing" section.
+    *   Functionality: This should allow for quick, manual sharing of either the image or a text summary of the invoice via Telegram (e.g., using a t.me/share/url?url=&text= type link or a more integrated approach if feasible with your Telegram bot).
+    *   Your Task: Design and implement this per-row "Share to Telegram" functionality.
+
+Phase 3: Data Display & Accounting Logic Enhancements
+
+Request 3: Representative Username Display Clarification
+*   Observation: Representative usernames are clear and correct in the "Representative Management" section.
+*   Issue 3.1: In the "Invoices/Billing" section, representative usernames are NOT clearly displayed or are missing for their respective invoices, making it hard to associate invoices with specific representatives.
+    *   Your Task: Ensure that the correct representative admin_username (or Full Name, if more appropriate for display here) is clearly and accurately displayed for each invoice in the "Invoices/Billing" section.
+
+Request 6: Overhaul of Weekly Invoice Storage, Display, and Accounting Logic
+*   Current Problem:
+    *   The current display of the "last invoice amount" under the user's name in the "User Management" section is not useful and its logic for future weekly invoices is unclear.
+    *   There's no clear strategy for displaying and storing historical weekly invoices for each representative.
+*   Your Task (Chronos - Design and Implement a Flawless Automation & Accounting System):
+    1.  Invoice Storage & Display Strategy: Propose a clear and efficient strategy for how weekly invoices for each representative should be stored and made accessible/viewable over time (e.g., a dedicated "Invoice History" sub-section per representative, easily filterable by week/date).
+    2.  **New Column in "Representative Management": بدهکار/ بستانکار (Debtor/Creditor Balance)**
+        Functionality:y:** This column should display the representative's current running balance.
+            *   Negative values (e.g., -۵۰۰,۰۰۰ تومان in red) indicate the representative owes money (debtor).
+            *   Positive values (e.g., +۲۰۰,۰۰۰ تومان in green or black) indicate a credit or overpayment.
+            *   Zero indicates a balanced account.
+        Interaction Logic:c:**
+            *   When a new weekly invoice is issued (e.g., 500,000 تومان), this amount is *added* to the representative's debt (balance becomes more negative or less positive). Example: If balance was 0, it becomes -500,000. If it was -300,000, it becomes -800,000.
+            *   When a payment is recorded for a representative (e.g., they pay 300,000 تومان via the "Payment Settlement" section), this amount is *subtracted* from their debt (balance becomes less negative or more positive). Example: If balance was -800,000, it becomes -500,000.
+        Your Task:k:** Implement this "Debtor/Creditor Balance" column and all associated backend logic to ensure it updates automatically and accurately upon invoice generation and payment recording. This requires tight integration between the "Invoice Generation," "Payment Settlement," and "Representative Management" moduleRequest 7: Customer List Display within Invoiceses**
+Current Problem:m:** Displaying the list of each representative's customers directly in the main "Invoices/Billing" section makes it cluttered and unreadable.
+Proposed Solution:n:**
+    *   Remove the direct display of customer names from the main invoice list view in the "Invoices/Billing" section.
+    *   Instead, within each individual generated invoice (PDF and image formats), include a dedicated section titled: مشخصات مشتری های ایجاد شده (Details of Created Customers). This section will list the customers associated with that specific invoice period for that representative.
+    Your Task:k:** Implement this change. Modify the invoice generation logic and templates (from previous templating discussions) to include this new "Customer Details" section within the final invoice outpuPhase 4: New Module Development - AI-Powered CRMRMRequest 5: AI-Powered CRM Modulele**
+Core Requirement:t:** Develop a new "CRM Section" in the MarFanet web application, specifically for the customer relations team.
+*   Key Features:
+    1.  Full AI Interaction: The CRM should be deeply integrated with an AI (e.g., Grok, or your chosen AI model) for enhanced functionalities.
+    2.  Daily Work Log/Follow-up: Must include a "کارتابل روزانه" (Daily Dashboard/To-Do) that shows previous notes, scheduled follow-ups, and tasks for the CRM team.
+    3.  AI-Powered CRM Capabilities (Deep Research Required by Chronos):
+        *   Your Task: Conduct deep research (leveraging your training data/web capabilities) to identify and then propose a set of practical, optimized, and AI-enhanced CRM features. Examples to consider:
+            *   AI-assisted note summarization from customer interactions.
+            *   Sentiment analysis of customer communications.
+            *   AI-suggested responses or solutions to common customer queries.
+            *   Automated tagging/categorization of customer issues.
+            *   Predictive insights (e.g., churn risk, upsell opportunities based on interaction history).
+            *   Smart scheduling/reminder systems for follow-ups.
+    4.  Access Control for CRM Team:
+        *   The CRM team should ONLY have access to this CRM section. They should not be able to access other parts of the MarFanet admin panel (like representative management, core settings, etc.).
+        *   The Admin will have access to ALL sections, including the CRM.
+        *   Access Method (Similar to Admin Access): Implement a separate, unique, secret suffix/path appended to the base URL specifically for CRM team access.
+            *   Example: www.marfanet.com/crmsecretpathXYZ or marfanet.com/crmsecretpathXYZ grants access *only* to the CRM section.
+            *   This effectively creates role-based access separation using distinct secret paths.
+*   Your Task (Chronos):
+    1.  Design the architecture for this CRM module.
+    2.  Propose the specific AI-enhanced CRM features based on your research.
+    3.  Outline the UI/UX for the CRM section, including the daily work log.
+    4.  Detail the implementation of the path-based access control for the CRM team, ensuring it's separate from the admin access path.
+    5.  Provide code structure and key logic.
+
+Overall Instructions for Chronos:
+
+*   Prioritize: Address these requests systematically. Indicate if there are dependencies where one fix/feature needs to be implemented before another.
+*   Robustness & Security: All solutions must be robust, secure, and well-tested (conceptually, via your code generation).
+*   Code & Explanation: Provide clear code snippets (HTML, CSS, JS, Backend) and explanations for your proposed solutions and implementations.
+*   Persian UI: Remember all user-facing elements should be in Persian.
+*   Iterative Approach: Acknowledge that we may need to discuss and refine solutions for each phase.
+
+Chronos, this is a significant update package. Please begin by confirming your understanding of these requests and outline your proposed approach or order for tackling them. Let me know if you need clarification on any point.
+---
+
+Key considerations for you when working with the AI on this:
+
+*   Break it Down: Even with a super prompt, the AI might perform better if you then focus its attention on one "Phase" or even one specific "Request" at a time during your interactive session.
+*   Provide Context: Remind it of previous decisions or code if necessary (e.g., "Remember the templating system we discussed for invoices? Request 7 needs to modify that template.").
+*   Clarify Ambiguities: The AI might ask for more details. Be prepared to elaborate.
+*   Test Incrementally: As the AI provides code or solutions, try to (conceptually or actually) test them if possible.
+
+This prompt is designed to give the AI a comprehensive and clear set of instructions to work from. Good luck!

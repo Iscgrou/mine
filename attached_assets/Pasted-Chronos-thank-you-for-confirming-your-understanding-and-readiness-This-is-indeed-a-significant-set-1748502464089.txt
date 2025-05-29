@@ -1,0 +1,28 @@
+Chronos, thank you for confirming your understanding and readiness. This is indeed a significant set of enhancements, and a phased approach will be best.
+
+Let's tackle the items in the following order of priority:
+
+1.  **Phase 1: Security & Access Control Realignment (Request 1 - Path-Based Secret Access)**
+    *   **Rationale:** This is a fundamental change to how the entire application is accessed and should be addressed first to establish the new security model before we build or modify other functionalities on top of it. Please provide your analysis of feasibility, security implications, and the technical implementation strategy for this.
+
+2.  **Phase 2: Critical UI/UX Bug Fixes in "صورت حساب ها" (Invoices/Billing Section - Requests 2, 4, and 8)**
+    *   **Rationale:** These address currently non-functional elements that directly impact user experience and core invoice operations.
+    *   Specifically, please focus on:
+        *   **Request 2.1:** Making the "Download All" icon functional.
+        *   **Request 2.2:** Removing the non-functional "Batch Generation" icon.
+        *   **Request 4.1:** Activating the individual "Download Image," "Download PDF," and "Send to Telegram" icons per invoice.
+        *   **Request 8.1 (New Feature):** Implementing the per-row "Share to Telegram" option.
+
+3.  **Phase 3: Data Display & Accounting Logic Enhancements (Requests 3, 6, and 7)**
+    *   **Rationale:** These are interconnected and involve core data presentation and the fundamental accounting logic for representatives. It makes sense to address them together after the immediate UI fixes are done.
+    *   Order within this phase:
+        *   **Request 3:** Fix representative username display in the "Invoices/Billing" section.
+        *   **Request 7:** Implement the "Details of Created Customers" section within individual invoices (and remove from main list).
+        *   **Request 6:** Overhaul weekly invoice storage, display, and implement the "Debtor/Creditor Balance" column with its full interactive logic. This is a major piece.
+
+4.  **Phase 4: New Module Development - AI-Powered CRM (Request 5)**
+    *   **Rationale:** As a significant new module, this can be developed once the core existing functionalities are stabilized, secured, and enhanced.
+
+**Let's begin with Phase 1: Request 1 - Path-Based Secret Access.**
+
+Please provide your analysis regarding the feasibility, security implications, and the proposed technical implementation strategy for replacing the traditional login with the path-based secret access model for the Admin Panel. I'm ready to discuss any questions you have on this first item.

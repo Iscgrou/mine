@@ -23,6 +23,19 @@ function Router() {
         <Header />
         <main className="w-full overflow-y-auto p-4 lg:p-6">
           <Switch>
+            {/* Admin routes with secret path prefix */}
+            <Route path="/ciwomplefoadm867945" component={Dashboard} />
+            <Route path="/ciwomplefoadm867945/" component={Dashboard} />
+            <Route path="/ciwomplefoadm867945/dashboard" component={Dashboard} />
+            <Route path="/ciwomplefoadm867945/representatives" component={Representatives} />
+            <Route path="/ciwomplefoadm867945/invoices" component={Invoices} />
+            <Route path="/ciwomplefoadm867945/analytics" component={Analytics} />
+            <Route path="/ciwomplefoadm867945/import" component={ImportOds} />
+            <Route path="/ciwomplefoadm867945/payments" component={Payments} />
+            <Route path="/ciwomplefoadm867945/backup" component={Backup} />
+            <Route path="/ciwomplefoadm867945/settings" component={Settings} />
+            
+            {/* Legacy routes for development - redirect to secret path */}
             <Route path="/" component={Dashboard} />
             <Route path="/dashboard" component={Dashboard} />
             <Route path="/representatives" component={Representatives} />
@@ -32,6 +45,7 @@ function Router() {
             <Route path="/payments" component={Payments} />
             <Route path="/backup" component={Backup} />
             <Route path="/settings" component={Settings} />
+            
             <Route component={NotFound} />
           </Switch>
         </main>

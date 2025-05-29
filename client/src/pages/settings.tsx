@@ -13,6 +13,15 @@ interface Setting {
   description?: string;
 }
 
+interface ApiKeyStatus {
+  telegram: boolean;
+  ai: boolean;
+  grok: boolean;
+  telegramSet?: boolean;
+  aiSet?: boolean;
+  grokSet?: boolean;
+}
+
 export default function Settings() {
   const [companyName, setCompanyName] = useState("شرکت مارفانت");
   const [currency, setCurrency] = useState("تومان");
@@ -33,7 +42,7 @@ export default function Settings() {
   const queryClient = useQueryClient();
 
   // Check API key status
-  const { data: apiKeyStatus, isLoading: apiKeysLoading } = useQuery({
+  const { data: apiKeyStatus, isLoading: apiKeysLoading } = useQuery<ApiKeyStatus>({
     queryKey: ['/api/api-keys/status'],
     retry: false,
     staleTime: 30000

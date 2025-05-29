@@ -30,6 +30,15 @@ interface Payment {
   } | null;
 }
 
+interface Invoice {
+  id: number;
+  representativeId: number;
+  invoiceNumber: string;
+  status: string;
+  totalAmount: string;
+  dueDate: string;
+}
+
 interface PaymentStats {
   thisMonth: string;
   pending: string;
@@ -58,11 +67,11 @@ export default function Payments() {
     queryKey: ['/api/payments'],
   });
 
-  const { data: representatives } = useQuery({
+  const { data: representatives } = useQuery<any[]>({
     queryKey: ['/api/representatives'],
   });
 
-  const { data: invoices } = useQuery({
+  const { data: invoices } = useQuery<Invoice[]>({
     queryKey: ['/api/invoices'],
   });
 

@@ -19,6 +19,8 @@ import CrmCustomers from "@/pages/crm-customers";
 import CrmTickets from "@/pages/crm-tickets";
 import CrmCallPreparation from "@/pages/crm-call-preparation";
 import CrmVoiceNotes from "@/pages/crm-voice-notes";
+import AegisDashboard from "@/pages/aegis-dashboard";
+import AegisTest from "@/pages/aegis-test";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -72,6 +74,8 @@ function Router() {
             <Route path="/ciwomplefoadm867945/payments" component={Payments} />
             <Route path="/ciwomplefoadm867945/backup" component={Backup} />
             <Route path="/ciwomplefoadm867945/settings" component={Settings} />
+            <Route path="/ciwomplefoadm867945/aegis" component={AegisDashboard} />
+            <Route path="/ciwomplefoadm867945/aegis-test" component={AegisTest} />
             
             {/* Legacy routes for development */}
             <Route path="/" component={Dashboard} />

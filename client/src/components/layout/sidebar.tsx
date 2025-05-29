@@ -52,6 +52,11 @@ const navigationItems = [
     href: "/settings",
     icon: "fas fa-cog",
   },
+  {
+    name: "پروژه ایجیس",
+    href: "/aegis",
+    icon: "fas fa-shield-alt",
+  },
 ];
 
 export default function Sidebar() {

@@ -5,6 +5,7 @@ import { aegisLogger, EventType, LogLevel } from "./aegis-logger";
 import { aegisMonitor } from "./aegis-monitor";
 import { novaAIEngine } from "./nova-ai-engine";
 import { registerTestEndpoints } from "./test-endpoints";
+import { registerVoiceWorkflowTests } from "./voice-workflow-test";
 import { 
   insertRepresentativeSchema, 
   insertInvoiceSchema, 
@@ -831,6 +832,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Register test endpoints for Aegis validation
   registerTestEndpoints(app);
+  registerVoiceWorkflowTests(app);
 
   const httpServer = createServer(app);
   return httpServer;

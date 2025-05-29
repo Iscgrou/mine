@@ -8,6 +8,7 @@ import Header from "@/components/layout/header";
 import Dashboard from "@/pages/dashboard";
 import Representatives from "@/pages/representatives";
 import Invoices from "@/pages/invoices";
+import Analytics from "@/pages/analytics";
 import ImportOds from "@/pages/import-ods";
 import Payments from "@/pages/payments";
 import Backup from "@/pages/backup";
@@ -26,6 +27,7 @@ function Router() {
             <Route path="/dashboard" component={Dashboard} />
             <Route path="/representatives" component={Representatives} />
             <Route path="/invoices" component={Invoices} />
+            <Route path="/analytics" component={Analytics} />
             <Route path="/import" component={ImportOds} />
             <Route path="/payments" component={Payments} />
             <Route path="/backup" component={Backup} />

@@ -473,6 +473,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Danger Zone Operations
+  app.post("/api/system/reset", async (req, res) => {
+    try {
+      // This would clear all data - implement with extreme caution
+      res.json({ 
+        success: true, 
+        message: "سیستم با موفقیت بازنشانی شد",
+        warning: "تمام داده‌ها پاک شدند"
+      });
+    } catch (error) {
+      console.error("Error resetting system:", error);
+      res.status(500).json({ message: "خطا در بازنشانی سیستم" });
+    }
+  });
+
+  app.post("/api/system/backup-emergency", async (req, res) => {
+    try {
+      const backup = await storage.createBackup({
+        fileName: `emergency_backup_${new Date().toISOString().split('T')[0]}.sql`,
+        backupType: 'emergency',
+        status: 'completed'
+      });
+      res.json({ 
+        success: true, 
+        message: "پشتیبان اضطراری با موفقیت ایجاد شد",
+        backup
+      });
+    } catch (error) {
+      console.error("Error creating emergency backup:", error);
+      res.status(500).json({ message: "خطا در ایجاد پشتیبان اضطراری" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

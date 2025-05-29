@@ -18,6 +18,11 @@ const navigationItems = [
     icon: "fas fa-file-invoice",
   },
   {
+    name: "مرکز تحلیل و گزارش",
+    href: "/analytics",
+    icon: "fas fa-chart-bar",
+  },
+  {
     name: "آپلود فایل ODS",
     href: "/import",
     icon: "fas fa-upload",

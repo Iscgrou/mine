@@ -18,9 +18,6 @@ export default function Settings() {
   const [currency, setCurrency] = useState("تومان");
   const [invoicePrefix, setInvoicePrefix] = useState("INV");
   const [invoiceFormat, setInvoiceFormat] = useState("PDF");
-  const [telegramToken, setTelegramToken] = useState("");
-  const [telegramChannel, setTelegramChannel] = useState("");
-  const [aiApiKey, setAiApiKey] = useState("");
   const [grokApiKey, setGrokApiKey] = useState("");
   const [selectedTab, setSelectedTab] = useState("company");
 

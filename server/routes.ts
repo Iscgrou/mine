@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { aegisLogger, EventType, LogLevel } from "./aegis-logger";
 import { aegisMonitor } from "./aegis-monitor";
 import { novaAIEngine } from "./nova-ai-engine";
+import { registerTestEndpoints } from "./test-endpoints";
 import { 
   insertRepresentativeSchema, 
   insertInvoiceSchema, 
@@ -827,6 +828,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "خطا در به‌روزرسانی پروفایل" });
     }
   });
+
+  // Register test endpoints for Aegis validation
+  registerTestEndpoints(app);
 
   const httpServer = createServer(app);
   return httpServer;

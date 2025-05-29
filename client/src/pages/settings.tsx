@@ -19,6 +19,14 @@ export default function Settings() {
   const [invoicePrefix, setInvoicePrefix] = useState("INV");
   const [grokApiKey, setGrokApiKey] = useState("");
   const [selectedTab, setSelectedTab] = useState("company");
+  
+  // Invoice template states
+  const [templateStyle, setTemplateStyle] = useState("modern");
+  const [includeStoreName, setIncludeStoreName] = useState(true);
+  const [includeTelegramId, setIncludeTelegramId] = useState(true);
+  const [includeNotes, setIncludeNotes] = useState(false);
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [outputFormat, setOutputFormat] = useState("pdf");
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -183,6 +191,142 @@ export default function Settings() {
           </Card>
         );
 
+      case "invoice":
+        return (
+          <Card className="bg-card border-border">
+            <CardHeader>
+              <CardTitle className="text-primary flex items-center gap-2">
+                <i className="fas fa-file-invoice"></i>
+                تنظیمات قالب فاکتور
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                {/* Template Style Selection */}
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-3">انتخاب قالب طراحی</label>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {[
+                      { id: 'modern', name: 'مدرن و پاک', desc: 'طراحی مینیمال با استفاده از رنگ آبی برند', icon: 'fa-laptop' },
+                      { id: 'classic', name: 'کلاسیک و رسمی', desc: 'طراحی سنتی تجاری با حاشیه و فرم منظم', icon: 'fa-building' },
+                      { id: 'persian', name: 'بهینه شده فارسی', desc: 'طراحی راست-چین با قلم و فاصله مناسب فارسی', icon: 'fa-align-right' }
+                    ].map((style) => (
+                      <div
+                        key={style.id}
+                        className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
+                          templateStyle === style.id ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-gray-300'
+                        }`}
+                        onClick={() => setTemplateStyle(style.id)}
+                      >
+                        <div className="flex items-center gap-3 mb-2">
+                          <i className={`fas ${style.icon} text-lg ${templateStyle === style.id ? 'text-primary' : 'text-gray-400'}`}></i>
+                          <h3 className={`font-medium ${templateStyle === style.id ? 'text-primary' : 'text-gray-700'}`}>{style.name}</h3>
+                        </div>
+                        <p className="text-sm text-gray-600">{style.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Optional Elements */}
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-3">عناصر اختیاری فاکتور</label>
+                  <div className="space-y-3">
+                    {[
+                      { key: 'storeName', label: 'نام فروشگاه نماینده', state: includeStoreName, setState: setIncludeStoreName },
+                      { key: 'telegramId', label: 'شناسه تلگرام نماینده', state: includeTelegramId, setState: setIncludeTelegramId },
+                      { key: 'notes', label: 'بخش یادداشت و توضیحات', state: includeNotes, setState: setIncludeNotes }
+                    ].map((item) => (
+                      <div key={item.key} className="flex items-center justify-between">
+                        <span className="text-sm text-foreground">{item.label}</span>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                          <input
+                            type="checkbox"
+                            className="sr-only peer"
+                            checked={item.state}
+                            onChange={(e) => item.setState(e.target.checked)}
+                          />
+                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Logo Upload */}
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">لوگوی شرکت</label>
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                    <i className="fas fa-cloud-upload-alt text-3xl text-gray-400 mb-2"></i>
+                    <p className="text-sm text-gray-600 mb-2">فایل لوگو را انتخاب کنید (PNG, JPG)</p>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => setLogoFile(e.target.files?.[0] || null)}
+                      className="hidden"
+                      id="logo-upload"
+                    />
+                    <label htmlFor="logo-upload" className="inline-block bg-primary text-white px-4 py-2 rounded-md cursor-pointer hover:bg-primary/90">
+                      انتخاب فایل
+                    </label>
+                    {logoFile && <p className="mt-2 text-sm text-green-600">فایل انتخاب شده: {logoFile.name}</p>}
+                  </div>
+                </div>
+
+                {/* Output Format */}
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">فرمت خروجی</label>
+                  <div className="flex gap-4">
+                    {[
+                      { id: 'pdf', label: 'PDF', icon: 'fa-file-pdf' },
+                      { id: 'image', label: 'تصویر', icon: 'fa-image' },
+                      { id: 'both', label: 'هر دو', icon: 'fa-copy' }
+                    ].map((format) => (
+                      <label key={format.id} className="flex items-center cursor-pointer">
+                        <input
+                          type="radio"
+                          name="outputFormat"
+                          value={format.id}
+                          checked={outputFormat === format.id}
+                          onChange={(e) => setOutputFormat(e.target.value)}
+                          className="sr-only"
+                        />
+                        <div className={`flex items-center gap-2 px-4 py-2 border rounded-lg transition-all ${
+                          outputFormat === format.id ? 'border-primary bg-primary/5 text-primary' : 'border-gray-300 text-gray-600'
+                        }`}>
+                          <i className={`fas ${format.icon}`}></i>
+                          <span className="text-sm font-medium">{format.label}</span>
+                        </div>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Preview Area */}
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">پیش‌نمایش قالب</label>
+                  <div className="border border-gray-200 rounded-lg p-6 bg-gray-50 text-center">
+                    <i className="fas fa-eye text-2xl text-gray-400 mb-2"></i>
+                    <p className="text-sm text-gray-600 mb-3">پیش‌نمایش فاکتور با تنظیمات انتخاب شده</p>
+                    <Button variant="outline" className="text-sm">
+                      <i className="fas fa-search ml-2"></i>
+                      مشاهده پیش‌نمایش
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Save Settings */}
+                <div className="pt-4 border-t border-gray-200">
+                  <Button className="w-full">
+                    <i className="fas fa-save ml-2"></i>
+                    ذخیره تنظیمات قالب فاکتور
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        );
+
       case "grok":
         return (
           <Card className="bg-card border-border">
@@ -327,6 +471,7 @@ export default function Settings() {
             <nav className="flex space-x-8 px-6" dir="rtl">
               {[
                 { id: 'company', label: 'شرکت', icon: 'fa-building' },
+                { id: 'invoice', label: 'قالب فاکتور', icon: 'fa-file-invoice' },
                 { id: 'grok', label: 'Grok xAI', icon: 'fa-robot' },
                 { id: 'danger', label: 'منطقه خطر', icon: 'fa-exclamation-triangle' }
               ].map((tab) => (

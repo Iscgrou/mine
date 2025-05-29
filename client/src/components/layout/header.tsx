@@ -30,14 +30,13 @@ export default function Header() {
   return (
     <header className="bg-white border-b border-gray-200 px-6 py-4">
       <div className="flex items-center justify-between">
-        <div>
+        <div className="flex items-center text-sm text-gray-500">
+          <i className="fas fa-calendar-alt ml-1.5 h-4 w-4 text-gray-400"></i>
+          <span className="persian-nums">{currentDate}</span>
+        </div>
+        
+        <div className="absolute left-1/2 transform -translate-x-1/2">
           <h2 className="text-2xl font-bold leading-7 text-gray-900">{currentPageTitle}</h2>
-          <div className="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:space-x-reverse sm:space-x-6">
-            <div className="mt-2 flex items-center text-sm text-gray-500">
-              <i className="fas fa-calendar-alt ml-1.5 h-4 w-4 text-gray-400"></i>
-              <span className="persian-nums">{currentDate}</span>
-            </div>
-          </div>
         </div>
         
         <div className="flex items-center space-x-reverse space-x-4">

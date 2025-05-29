@@ -47,35 +47,32 @@ const navigationItems = [
 
 export default function Sidebar() {
   const [location] = useLocation();
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
-      {/* Mobile Menu Button */}
+      {/* Toggle Button - Always visible */}
       <button
-        onClick={() => setIsCollapsed(!isCollapsed)}
-        className="lg:hidden fixed top-4 right-4 z-50 p-2 bg-white rounded-md shadow-lg border border-gray-200"
+        onClick={() => setIsOpen(!isOpen)}
+        className="fixed top-4 right-4 z-50 p-3 bg-primary text-white rounded-lg shadow-lg hover:bg-primary/90 transition-colors"
+        title={isOpen ? "إخفاء القائمة" : "إظهار القائمة"}
       >
-        <i className={`fas ${isCollapsed ? 'fa-bars' : 'fa-times'} text-gray-600`}></i>
+        <i className={`fas ${isOpen ? 'fa-times' : 'fa-bars'} text-lg`}></i>
       </button>
 
-      {/* Mobile Overlay */}
-      {!isCollapsed && (
+      {/* Overlay */}
+      {isOpen && (
         <div 
-          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
-          onClick={() => setIsCollapsed(true)}
+          className="fixed inset-0 bg-black bg-opacity-50 z-40"
+          onClick={() => setIsOpen(false)}
         />
       )}
 
-      {/* Sidebar */}
+      {/* Sidebar - Hidden by default */}
       <div className={cn(
-        "fixed inset-y-0 right-0 z-50 bg-white shadow-lg border-l border-gray-200 transition-all duration-300",
-        // Mobile: Full width when open, hidden when collapsed
-        "lg:relative lg:translate-x-0",
-        // Responsive widths
-        "w-80 sm:w-72 md:w-64 lg:w-56 xl:w-64 2xl:w-72",
-        // Mobile behavior
-        isCollapsed ? "translate-x-full lg:translate-x-0" : "translate-x-0"
+        "fixed inset-y-0 right-0 z-50 bg-white shadow-xl border-l border-gray-200 transition-all duration-300 ease-in-out",
+        "w-80 sm:w-72 md:w-64",
+        isOpen ? "translate-x-0" : "translate-x-full"
       )}>
         {/* Logo/Header */}
         <div className="flex items-center justify-center h-16 px-4 border-b border-gray-200">
@@ -102,7 +99,7 @@ export default function Sidebar() {
                         ? "bg-primary bg-opacity-10 text-primary"
                         : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                     )}
-                    onClick={() => setIsCollapsed(true)} // Close mobile menu on navigation
+                    onClick={() => setIsOpen(false)} // Close sidebar on navigation
                   >
                     <i className={cn(item.icon, "ml-3 text-lg flex-shrink-0", 
                       isActive ? "text-primary" : "text-gray-400 group-hover:text-gray-500"

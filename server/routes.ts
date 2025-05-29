@@ -6,6 +6,7 @@ import { aegisMonitor } from "./aegis-monitor";
 import { novaAIEngine } from "./nova-ai-engine";
 import { registerTestEndpoints } from "./test-endpoints";
 import { registerVoiceWorkflowTests } from "./voice-workflow-test";
+import { registerSTTDiagnostic } from "./stt-diagnostic";
 import { 
   insertRepresentativeSchema, 
   insertInvoiceSchema, 
@@ -833,6 +834,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Register test endpoints for Aegis validation
   registerTestEndpoints(app);
   registerVoiceWorkflowTests(app);
+  registerSTTDiagnostic(app);
 
   const httpServer = createServer(app);
   return httpServer;

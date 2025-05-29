@@ -42,18 +42,18 @@ export default function Header() {
         
         <div className="flex items-center space-x-reverse space-x-4">
           {/* Notification Bell */}
-          <button className="relative p-2 text-gray-400 hover:text-gray-500">
+          <button className="relative p-2 text-orange-500 hover:text-orange-600">
             <i className="fas fa-bell text-lg"></i>
             <span className="absolute top-0 left-0 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
               ۳
             </span>
           </button>
           
-          {/* Quick Actions */}
-          <button className="bg-primary text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-primary/90 transition-colors">
-            <i className="fas fa-plus ml-2"></i>
-            آپلود فایل جدید
-          </button>
+          {/* System Status */}
+          <div className="flex items-center text-sm text-gray-600">
+            <div className="w-2 h-2 bg-green-500 rounded-full ml-2"></div>
+            <span>سیستم آنلاین</span>
+          </div>
         </div>
       </div>
     </header>

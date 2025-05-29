@@ -5,69 +5,70 @@
 @tailwind utilities;
 
 :root {
-  /* Authentic MarFanet.com Color Scheme */
-  --background: 220 65% 7%; /* Very dark blue #0A0F1E */
-  --foreground: 0 0% 100%; /* Pure white text #FFFFFF */
-  --muted: 220 30% 25%; /* Much lighter background for better contrast */
-  --muted-foreground: 0 0% 95%; /* Almost white muted text */
-  --popover: 220 50% 11%; /* Dark popover #10182D */
-  --popover-foreground: 0 0% 100%; /* White popover text */
-  --card: 220 25% 20%; /* Balanced card background */
-  --card-foreground: 0 0% 100%; /* Pure white card text */
-  --border: 220 20% 40%; /* Much lighter borders */
-  --input: 220 25% 30%; /* Much lighter input background */
-  --primary: 214 100% 50%; /* Electric blue #007BFF */
-  --primary-foreground: 0 0% 100%; /* White text on primary */
-  --secondary: 220 45% 15%; /* Secondary background */
-  --secondary-foreground: 0 0% 100%; /* White secondary text */
-  --accent: 214 100% 50%; /* Accent blue #007BFF */
-  --accent-foreground: 0 0% 100%; /* White text on accent */
-  --destructive: 0 84% 60%; /* Red for errors */
-  --destructive-foreground: 0 0% 100%; /* White text on destructive */
-  --ring: 214 100% 50%; /* Focus ring blue */
+  /* MarFanet Professional Deep Blue Theme - Matching marfanet.com */
+  --background: 219 100% 6%; /* #0A0F1E - Deep professional blue */
+  --foreground: 0 0% 100%; /* #FFFFFF - Pure white text */
+  --muted: 218 39% 11%; /* #10182D - Secondary dark blue */
+  --muted-foreground: 210 17% 82%; /* #D1D5DB - Light gray text */
+  --popover: 218 39% 11%; /* #10182D - Dark popover */
+  --popover-foreground: 0 0% 100%; /* #FFFFFF - White popover text */
+  --card: 218 39% 11%; /* #10182D - Professional card background */
+  --card-foreground: 0 0% 100%; /* #FFFFFF - Pure white card text */
+  --border: 218 39% 20%; /* #242B3D - Subtle borders */
+  --input: 218 39% 13%; /* #151B29 - Input background */
+  --primary: 211 100% 50%; /* #007BFF - Electric blue accent */
+  --primary-foreground: 0 0% 100%; /* #FFFFFF - White text on primary */
+  --secondary: 218 39% 15%; /* #1A2332 - Slightly lighter secondary */
+  --secondary-foreground: 0 0% 100%; /* #FFFFFF - White secondary text */
+  --accent: 134 61% 41%; /* #28A745 - Status green */
+  --accent-foreground: 0 0% 100%; /* #FFFFFF - White text on accent */
+  --destructive: 0 84% 60%; /* #EF4444 - Error red */
+  --destructive-foreground: 0 0% 100%; /* #FFFFFF - White text on destructive */
+  --ring: 211 100% 50%; /* #007BFF - Focus ring blue */
   --radius: 0.5rem; /* Subtle rounded corners */
-  --success: 142 69% 45%; /* Status green #28A745 */
-  --warning: 38 92% 50%; /* Orange warning */
-  --sidebar-background: 220 65% 7%; /* Dark sidebar */
-  --sidebar-foreground: 0 0% 100%; /* White sidebar text */
-  --sidebar-primary: 214 100% 50%; /* Blue primary */
-  --sidebar-primary-foreground: 0 0% 100%; /* White text on primary */
-  --sidebar-accent: 220 50% 13%; /* Sidebar accent */
-  --sidebar-accent-foreground: 0 0% 100%; /* White accent text */
-  --sidebar-border: 220 40% 20%; /* Sidebar borders */
-  --sidebar-ring: 214 100% 50%; /* Sidebar focus ring */
+  --success: 134 61% 41%; /* #28A745 - Status green */
+  --warning: 38 92% 50%; /* #FD7E14 - Orange warning */
+  --sidebar-background: 219 100% 6%; /* #0A0F1E - Dark sidebar */
+  --sidebar-foreground: 0 0% 100%; /* #FFFFFF - White sidebar text */
+  --sidebar-primary: 211 100% 50%; /* #007BFF - Blue primary */
+  --sidebar-primary-foreground: 0 0% 100%; /* #FFFFFF - White text on primary */
+  --sidebar-accent: 218 39% 13%; /* #151B29 - Sidebar accent */
+  --sidebar-accent-foreground: 0 0% 100%; /* #FFFFFF - White accent text */
+  --sidebar-border: 218 39% 20%; /* #242B3D - Sidebar borders */
+  --sidebar-ring: 211 100% 50%; /* #007BFF - Sidebar focus ring */
 }
 
 .dark {
-  --background: 222 84% 4.9%;
-  --foreground: 210 40% 98%;
-  --muted: 217 32% 17%;
-  --muted-foreground: 215 20% 65%;
-  --popover: 222 84% 4.9%;
-  --popover-foreground: 210 40% 98%;
-  --card: 222 84% 4.9%;
-  --card-foreground: 210 40% 98%;
-  --border: 217 32% 17%;
-  --input: 217 32% 17%;
-  --primary: 221 83% 53%;
-  --primary-foreground: 210 40% 98%;
-  --secondary: 217 32% 17%;
-  --secondary-foreground: 210 40% 98%;
-  --accent: 217 32% 17%;
-  --accent-foreground: 210 40% 98%;
-  --destructive: 0 62% 30%;
-  --destructive-foreground: 210 40% 98%;
-  --ring: 221 83% 53%;
-  --success: 142 76% 36%;
-  --warning: 38 92% 50%;
-  --sidebar-background: 222 84% 4.9%;
-  --sidebar-foreground: 210 40% 98%;
-  --sidebar-primary: 221 83% 53%;
-  --sidebar-primary-foreground: 210 40% 98%;
-  --sidebar-accent: 217 32% 17%;
-  --sidebar-accent-foreground: 210 40% 98%;
-  --sidebar-border: 217 32% 17%;
-  --sidebar-ring: 221 83% 53%;
+  /* Inherit MarFanet professional theme for dark mode consistency */
+  --background: 219 100% 6%; /* #0A0F1E - Deep professional blue */
+  --foreground: 0 0% 100%; /* #FFFFFF - Pure white text */
+  --muted: 218 39% 11%; /* #10182D - Secondary dark blue */
+  --muted-foreground: 210 17% 82%; /* #D1D5DB - Light gray text */
+  --popover: 218 39% 11%; /* #10182D - Dark popover */
+  --popover-foreground: 0 0% 100%; /* #FFFFFF - White popover text */
+  --card: 218 39% 11%; /* #10182D - Professional card background */
+  --card-foreground: 0 0% 100%; /* #FFFFFF - Pure white card text */
+  --border: 218 39% 20%; /* #242B3D - Subtle borders */
+  --input: 218 39% 13%; /* #151B29 - Input background */
+  --primary: 211 100% 50%; /* #007BFF - Electric blue accent */
+  --primary-foreground: 0 0% 100%; /* #FFFFFF - White text on primary */
+  --secondary: 218 39% 15%; /* #1A2332 - Slightly lighter secondary */
+  --secondary-foreground: 0 0% 100%; /* #FFFFFF - White secondary text */
+  --accent: 134 61% 41%; /* #28A745 - Status green */
+  --accent-foreground: 0 0% 100%; /* #FFFFFF - White text on accent */
+  --destructive: 0 84% 60%; /* #EF4444 - Error red */
+  --destructive-foreground: 0 0% 100%; /* #FFFFFF - White text on destructive */
+  --ring: 211 100% 50%; /* #007BFF - Focus ring blue */
+  --success: 134 61% 41%; /* #28A745 - Status green */
+  --warning: 38 92% 50%; /* #FD7E14 - Orange warning */
+  --sidebar-background: 219 100% 6%; /* #0A0F1E - Dark sidebar */
+  --sidebar-foreground: 0 0% 100%; /* #FFFFFF - White sidebar text */
+  --sidebar-primary: 211 100% 50%; /* #007BFF - Blue primary */
+  --sidebar-primary-foreground: 0 0% 100%; /* #FFFFFF - White text on primary */
+  --sidebar-accent: 218 39% 13%; /* #151B29 - Sidebar accent */
+  --sidebar-accent-foreground: 0 0% 100%; /* #FFFFFF - White accent text */
+  --sidebar-border: 218 39% 20%; /* #242B3D - Sidebar borders */
+  --sidebar-ring: 211 100% 50%; /* #007BFF - Sidebar focus ring */
 }
 
 @layer base {
@@ -82,6 +83,11 @@
     font-size: 0.875rem; /* Slightly smaller base font for better fit */
     line-height: 1.5;
     min-height: 100vh;
+    background: hsl(var(--background));
+    /* Add subtle texture and depth */
+    background-image: 
+      radial-gradient(circle at 25% 25%, hsl(218 39% 13%) 0%, transparent 50%),
+      radial-gradient(circle at 75% 75%, hsl(218 39% 8%) 0%, transparent 50%);
   }
 
   /* Persian number styles - Fixed text reversal */
@@ -210,9 +216,29 @@
     @apply flex-row-reverse;
   }
 
-  /* Card hover effects */
+  /* Enhanced MarFanet Card Styling */
   .card-hover {
-    @apply transition-all duration-200 hover:shadow-md hover:scale-[1.02];
+    @apply transition-all duration-300 hover:shadow-xl hover:scale-[1.02];
+    box-shadow: 
+      0 4px 12px rgba(5, 8, 18, 0.4),
+      0 1px 3px rgba(5, 8, 18, 0.2);
+  }
+
+  .card-hover:hover {
+    box-shadow: 
+      0 8px 25px rgba(5, 8, 18, 0.6),
+      0 3px 6px rgba(5, 8, 18, 0.3);
+  }
+
+  /* Professional MarFanet Card Base */
+  .marfanet-card {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    border-radius: 12px;
+    box-shadow: 
+      0 4px 12px rgba(5, 8, 18, 0.3),
+      0 1px 3px rgba(5, 8, 18, 0.15);
+    backdrop-filter: blur(8px);
   }
 
   /* Stats card animations */

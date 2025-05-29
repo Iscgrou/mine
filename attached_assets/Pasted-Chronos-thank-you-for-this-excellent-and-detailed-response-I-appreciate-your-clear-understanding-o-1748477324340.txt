@@ -1,0 +1,27 @@
+Chronos, thank you for this excellent and detailed response. I appreciate your clear understanding of the UI/UX discrepancies and the plausible root cause analysis.
+
+We will proceed with your **Option 1 (Preferred)** for providing current state information.
+
+I will now go through each of the 9 key UI/UX points you re-summarized. For each point, I will:
+1.  State the point we are addressing.
+2.  Provide a link to a screenshot (or describe it if I can't link directly) showing how this aspect *currently looks* in the MarFanet application.
+3.  Describe specifically what is wrong or how it deviates from the target `marfanet.com` aesthetic or our agreed-upon design principles for that point.
+
+Please prepare to receive this information point-by-point. For each point I provide, I will expect you to:
+    a. Analyze the provided screenshot and description of the current state.
+    b. Propose specific and robust HTML/CSS (and JS if relevant) code changes to correct the issue and align it with the target design.
+    c. Explain how your proposed solution ensures robustness (e.g., proper use of CSS variables, adherence to a component structure, good CSS practices).
+
+Let's begin.
+
+---
+
+**Point 1: Overall Dark Theme Harmony**
+*   **Target:** Deep blue backgrounds (e.g., #0A0F1E approximation) with a professional tech-focused aesthetic, consistent with the `marfanet.com` style.
+*   **Current State Screenshot/Description for MarFanet App:**
+    *   [**USER: INSERT LINK TO SCREENSHOT HERE OR DESCRIBE IN DETAIL.** Example: "The main background of the dashboard is currently a lighter gray #333333, not the deep blue. It lacks the sophisticated feel."]
+*   **Specific Deviation:** [**USER: EXPLAIN WHAT'S WRONG.** Example: "The background color is entirely incorrect and doesn't match the #0A0F1E target. The overall feel is flat and not 'tech-focused' or 'premium'."]
+
+---
+
+**(Wait for Chronos's analysis and proposed solution for Point 1 before proceeding to Point 2, unless you want to give all 9 at once - point-by-point is usually better for focus).**

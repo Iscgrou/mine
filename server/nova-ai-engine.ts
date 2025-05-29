@@ -4,7 +4,7 @@ import { aegisLogger, EventType, LogLevel } from "./aegis-logger";
 import { crmInteractions, crmCallPreparations, crmRepresentativeProfiles } from "@shared/schema";
 
 interface AIServiceConfig {
-  grokApiKey?: string;
+  googleCloudCredentials?: any;
   speechToTextApiKey?: string;
   sentimentApiKey?: string;
 }
@@ -54,18 +54,21 @@ class NovaAIEngine {
 
   private async loadAIConfiguration(): Promise<void> {
     try {
-      // Load API keys from environment variables (set via secrets)
+      // Load Google Cloud credentials from database
+      const { storage } = await import('./storage');
+      const credentialsSetting = await storage.getSetting('google_cloud_credentials');
+      
       this.aiConfig = {
-        grokApiKey: process.env.GROK_API_KEY,
+        googleCloudCredentials: credentialsSetting?.value ? JSON.parse(credentialsSetting.value) : null,
         speechToTextApiKey: process.env.STT_API_KEY,
         sentimentApiKey: process.env.SENTIMENT_API_KEY
       };
 
       aegisLogger.info('NovaAIEngine', 'AI configuration loaded', {
-        grokConfigured: !!this.aiConfig.grokApiKey,
+        vertexAIConfigured: !!this.aiConfig.googleCloudCredentials,
         sttConfigured: !!this.aiConfig.speechToTextApiKey,
         sentimentConfigured: !!this.aiConfig.sentimentApiKey,
-        googleCloudSTT: 'Vertex AI configured via service account'
+        projectId: this.aiConfig.googleCloudCredentials?.project_id || 'Not configured'
       });
 
     } catch (error) {
@@ -75,17 +78,21 @@ class NovaAIEngine {
 
   async generateCallPreparation(representativeId: number, callPurpose: string, crmUserId: number): Promise<CallPreparationResult> {
     const startTime = Date.now();
-    aegisLogger.logAIRequest('NovaAIEngine', 'Grok', `Call preparation for representative ${representativeId}`);
+    aegisLogger.logAIRequest('NovaAIEngine', 'VertexAI', `Call preparation for representative ${representativeId}`);
 
     try {
+      if (!this.aiConfig.googleCloudCredentials) {
+        throw new Error('Google Cloud Vertex AI credentials not configured');
+      }
+
       // Gather representative context
       const repContext = await this.gatherRepresentativeContext(representativeId);
       
       // Build comprehensive prompt for AI
       const prompt = this.buildCallPreparationPrompt(repContext, callPurpose);
       
-      // Get AI response (simulated for now - will need actual API integration)
-      const aiResponse = await this.callGrokAPI(prompt);
+      // Get AI response from Vertex AI
+      const aiResponse = await this.callVertexAI(prompt);
       
       // Parse and structure the response
       const result = this.parseCallPreparationResponse(aiResponse, repContext);
@@ -94,12 +101,12 @@ class NovaAIEngine {
       await this.storeCallPreparation(representativeId, crmUserId, callPurpose, result);
       
       const duration = Date.now() - startTime;
-      aegisLogger.logAIResponse('NovaAIEngine', 'Grok', result, duration);
+      aegisLogger.logAIResponse('NovaAIEngine', 'VertexAI', result, duration);
       
       return result;
 
     } catch (error) {
-      aegisLogger.logAIError('NovaAIEngine', 'Grok', error);
+      aegisLogger.logAIError('NovaAIEngine', 'VertexAI', error);
       throw error;
     }
   }
@@ -178,50 +185,60 @@ class NovaAIEngine {
 `;
   }
 
-  private async callGrokAPI(prompt: string): Promise<any> {
-    if (!this.aiConfig.grokApiKey) {
-      throw new Error('Grok API key not configured');
+  private async callVertexAI(prompt: string): Promise<any> {
+    if (!this.aiConfig.googleCloudCredentials) {
+      throw new Error('Google Cloud Vertex AI credentials not configured');
     }
 
     const startTime = Date.now();
     
     try {
-      // Make actual call to Grok API
-      const response = await fetch('https://api.x.ai/v1/chat/completions', {
+      // Get access token for Google Cloud API
+      const { GoogleAuth } = await import('google-auth-library');
+      const auth = new GoogleAuth({
+        credentials: this.aiConfig.googleCloudCredentials,
+        scopes: ['https://www.googleapis.com/auth/cloud-platform']
+      });
+      const accessToken = await auth.getAccessToken();
+
+      // Use Vertex AI Gemini Pro for text generation
+      const projectId = this.aiConfig.googleCloudCredentials.project_id;
+      const location = 'us-central1';
+      
+      const response = await fetch(`https://${location}-aiplatform.googleapis.com/v1/projects/${projectId}/locations/${location}/publishers/google/models/gemini-pro:generateContent`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${this.aiConfig.grokApiKey}`,
+          'Authorization': `Bearer ${accessToken}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          messages: [
-            {
-              role: "system",
-              content: "شما Nova هستید، سیستم هوش مصنوعی پیشرفته MarFanet برای روابط مشتریان. پاسخ‌های شما باید در قالب JSON باشد و شامل فیلدهای مطلوب برای آماده‌سازی تماس."
-            },
-            {
-              role: "user", 
-              content: prompt
-            }
-          ],
-          model: "grok-beta",
-          temperature: 0.7,
-          max_tokens: 1000
+          contents: [{
+            parts: [{
+              text: `شما Nova هستید، سیستم هوش مصنوعی پیشرفته MarFanet برای روابط مشتریان V2Ray در ایران. پاسخ‌های شما باید در قالب JSON باشد و شامل فیلدهای مطلوب برای آماده‌سازی تماس.\n\n${prompt}`
+            }]
+          }],
+          generationConfig: {
+            temperature: 0.7,
+            topP: 0.8,
+            topK: 40,
+            maxOutputTokens: 1000,
+          }
         })
       });
 
       if (!response.ok) {
-        throw new Error(`Grok API error: ${response.status} ${response.statusText}`);
+        const errorText = await response.text();
+        throw new Error(`Vertex AI API error: ${response.status} ${response.statusText} - ${errorText}`);
       }
 
       const data = await response.json();
-      const content = data.choices?.[0]?.message?.content;
+      const content = data.candidates?.[0]?.content?.parts?.[0]?.text;
       
       if (!content) {
-        throw new Error('No content received from Grok API');
+        throw new Error('No content received from Vertex AI');
       }
 
-      // Parse the JSON response from Grok
+      // Parse the JSON response from Vertex AI
       try {
         return JSON.parse(content);
       } catch {
@@ -229,8 +246,8 @@ class NovaAIEngine {
         return {
           talkingPoints: [
             "سلام گرم و صمیمانه با نام نماینده",
-            "پیگیری وضعیت فعلی سرویس و رضایت از عملکرد",
-            "بررسی نیازهای جدید و امکان ارتقاء سرویس",
+            "پیگیری وضعیت فعلی سرویس V2Ray و رضایت از عملکرد",
+            "بررسی نیازهای جدید و امکان ارتقاء پلن‌های V2Ray",
             "ارائه راهکارهای بهینه‌سازی براساس الگوی استفاده",
             "برنامه‌ریزی برای پشتیبانی بهتر و تماس‌های آینده"
           ],

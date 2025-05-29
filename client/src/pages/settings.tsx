@@ -470,7 +470,7 @@ export default function Settings() {
             <CardHeader>
               <CardTitle className="text-primary flex items-center gap-2">
                 <i className="fas fa-robot"></i>
-                Grok xAI
+                Vertex AI Insight Engine
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -480,7 +480,7 @@ export default function Settings() {
                     <div className="flex items-center gap-2">
                       <i className={`fas ${apiKeyStatus.grok ? 'fa-check-circle text-green-600' : 'fa-exclamation-triangle text-red-600'}`}></i>
                       <span className={`text-sm font-medium ${apiKeyStatus.grok ? 'text-green-800' : 'text-red-800'}`}>
-                        {apiKeyStatus.grok ? 'کلید Grok تنظیم شده و آماده استفاده' : 'کلید Grok تنظیم نشده - لطفاً کلید API را وارد کنید'}
+                        {apiKeyStatus.grok ? 'کلید Vertex AI تنظیم شده و آماده استفاده' : 'کلید Vertex AI تنظیم نشده - لطفاً کلید API را وارد کنید'}
                       </span>
                     </div>
                   </div>

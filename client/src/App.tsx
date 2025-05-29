@@ -47,7 +47,6 @@ function Router() {
               <Route path="/csdfjkjfoascivomrm867945/voice-notes" component={CrmVoiceNotes} />
               <Route path="/csdfjkjfoascivomrm867945/followups" component={CrmTickets} />
               <Route path="/csdfjkjfoascivomrm867945/reports" component={Analytics} />
-              <Route path="/csdfjkjfoascivomrm867945/settings" component={Settings} />
               <Route component={NotFound} />
             </Switch>
           </main>

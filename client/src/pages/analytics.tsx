@@ -96,9 +96,9 @@ export default function Analytics() {
           <CardContent className="p-6">
             <div className="text-center">
               <i className="fas fa-robot text-6xl text-yellow-500 mb-4"></i>
-              <h2 className="text-2xl font-bold text-foreground mb-2">تنظیم Grok xAI مورد نیاز است</h2>
+              <h2 className="text-2xl font-bold text-foreground mb-2">تنظیم Vertex AI Insight Engine مورد نیاز است</h2>
               <p className="text-muted-foreground mb-6">
-                برای استفاده از قابلیت‌های تحلیل هوشمند، ابتدا کلید API Grok xAI را در تنظیمات وارد کنید
+                برای استفاده از قابلیت‌های تحلیل هوشمند، ابتدا کلید API Vertex AI را در تنظیمات وارد کنید
               </p>
               <div className="space-y-4">
                 <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg text-right">
@@ -106,7 +106,7 @@ export default function Analytics() {
                   <ol className="text-blue-700 text-sm space-y-1">
                     <li>۱. به بخش تنظیمات بروید</li>
                     <li>۲. تب "هوش مصنوعی" را انتخاب کنید</li>
-                    <li>۳. کلید API Grok xAI را وارد کنید</li>
+                    <li>۳. کلید API Vertex AI را وارد کنید</li>
                     <li>۴. کلید را ذخیره کنید</li>
                   </ol>
                 </div>

@@ -215,7 +215,7 @@ export default function Settings() {
                     className="bg-input border-border text-foreground"
                   />
                   <p className="text-xs text-muted-foreground mt-1">
-                    کلید API برای استفاده از قابلیت‌های پیشرفته Grok xAI
+                    کلید API برای استفاده از قابلیت‌های پیشرفته Vertex AI
                   </p>
                 </div>
 

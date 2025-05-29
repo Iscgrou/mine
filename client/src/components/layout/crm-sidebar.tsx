@@ -47,11 +47,6 @@ const crmNavigationItems = [
     href: "/reports",
     icon: "fas fa-chart-line",
   },
-  {
-    name: "تنظیمات CRM",
-    href: "/settings",
-    icon: "fas fa-cog",
-  },
 ];
 
 export default function CrmSidebar() {

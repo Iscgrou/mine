@@ -1,0 +1,30 @@
+Chronos, as you proceed with "Phase 0: Foundational Platform Optimization & Stabilization," I have some specific directives and points of emphasis for the CRM Panel UI:
+
+    Remove "Settings" Section from CRM Panel:
+        Directive: The "Settings" section (or any equivalent configuration area) currently present or planned within the dedicated CRM panel itself should be removed entirely.
+        Rationale: All application-wide settings, including any CRM-related configurations that an administrator might need to adjust, will be managed centrally from the main Admin Panel (under its own "Settings" section, which we've discussed separately for features like "AI Knowledge Base Enrichment," etc.). The dedicated CRM panel for the Customer Relations Team (CRT) should be focused solely on their operational tasks (customer management, interaction logging, AI assistance, tasks, communication) and should not contain its own settings interface.
+        Action: Please ensure that during your UI/UX polish and functional integrity review (as part of Phase 0), any UI elements, links, or routes related to a settings page within the CRM panel are removed.
+
+    Ensure Full Responsiveness of ALL CRM Panel Layouts (Mobile & Laptop Focus):
+        Directive: A critical aspect of the Phase 0 UI/UX optimization for the CRM panel is to ensure all its pages, dashboards, views, and components are fully responsive and provide an excellent user experience on both mobile devices and laptops.
+        Current Observation: I've noticed that some CRM layouts may not currently be well-adapted for mobile screens (similar to earlier general responsiveness issues we've discussed).
+        Action:
+            As part of your "Responsiveness & Layout Integrity" review in Phase 0, pay special attention to all CRM views.
+            Specifically, if layouts are not adjusting correctly for mobile:
+                Verify that tables, data grids, cards, forms, and all other sections within the CRM are truly responsive.
+                Investigate for Static Elements: Similar to previous issues we encountered in the admin panel (e.g., static sidebar, non-adaptive tables), please ensure that no CRM components have fixed dimensions or CSS properties that prevent them from adapting to different viewport sizes. All elements must reflow, resize, or adopt mobile-specific layouts (e.g., stacked elements, scrollable tables if necessary) gracefully.
+            The goal is a seamless and intuitive experience for the CRT, regardless of the device they are using to access the CRM panel.
+
+Please confirm that these specific directives for the CRM panel – the removal of its internal "Settings" section and the critical need for full mobile/laptop responsiveness of all its components (especially checking for non-adaptive tables/sections) – are integrated into your "Phase 0" optimization plan.
+
+
+**Key aspects of this prompt:**
+
+*   **Clear Directives:** Uses explicit language like "MUST be removed entirely" and "critical aspect."
+*   **Contextual Link to Phase 0:** Positions these requests as part of the ongoing foundational optimization.
+*   **Rationale Provided:** Explains *why* the CRM settings should be removed (centralized admin settings).
+*   **Specific Focus on Responsiveness:** Highlights the mobile experience and directly references past similar issues as a learning point for Chronos to apply to the CRM.
+*   **Actionable Instructions:** Tells Chronos what to look for (static elements) and what the goal is.
+*   **Request for Confirmation:** Asks Chronos to confirm these points are integrated into its plan.
+
+This ensures these important CRM-specific UI and structural considerations are addressed early and effectively during the foundational optimization work.

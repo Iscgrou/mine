@@ -181,7 +181,7 @@ export default function Dashboard() {
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <span>عملیات سریع</span>
-              <i className="fas fa-bolt text-yellow-500 text-xl"></i>
+              <i className="fas fa-bolt text-orange-500 text-xl"></i>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -229,36 +229,41 @@ export default function Dashboard() {
           </CardContent>
         </Card>
 
-        {/* File Upload Section */}
+        {/* System Status */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
-              <span>آپلود فایل ODS</span>
-              <i className="fas fa-file-excel text-green-600 text-xl"></i>
+              <span>وضعیت سیستم</span>
+              <i className="fas fa-server text-blue-600 text-xl"></i>
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <Link href="/import">
-              <div className="upload-zone rounded-lg p-6 text-center cursor-pointer">
-                <div className="w-12 h-12 mx-auto text-gray-400 mb-4">
-                  <i className="fas fa-cloud-upload-alt text-4xl"></i>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600">پایگاه داده</span>
+                <div className="flex items-center">
+                  <div className="w-2 h-2 bg-green-500 rounded-full ml-2"></div>
+                  <span className="text-sm font-medium text-green-600">متصل</span>
                 </div>
-                <div className="text-sm text-gray-600">
-                  <span className="font-medium text-primary hover:text-primary/80">کلیک کنید</span>
-                  <span className="mr-1">یا فایل را اینجا بکشید</span>
-                </div>
-                <p className="text-xs text-gray-500 mt-2">فقط فایل‌های ODS قابل آپلود هستند</p>
               </div>
-            </Link>
-            
-            <div className="mt-4 flex items-center justify-between">
-              <span className="text-sm text-gray-500">آخرین آپلود: ۱۴۰۳/۰۳/۱۲</span>
-              <Link href="/import">
-                <Button variant="link" size="sm">
-                  مشاهده تاریخچه
-                  <i className="fas fa-arrow-left mr-1"></i>
-                </Button>
-              </Link>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600">سرویس فاکتورسازی</span>
+                <div className="flex items-center">
+                  <div className="w-2 h-2 bg-green-500 rounded-full ml-2"></div>
+                  <span className="text-sm font-medium text-green-600">فعال</span>
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600">پشتیبان‌گیری خودکار</span>
+                <div className="flex items-center">
+                  <div className="w-2 h-2 bg-green-500 rounded-full ml-2"></div>
+                  <span className="text-sm font-medium text-green-600">فعال</span>
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600">آخرین پشتیبان‌گیری</span>
+                <span className="text-sm text-gray-500 persian-nums">۱۴۰۳/۱۰/۰۹</span>
+              </div>
             </div>
           </CardContent>
         </Card>

@@ -101,7 +101,7 @@ export default function Sidebar() {
                     )}
                     onClick={() => setIsOpen(false)} // Close sidebar on navigation
                   >
-                    <i className={cn(item.icon, "ml-3 text-lg flex-shrink-0", 
+                    <i className={cn(item.icon, "ml-3 text-base flex-shrink-0 w-5 flex justify-center", 
                       isActive ? "text-primary" : "text-gray-400 group-hover:text-gray-500"
                     )}></i>
                     <span className="truncate">{item.name}</span>

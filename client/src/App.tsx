@@ -21,6 +21,7 @@ import CrmCallPreparation from "@/pages/crm-call-preparation";
 import CrmVoiceNotes from "@/pages/crm-voice-notes";
 import AegisDashboard from "@/pages/aegis-dashboard";
 import AegisTest from "@/pages/aegis-test";
+import GoogleCloudSetup from "@/pages/google-cloud-setup";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -76,6 +77,7 @@ function Router() {
             <Route path="/ciwomplefoadm867945/settings" component={Settings} />
             <Route path="/ciwomplefoadm867945/aegis" component={AegisDashboard} />
             <Route path="/ciwomplefoadm867945/aegis-test" component={AegisTest} />
+            <Route path="/ciwomplefoadm867945/google-cloud-setup" component={GoogleCloudSetup} />
             
             {/* Legacy routes for development */}
             <Route path="/" component={Dashboard} />

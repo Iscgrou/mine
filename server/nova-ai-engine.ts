@@ -356,9 +356,20 @@ class NovaAIEngine {
         customVocabulary: 'V2Ray terminology enabled'
       });
 
-      // Get access token for Google Cloud API
+      // Get access token for Google Cloud API using stored credentials
       const { GoogleAuth } = await import('google-auth-library');
+      
+      // Load stored credentials from database
+      const { storage } = await import('./storage');
+      const credentialsSetting = await storage.getSetting('google_cloud_credentials');
+      
+      if (!credentialsSetting?.value) {
+        throw new Error('Google Cloud credentials not configured. Please set up credentials first.');
+      }
+
+      const credentials = JSON.parse(credentialsSetting.value);
       const auth = new GoogleAuth({
+        credentials,
         scopes: ['https://www.googleapis.com/auth/cloud-platform']
       });
       const accessToken = await auth.getAccessToken();

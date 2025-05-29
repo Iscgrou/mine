@@ -77,7 +77,7 @@ export default function CrmSidebar() {
       {/* Sidebar */}
       <div className={cn(
         "fixed right-0 top-0 h-full bg-white shadow-lg border-l border-gray-200 z-40 transition-transform duration-300 ease-in-out",
-        "w-72", // Fixed width for both mobile and desktop
+        "w-72 lg:w-72 md:w-64 sm:w-56", // Responsive width for different screen sizes
         isOpen ? "translate-x-0" : "translate-x-full lg:translate-x-0"
       )}>
         {/* Header */}
@@ -140,7 +140,7 @@ export default function CrmSidebar() {
       </div>
 
       {/* Main content spacing */}
-      <div className="lg:mr-72 w-full">
+      <div className="lg:mr-72 md:mr-64 sm:mr-56 w-full">
         {/* This ensures content doesn't go under the sidebar on desktop */}
       </div>
     </>

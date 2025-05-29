@@ -34,7 +34,7 @@ function Router() {
     return (
       <div className="min-h-screen bg-gray-50 rtl">
         <CrmSidebar />
-        <div className="lg:mr-72 w-full">
+        <div className="lg:mr-72 md:mr-64 sm:mr-56 w-full">
           <Header />
           <main className="w-full overflow-y-auto p-4 lg:p-6">
             <Switch>

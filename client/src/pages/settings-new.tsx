@@ -323,12 +323,12 @@ export default function Settings() {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-foreground mb-2">کلید Grok API</label>
+                        <label className="block text-sm font-medium text-foreground mb-2">کلید Vertex AI API</label>
                         <Input
                           type="password"
                           value={grokApiKey}
                           onChange={(e) => setGrokApiKey(e.target.value)}
-                          placeholder="کلید API Grok"
+                          placeholder="کلید API Vertex AI"
                           className="bg-input border-border text-foreground"
                         />
                       </div>
@@ -362,12 +362,12 @@ export default function Settings() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-foreground mb-2">کلید Grok API</label>
+                      <label className="block text-sm font-medium text-foreground mb-2">کلید Vertex AI API</label>
                       <Input
                         type="password"
                         value={grokApiKey}
                         onChange={(e) => setGrokApiKey(e.target.value)}
-                        placeholder="کلید API Grok"
+                        placeholder="کلید API Vertex AI"
                         className="bg-input border-border text-foreground"
                       />
                     </div>

@@ -394,7 +394,7 @@ export default function Settings() {
                             </thead>
                             <tbody>
                               <tr>
-                                <td className="border p-2">اشتراک استاندارد - ماه ۱</td>
+                                <td className="border p-2">اشتراک حجمی - ماه ۱</td>
                                 <td className="border p-2 text-center">۱۰</td>
                                 <td className="border p-2 text-center">۵۰,۰۰۰ {currency}</td>
                                 <td className="border p-2 text-center">۵۰۰,۰۰۰ {currency}</td>
@@ -429,6 +429,18 @@ export default function Settings() {
                       </div>
                     </div>
                   )}
+                </div>
+
+                {/* Custom Notes Section */}
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">یادداشت پیش‌فرض فاکتور</label>
+                  <textarea
+                    placeholder="متن یادداشت پیش‌فرض که در همه فاکتورها نمایش داده خواهد شد..."
+                    className="w-full p-3 border border-gray-300 rounded-lg resize-none"
+                    rows={4}
+                    defaultValue="لطفاً مبلغ فاکتور را تا تاریخ سررسید پرداخت نمایید. در صورت سوال با پشتیبانی تماس بگیرید."
+                  />
+                  <p className="text-xs text-gray-500 mt-1">این یادداشت در انتهای همه فاکتورها نمایش داده می‌شود</p>
                 </div>
 
                 {/* Save Settings */}

@@ -54,19 +54,18 @@ class NovaAIEngine {
 
   private async loadAIConfiguration(): Promise<void> {
     try {
-      // Load API keys from settings
-      const grokSetting = await db.execute(sql`
-        SELECT value FROM settings WHERE key = 'grok_api_key' LIMIT 1
-      `);
-      
-      const speechSetting = await db.execute(sql`
-        SELECT value FROM settings WHERE key = 'speech_to_text_api_key' LIMIT 1
-      `);
-
+      // Load API keys from environment variables (set via secrets)
       this.aiConfig = {
-        grokApiKey: grokSetting.rows[0]?.value,
-        speechToTextApiKey: speechSetting.rows[0]?.value
+        grokApiKey: process.env.GROK_API_KEY,
+        speechToTextApiKey: process.env.STT_API_KEY,
+        sentimentApiKey: process.env.SENTIMENT_API_KEY
       };
+
+      aegisLogger.info('NovaAIEngine', 'AI configuration loaded', {
+        grokConfigured: !!this.aiConfig.grokApiKey,
+        sttConfigured: !!this.aiConfig.speechToTextApiKey,
+        sentimentConfigured: !!this.aiConfig.sentimentApiKey
+      });
 
     } catch (error) {
       aegisLogger.error('NovaAIEngine', 'Failed to load AI configuration', error);
@@ -183,25 +182,75 @@ class NovaAIEngine {
       throw new Error('Grok API key not configured');
     }
 
-    // For now, return a structured mock response that matches expected output
-    // This will be replaced with actual Grok API call when credentials are provided
-    return {
-      talkingPoints: [
-        "سلام گرم و صمیمانه با نام نماینده",
-        "پیگیری وضعیت فعلی سرویس و رضایت از عملکرد",
-        "بررسی نیازهای جدید و امکان ارتقاء سرویس",
-        "ارائه راهکارهای بهینه‌سازی براساس الگوی استفاده",
-        "برنامه‌ریزی برای پشتیبانی بهتر و تماس‌های آینده"
-      ],
-      representativeBackground: "نماینده فعال با سابقه مثبت همکاری",
-      suggestedApproach: "برخورد دوستانه و راهنمایی محور با تمرکز بر ارزش افزوده",
-      riskFactors: ["عدم پاسخگویی اخیر", "تاخیر در پرداخت"],
-      opportunities: ["ارتقاء به پلن بالاتر", "معرفی سرویس‌های جانبی"],
-      culturalNotes: ["احترام به وقت نماینده", "صبر در توضیحات فنی"],
-      emotionalState: "متعادل با تمایل به همکاری",
-      optimalTiming: "ساعات اداری روزهای یکشنبه تا چهارشنبه",
-      expectedOutcome: "تقویت رابطه و شناسایی نیازهای جدید"
-    };
+    const startTime = Date.now();
+    
+    try {
+      // Make actual call to Grok API
+      const response = await fetch('https://api.x.ai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${this.aiConfig.grokApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          messages: [
+            {
+              role: "system",
+              content: "شما Nova هستید، سیستم هوش مصنوعی پیشرفته MarFanet برای روابط مشتریان. پاسخ‌های شما باید در قالب JSON باشد و شامل فیلدهای مطلوب برای آماده‌سازی تماس."
+            },
+            {
+              role: "user", 
+              content: prompt
+            }
+          ],
+          model: "grok-beta",
+          temperature: 0.7,
+          max_tokens: 1000
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Grok API error: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      const content = data.choices?.[0]?.message?.content;
+      
+      if (!content) {
+        throw new Error('No content received from Grok API');
+      }
+
+      // Parse the JSON response from Grok
+      try {
+        return JSON.parse(content);
+      } catch {
+        // If not JSON, parse manually or return structured format
+        return {
+          talkingPoints: [
+            "سلام گرم و صمیمانه با نام نماینده",
+            "پیگیری وضعیت فعلی سرویس و رضایت از عملکرد",
+            "بررسی نیازهای جدید و امکان ارتقاء سرویس",
+            "ارائه راهکارهای بهینه‌سازی براساس الگوی استفاده",
+            "برنامه‌ریزی برای پشتیبانی بهتر و تماس‌های آینده"
+          ],
+          representativeBackground: content.substring(0, 100),
+          suggestedApproach: "برخورد دوستانه و راهنمایی محور",
+          riskFactors: ["نیاز به بررسی دقیق‌تر"],
+          opportunities: ["بهبود سرویس", "افزایش رضایت"],
+          culturalNotes: ["احترام به فرهنگ ایرانی"],
+          emotionalState: "متعادل",
+          optimalTiming: "ساعات اداری",
+          expectedOutcome: "بهبود روابط"
+        };
+      }
+
+    } catch (error) {
+      aegisLogger.logAIError('NovaAIEngine', 'Grok', error, {
+        duration: Date.now() - startTime,
+        promptLength: prompt.length
+      });
+      throw error;
+    }
   }
 
   private parseCallPreparationResponse(aiResponse: any, context: any): CallPreparationResult {
@@ -284,31 +333,161 @@ class NovaAIEngine {
       throw new Error('Speech-to-text API key not configured');
     }
 
-    // For now, return a mock transcription
-    // This will be replaced with actual API call when credentials are provided
-    return "متن نمونه از تبدیل صدا به متن. نماینده در حال درخواست پشتیبانی برای مشکل اتصال است.";
+    const startTime = Date.now();
+    
+    try {
+      // First, download the audio file
+      aegisLogger.log({
+        eventType: EventType.FILE_OPERATION,
+        level: LogLevel.INFO,
+        source: 'NovaAIEngine',
+        message: 'Downloading audio file for STT processing',
+        metadata: { audioUrl }
+      });
+
+      const audioResponse = await fetch(audioUrl);
+      if (!audioResponse.ok) {
+        throw new Error(`Failed to download audio: ${audioResponse.status}`);
+      }
+      
+      const audioBuffer = await audioResponse.arrayBuffer();
+      
+      // Convert to FormData for STT API
+      const formData = new FormData();
+      formData.append('file', new Blob([audioBuffer]), 'audio.wav');
+      formData.append('model', 'whisper-1');
+      formData.append('language', 'fa'); // Persian language code
+
+      aegisLogger.logAIRequest('NovaAIEngine', 'OpenAI-Whisper', 'Persian audio transcription', {
+        audioSize: audioBuffer.byteLength,
+        language: 'fa'
+      });
+
+      // Call OpenAI Whisper API (or alternative STT service)
+      const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${this.aiConfig.speechToTextApiKey}`,
+        },
+        body: formData
+      });
+
+      if (!response.ok) {
+        throw new Error(`STT API error: ${response.status} ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      const transcription = result.text || '';
+
+      aegisLogger.logAIResponse('NovaAIEngine', 'OpenAI-Whisper', { transcription }, Date.now() - startTime, {
+        transcriptionLength: transcription.length,
+        audioProcessed: true
+      });
+
+      return transcription;
+
+    } catch (error) {
+      aegisLogger.logAIError('NovaAIEngine', 'OpenAI-Whisper', error, {
+        duration: Date.now() - startTime,
+        audioUrl
+      });
+      throw error;
+    }
   }
 
   private async analyzeSentiment(text: string): Promise<{ score: number; label: string; confidence: number }> {
-    // Simple sentiment analysis - will be enhanced with actual API
-    const positiveWords = ['خوب', 'عالی', 'راضی', 'ممنون', 'سپاسگزار'];
-    const negativeWords = ['بد', 'مشکل', 'ناراضی', 'خراب', 'کند'];
-    
-    const words = text.split(' ');
-    let score = 0;
-    
-    for (const word of words) {
-      if (positiveWords.some(pw => word.includes(pw))) score += 0.1;
-      if (negativeWords.some(nw => word.includes(nw))) score -= 0.1;
+    if (!this.aiConfig.sentimentApiKey) {
+      throw new Error('Sentiment analysis API key not configured');
     }
+
+    const startTime = Date.now();
     
-    score = Math.max(-1, Math.min(1, score));
-    
-    return {
-      score,
-      label: score > 0.1 ? 'مثبت' : score < -0.1 ? 'منفی' : 'خنثی',
-      confidence: 0.75
-    };
+    try {
+      aegisLogger.logAIRequest('NovaAIEngine', 'Sentiment-API', 'Persian sentiment analysis', {
+        textLength: text.length,
+        language: 'persian'
+      });
+
+      // Use dedicated sentiment analysis service or Grok for Persian sentiment
+      const response = await fetch('https://api.x.ai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${this.aiConfig.sentimentApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          messages: [
+            {
+              role: "system",
+              content: "شما یک سیستم تحلیل احساسات متن فارسی هستید. متن داده شده را تحلیل کنید و نتیجه را در قالب JSON با فیلدهای score (-1 تا 1), label (مثبت/منفی/خنثی), confidence (0 تا 1) ارائه دهید."
+            },
+            {
+              role: "user",
+              content: `متن برای تحلیل احساسات: "${text}"`
+            }
+          ],
+          model: "grok-beta",
+          temperature: 0.3,
+          max_tokens: 200
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Sentiment API error: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      const content = data.choices?.[0]?.message?.content;
+      
+      if (!content) {
+        throw new Error('No content received from sentiment analysis API');
+      }
+
+      // Try to parse JSON response
+      try {
+        const sentimentResult = JSON.parse(content);
+        const result = {
+          score: sentimentResult.score || 0,
+          label: sentimentResult.label || 'خنثی',
+          confidence: sentimentResult.confidence || 0.5
+        };
+
+        aegisLogger.logAIResponse('NovaAIEngine', 'Sentiment-API', result, Date.now() - startTime, {
+          sentimentScore: result.score,
+          sentimentLabel: result.label,
+          textAnalyzed: true
+        });
+
+        return result;
+
+      } catch {
+        // Fallback parsing if not valid JSON
+        const score = content.includes('مثبت') ? 0.6 : 
+                     content.includes('منفی') ? -0.6 : 0;
+        const label = score > 0.1 ? 'مثبت' : score < -0.1 ? 'منفی' : 'خنثی';
+        
+        const result = {
+          score,
+          label,
+          confidence: 0.7
+        };
+
+        aegisLogger.logAIResponse('NovaAIEngine', 'Sentiment-API', result, Date.now() - startTime, {
+          sentimentScore: result.score,
+          sentimentLabel: result.label,
+          fallbackParsing: true
+        });
+
+        return result;
+      }
+
+    } catch (error) {
+      aegisLogger.logAIError('NovaAIEngine', 'Sentiment-API', error, {
+        duration: Date.now() - startTime,
+        textLength: text.length
+      });
+      throw error;
+    }
   }
 
   private async extractKeyTopics(text: string): Promise<string[]> {

@@ -71,11 +71,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.put("/api/representatives/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
+      
+      // Log the incoming data for debugging
+      console.log("Update representative request:", { id, body: req.body });
+      
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "شناسه نماینده نامعتبر است" });
+      }
+
       const validatedData = insertRepresentativeSchema.partial().parse(req.body);
+      
+      // Check if representative exists
+      const existing = await storage.getRepresentativeById(id);
+      if (!existing) {
+        return res.status(404).json({ message: "نماینده یافت نشد" });
+      }
+
       const representative = await storage.updateRepresentative(id, validatedData);
       res.json(representative);
     } catch (error) {
-      res.status(500).json({ message: "خطا در به‌روزرسانی نماینده" });
+      console.error("Error updating representative:", error);
+      if (error instanceof Error) {
+        res.status(400).json({ message: `خطا در اعتبارسنجی: ${error.message}` });
+      } else {
+        res.status(500).json({ message: "خطا در به‌روزرسانی نماینده" });
+      }
     }
   });
 

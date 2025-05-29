@@ -6,6 +6,7 @@ const pageNames: Record<string, string> = {
   "/dashboard": "داشبورد", 
   "/representatives": "مدیریت نمایندگان",
   "/invoices": "صورتحساب‌ها",
+  "/analytics": "مرکز تحلیل و گزارش",
   "/import": "آپلود فایل ODS",
   "/payments": "پیگیری پرداخت‌ها",
   "/backup": "پشتیبان‌گیری",

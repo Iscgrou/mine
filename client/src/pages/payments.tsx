@@ -147,7 +147,7 @@ export default function Payments() {
   };
 
   const getRepresentativeInvoices = (representativeId: string) => {
-    return invoices?.filter((invoice: any) => 
+    return invoices?.filter((invoice: Invoice) => 
       invoice.representativeId.toString() === representativeId && 
       invoice.status === 'pending'
     ) || [];

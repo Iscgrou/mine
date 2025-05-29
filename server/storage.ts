@@ -1,10 +1,14 @@
 import { 
   users, representatives, invoices, invoiceItems, payments, 
-  fileImports, settings, backups,
+  fileImports, settings, backups, crmInteractions, crmCallPreparations, 
+  crmRepresentativeProfiles, crmTasks,
   type User, type InsertUser, type Representative, type InsertRepresentative,
   type Invoice, type InsertInvoice, type InvoiceItem, type InsertInvoiceItem,
   type Payment, type InsertPayment, type FileImport, type InsertFileImport,
-  type Setting, type InsertSetting, type Backup, type InsertBackup
+  type Setting, type InsertSetting, type Backup, type InsertBackup,
+  type CrmInteraction, type InsertCrmInteraction,
+  type CrmCallPreparation, type InsertCrmCallPreparation,
+  type CrmRepresentativeProfile, type InsertCrmRepresentativeProfile
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, or, like, isNull, sql } from "drizzle-orm";
@@ -61,6 +65,24 @@ export interface IStorage {
     monthlyInvoices: number;
     monthlyRevenue: string;
     overduePayments: number;
+  }>;
+
+  // CRM methods
+  getCrmInteractions(): Promise<CrmInteraction[]>;
+  getCrmInteractionById(id: number): Promise<CrmInteraction | undefined>;
+  createCrmInteraction(interaction: InsertCrmInteraction): Promise<CrmInteraction>;
+  getCrmCallPreparations(): Promise<CrmCallPreparation[]>;
+  getCrmCallPreparationById(id: number): Promise<CrmCallPreparation | undefined>;
+  createCrmCallPreparation(preparation: InsertCrmCallPreparation): Promise<CrmCallPreparation>;
+  getCrmRepresentativeProfiles(): Promise<CrmRepresentativeProfile[]>;
+  getCrmRepresentativeProfile(representativeId: number): Promise<CrmRepresentativeProfile | undefined>;
+  createCrmRepresentativeProfile(profile: InsertCrmRepresentativeProfile): Promise<CrmRepresentativeProfile>;
+  getCrmStats(): Promise<{
+    totalInteractions: number;
+    pendingTasks: number;
+    avgSentiment: number;
+    highRiskReps: number;
+    monthlyInteractions: number;
   }>;
 }
 
@@ -321,6 +343,111 @@ export class DatabaseStorage implements IStorage {
       monthlyInvoices,
       monthlyRevenue,
       overduePayments
+    };
+  }
+
+  // CRM Methods Implementation
+  async getCrmInteractions(): Promise<CrmInteraction[]> {
+    return await db.select().from(crmInteractions)
+      .orderBy(sql`${crmInteractions.createdAt} DESC`);
+  }
+
+  async getCrmInteractionById(id: number): Promise<CrmInteraction | undefined> {
+    const [interaction] = await db.select().from(crmInteractions)
+      .where(eq(crmInteractions.id, id));
+    return interaction || undefined;
+  }
+
+  async createCrmInteraction(interaction: InsertCrmInteraction): Promise<CrmInteraction> {
+    const [newInteraction] = await db.insert(crmInteractions)
+      .values(interaction)
+      .returning();
+    return newInteraction;
+  }
+
+  async getCrmCallPreparations(): Promise<CrmCallPreparation[]> {
+    return await db.select().from(crmCallPreparations)
+      .orderBy(sql`${crmCallPreparations.createdAt} DESC`);
+  }
+
+  async getCrmCallPreparationById(id: number): Promise<CrmCallPreparation | undefined> {
+    const [preparation] = await db.select().from(crmCallPreparations)
+      .where(eq(crmCallPreparations.id, id));
+    return preparation || undefined;
+  }
+
+  async createCrmCallPreparation(preparation: InsertCrmCallPreparation): Promise<CrmCallPreparation> {
+    const [newPreparation] = await db.insert(crmCallPreparations)
+      .values(preparation)
+      .returning();
+    return newPreparation;
+  }
+
+  async getCrmRepresentativeProfiles(): Promise<CrmRepresentativeProfile[]> {
+    return await db.select().from(crmRepresentativeProfiles)
+      .orderBy(sql`${crmRepresentativeProfiles.updatedAt} DESC`);
+  }
+
+  async getCrmRepresentativeProfile(representativeId: number): Promise<CrmRepresentativeProfile | undefined> {
+    const [profile] = await db.select().from(crmRepresentativeProfiles)
+      .where(eq(crmRepresentativeProfiles.representativeId, representativeId));
+    return profile || undefined;
+  }
+
+  async createCrmRepresentativeProfile(profile: InsertCrmRepresentativeProfile): Promise<CrmRepresentativeProfile> {
+    const [newProfile] = await db.insert(crmRepresentativeProfiles)
+      .values(profile)
+      .returning();
+    return newProfile;
+  }
+
+  async getCrmStats(): Promise<{
+    totalInteractions: number;
+    pendingTasks: number;
+    avgSentiment: number;
+    highRiskReps: number;
+    monthlyInteractions: number;
+  }> {
+    // Get current month start and end
+    const now = new Date();
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+    // Total interactions
+    const [totalInteractionsResult] = await db.select({ count: sql<number>`count(*)` }).from(crmInteractions);
+    const totalInteractions = totalInteractionsResult.count;
+
+    // Pending tasks
+    const [pendingTasksResult] = await db.select({ count: sql<number>`count(*)` }).from(crmTasks)
+      .where(eq(crmTasks.status, 'pending'));
+    const pendingTasks = pendingTasksResult.count;
+
+    // Average sentiment
+    const [avgSentimentResult] = await db.select({ 
+      avg: sql<number>`COALESCE(avg(${crmInteractions.sentimentScore}), 0)` 
+    }).from(crmInteractions)
+      .where(sql`${crmInteractions.sentimentScore} IS NOT NULL`);
+    const avgSentiment = avgSentimentResult.avg;
+
+    // High risk representatives
+    const [highRiskResult] = await db.select({ count: sql<number>`count(*)` }).from(crmRepresentativeProfiles)
+      .where(sql`${crmRepresentativeProfiles.riskScore} > 0.7`);
+    const highRiskReps = highRiskResult.count;
+
+    // Monthly interactions
+    const [monthlyInteractionsResult] = await db.select({ count: sql<number>`count(*)` }).from(crmInteractions)
+      .where(and(
+        sql`${crmInteractions.createdAt} >= ${monthStart}`,
+        sql`${crmInteractions.createdAt} <= ${monthEnd}`
+      ));
+    const monthlyInteractions = monthlyInteractionsResult.count;
+
+    return {
+      totalInteractions,
+      pendingTasks,
+      avgSentiment,
+      highRiskReps,
+      monthlyInteractions
     };
   }
 }

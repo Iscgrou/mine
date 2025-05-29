@@ -21,7 +21,13 @@ export const representatives = pgTable("representatives", {
   telegramId: text("telegram_id"),
   phoneNumber: text("phone_number"),
   storeName: text("store_name"),
-  pricePerGB: decimal("price_per_gb", { precision: 10, scale: 2 }), // For 1-6 month limited
+  // Limited subscription pricing for 1-6 months
+  limitedPrice1Month: decimal("limited_price_1_month", { precision: 10, scale: 2 }),
+  limitedPrice2Month: decimal("limited_price_2_month", { precision: 10, scale: 2 }),
+  limitedPrice3Month: decimal("limited_price_3_month", { precision: 10, scale: 2 }),
+  limitedPrice4Month: decimal("limited_price_4_month", { precision: 10, scale: 2 }),
+  limitedPrice5Month: decimal("limited_price_5_month", { precision: 10, scale: 2 }),
+  limitedPrice6Month: decimal("limited_price_6_month", { precision: 10, scale: 2 }),
   unlimitedMonthlyPrice: decimal("unlimited_monthly_price", { precision: 10, scale: 2 }), // For unlimited monthly
   status: text("status").default("active"), // active, inactive, suspended
   createdAt: timestamp("created_at").defaultNow(),

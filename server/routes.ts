@@ -1,6 +1,9 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { aegisLogger, EventType, LogLevel } from "./aegis-logger";
+import { aegisMonitor } from "./aegis-monitor";
+import { novaAIEngine } from "./nova-ai-engine";
 import { 
   insertRepresentativeSchema, 
   insertInvoiceSchema, 
@@ -706,6 +709,122 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error starting Grok consultation:", error);
       res.status(500).json({ message: "خطا در شروع مشاوره هوشمند" });
+    }
+  });
+
+  // Project Pantheon - Aegis Monitoring API
+  app.get("/api/aegis/health", async (req, res) => {
+    try {
+      aegisLogger.info('API', 'Health status requested');
+      const status = await aegisMonitor.getSystemStatus();
+      res.json(status);
+    } catch (error) {
+      aegisLogger.error('API', 'Failed to get health status', error);
+      res.status(500).json({ message: "خطا در دریافت وضعیت سیستم" });
+    }
+  });
+
+  app.get("/api/aegis/metrics", async (req, res) => {
+    try {
+      const limit = parseInt(req.query.limit as string) || 100;
+      const metrics = await aegisMonitor.getHealthHistory(limit);
+      res.json(metrics);
+    } catch (error) {
+      aegisLogger.error('API', 'Failed to get metrics', error);
+      res.status(500).json({ message: "خطا در دریافت آمار سیستم" });
+    }
+  });
+
+  app.get("/api/aegis/ai-performance", async (req, res) => {
+    try {
+      const performance = await aegisMonitor.analyzeAIPerformance();
+      res.json(performance);
+    } catch (error) {
+      aegisLogger.error('API', 'Failed to analyze AI performance', error);
+      res.status(500).json({ message: "خطا در تحلیل عملکرد AI" });
+    }
+  });
+
+  // Project Pantheon - Nova AI API
+  app.post("/api/nova/call-preparation", async (req, res) => {
+    try {
+      const { representativeId, callPurpose, crmUserId } = req.body;
+      
+      if (!representativeId || !callPurpose || !crmUserId) {
+        return res.status(400).json({ message: "اطلاعات کامل آماده‌سازی تماس ارائه نشده" });
+      }
+
+      aegisLogger.logCRMInteraction('API', 'call_preparation', representativeId, { 
+        callPurpose, 
+        crmUserId 
+      });
+
+      const preparation = await novaAIEngine.generateCallPreparation(
+        parseInt(representativeId), 
+        callPurpose, 
+        parseInt(crmUserId)
+      );
+      
+      res.json(preparation);
+    } catch (error) {
+      aegisLogger.error('API', 'Call preparation failed', error);
+      res.status(500).json({ message: "خطا در آماده‌سازی تماس" });
+    }
+  });
+
+  app.post("/api/nova/voice-processing", async (req, res) => {
+    try {
+      const { audioUrl, interactionId } = req.body;
+      
+      if (!audioUrl) {
+        return res.status(400).json({ message: "آدرس فایل صوتی ارائه نشده" });
+      }
+
+      aegisLogger.logVoiceProcessing('API', audioUrl, { stage: 'api_request' });
+
+      const result = await novaAIEngine.processVoiceNote(audioUrl, interactionId);
+      
+      res.json(result);
+    } catch (error) {
+      aegisLogger.error('API', 'Voice processing failed', error);
+      res.status(500).json({ message: "خطا در پردازش فایل صوتی" });
+    }
+  });
+
+  app.get("/api/nova/psyche-profile/:representativeId", async (req, res) => {
+    try {
+      const representativeId = parseInt(req.params.representativeId);
+      
+      if (!representativeId) {
+        return res.status(400).json({ message: "شناسه نماینده نامعتبر" });
+      }
+
+      const profile = await novaAIEngine.generatePsycheProfile(representativeId);
+      
+      res.json(profile);
+    } catch (error) {
+      aegisLogger.error('API', 'Psyche profile generation failed', error);
+      res.status(500).json({ message: "خطا در تولید پروفایل روانشناختی" });
+    }
+  });
+
+  app.post("/api/nova/update-profile", async (req, res) => {
+    try {
+      const { representativeId, interactionData } = req.body;
+      
+      if (!representativeId || !interactionData) {
+        return res.status(400).json({ message: "اطلاعات به‌روزرسانی پروفایل ناقص" });
+      }
+
+      await novaAIEngine.updateRepresentativeProfile(
+        parseInt(representativeId), 
+        interactionData
+      );
+      
+      res.json({ success: true, message: "پروفایل نماینده به‌روزرسانی شد" });
+    } catch (error) {
+      aegisLogger.error('API', 'Profile update failed', error);
+      res.status(500).json({ message: "خطا در به‌روزرسانی پروفایل" });
     }
   });
 

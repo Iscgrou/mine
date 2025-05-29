@@ -642,6 +642,69 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Google Cloud setup endpoint
+  app.post('/api/setup/google-cloud', async (req, res) => {
+    try {
+      const { credentials } = req.body;
+      
+      if (!credentials) {
+        return res.status(400).json({ message: 'اطلاعات کلید الزامی است' });
+      }
+
+      // Validate JSON format
+      let credentialsObj;
+      try {
+        credentialsObj = JSON.parse(credentials);
+      } catch (error) {
+        return res.status(400).json({ message: 'فرمت JSON نامعتبر است' });
+      }
+
+      // Validate required fields for Google Cloud service account
+      const requiredFields = ['type', 'project_id', 'private_key_id', 'private_key', 'client_email'];
+      for (const field of requiredFields) {
+        if (!credentialsObj[field]) {
+          return res.status(400).json({ message: `فیلد ${field} در فایل JSON وجود ندارد` });
+        }
+      }
+
+      if (credentialsObj.type !== 'service_account') {
+        return res.status(400).json({ message: 'نوع کلید باید service_account باشد' });
+      }
+
+      // Store credentials securely
+      await storage.setSetting({
+        key: 'google_cloud_credentials',
+        value: credentials,
+        description: 'Google Cloud Service Account credentials for Speech-to-Text API'
+      });
+
+      res.json({ 
+        success: true, 
+        message: 'اطلاعات Google Cloud با موفقیت ذخیره شد',
+        projectId: credentialsObj.project_id
+      });
+      
+    } catch (error) {
+      console.error('Error saving Google Cloud credentials:', error);
+      res.status(500).json({ message: 'خطا در ذخیره اطلاعات' });
+    }
+  });
+
+  // Test Google Cloud STT connection
+  app.post('/api/test/google-cloud-stt', async (req, res) => {
+    try {
+      const { testGoogleCloudSTT } = await import('./test-google-stt');
+      const result = await testGoogleCloudSTT();
+      res.json({ success: true, message: 'Google Cloud STT connection successful' });
+    } catch (error) {
+      console.error('Google Cloud STT test failed:', error);
+      res.status(500).json({ 
+        error: 'Google Cloud STT test failed',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
   // Danger Zone Operations
   app.post("/api/system/reset", async (req, res) => {
     try {

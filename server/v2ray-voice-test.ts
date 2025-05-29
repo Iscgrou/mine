@@ -228,7 +228,7 @@ export async function runV2RayVoiceTest(): Promise<any> {
   };
 }
 
-// Run test if called directly
-if (require.main === module) {
+// Run test if called directly (ES module compatible)
+if (import.meta.url === `file://${process.argv[1]}`) {
   runV2RayVoiceTest().catch(console.error);
 }

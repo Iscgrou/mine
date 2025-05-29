@@ -19,9 +19,9 @@ function Router() {
   return (
     <div className="flex min-h-screen bg-gray-50 rtl">
       <Sidebar />
-      <div className="flex-1 mr-64">
+      <div className="flex-1 flex flex-col lg:mr-56 xl:mr-64 2xl:mr-72 transition-all duration-300">
         <Header />
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto p-4 lg:p-6">
           <Switch>
             <Route path="/" component={Dashboard} />
             <Route path="/dashboard" component={Dashboard} />

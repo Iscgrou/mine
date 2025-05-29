@@ -125,8 +125,8 @@ export default function RepresentativeForm({ representative, onSuccess }: Repres
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+        <div className="grid grid-cols-2 gap-3">
           <FormField
             control={form.control}
             name="fullName"
@@ -156,7 +156,7 @@ export default function RepresentativeForm({ representative, onSuccess }: Repres
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-2 gap-3">
           <FormField
             control={form.control}
             name="phoneNumber"
@@ -201,9 +201,9 @@ export default function RepresentativeForm({ representative, onSuccess }: Repres
         />
 
         {/* Limited Subscription Pricing Section */}
-        <div className="border border-gray-200 rounded-lg p-4">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">قیمت‌گذاری اشتراک حجمی (1-6 ماه)</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="border border-gray-200 rounded-lg p-3">
+          <h3 className="text-sm font-medium text-gray-900 mb-2">قیمت‌گذاری اشتراک حجمی (1-6 ماه)</h3>
+          <div className="grid grid-cols-3 gap-2">
             {[
               { field: 'limitedPrice1Month', label: '1 ماه' },
               { field: 'limitedPrice2Month', label: '2 ماه' },

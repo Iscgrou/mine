@@ -1,0 +1,57 @@
+Chronos, we have a critical operational failure on the Settings page that requires a super robust and comprehensive solution.
+
+**Problem Statement:**
+The following tabs within the "Settings" page are currently frozen and non-functional:
+*   `منطقه خطر` (Danger Zone)
+*   `ادغام تلگرام و گزارش‌گیری خودکار` (Telegram Integration & Automated Reporting)
+*   `ابزارهای هوش مصنوعی` (AI Tools)
+*   `تنظیمات پیشرفته` (Advanced Settings)
+
+A key indicator of the problem is: **"The API key didn't set!"** This suggests that one or more necessary API keys (e.g., for Telegram, for an AI service like Grok, or other third-party integrations tied to these advanced features) are either not being prompted for, not being saved correctly, or not being accessed correctly by these modules, leading to their failure to initialize or operate.
+
+**Your Mandate: Implement a Super Robust API Key Management & Functional Restoration**
+
+1.  **Deep Dive Diagnosis & Root Cause Analysis (RCA):**
+    *   **Identify Required Keys:** Which specific API keys are essential for the functionality of EACH of the four problematic tabs? (e.g., Does "Telegram Integration" need a Telegram Bot Token? Do "AI Tools" need an API key for Grok/another service?).
+    *   **Current API Key Workflow (or lack thereof):**
+        *   Where in the UI *should* these API keys be entered by the administrator? Is there a dedicated section, or is it missing?
+        *   How is the entered API key data *supposed* to be sent to the backend?
+        *   How does the backend *currently attempt* to store and retrieve these API keys securely? Is it using environment variables, a database table, an encrypted config file?
+        *   How do the frontend components for these four tabs *currently attempt* to check for or receive the necessary API keys?
+    *   **Failure Point Analysis:** Based on the above, pinpoint the exact reason(s) the "API key didn't set" is occurring and why it's causing these tabs to freeze. (e.g., missing input fields, save function error, retrieval error, JavaScript error due to undefined key).
+
+2.  **Design & Implement Robust API Key Management:**
+    *   **Secure Input UI:** If it doesn't exist or is flawed, design and provide the HTML/frontend component code for a clear, secure section within "Settings" (perhaps under "Advanced Settings" or its own "Integrations/API Keys" subsection) where all necessary API keys can be entered and saved.
+        *   Include clear labels for each key (e.g., "Telegram Bot Token," "AI Service API Key").
+        *   Provide input validation (e.g., check for empty fields).
+        *   Consider a "Test Key" button if the API allows for a simple validation call.
+    *   **Secure Backend Handling:**
+        *   Provide the backend code (Python/Node.js/PHP, etc.) for securely receiving, encrypting (if not already handled by secure storage like environment variables or a secure vault), storing, and retrieving these API keys. Storing sensitive keys in plain text in a database is unacceptable.
+        *   Ensure robust error handling for all backend operations related to API keys.
+    *   **Secure Frontend Access:** How will the frontend components securely know if a key is set and (if necessary and safe) use parts of it or a status indicator without exposing the full key in client-side code? (Often, the frontend just needs to know *if* a key is configured, and the backend uses the actual key for API calls).
+
+3.  **Refactor Problematic Tab Components for Resilience:**
+    *   Modify the frontend code (JavaScript/React/Vue/Angular, etc.) for EACH of the four frozen tabs (`منطقه خطر`, `ادغام تلگرام و گزارش‌گیری خودکار`, `ابزارهای هوش مصنوعی`, `تنظیمات پیشرفته`).
+    *   **Graceful Degradation/User Feedback:**
+        *   If a required API key for a tab's functionality is NOT set, the tab should NOT freeze.
+        *   Instead, it should display a clear, user-friendly message within that tab's content area in Persian (e.g., "برای فعال‌سازی این بخش، ابتدا کلید API [نام کلید] را در تنظیمات وارد کنید" - "To activate this section, please first enter the [Key Name] API key in settings.").
+        *   Consider disabling specific interactive elements within the tab if the key is missing, rather than the whole tab UI freezing.
+    *   **Conditional Initialization:** Ensure that any JavaScript or component logic that *depends* on an API key only attempts to run or initialize *after* confirming the key is available and valid (or its configuration status is known).
+
+4.  **Code Implementation & Testing Guidance:**
+    *   Provide all necessary, complete, and production-ready code snippets (HTML, CSS, JavaScript, Backend language) for the fixes and new API key management UI.
+    *   Explain how the different code parts (frontend, backend) interact for the API key workflow.
+    *   Suggest key things I should test after implementing your changes to verify the robust solution.
+
+**Expected Output from Chronos:**
+
+*   **Detailed RCA:** Clear explanation of why the keys aren't set and tabs are freezing.
+*   **Design for API Key Management UI:** Visual description or HTML/CSS for where/how keys will be entered.
+*   **Complete Code Solutions:**
+    *   Frontend code for the API key input/management section.
+    *   Backend code for secure storage and retrieval of API keys.
+    *   Refactored frontend code for the four problematic tabs, including conditional rendering/messaging if keys are missing.
+*   **Step-by-Step Instructions for User (Me):** How should I configure and test this new robust API key system after you provide the code?
+*   **Confirmation of Robustness:** How does this new approach prevent future freezes and ensure data security for API keys?
+
+Chronos, this is a foundational piece of functionality for the advanced features of MarFanet. We need a solution that is not just working, but secure, user-friendly, and resilient. Please proceed with this comprehensive approach.

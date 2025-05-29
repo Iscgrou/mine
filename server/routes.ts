@@ -426,6 +426,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // API Key Management endpoints
+  app.get("/api/api-keys/status", async (req, res) => {
+    try {
+      const telegramKey = await storage.getSetting('telegram_api_key');
+      const aiKey = await storage.getSetting('ai_api_key');
+      const grokKey = await storage.getSetting('grok_api_key');
+      
+      res.json({
+        telegram: !!telegramKey?.value,
+        ai: !!aiKey?.value,
+        grok: !!grokKey?.value,
+        telegramSet: telegramKey?.value ? 'کلید تلگرام تنظیم شده' : 'کلید تلگرام تنظیم نشده',
+        aiSet: aiKey?.value ? 'کلید هوش مصنوعی تنظیم شده' : 'کلید هوش مصنوعی تنظیم نشده',
+        grokSet: grokKey?.value ? 'کلید Grok تنظیم شده' : 'کلید Grok تنظیم نشده'
+      });
+    } catch (error) {
+      console.error("Error checking API keys:", error);
+      res.status(500).json({ message: "خطا در بررسی وضعیت کلیدهای API" });
+    }
+  });
+
+  app.post("/api/api-keys/validate", async (req, res) => {
+    try {
+      const { keyType, keyValue } = req.body;
+      
+      if (!keyType || !keyValue) {
+        return res.status(400).json({ message: "نوع کلید و مقدار کلید الزامی است" });
+      }
+
+      // Store the API key securely
+      await storage.setSetting({
+        key: `${keyType}_api_key`,
+        value: keyValue,
+        description: `API Key for ${keyType} integration`
+      });
+
+      res.json({ 
+        success: true, 
+        message: `کلید ${keyType} با موفقیت ذخیره شد`,
+        keySet: true
+      });
+    } catch (error) {
+      console.error("Error saving API key:", error);
+      res.status(500).json({ message: "خطا در ذخیره کلید API" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

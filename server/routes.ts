@@ -486,6 +486,152 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // CRM Interactions endpoints
+  app.get("/api/crm/interactions", async (req, res) => {
+    try {
+      const interactions = await storage.getCrmInteractions();
+      res.json(interactions);
+    } catch (error) {
+      console.error("Error fetching CRM interactions:", error);
+      res.status(500).json({ message: "خطا در دریافت تعاملات مشتریان" });
+    }
+  });
+
+  app.post("/api/crm/interactions", async (req, res) => {
+    try {
+      const interaction = await storage.createCrmInteraction(req.body);
+      res.json(interaction);
+    } catch (error) {
+      console.error("Error creating CRM interaction:", error);
+      res.status(500).json({ message: "خطا در ثبت تعامل مشتری" });
+    }
+  });
+
+  app.get("/api/crm/interactions/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const interaction = await storage.getCrmInteractionById(id);
+      if (!interaction) {
+        return res.status(404).json({ message: "تعامل پیدا نشد" });
+      }
+      res.json(interaction);
+    } catch (error) {
+      console.error("Error fetching CRM interaction:", error);
+      res.status(500).json({ message: "خطا در دریافت جزئیات تعامل" });
+    }
+  });
+
+  // CRM Call Preparations endpoints
+  app.get("/api/crm/call-preparations", async (req, res) => {
+    try {
+      const preparations = await storage.getCrmCallPreparations();
+      res.json(preparations);
+    } catch (error) {
+      console.error("Error fetching call preparations:", error);
+      res.status(500).json({ message: "خطا در دریافت آماده‌سازی تماس‌ها" });
+    }
+  });
+
+  app.post("/api/crm/call-preparations", async (req, res) => {
+    try {
+      const preparation = await storage.createCrmCallPreparation(req.body);
+      res.json(preparation);
+    } catch (error) {
+      console.error("Error creating call preparation:", error);
+      res.status(500).json({ message: "خطا در ایجاد آماده‌سازی تماس" });
+    }
+  });
+
+  app.get("/api/crm/call-preparations/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const preparation = await storage.getCrmCallPreparationById(id);
+      if (!preparation) {
+        return res.status(404).json({ message: "آماده‌سازی تماس پیدا نشد" });
+      }
+      res.json(preparation);
+    } catch (error) {
+      console.error("Error fetching call preparation:", error);
+      res.status(500).json({ message: "خطا در دریافت جزئیات آماده‌سازی تماس" });
+    }
+  });
+
+  // CRM Representative Profile endpoints
+  app.get("/api/crm/representative-profiles", async (req, res) => {
+    try {
+      const profiles = await storage.getCrmRepresentativeProfiles();
+      res.json(profiles);
+    } catch (error) {
+      console.error("Error fetching representative profiles:", error);
+      res.status(500).json({ message: "خطا در دریافت پروفایل‌های نمایندگان" });
+    }
+  });
+
+  app.get("/api/crm/representative-profiles/:representativeId", async (req, res) => {
+    try {
+      const representativeId = parseInt(req.params.representativeId);
+      const profile = await storage.getCrmRepresentativeProfile(representativeId);
+      if (!profile) {
+        return res.status(404).json({ message: "پروفایل نماینده پیدا نشد" });
+      }
+      res.json(profile);
+    } catch (error) {
+      console.error("Error fetching representative profile:", error);
+      res.status(500).json({ message: "خطا در دریافت پروفایل نماینده" });
+    }
+  });
+
+  app.post("/api/crm/representative-profiles", async (req, res) => {
+    try {
+      const profile = await storage.createCrmRepresentativeProfile(req.body);
+      res.json(profile);
+    } catch (error) {
+      console.error("Error creating representative profile:", error);
+      res.status(500).json({ message: "خطا در ایجاد پروفایل نماینده" });
+    }
+  });
+
+  // CRM Stats endpoint
+  app.get("/api/crm/stats", async (req, res) => {
+    try {
+      const stats = await storage.getCrmStats();
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching CRM stats:", error);
+      res.status(500).json({ message: "خطا در دریافت آمار CRM" });
+    }
+  });
+
+  // AI-powered voice note processing endpoint
+  app.post("/api/crm/process-voice-note", async (req, res) => {
+    try {
+      const { audioUrl, interactionId } = req.body;
+      
+      // This would integrate with AI services for transcription and sentiment analysis
+      // For now, returning structured response that frontend expects
+      const result = {
+        transcription: "متن نمونه از تبدیل صدا به متن...",
+        sentiment: {
+          score: 0.7,
+          label: "مثبت",
+          confidence: 0.85
+        },
+        keyTopics: ["پیگیری سفارش", "نارضایتی از تاخیر", "درخواست تخفیف"],
+        aiSuggestions: [
+          "پیگیری فوری سفارش مشتری",
+          "ارائه تخفیف جبرانی مناسب",
+          "تماس مجدد در ۲۴ ساعت آینده"
+        ],
+        urgencyLevel: "high"
+      };
+      
+      res.json(result);
+    } catch (error) {
+      console.error("Error processing voice note:", error);
+      res.status(500).json({ message: "خطا در پردازش یادداشت صوتی" });
+    }
+  });
+
   // Danger Zone Operations
   app.post("/api/system/reset", async (req, res) => {
     try {

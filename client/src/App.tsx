@@ -17,6 +17,8 @@ import Settings from "@/pages/settings";
 import CrmDashboard from "@/pages/crm-dashboard";
 import CrmCustomers from "@/pages/crm-customers";
 import CrmTickets from "@/pages/crm-tickets";
+import CrmCallPreparation from "@/pages/crm-call-preparation";
+import CrmVoiceNotes from "@/pages/crm-voice-notes";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -38,6 +40,8 @@ function Router() {
               <Route path="/csdfjkjfoascivomrm867945/dashboard" component={CrmDashboard} />
               <Route path="/csdfjkjfoascivomrm867945/customers" component={CrmCustomers} />
               <Route path="/csdfjkjfoascivomrm867945/tickets" component={CrmTickets} />
+              <Route path="/csdfjkjfoascivomrm867945/call-preparation" component={CrmCallPreparation} />
+              <Route path="/csdfjkjfoascivomrm867945/voice-notes" component={CrmVoiceNotes} />
               <Route path="/csdfjkjfoascivomrm867945/followups" component={CrmTickets} />
               <Route path="/csdfjkjfoascivomrm867945/reports" component={Analytics} />
               <Route path="/csdfjkjfoascivomrm867945/settings" component={Settings} />

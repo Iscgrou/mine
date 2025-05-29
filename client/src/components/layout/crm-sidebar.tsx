@@ -28,6 +28,16 @@ const crmNavigationItems = [
     icon: "fas fa-ticket-alt",
   },
   {
+    name: "آماده‌سازی هوشمند تماس",
+    href: "/call-preparation",
+    icon: "fas fa-brain",
+  },
+  {
+    name: "یادداشت‌های صوتی",
+    href: "/voice-notes",
+    icon: "fas fa-microphone",
+  },
+  {
     name: "پیگیری‌ها",
     href: "/followups",
     icon: "fas fa-tasks",

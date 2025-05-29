@@ -13,6 +13,8 @@ const pageNames: Record<string, string> = {
   // CRM specific pages
   "customers": "مدیریت مشتریان",
   "tickets": "مدیریت تیکت‌ها",
+  "call-preparation": "آماده‌سازی هوشمند تماس",
+  "voice-notes": "یادداشت‌های صوتی",
   "followups": "پیگیری‌ها",
   "reports": "گزارشات CRM",
 };

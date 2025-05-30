@@ -54,8 +54,8 @@ export default function Analytics() {
     },
   });
 
-  const grokConsultationMutation = useMutation({
-    mutationFn: () => apiRequest('POST', '/api/analytics/grok-consultation', {}),
+  const vertexConsultationMutation = useMutation({
+    mutationFn: () => apiRequest('POST', '/api/analytics/vertex-consultation', {}),
     onSuccess: (data: any) => {
       toast({
         title: "موفقیت",
@@ -295,12 +295,12 @@ export default function Analytics() {
             <Button 
               variant="outline" 
               className="h-auto p-4 flex flex-col items-center"
-              onClick={() => grokConsultationMutation.mutate()}
-              disabled={grokConsultationMutation.isPending || !isGrokConfigured}
+              onClick={() => vertexConsultationMutation.mutate()}
+              disabled={vertexConsultationMutation.isPending || !isGrokConfigured}
             >
               <i className="fas fa-robot text-2xl mb-2"></i>
               <span>
-                {grokConsultationMutation.isPending 
+                {vertexConsultationMutation.isPending 
                   ? "در حال اتصال..." 
                   : !isGrokConfigured 
                     ? "نیاز به تنظیم Vertex AI" 

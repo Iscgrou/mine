@@ -4,69 +4,60 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Phase 1: Core Infrastructure - CSS Grid Layout System */
+/* Enhanced Dynamic Layout System - Flexbox Based */
 :root {
   --sidebar-width: 250px;
+  --content-width: calc(100vw - var(--sidebar-width));
   --content-padding: 2rem;
-  --available-width: calc(100vw - var(--sidebar-width));
   --transition-duration: 0.3s;
   --transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Sidebar State Variables */
+/* Sidebar State Management */
 [data-sidebar="open"] {
   --sidebar-width: 250px;
-  --available-width: calc(100vw - 250px);
+  --content-width: calc(100vw - 250px);
 }
 
 [data-sidebar="closed"] {
   --sidebar-width: 0px;
-  --available-width: 100vw;
+  --content-width: 100vw;
 }
 
-[data-sidebar="hidden"] {
-  --sidebar-width: 0px;
-  --available-width: 100vw;
-}
-
-[data-sidebar="collapsed"] {
-  --sidebar-width: 60px;
-  --available-width: calc(100vw - 60px);
-}
-
-/* Main Application Layout - CSS Grid */
+/* Main Application Layout - Flexbox */
 .app-layout {
-  display: grid;
-  grid-template-columns: var(--sidebar-width) 1fr;
-  grid-template-rows: 1fr;
+  display: flex;
   min-height: 100vh;
-  transition: grid-template-columns var(--transition-duration) var(--transition-easing);
   position: relative;
   overflow-x: hidden;
 }
 
-[data-sidebar="closed"] .app-layout,
-[data-sidebar="hidden"] .app-layout {
-  grid-template-columns: 0fr 1fr;
+/* Sidebar Container */
+.sidebar-container {
+  width: var(--sidebar-width);
+  flex-shrink: 0;
+  transition: width var(--transition-duration) var(--transition-easing);
+  overflow: hidden;
+  position: relative;
+  z-index: 20;
 }
 
-[data-sidebar="collapsed"] .app-layout {
-  grid-template-columns: 60px 1fr;
+[data-sidebar="closed"] .sidebar-container {
+  width: 0;
 }
 
-/* Dynamic Content Area */
-.dynamic-main-content {
-  grid-column: 2;
-  min-width: 0; /* Prevents grid blowout */
+/* Main Content Container */
+.main-content-container {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  container-type: inline-size;
-  width: 100%;
-  position: relative;
+  width: var(--content-width);
+  min-width: 0;
+  transition: width var(--transition-duration) var(--transition-easing);
 }
 
-/* Header within dynamic content */
-.dynamic-header {
+/* Header */
+.app-header {
   width: 100%;
   flex-shrink: 0;
   position: sticky;
@@ -76,49 +67,81 @@
   border-bottom: 1px solid var(--border);
 }
 
-/* Main content area with container queries */
-.responsive-content {
+/* Page Content */
+.page-content {
   flex: 1;
-  width: 100%;
   padding: var(--content-padding);
   overflow-y: auto;
-  min-height: 0; /* Allow flex child to shrink */
+  width: 100%;
+  container-type: inline-size;
 }
 
-/* Container Query Based Responsive Grid */
+/* Responsive Container Queries */
 @container (min-width: 400px) {
-  .content-grid-responsive {
+  .responsive-grid {
     grid-template-columns: 1fr;
   }
 }
 
 @container (min-width: 600px) {
-  .content-grid-responsive {
+  .responsive-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @container (min-width: 900px) {
-  .content-grid-responsive {
+  .responsive-grid {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
 @container (min-width: 1200px) {
-  .content-grid-responsive {
+  .responsive-grid {
     grid-template-columns: repeat(4, 1fr);
   }
 }
 
-/* Sidebar Element Identification */
-.sidebar-element {
-  grid-column: 1;
-  position: relative;
-  overflow: hidden;
-  transition: width var(--transition-duration) var(--transition-easing);
+/* Dashboard Stats Grid */
+.stats-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  container-type: inline-size;
 }
 
-/* Mobile-first approach */
+@container (max-width: 400px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+/* Card Grid System */
+.card-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+/* Table Responsiveness */
+.responsive-table-container {
+  width: 100%;
+  overflow-x: auto;
+  container-type: inline-size;
+}
+
+@container (max-width: 600px) {
+  .responsive-table {
+    font-size: 0.875rem;
+  }
+  
+  .responsive-table th,
+  .responsive-table td {
+    padding: 0.5rem;
+  }
+}
+
+/* Mobile Responsive */
 @media (max-width: 767px) {
   :root {
     --content-padding: 1rem;
@@ -126,7 +149,7 @@
   
   [data-sidebar="open"] {
     --sidebar-width: 0px;
-    --available-width: 100vw;
+    --content-width: 100vw;
   }
 }
 

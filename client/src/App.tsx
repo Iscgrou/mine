@@ -38,11 +38,13 @@ function Router() {
   // CRM Layout
   if (isCrmSection) {
     return (
-      <div className="app-layout min-h-screen bg-gray-50 rtl">
-        <CrmSidebar />
-        <div className="dynamic-main-content">
+      <div className="app-layout bg-gray-50 rtl">
+        <div className="sidebar-container">
+          <CrmSidebar />
+        </div>
+        <div className="main-content-container">
           <Header />
-          <main className="responsive-content">
+          <main className="page-content">
             <Switch>
               <Route path="/crm" component={CrmDashboard} />
               <Route path="/crm/" component={CrmDashboard} />
@@ -64,11 +66,13 @@ function Router() {
 
   // Admin Layout (default)
   return (
-    <div className="app-layout min-h-screen bg-gray-50 rtl">
-      <Sidebar />
-      <div className="dynamic-main-content">
+    <div className="app-layout bg-gray-50 rtl">
+      <div className="sidebar-container">
+        <Sidebar />
+      </div>
+      <div className="main-content-container">
         <Header />
-        <main className="responsive-content">
+        <main className="page-content">
           <Switch>
             {/* Admin routes with new clean paths */}
             <Route path="/admin" component={Dashboard} />

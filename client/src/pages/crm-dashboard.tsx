@@ -281,13 +281,13 @@ export default function CrmDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50/50 via-white to-purple-50/30">
+    <div className="w-full max-w-full overflow-x-hidden bg-gradient-to-br from-blue-50/50 via-white to-purple-50/30 p-4">
       {/* Animated Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="mb-8"
+        className="mb-6"
       >
         <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
           <div>
@@ -370,9 +370,9 @@ export default function CrmDashboard() {
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 max-w-full">
         {/* Left Column - Recent Activity */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="xl:col-span-2 space-y-6 min-w-0">
           {/* Search and Filters */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}

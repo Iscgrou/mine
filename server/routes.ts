@@ -14,6 +14,7 @@ import { registerVoiceWorkflowTests } from "./voice-workflow-test";
 import { registerSTTDiagnostic } from "./stt-diagnostic";
 import { projectPhoenixOrchestrator } from './project-phoenix-orchestrator';
 import { phase2Orchestrator } from './phase2-vertex-ai-orchestrator';
+import { vertexAICustomerIntelligence, type CustomerAnalysisData, type CustomerPrediction } from "./vertex-ai-customer-intelligence";
 import { 
   insertRepresentativeSchema, 
   insertInvoiceSchema, 
@@ -28,6 +29,76 @@ import path from "path";
 import fs from "fs";
 
 // Authentic Data Analysis for V2Ray Revenue Prediction - ABSOLUTE DATA INTEGRITY
+
+/**
+ * Build customer analysis data from authentic database sources
+ */
+async function buildCustomerAnalysisData(customerId: number): Promise<CustomerAnalysisData | null> {
+  try {
+    // Get customer data from representatives table
+    const customer = await storage.getRepresentativeById(customerId);
+    if (!customer) {
+      return null;
+    }
+
+    // Get interaction history from invoices and payments
+    const invoices = await storage.getInvoices();
+    const customerInvoices = invoices.filter(inv => inv.representativeId === customerId);
+    
+    // Build interaction history from actual invoices and payments
+    const interactionHistory = customerInvoices.map(invoice => ({
+      date: new Date(invoice.issueDate),
+      type: 'payment' as const,
+      sentiment: (invoice.status === 'paid' ? 'positive' : 
+                 invoice.status === 'overdue' ? 'negative' : 'neutral') as const,
+      content: `فاکتور ${invoice.invoiceNumber} - ${invoice.totalAmount} تومان`,
+      resolved: invoice.status === 'paid'
+    }));
+
+    // Build subscription history from invoices
+    const subscriptionHistory = customerInvoices.map(invoice => ({
+      date: new Date(invoice.issueDate),
+      serviceType: (invoice.serviceType || 'unlimited') as 'unlimited' | 'limited',
+      amount: parseFloat(invoice.totalAmount || '0'),
+      duration: 30, // Default monthly duration
+      status: (invoice.status === 'paid' ? 'active' : 
+              invoice.status === 'overdue' ? 'expired' : 'cancelled') as const
+    }));
+
+    // Calculate financial metrics from actual data
+    const totalRevenue = customerInvoices.reduce((sum, inv) => 
+      sum + parseFloat(inv.totalAmount || '0'), 0
+    );
+    
+    const paidInvoices = customerInvoices.filter(inv => inv.status === 'paid');
+    const paymentReliability = customerInvoices.length > 0 ? 
+      paidInvoices.length / customerInvoices.length : 0;
+    
+    const lastPaidInvoice = paidInvoices
+      .sort((a, b) => new Date(b.issueDate).getTime() - new Date(a.issueDate).getTime())[0];
+
+    return {
+      customerId,
+      interactionHistory,
+      subscriptionHistory,
+      financialMetrics: {
+        totalRevenue,
+        averageMonthlyValue: customerInvoices.length > 0 ? totalRevenue / customerInvoices.length : 0,
+        paymentReliability,
+        lastPaymentDate: lastPaidInvoice ? new Date(lastPaidInvoice.issueDate) : new Date()
+      },
+      demographicData: {
+        region: customer.region || 'نامشخص',
+        representativeId: customerId,
+        accountAge: Math.floor((Date.now() - new Date(customer.createdAt || Date.now()).getTime()) / (1000 * 60 * 60 * 24)),
+        preferredContactTime: '10:00-12:00' // Default business hours
+      }
+    };
+  } catch (error) {
+    console.error('Error building customer analysis data:', error);
+    return null;
+  }
+}
 async function generateAuthenticDataAnalysis(revenueData: any, timeframe: string) {
   const currentRevenue = revenueData.summary.totalRevenue;
   const weeklyTrends = revenueData.trends;
@@ -1695,6 +1766,94 @@ ${metrics.commonTopics.map((topic: any) => `- ${topic.topic}: ${topic.frequency}
     } catch (error) {
       console.error("Error processing voice note:", error);
       res.status(500).json({ message: "خطا در پردازش یادداشت صوتی" });
+    }
+  });
+
+  // Vertex AI Customer Intelligence endpoints
+  app.post("/api/ai/customer-analysis", async (req, res) => {
+    try {
+      const { customerId } = req.body;
+      
+      if (!customerId) {
+        return res.status(400).json({ message: "شناسه مشتری الزامی است" });
+      }
+
+      // Build customer analysis data from existing database
+      const customerData = await buildCustomerAnalysisData(customerId);
+      if (!customerData) {
+        return res.status(404).json({ message: "اطلاعات مشتری یافت نشد" });
+      }
+
+      const prediction = await vertexAICustomerIntelligence.analyzeCustomerBehavior(customerData);
+      
+      res.json({
+        success: true,
+        prediction,
+        generatedAt: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Customer analysis error:", error);
+      res.status(500).json({ 
+        message: "خطا در تحلیل رفتار مشتری",
+        error: error instanceof Error ? error.message : "خطای نامشخص"
+      });
+    }
+  });
+
+  app.post("/api/ai/batch-customer-analysis", async (req, res) => {
+    try {
+      const { customerIds } = req.body;
+      
+      if (!customerIds || !Array.isArray(customerIds)) {
+        return res.status(400).json({ message: "فهرست شناسه مشتریان الزامی است" });
+      }
+
+      const customersData: CustomerAnalysisData[] = [];
+      for (const customerId of customerIds) {
+        const customerData = await buildCustomerAnalysisData(customerId);
+        if (customerData) {
+          customersData.push(customerData);
+        }
+      }
+
+      const predictions = await vertexAICustomerIntelligence.batchAnalyzeCustomers(customersData);
+      
+      res.json({
+        success: true,
+        predictions,
+        totalAnalyzed: predictions.length,
+        generatedAt: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Batch customer analysis error:", error);
+      res.status(500).json({ 
+        message: "خطا در تحلیل گروهی مشتریان",
+        error: error instanceof Error ? error.message : "خطای نامشخص"
+      });
+    }
+  });
+
+  app.post("/api/ai/intervention-strategy", async (req, res) => {
+    try {
+      const { prediction } = req.body;
+      
+      if (!prediction || !prediction.churnRisk) {
+        return res.status(400).json({ message: "پیش‌بینی ریسک مشتری الزامی است" });
+      }
+
+      const strategy = await vertexAICustomerIntelligence.generateInterventionStrategy(prediction);
+      
+      res.json({
+        success: true,
+        strategy,
+        generatedAt: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Intervention strategy error:", error);
+      res.status(500).json({ 
+        message: "خطا در تولید استراتژی مداخله",
+        error: error instanceof Error ? error.message : "خطای نامشخص"
+      });
     }
   });
 

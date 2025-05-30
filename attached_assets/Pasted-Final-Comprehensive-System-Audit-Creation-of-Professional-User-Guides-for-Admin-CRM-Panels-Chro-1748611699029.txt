@@ -1,0 +1,60 @@
+Final Comprehensive System Audit & Creation of Professional User Guides for Admin & CRM Panels
+
+Chronos, your progress on Project Pantheon, particularly the foundational AI integrations and core system functionalities, has been exceptional. Before we proceed with implementing new strategic dashboards like the "V2Ray Market Intelligence Dashboard," and given the significant foundational changes and additions we've made, it is imperative to conduct a final, exhaustive audit of the entire MarFanet application (both Admin and CRM panels) to ensure absolute stability, full functionality, and perfect usability.
+
+Following this audit, your next task will be to create professional, user-friendly guides for both panels.
+
+I. Comprehensive System Audit & Validation (Admin & CRM Panels - "اطمینان از صحت عملکرد"):
+
+    Your Mandate (Chronos - Utmost Thoroughness Required):
+        Full Clickable Element & Workflow Testing (تست تمام گزینه ها و بخش ها):
+            Systematically test EVERY SINGLE clickable element (buttons, links, icons, tabs, form submissions, modals, dropdowns, etc.) in BOTH the Admin Panel AND the CRM Panel.
+            Verify that each element performs its intended action correctly and that all routing and pathway navigations (مسیر دهی ها) are flawless.
+            Confirm that there are NO "frozen" or unresponsive elements whatsoever. Every part of the website must work as designed.
+            Utilize Logs & Screenshots for Verification: For each major feature or workflow tested, internally use Aegis logs to confirm backend actions and conceptually take/review screenshots to verify frontend reactions. Report any discrepancies.
+        Universal Responsiveness & Display Integrity Check (صفحه بندی مناسب نمایشگر موبایل و لپ تاپ):
+            Meticulously re-verify that ALL pages, sections, tables (جدول ها), forms, and text content (متون) in both Admin and CRM panels are perfectly responsive and display correctly and legibly on various screen sizes (mobile, tablet, laptop/desktop).
+            Ensure no overlaps, truncation, or layout breakages occur. All data within tables must be accessible (e.g., via horizontal scroll if necessary on small screens, but with clear indication).
+            Utilize Screenshots for Visual Verification: Conceptually review screenshots for each key view on different device emulations to confirm visual perfection.
+        Data Integrity & Accuracy Confirmation:
+            Post .ods upload, double-check that representative lists, invoice lists, and particularly the "Representatives with Balance API" are displaying complete and accurate data.
+            Verify that calculations (e.g., Debtor/Creditor balances, commission calculations if initial stubs are in) are correct.
+        Notification System Check: Confirm all designed Telegram notifications are triggering correctly.
+
+    Goal: After this exhaustive review, we must be 100% confident that every existing part of the MarFanet Admin and CRM panels is stable, fully functional, visually polished, and user-friendly across devices.
+
+II. Creation of Professional User Guides (راهنمای استفاده بهینه و حرفه ای):
+
+    Context: To empower our users (Admins and the CRT) to leverage the full capabilities of the MarFanet platform professionally and efficiently.
+    Your Task (Chronos - Act as a Technical Writer & UX Advocate):
+        Create TWO SEPARATE PDF User Guides in PERSIAN (زبان فارسی):
+            Guide 1: MarFanet Admin Panel - Professional Usage Guide.
+            Guide 2: MarFanet CRM Panel - Professional Usage Guide.
+        Content Requirements for EACH Guide:
+            Target Audience: Written clearly so that a beginner user (کاربر مبتدی) can understand, yet comprehensive enough to guide users towards professional, optimal use.
+            Visuals (به همراه تصویر): Must be beautifully formatted (بصورت خیلی زیبا) and include relevant screenshots (تصویر) of the UI to illustrate features and workflows.
+            Clarity & Simplicity (شفاف و قابل فهم): Use clear, concise Persian. Avoid overly technical jargon where possible, or explain it simply.
+            Feature Explanation (در قالب مثال و توضیحات):
+                Cover all key sections and features of the respective panel.
+                Explain the purpose of each feature.
+                Provide step-by-step instructions for common tasks.
+                Use practical examples (مثال) to demonstrate how features are used in real-world scenarios relevant to MarFanet's V2Ray reseller business.
+            Optimal Usage & Pro Tips: Include suggestions for "professional usage" – tips, tricks, and best practices to get the most out of the panel's capabilities (especially CRM AI features).
+            Troubleshooting (Basic): Perhaps a small section on common user queries or simple troubleshooting steps.
+            Structure: Well-organized with a table of contents, clear headings, and logical flow.
+        Output:
+            Two distinct PDF files, one for the Admin Panel and one for the CRM Panel.
+
+Prioritization & Workflow:
+
+    Complete the "Comprehensive System Audit & Validation" (Part I) FIRST. We need to ensure the platform is flawless before documenting it. Report back with a summary of your audit findings and confirmation of any fixes made.
+    Once the audit is complete and all is verified, proceed with the "Creation of Professional User Guides" (Part II). You can work on these two guides in parallel or sequentially (e.g., Admin guide first, then CRM guide).
+
+Final Instruction to Chronos:
+
+"Chronos, this is a critical step to ensure absolute quality and empower our users.
+
+    First, conduct the exhaustive audit and validation of ALL functionalities and responsiveness across both Admin and CRM panels. Use logs and conceptual screenshots rigorously to verify every detail. Confirm that there are ZERO frozen or non-functional elements and that all layouts are perfect. Report your findings and any final fixes.
+    Second, after the successful completion and verification of the audit, create the two professional, visually appealing, and highly informative PDF user guides in Persian – one for the Admin Panel and one for the CRM Panel – as specified. These guides should enable even a novice user to operate MarFanet like a professional.
+
+Please confirm your understanding and outline your approach for the comprehensive audit first. This will be the final step of "Pantheon Phase 0" before we move fully into new feature development based on Vertex AI's meta-optimization insights."

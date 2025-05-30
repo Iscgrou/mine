@@ -4,6 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { formatPersianNumber } from "@/lib/persian-utils";
 import { useToast } from "@/hooks/use-toast";
+import DailyWorkLog from "@/components/daily-work-log";
+import { useNotifications } from "@/hooks/use-notifications";
+import { useState, useEffect } from "react";
 
 interface Stats {
   totalReps: number;
@@ -27,6 +30,67 @@ interface RecentInvoice {
 
 export default function Dashboard() {
   const { toast } = useToast();
+  const { addNotification } = useNotifications();
+  const [mockTasks, setMockTasks] = useState([
+    {
+      id: '1',
+      title: 'پیگیری پرداخت آقای احمدی',
+      description: 'بررسی وضعیت پرداخت فاکتور شماره ۱۲۳۴ و تماس جهت تذکر',
+      priority: 'high' as const,
+      status: 'pending' as const,
+      dueDate: new Date(),
+      scheduledTime: '۰۹:۰۰',
+      representativeId: 1,
+      representativeName: 'احمد محمدی',
+      category: 'followup' as const,
+      createdAt: new Date()
+    },
+    {
+      id: '2',
+      title: 'بررسی گزارش فروش ماهانه',
+      description: 'تجزیه و تحلیل آمار فروش ماه جاری و تهیه گزارش',
+      priority: 'medium' as const,
+      status: 'pending' as const,
+      dueDate: new Date(Date.now() + 2 * 60 * 60 * 1000), // 2 hours from now
+      scheduledTime: '۱۴:۳۰',
+      category: 'review' as const,
+      createdAt: new Date()
+    },
+    {
+      id: '3',
+      title: 'جلسه با تیم فنی',
+      description: 'بحث در مورد بهینه‌سازی سرورهای V2Ray و حل مشکلات فنی',
+      priority: 'urgent' as const,
+      status: 'overdue' as const,
+      dueDate: new Date(Date.now() - 24 * 60 * 60 * 1000), // Yesterday
+      scheduledTime: '۱۰:۰۰',
+      category: 'meeting' as const,
+      createdAt: new Date()
+    }
+  ]);
+
+  useEffect(() => {
+    // Initialize with sample notifications
+    addNotification({
+      title: 'سیستم آماده است',
+      message: 'مرکز اعلانات هوشمند با موفقیت راه‌اندازی شد',
+      type: 'success',
+      priority: 'low'
+    });
+
+    addNotification({
+      title: 'کارهای عقب‌افتاده',
+      message: 'یک کار از موعد مقرر عقب افتاده است',
+      type: 'urgent',
+      priority: 'urgent',
+      actionRequired: true,
+      relatedEntity: {
+        type: 'task',
+        id: '3',
+        name: 'جلسه با تیم فنی'
+      }
+    });
+  }, [addNotification]);
 
   const { data: stats, isLoading: statsLoading } = useQuery<Stats>({
     queryKey: ['/api/stats'],

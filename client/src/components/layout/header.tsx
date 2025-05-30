@@ -1,5 +1,7 @@
 import { useMemo } from "react";
 import { useLocation } from "wouter";
+import NotificationCenter from "@/components/notification-center";
+import { useNotifications } from "@/hooks/use-notifications";
 
 const pageNames: Record<string, string> = {
   "dashboard": "داشبورد",
@@ -43,6 +45,7 @@ function getPageFromPath(path: string): string {
 
 export default function Header() {
   const [location] = useLocation();
+  const { notifications, markAsRead, markAllAsRead, dismiss } = useNotifications();
   
   const currentPageTitle = useMemo(() => {
     const pageName = getPageFromPath(location);
@@ -59,6 +62,25 @@ export default function Header() {
     return persianDate;
   }, []);
 
+  const handleNotificationAction = (notification: any) => {
+    // Handle notification action clicks - navigate to relevant page
+    if (notification.relatedEntity) {
+      switch (notification.relatedEntity.type) {
+        case 'invoice':
+          window.location.href = '/admin/invoices';
+          break;
+        case 'representative':
+          window.location.href = '/admin/representatives';
+          break;
+        case 'task':
+          // Navigate to task management or dashboard
+          break;
+        default:
+          break;
+      }
+    }
+  };
+
   return (
     <header className="bg-white border-b border-gray-200 px-6 py-4">
       <div className="flex items-center justify-between">
@@ -72,6 +94,15 @@ export default function Header() {
         </div>
         
         <div className="flex items-center space-x-reverse space-x-4">
+          {/* Notification Center */}
+          <NotificationCenter
+            notifications={notifications}
+            onMarkAsRead={markAsRead}
+            onMarkAllAsRead={markAllAsRead}
+            onDismiss={dismiss}
+            onActionClick={handleNotificationAction}
+          />
+          
           {/* System Status */}
           <div className="flex items-center text-sm text-gray-600">
             <div className="w-2 h-2 bg-green-500 rounded-full ml-2"></div>

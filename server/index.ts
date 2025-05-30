@@ -8,8 +8,11 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Path-based access control middleware
+// Path-based access control middleware with enhanced debugging
 app.use((req: Request, res: Response, next: NextFunction) => {
+  // Log all incoming requests for debugging
+  console.log(`[DEBUG] Incoming request: ${req.method} ${req.path} from ${req.ip}`);
+  
   // Apply security headers to all responses
   Object.entries(AUTH_CONFIG.SECURITY_HEADERS).forEach(([header, value]) => {
     res.setHeader(header, value);
@@ -17,6 +20,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
   // Allow API routes to pass through (they're accessed via AJAX from authorized pages)
   if (req.path.startsWith('/api/')) {
+    console.log(`[DEBUG] API route allowed: ${req.path}`);
     return next();
   }
 
@@ -26,11 +30,13 @@ app.use((req: Request, res: Response, next: NextFunction) => {
       req.path.startsWith('/@fs/') ||
       req.path.startsWith('/src/') ||
       req.path.startsWith('/node_modules/')) {
+    console.log(`[DEBUG] Vite asset allowed: ${req.path}`);
     return next();
   }
 
   // Allow static assets (CSS, JS, images) to pass through
   if (req.path.match(/\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|tsx|ts|jsx)$/)) {
+    console.log(`[DEBUG] Static asset allowed: ${req.path}`);
     return next();
   }
 
@@ -89,8 +95,18 @@ app.use((req: Request, res: Response, next: NextFunction) => {
     }
   }
 
-  // Temporarily disable path restrictions for debugging
-  if (false && !isAuthorizedPath(req.path)) {
+  // Check if path is authorized (admin or CRM secret paths)
+  const isAuthorized = isAuthorizedPath(req.path);
+  console.log(`[DEBUG] Path authorization check: ${req.path} -> ${isAuthorized}`);
+  
+  // Allow admin and CRM secret paths
+  if (isAuthorized) {
+    console.log(`[DEBUG] Authorized path allowed: ${req.path}`);
+    return next();
+  }
+  
+  // Block unauthorized paths (except development mode)
+  if (app.get("env") !== "development" && !isAuthorized) {
     console.log(`[SECURITY] Unauthorized access attempt: ${req.path} from ${req.ip} - User-Agent: ${req.get('User-Agent')}`);
     
     res.set({
@@ -138,6 +154,12 @@ app.use((req: Request, res: Response, next: NextFunction) => {
     `);
   }
 
+  // In development mode, allow all paths for easier debugging
+  if (app.get("env") === "development") {
+    console.log(`[DEBUG] Development mode - allowing path: ${req.path}`);
+    return next();
+  }
+  
   // If authorized path, continue to serve the application
   next();
 });

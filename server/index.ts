@@ -19,8 +19,17 @@ app.use((req: Request, res: Response, next: NextFunction) => {
     return next();
   }
 
+  // Allow Vite development assets to pass through
+  if (req.path.startsWith('/@vite/') || 
+      req.path.startsWith('/@react-refresh') || 
+      req.path.startsWith('/@fs/') ||
+      req.path.startsWith('/src/') ||
+      req.path.startsWith('/node_modules/')) {
+    return next();
+  }
+
   // Allow static assets (CSS, JS, images) to pass through
-  if (req.path.match(/\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$/)) {
+  if (req.path.match(/\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|tsx|ts|jsx)$/)) {
     return next();
   }
 

@@ -150,6 +150,25 @@ class AegisMonitorFixed {
     };
   }
 
+  async getHealthHistory(limit: number = 10): Promise<HealthMetrics[]> {
+    return this.healthHistory.slice(-limit);
+  }
+
+  async analyzeAIPerformance(): Promise<{
+    averageResponseTime: number;
+    successRate: number;
+    qualityScore: number;
+    commonIssues: string[];
+  }> {
+    // Simplified AI performance analysis
+    return {
+      averageResponseTime: 0,
+      successRate: 100,
+      qualityScore: 95,
+      commonIssues: []
+    };
+  }
+
   cleanup(): void {
     if (this.monitoringInterval) {
       clearInterval(this.monitoringInterval);

@@ -3,7 +3,9 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
+// Remove aegis client import for now
 import { apiRequest } from "@/lib/queryClient";
 
 interface FileImport {
@@ -20,6 +22,7 @@ export default function ImportOds() {
   const [isDragging, setIsDragging] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
+  const [selectedImport, setSelectedImport] = useState<FileImport | null>(null);
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -128,6 +131,11 @@ export default function ImportOds() {
     if (files && files.length > 0) {
       handleFileSelect(files[0]);
     }
+  };
+
+  const handleViewDetails = (fileImport: FileImport) => {
+    setSelectedImport(fileImport);
+    console.log('File import details clicked:', fileImport.id);
   };
 
   const getStatusBadge = (status: string) => {

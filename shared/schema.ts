@@ -30,6 +30,11 @@ export const representatives = pgTable("representatives", {
   limitedPrice6Month: decimal("limited_price_6_month", { precision: 10, scale: 2 }),
   unlimitedMonthlyPrice: decimal("unlimited_monthly_price", { precision: 10, scale: 2 }), // For unlimited monthly
   status: text("status").default("active"), // active, inactive, suspended
+  // Collaborator Program Fields
+  sourcingType: text("sourcing_type").default("direct"), // 'direct', 'collaborator_introduced'
+  collaboratorId: integer("collaborator_id").references(() => collaborators.id),
+  volumeCommissionRate: decimal("volume_commission_rate", { precision: 5, scale: 2 }), // Percentage for volume subscriptions
+  unlimitedCommissionRate: decimal("unlimited_commission_rate", { precision: 5, scale: 2 }), // Percentage for unlimited subscriptions
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -110,6 +115,51 @@ export const financialLedger = pgTable("financial_ledger", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Collaborators (Affiliate/Partner Program)
+export const collaborators = pgTable("collaborators", {
+  id: serial("id").primaryKey(),
+  collaboratorName: text("collaborator_name").notNull(),
+  uniqueCollaboratorId: text("unique_collaborator_id").notNull().unique(),
+  phoneNumber: text("phone_number"),
+  telegramId: text("telegram_id"),
+  email: text("email"),
+  bankAccountDetails: text("bank_account_details"), // Encrypted storage
+  currentAccumulatedEarnings: decimal("current_accumulated_earnings", { precision: 12, scale: 2 }).default("0"),
+  totalEarningsToDate: decimal("total_earnings_to_date", { precision: 12, scale: 2 }).default("0"),
+  totalPayoutsToDate: decimal("total_payouts_to_date", { precision: 12, scale: 2 }).default("0"),
+  status: text("status").default("active"), // active, inactive, pending_approval
+  dateJoined: timestamp("date_joined").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Commission Records for detailed tracking
+export const commissionRecords = pgTable("commission_records", {
+  id: serial("id").primaryKey(),
+  collaboratorId: integer("collaborator_id").references(() => collaborators.id).notNull(),
+  representativeId: integer("representative_id").references(() => representatives.id).notNull(),
+  invoiceId: integer("invoice_id").references(() => invoices.id).notNull(),
+  transactionDate: timestamp("transaction_date").defaultNow().notNull(),
+  revenueType: text("revenue_type").notNull(), // 'volume', 'unlimited'
+  baseRevenueAmount: decimal("base_revenue_amount", { precision: 12, scale: 2 }).notNull(),
+  commissionRate: decimal("commission_rate", { precision: 5, scale: 2 }).notNull(), // Percentage
+  commissionAmount: decimal("commission_amount", { precision: 12, scale: 2 }).notNull(),
+  batchId: integer("batch_id").references(() => invoiceBatches.id),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Collaborator Payouts tracking
+export const collaboratorPayouts = pgTable("collaborator_payouts", {
+  id: serial("id").primaryKey(),
+  collaboratorId: integer("collaborator_id").references(() => collaborators.id).notNull(),
+  payoutAmount: decimal("payout_amount", { precision: 12, scale: 2 }).notNull(),
+  payoutDate: timestamp("payout_date").defaultNow().notNull(),
+  adminUserId: integer("admin_user_id").references(() => users.id),
+  paymentMethod: text("payment_method"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // System settings
 export const settings = pgTable("settings", {
   id: serial("id").primaryKey(),
@@ -131,10 +181,51 @@ export const backups = pgTable("backups", {
 });
 
 // Relations
-export const representativesRelations = relations(representatives, ({ many }) => ({
+export const collaboratorsRelations = relations(collaborators, ({ many }) => ({
+  representatives: many(representatives),
+  commissionRecords: many(commissionRecords),
+  payouts: many(collaboratorPayouts),
+}));
+
+export const representativesRelations = relations(representatives, ({ many, one }) => ({
   invoices: many(invoices),
   payments: many(payments),
   ledgerEntries: many(financialLedger),
+  collaborator: one(collaborators, {
+    fields: [representatives.collaboratorId],
+    references: [collaborators.id],
+  }),
+  commissionRecords: many(commissionRecords),
+}));
+
+export const commissionRecordsRelations = relations(commissionRecords, ({ one }) => ({
+  collaborator: one(collaborators, {
+    fields: [commissionRecords.collaboratorId],
+    references: [collaborators.id],
+  }),
+  representative: one(representatives, {
+    fields: [commissionRecords.representativeId],
+    references: [representatives.id],
+  }),
+  invoice: one(invoices, {
+    fields: [commissionRecords.invoiceId],
+    references: [invoices.id],
+  }),
+  batch: one(invoiceBatches, {
+    fields: [commissionRecords.batchId],
+    references: [invoiceBatches.id],
+  }),
+}));
+
+export const collaboratorPayoutsRelations = relations(collaboratorPayouts, ({ one }) => ({
+  collaborator: one(collaborators, {
+    fields: [collaboratorPayouts.collaboratorId],
+    references: [collaborators.id],
+  }),
+  adminUser: one(users, {
+    fields: [collaboratorPayouts.adminUserId],
+    references: [users.id],
+  }),
 }));
 
 export const financialLedgerRelations = relations(financialLedger, ({ one }) => ({
@@ -221,6 +312,22 @@ export const insertSettingSchema = createInsertSchema(settings).omit({
 });
 
 export const insertFinancialLedgerSchema = createInsertSchema(financialLedger).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertCollaboratorSchema = createInsertSchema(collaborators).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertCommissionRecordSchema = createInsertSchema(commissionRecords).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertCollaboratorPayoutSchema = createInsertSchema(collaboratorPayouts).omit({
   id: true,
   createdAt: true,
 });

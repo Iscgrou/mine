@@ -169,19 +169,24 @@ export class DatabaseStorage implements IStorage {
 
   // Advanced Financial Ledger System - Real-time Balance Calculations
   async getRepresentativeBalance(id: number): Promise<number> {
-    const [result] = await db.select({
-      balance: sql<number>`COALESCE(SUM(
-        CASE 
-          WHEN ${financialLedger.transactionType} = 'invoice' THEN ${financialLedger.amount}
-          WHEN ${financialLedger.transactionType} = 'payment' THEN -${financialLedger.amount}
-          ELSE 0
-        END
-      ), 0)`
-    })
-    .from(financialLedger)
-    .where(eq(financialLedger.representativeId, id));
-    
-    return parseFloat(result?.balance?.toString() || '0');
+    try {
+      const [result] = await db.select({
+        balance: sql<string>`COALESCE(SUM(
+          CASE 
+            WHEN ${financialLedger.transactionType} = 'invoice' THEN CAST(${financialLedger.amount} AS DECIMAL)
+            WHEN ${financialLedger.transactionType} = 'payment' THEN -CAST(${financialLedger.amount} AS DECIMAL)
+            ELSE 0
+          END
+        ), 0)`
+      })
+      .from(financialLedger)
+      .where(eq(financialLedger.representativeId, id));
+      
+      return parseFloat(result?.balance || '0');
+    } catch (error) {
+      console.error(`Error calculating balance for representative ${id}:`, error);
+      return 0;
+    }
   }
 
   async getRepresentativesWithBalance(): Promise<(Representative & { currentBalance: number })[]> {

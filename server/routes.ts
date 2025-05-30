@@ -1449,27 +1449,33 @@ ${invoices.map((inv, index) =>
       
       const htmlContent = fs.readFileSync(guidePath, 'utf8');
       
-      // Set headers for PDF download
-      res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', 'attachment; filename="admin-panel-guide.pdf"');
+      // Set headers for HTML content that will be printed as PDF
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      res.setHeader('Content-Disposition', 'inline; filename="admin-panel-guide.html"');
       
-      // For now, return the HTML content with PDF headers
-      // This will prompt the browser to download as PDF
-      const pdfHeaders = `
+      // Add print-specific CSS and auto-print functionality
+      const printStyles = `
         <style>
           @media print {
-            body { -webkit-print-color-adjust: exact; }
+            body { 
+              -webkit-print-color-adjust: exact; 
+              print-color-adjust: exact;
+            }
             .no-print { display: none !important; }
+            @page { margin: 1cm; }
           }
         </style>
         <script>
           window.onload = function() {
-            setTimeout(() => window.print(), 500);
+            setTimeout(() => {
+              window.print();
+              setTimeout(() => window.close(), 1000);
+            }, 1000);
           }
         </script>
       `;
       
-      const fullContent = htmlContent.replace('</head>', pdfHeaders + '</head>');
+      const fullContent = htmlContent.replace('</head>', printStyles + '</head>');
       res.send(fullContent);
       
     } catch (error) {
@@ -1492,26 +1498,33 @@ ${invoices.map((inv, index) =>
       
       const htmlContent = fs.readFileSync(guidePath, 'utf8');
       
-      // Set headers for PDF download
-      res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', 'attachment; filename="crm-panel-guide.pdf"');
+      // Set headers for HTML content that will be printed as PDF
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      res.setHeader('Content-Disposition', 'inline; filename="crm-panel-guide.html"');
       
-      // For now, return the HTML content with PDF headers
-      const pdfHeaders = `
+      // Add print-specific CSS and auto-print functionality
+      const printStyles = `
         <style>
           @media print {
-            body { -webkit-print-color-adjust: exact; }
+            body { 
+              -webkit-print-color-adjust: exact; 
+              print-color-adjust: exact;
+            }
             .no-print { display: none !important; }
+            @page { margin: 1cm; }
           }
         </style>
         <script>
           window.onload = function() {
-            setTimeout(() => window.print(), 500);
+            setTimeout(() => {
+              window.print();
+              setTimeout(() => window.close(), 1000);
+            }, 1000);
           }
         </script>
       `;
       
-      const fullContent = htmlContent.replace('</head>', pdfHeaders + '</head>');
+      const fullContent = htmlContent.replace('</head>', printStyles + '</head>');
       res.send(fullContent);
       
     } catch (error) {

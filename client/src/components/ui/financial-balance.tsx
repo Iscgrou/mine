@@ -176,7 +176,7 @@ export function FinancialBalance({ representativeId, currentBalance, representat
             <div className="flex justify-center p-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
             </div>
-          ) : ledgerData ? (
+          ) : ledgerData && ledgerData.transactions ? (
             <div className="space-y-4">
               <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
                 <h4 className="font-semibold mb-2">خلاصه حساب</h4>
@@ -220,7 +220,7 @@ export function FinancialBalance({ representativeId, currentBalance, representat
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {ledgerData.transactions.map((transaction) => (
+                  {ledgerData.transactions?.map((transaction) => (
                     <TableRow key={transaction.id}>
                       <TableCell>{formatDate(transaction.transactionDate)}</TableCell>
                       <TableCell>
@@ -242,6 +242,13 @@ export function FinancialBalance({ representativeId, currentBalance, representat
               </Table>
             </div>
           ) : (
+            <div className="text-center p-8">
+              <p className="text-gray-500">هیچ تراکنش مالی ثبت نشده است</p>
+              <p className="text-sm text-gray-400 mt-2">تراکنش‌های آینده در اینجا نمایش داده خواهند شد</p>
+            </div>
+          ) }
+          
+          {!ledgerData && !isLoading && (
             <div className="text-center p-8 text-gray-500">
               خطا در بارگذاری اطلاعات صورتحساب
             </div>

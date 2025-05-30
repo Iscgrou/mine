@@ -849,17 +849,17 @@ export class DatabaseStorage implements IStorage {
     }
 
     // Get commission records with date filtering
-    let commissionQuery = db.select().from(commissionRecords)
-      .where(eq(commissionRecords.collaboratorId, collaboratorId));
-
+    const whereConditions = [eq(commissionRecords.collaboratorId, collaboratorId)];
+    
     if (startDate && endDate) {
-      commissionQuery = commissionQuery.where(
-        and(
-          sql`${commissionRecords.transactionDate} >= ${startDate}`,
-          sql`${commissionRecords.transactionDate} <= ${endDate}`
-        )
+      whereConditions.push(
+        sql`${commissionRecords.transactionDate} >= ${startDate}`,
+        sql`${commissionRecords.transactionDate} <= ${endDate}`
       );
     }
+
+    const commissionQuery = db.select().from(commissionRecords)
+      .where(and(...whereConditions));
 
     const commissions = await commissionQuery.orderBy(desc(commissionRecords.transactionDate));
 

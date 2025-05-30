@@ -1369,7 +1369,7 @@ ${recentInteractions.slice(0, 10).map(interaction =>
 ).join('\n')}
 
 موضوعات پربحث:
-${metrics.commonTopics.map(topic => `- ${topic.topic}: ${topic.frequency} مورد`).join('\n')}
+${metrics.commonTopics.map((topic: any) => `- ${topic.topic}: ${topic.frequency} مورد`).join('\n')}
 
 لطفاً تحلیل جامع و عملیاتی ارائه دهید شامل:
 1. خلاصه اجرایی
@@ -1462,7 +1462,7 @@ ${metrics.commonTopics.map(topic => `- ${topic.topic}: ${topic.frequency} مور
               'تقویت سیستم گزارش‌گیری و آنالیز'
             ],
             
-            anomalyDetection: metrics.anomalies.map(anomaly => ({
+            anomalyDetection: metrics.anomalies.map((anomaly: any) => ({
               type: anomaly.type,
               description: anomaly.description,
               severity: anomaly.severity,

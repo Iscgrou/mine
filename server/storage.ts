@@ -58,6 +58,9 @@ export interface IStorage {
   createBackup(backup: InsertBackup): Promise<Backup>;
   getBackups(): Promise<Backup[]>;
 
+  // System management
+  clearAllData(): Promise<void>;
+
   // Stats methods
   getStats(): Promise<{
     totalReps: number;

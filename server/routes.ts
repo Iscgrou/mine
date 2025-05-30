@@ -708,7 +708,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Danger Zone Operations
   app.post("/api/system/reset", async (req, res) => {
     try {
-      // This would clear all data - implement with extreme caution
+      aegisLogger.critical('API', 'System reset initiated - clearing all data');
+      
+      // Clear all data from the database
+      await storage.clearAllData();
+      
+      aegisLogger.info('API', 'System reset completed successfully');
+      
       res.json({ 
         success: true, 
         message: "سیستم با موفقیت بازنشانی شد",
@@ -716,6 +722,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       console.error("Error resetting system:", error);
+      aegisLogger.error('API', 'System reset failed', error);
       res.status(500).json({ message: "خطا در بازنشانی سیستم" });
     }
   });

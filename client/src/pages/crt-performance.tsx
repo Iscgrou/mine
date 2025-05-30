@@ -262,7 +262,7 @@ export default function CRTPerformance() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-6">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-7xl mx-auto ml-[10%]">
           <div className="flex items-center justify-center h-96">
             <div className="text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
@@ -277,7 +277,7 @@ export default function CRTPerformance() {
   if (error) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-orange-50 p-6">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-7xl mx-auto ml-[10%]">
           <div className="flex items-center justify-center h-96">
             <div className="text-center">
               <AlertTriangle className="w-12 h-12 text-red-500 mx-auto mb-4" />
@@ -310,7 +310,7 @@ export default function CRTPerformance() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-6">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto ml-[10%]">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}

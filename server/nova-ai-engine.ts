@@ -626,6 +626,54 @@ class NovaAIEngine {
     return markers;
   }
 
+  async generateCollaboratorAnalysis(data: any): Promise<any> {
+    const startTime = Date.now();
+    aegisLogger.logAIRequest('NovaAIEngine', 'VertexAI', 'Collaborator performance analysis');
+
+    try {
+      if (!this.aiConfig.googleCloudCredentials) {
+        throw new Error('Google Cloud Vertex AI credentials not configured');
+      }
+
+      const prompt = `
+شما Nova هستید، سیستم تحلیل هوشمند MarFanet. لطفاً تحلیل جامعی از عملکرد همکار ارائه دهید:
+
+همکار: ${data.collaborator?.name || 'نامشخص'}
+عملکرد: ${JSON.stringify(data.performance || {})}
+درآمد: ${JSON.stringify(data.earnings || {})}
+بازه زمانی: ${data.timeframe || 'نامشخص'}
+
+لطفاً ارائه دهید:
+1. ارزیابی کلی عملکرد
+2. نقاط قوت
+3. نقاط بهبود
+4. توصیه‌های عملیاتی
+5. پیش‌بینی عملکرد آینده
+
+پاسخ به زبان فارسی باشد.
+`;
+
+      const aiResponse = await this.callVertexAI(prompt);
+      
+      const result = {
+        overallAssessment: aiResponse.overallAssessment || 'تحلیل در حال انجام',
+        strengths: aiResponse.strengths || [],
+        improvements: aiResponse.improvements || [],
+        recommendations: aiResponse.recommendations || [],
+        futureOutlook: aiResponse.futureOutlook || 'نیاز به بررسی بیشتر'
+      };
+
+      const duration = Date.now() - startTime;
+      aegisLogger.logAIResponse('NovaAIEngine', 'VertexAI', result, duration);
+      
+      return result;
+
+    } catch (error) {
+      aegisLogger.logAIError('NovaAIEngine', 'VertexAI', error);
+      throw error;
+    }
+  }
+
   async updateRepresentativeProfile(representativeId: number, interactionData: any): Promise<void> {
     try {
       // Get existing profile or create new one

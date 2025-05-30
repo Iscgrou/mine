@@ -13,6 +13,7 @@ import { registerTestEndpoints } from "./test-endpoints";
 import { registerVoiceWorkflowTests } from "./voice-workflow-test";
 import { registerSTTDiagnostic } from "./stt-diagnostic";
 import { projectPhoenixOrchestrator } from './project-phoenix-orchestrator';
+import { phase2Orchestrator } from './phase2-vertex-ai-orchestrator';
 import { 
   insertRepresentativeSchema, 
   insertInvoiceSchema, 
@@ -2615,6 +2616,58 @@ ${metrics.commonTopics.map((topic: any) => `- ${topic.topic}: ${topic.frequency}
     } catch (error) {
       aegisLogger.error('API', 'Error serving documentation file', error);
       res.status(500).json({ message: "خطا در بارگیری فایل راهنما" });
+    }
+  });
+
+  // Phase 2 Vertex AI Comprehensive Analysis
+  app.post("/api/vertex-ai/phase2-analysis", async (req, res) => {
+    try {
+      aegisLogger.info('VERTEX AI', 'Initiating Phase 2 comprehensive system analysis');
+      
+      const analysis = await phase2Orchestrator.executeFullSystemAnalysis();
+      
+      aegisLogger.info('VERTEX AI', 'Phase 2 analysis completed successfully');
+      
+      res.json({
+        success: true,
+        phase: "Phase 2",
+        timestamp: new Date().toISOString(),
+        analysis: analysis,
+        message: "تحلیل جامع سیستم با موفقیت انجام شد"
+      });
+    } catch (error) {
+      aegisLogger.error('VERTEX AI', 'Phase 2 analysis failed', error);
+      res.status(500).json({ 
+        success: false,
+        message: "خطا در تحلیل سیستم",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
+    }
+  });
+
+  // Phase 3 Strategy Generation
+  app.post("/api/vertex-ai/phase3-strategy", async (req, res) => {
+    try {
+      aegisLogger.info('VERTEX AI', 'Generating Phase 3 strategic implementation plan');
+      
+      const strategy = await phase2Orchestrator.generatePhase3Strategy();
+      
+      aegisLogger.info('VERTEX AI', 'Phase 3 strategy generated successfully');
+      
+      res.json({
+        success: true,
+        phase: "Phase 3 Planning",
+        timestamp: new Date().toISOString(),
+        strategy: strategy,
+        message: "برنامه راهبردی فاز ۳ با موفقیت تولید شد"
+      });
+    } catch (error) {
+      aegisLogger.error('VERTEX AI', 'Phase 3 strategy generation failed', error);
+      res.status(500).json({ 
+        success: false,
+        message: "خطا در تولید برنامه راهبردی",
+        error: error instanceof Error ? error.message : "Unknown error"
+      });
     }
   });
 

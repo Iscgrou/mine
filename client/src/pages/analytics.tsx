@@ -114,10 +114,10 @@ export default function Analytics() {
         <Card className="bg-card border-border border-yellow-200">
           <CardContent className="p-6">
             <div className="text-center">
-              <i className="fas fa-robot text-6xl text-yellow-500 mb-4"></i>
-              <h2 className="text-2xl font-bold text-foreground mb-2">تنظیم Vertex AI Insight Engine مورد نیاز است</h2>
+              <i className="fas fa-brain text-6xl text-yellow-500 mb-4"></i>
+              <h2 className="text-2xl font-bold text-foreground mb-2">تنظیم Vertex AI مورد نیاز است</h2>
               <p className="text-muted-foreground mb-6">
-                برای استفاده از قابلیت‌های تحلیل هوشمند، ابتدا کلید API Vertex AI را در تنظیمات وارد کنید
+                برای استفاده از قابلیت‌های تحلیل هوشمند، ابتدا کلید Google Cloud Vertex AI را در تنظیمات وارد کنید
               </p>
               <div className="space-y-4">
                 <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg text-right">

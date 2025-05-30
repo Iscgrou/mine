@@ -5,11 +5,15 @@ const pageNames: Record<string, string> = {
   "dashboard": "داشبورد",
   "representatives": "مدیریت نمایندگان",
   "invoices": "صورتحساب‌ها",
+  "invoice-batches": "دسته‌بندی صورتحساب‌ها",
   "analytics": "مرکز تحلیل و گزارش",
   "import": "آپلود فایل ODS",
   "payments": "پیگیری پرداخت‌ها",
   "backup": "پشتیبان‌گیری",
   "settings": "تنظیمات",
+  "aegis": "سیستم نظارت آیگیس",
+  "aegis-test": "تست سیستم آیگیس",
+  "google-cloud-setup": "پیکربندی گوگل کلود",
   // CRM specific pages
   "customers": "مدیریت مشتریان",
   "tickets": "مدیریت تیکت‌ها",
@@ -21,16 +25,16 @@ const pageNames: Record<string, string> = {
 
 // Helper function to extract page name from path
 function getPageFromPath(path: string): string {
-  // Remove secret path prefixes
+  // Remove new clean path prefixes
   let cleanPath = path
-    .replace(/^\/ciwomplefoadm867945/, '') // Admin secret path
-    .replace(/^\/csdfjkjfoascivomrm867945/, ''); // CRM secret path
+    .replace(/^\/admin/, '') // Admin clean path
+    .replace(/^\/crm/, ''); // CRM clean path
   
   // Remove leading slash
   cleanPath = cleanPath.replace(/^\//, '');
   
   // If empty or root, it's dashboard
-  if (!cleanPath || cleanPath === '/') {
+  if (!cleanPath || cleanPath === '/' || cleanPath === '') {
     return 'dashboard';
   }
   

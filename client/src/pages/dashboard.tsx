@@ -199,7 +199,7 @@ export default function Dashboard() {
                 </Button>
               </Link>
               
-              <Link href="/representatives">
+              <Link href="/admin/representatives">
                 <Button variant="outline" className="w-full justify-between">
                   <div className="flex items-center">
                     <i className="fas fa-user-plus text-green-600 ml-3"></i>
@@ -209,7 +209,7 @@ export default function Dashboard() {
                 </Button>
               </Link>
               
-              <Link href="/invoices">
+              <Link href="/admin/invoices">
                 <Button variant="outline" className="w-full justify-between">
                   <div className="flex items-center">
                     <i className="fas fa-file-pdf text-red-600 ml-3"></i>
@@ -219,7 +219,7 @@ export default function Dashboard() {
                 </Button>
               </Link>
               
-              <Link href="/backup">
+              <Link href="/admin/backup">
                 <Button variant="outline" className="w-full justify-between">
                   <div className="flex items-center">
                     <i className="fas fa-cloud-download-alt text-blue-600 ml-3"></i>
@@ -338,7 +338,7 @@ export default function Dashboard() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex items-center space-x-reverse space-x-2">
-                          <Link href={`/invoices/${invoice.id}`}>
+                          <Link href={`/admin/invoices/${invoice.id}`}>
                             <Button variant="ghost" size="sm" title="مشاهده جزئیات">
                               <i className="fas fa-eye"></i>
                             </Button>

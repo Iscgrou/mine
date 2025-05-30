@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { formatPersianNumber } from "@/lib/persian-utils";
+import { useToast } from "@/hooks/use-toast";
 
 interface Stats {
   totalReps: number;
@@ -25,6 +26,8 @@ interface RecentInvoice {
 }
 
 export default function Dashboard() {
+  const { toast } = useToast();
+
   const { data: stats, isLoading: statsLoading } = useQuery<Stats>({
     queryKey: ['/api/stats'],
   });
@@ -361,13 +364,33 @@ export default function Dashboard() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex items-center space-x-reverse space-x-2">
-                          <Button variant="ghost" size="sm">
-                            <i className="fas fa-eye"></i>
-                          </Button>
-                          <Button variant="ghost" size="sm">
+                          <Link href={`/invoices/${invoice.id}`}>
+                            <Button variant="ghost" size="sm" title="مشاهده جزئیات">
+                              <i className="fas fa-eye"></i>
+                            </Button>
+                          </Link>
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            title="دانلود فاکتور"
+                            onClick={() => {
+                              window.open(`/api/invoices/${invoice.id}/download`, '_blank');
+                            }}
+                          >
                             <i className="fas fa-download"></i>
                           </Button>
-                          <Button variant="ghost" size="sm">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            title="ارسال به تلگرام"
+                            onClick={() => {
+                              // Implementation for Telegram sharing
+                              toast({
+                                title: "ارسال به تلگرام",
+                                description: "در حال پیاده‌سازی...",
+                              });
+                            }}
+                          >
                             <i className="fab fa-telegram"></i>
                           </Button>
                         </div>

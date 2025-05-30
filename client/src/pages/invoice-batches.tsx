@@ -65,9 +65,7 @@ export default function InvoiceBatches() {
   // Batch send to Telegram mutation
   const batchSendMutation = useMutation({
     mutationFn: (batchId: number) => 
-      apiRequest(`/api/invoices/batch/${batchId}/send-telegram`, {
-        method: 'POST',
-      }),
+      apiRequest('POST', `/api/invoices/batch/${batchId}/send-telegram`),
     onSuccess: () => {
       toast({
         title: "ارسال موفق",
@@ -87,9 +85,7 @@ export default function InvoiceBatches() {
   // Individual invoice share mutation
   const shareMutation = useMutation({
     mutationFn: (invoiceId: number) => 
-      apiRequest(`/api/invoices/${invoiceId}/share-telegram`, {
-        method: 'POST',
-      }),
+      apiRequest('POST', `/api/invoices/${invoiceId}/share-telegram`),
     onSuccess: () => {
       toast({
         title: "همرسانی موفق",

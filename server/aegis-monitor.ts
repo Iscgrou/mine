@@ -40,7 +40,7 @@ interface TrendAnalysis {
 class AegisMonitor {
   private monitoringInterval: NodeJS.Timeout;
   private healthHistory: HealthMetrics[] = [];
-  private readonly MAX_HISTORY = 1000; // Keep last 1000 health checks
+  private readonly MAX_HISTORY = 100; // Reduce history size to prevent memory leaks
 
   constructor() {
     // Monitor system health every 30 seconds

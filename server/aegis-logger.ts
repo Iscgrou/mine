@@ -69,8 +69,8 @@ class AegisLogger {
   private flushInterval: NodeJS.Timeout;
   
   constructor() {
-    // Flush logs every 5 seconds or when buffer reaches 100 entries
-    this.flushInterval = setInterval(() => this.flushLogs(), 5000);
+    // Flush logs every 30 seconds to prevent memory buildup
+    this.flushInterval = setInterval(() => this.flushLogs(), 30000);
   }
 
   log(entry: Omit<AegisLogEntry, 'timestamp'>): void {
@@ -86,8 +86,8 @@ class AegisLogger {
       this.flushLogs();
     }
 
-    // Flush when buffer is full
-    if (this.logBuffer.length >= 100) {
+    // Flush when buffer is full (reduce buffer size to prevent memory leaks)
+    if (this.logBuffer.length >= 25) {
       this.flushLogs();
     }
 

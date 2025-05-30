@@ -1,7 +1,7 @@
 import { 
   users, representatives, invoices, invoiceItems, payments, 
   fileImports, settings, backups, crmInteractions, crmCallPreparations, 
-  crmRepresentativeProfiles, crmTasks, invoiceBatches,
+  crmRepresentativeProfiles, crmTasks, invoiceBatches, financialLedger,
   type User, type InsertUser, type Representative, type InsertRepresentative,
   type Invoice, type InsertInvoice, type InvoiceItem, type InsertInvoiceItem,
   type Payment, type InsertPayment, type FileImport, type InsertFileImport,
@@ -9,7 +9,7 @@ import {
   type CrmInteraction, type InsertCrmInteraction,
   type CrmCallPreparation, type InsertCrmCallPreparation,
   type CrmRepresentativeProfile, type InsertCrmRepresentativeProfile,
-  type InvoiceBatch, type InsertInvoiceBatch
+  type InvoiceBatch, type InsertInvoiceBatch, type FinancialLedger, type InsertFinancialLedger
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, or, like, isNull, sql } from "drizzle-orm";
@@ -28,6 +28,14 @@ export interface IStorage {
   updateRepresentative(id: number, rep: Partial<InsertRepresentative>): Promise<Representative>;
   deleteRepresentative(id: number): Promise<void>;
   searchRepresentatives(query: string): Promise<Representative[]>;
+  getRepresentativeBalance(id: number): Promise<number>;
+  getRepresentativesWithBalance(): Promise<(Representative & { currentBalance: number })[]>;
+
+  // Financial ledger methods
+  createLedgerEntry(entry: InsertFinancialLedger): Promise<FinancialLedger>;
+  getRepresentativeLedger(representativeId: number): Promise<FinancialLedger[]>;
+  recordInvoiceInLedger(invoiceId: number, representativeId: number, amount: number, invoiceNumber: string): Promise<void>;
+  recordPaymentInLedger(paymentId: number, representativeId: number, amount: number, paymentReference?: string): Promise<void>;
 
   // Invoice batch methods
   createInvoiceBatch(batch: InsertInvoiceBatch): Promise<InvoiceBatch>;
@@ -157,6 +165,79 @@ export class DatabaseStorage implements IStorage {
           like(representatives.phoneNumber, `%${query}%`)
         )
       );
+  }
+
+  // Advanced Financial Ledger System - Real-time Balance Calculations
+  async getRepresentativeBalance(id: number): Promise<number> {
+    const [result] = await db.select({
+      balance: sql<number>`COALESCE(SUM(
+        CASE 
+          WHEN ${financialLedger.transactionType} = 'invoice' THEN ${financialLedger.amount}
+          WHEN ${financialLedger.transactionType} = 'payment' THEN -${financialLedger.amount}
+          ELSE 0
+        END
+      ), 0)`
+    })
+    .from(financialLedger)
+    .where(eq(financialLedger.representativeId, id));
+    
+    return parseFloat(result?.balance?.toString() || '0');
+  }
+
+  async getRepresentativesWithBalance(): Promise<(Representative & { currentBalance: number })[]> {
+    const representatives = await this.getRepresentatives();
+    const balances = await Promise.all(
+      representatives.map(async (rep) => ({
+        ...rep,
+        currentBalance: await this.getRepresentativeBalance(rep.id)
+      }))
+    );
+    return balances;
+  }
+
+  // Financial Ledger Methods with Atomic Transactions
+  async createLedgerEntry(entry: InsertFinancialLedger): Promise<FinancialLedger> {
+    const [created] = await db.insert(financialLedger).values(entry).returning();
+    return created;
+  }
+
+  async getRepresentativeLedger(representativeId: number): Promise<FinancialLedger[]> {
+    return await db.select()
+      .from(financialLedger)
+      .where(eq(financialLedger.representativeId, representativeId))
+      .orderBy(desc(financialLedger.transactionDate));
+  }
+
+  async recordInvoiceInLedger(invoiceId: number, representativeId: number, amount: number, invoiceNumber: string): Promise<void> {
+    const currentBalance = await this.getRepresentativeBalance(representativeId);
+    const newBalance = currentBalance + amount;
+    
+    await this.createLedgerEntry({
+      representativeId,
+      transactionType: 'invoice',
+      amount: amount,
+      runningBalance: newBalance,
+      referenceId: invoiceId,
+      referenceNumber: invoiceNumber,
+      description: `فاکتور شماره ${invoiceNumber} - اشتراک V2Ray`,
+      transactionDate: new Date()
+    });
+  }
+
+  async recordPaymentInLedger(paymentId: number, representativeId: number, amount: number, paymentReference?: string): Promise<void> {
+    const currentBalance = await this.getRepresentativeBalance(representativeId);
+    const newBalance = currentBalance - amount;
+    
+    await this.createLedgerEntry({
+      representativeId,
+      transactionType: 'payment',
+      amount: amount,
+      runningBalance: newBalance,
+      referenceId: paymentId,
+      referenceNumber: paymentReference || `PAY-${paymentId}`,
+      description: `پرداخت ${amount.toLocaleString()} تومان`,
+      transactionDate: new Date()
+    });
   }
 
   // Invoice batch methods

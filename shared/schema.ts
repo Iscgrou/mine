@@ -96,6 +96,20 @@ export const fileImports = pgTable("file_imports", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Financial ledger for representative transactions
+export const financialLedger = pgTable("financial_ledger", {
+  id: serial("id").primaryKey(),
+  representativeId: integer("representative_id").references(() => representatives.id).notNull(),
+  transactionDate: timestamp("transaction_date").defaultNow().notNull(),
+  transactionType: text("transaction_type").notNull(), // 'invoice', 'payment'
+  amount: decimal("amount", { precision: 12, scale: 2 }).notNull(),
+  runningBalance: decimal("running_balance", { precision: 12, scale: 2 }).notNull(),
+  referenceId: integer("reference_id"), // Invoice ID or Payment ID
+  referenceNumber: text("reference_number"), // Invoice Number or Payment Reference
+  description: text("description"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // System settings
 export const settings = pgTable("settings", {
   id: serial("id").primaryKey(),
@@ -120,6 +134,14 @@ export const backups = pgTable("backups", {
 export const representativesRelations = relations(representatives, ({ many }) => ({
   invoices: many(invoices),
   payments: many(payments),
+  ledgerEntries: many(financialLedger),
+}));
+
+export const financialLedgerRelations = relations(financialLedger, ({ one }) => ({
+  representative: one(representatives, {
+    fields: [financialLedger.representativeId],
+    references: [representatives.id],
+  }),
 }));
 
 export const invoiceBatchesRelations = relations(invoiceBatches, ({ many }) => ({
@@ -198,6 +220,11 @@ export const insertSettingSchema = createInsertSchema(settings).omit({
   updatedAt: true,
 });
 
+export const insertFinancialLedgerSchema = createInsertSchema(financialLedger).omit({
+  id: true,
+  createdAt: true,
+});
+
 export const insertBackupSchema = createInsertSchema(backups).omit({
   id: true,
   createdAt: true,
@@ -227,6 +254,9 @@ export type InsertFileImport = z.infer<typeof insertFileImportSchema>;
 
 export type Setting = typeof settings.$inferSelect;
 export type InsertSetting = z.infer<typeof insertSettingSchema>;
+
+export type FinancialLedger = typeof financialLedger.$inferSelect;
+export type InsertFinancialLedger = z.infer<typeof insertFinancialLedgerSchema>;
 
 export type Backup = typeof backups.$inferSelect;
 export type InsertBackup = z.infer<typeof insertBackupSchema>;

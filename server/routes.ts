@@ -424,6 +424,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Enhanced representatives with balance information
+  app.get("/api/representatives/with-balance", async (req, res) => {
+    try {
+      const representatives = await storage.getRepresentativesWithBalance();
+      res.json(representatives);
+    } catch (error) {
+      res.status(500).json({ message: "خطا در دریافت اطلاعات نمایندگان" });
+    }
+  });
+
+  // Representative balance endpoint
+  app.get("/api/representatives/:id/balance", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const balance = await storage.getRepresentativeBalance(id);
+      res.json({ balance });
+    } catch (error) {
+      res.status(500).json({ message: "خطا در محاسبه موجودی" });
+    }
+  });
+
+  // Representative ledger (statement of account)
+  app.get("/api/representatives/:id/ledger", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const ledger = await storage.getRepresentativeLedger(id);
+      const representative = await storage.getRepresentativeById(id);
+      const currentBalance = await storage.getRepresentativeBalance(id);
+      
+      res.json({
+        representative,
+        currentBalance,
+        transactions: ledger
+      });
+    } catch (error) {
+      res.status(500).json({ message: "خطا در دریافت صورتحساب" });
+    }
+  });
+
   // Invoices endpoints
   app.get("/api/invoices", async (req, res) => {
     try {

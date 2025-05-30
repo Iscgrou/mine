@@ -1,0 +1,82 @@
+Chronos, further to our previous discussions on a "Debtor/Creditor Balance" in the "Representative Management" section, we need to implement a more advanced and dynamic financial ledger system for each representative. This system must provide real-time balance updates based on all issued invoices and recorded payments, with specific UI/UX considerations for clarity.
+
+I. Core Requirement: Dynamic Debtor/Creditor Balance Column/Field
+
+    Location: Within the "Representative Management" (مدیریت نمایندگان) section, for each representative.
+    Functionality (Real-time & Comprehensive):
+        This column/field MUST display the representative's current, real-time overall financial balance with MarFanet.
+        This balance is the dynamic sum of ALL UNPAID invoices issued to that representative across ALL upload batches/folders and ALL dates, less any payments they have made.
+        Example: If Rep A has an unpaid invoice of 500,000 Toman from a batch dated ۱۴۰۳-۰۳-۰1 and another unpaid invoice of 800,000 Toman from a batch dated ۱۴오۳-۰۳-۰۸, their current debt shown should be 1,300,000 Toman (assuming no payments).
+    Visual Display:
+        The balance MUST be displayed in "Toman" (تومان).
+        Debtor Status (Owes Money): If the representative owes money, the amount should be displayed in RED (e.g., "-۱,۳۰۰,۰۰۰ تومان" or "۱,۳۰۰,۰۰۰ تومان بدهکار").
+        Creditor Status (Has Overpaid/Credit): If the representative has overpaid or has a credit balance with MarFanet, the amount should be displayed in GREEN (e.g., "+۱,000,000 تومان" or "۱,۰۰۰,۰۰۰ تومان بستانکار").
+        Balanced: If the balance is zero, it can be displayed in a neutral color (e.g., black or standard text color).
+
+II. Sophisticated Payment Settlement & Balance Adjustment Logic:
+
+    Context: The existing "Payment Settlement" (تسویه حساب) section is where payments from representatives are recorded.
+    Enhanced Logic:
+        Partial Payments:
+            If a representative pays an amount that is less than their total outstanding debt (e.g., total debt is 2,000,000 Toman, payment is 300,000 Toman), this payment amount MUST be recorded in the "Payment Settlement" section.
+            Immediately upon recording this payment, the representative's overall "Debtor/Creditor Balance" in "Representative Management" MUST be reduced by the payment amount. (e.g., debt changes from -2,000,000 Toman to -1,700,000 Toman).
+        Overpayments (Creating a Credit Balance):
+            If a representative pays an amount that is more than their total outstanding debt (e.g., total debt is 2,000,000 Toman, payment is 3,000,000 Toman):
+                The payment MUST be recorded.
+                The representative's "Debtor/Creditor Balance" MUST first be cleared to zero, and then the excess payment amount (1,000,000 Toman in this example) MUST be recorded as a POSITIVE credit balance for that representative, displayed in GREEN (e.g., "+۱,۰۰۰,۰۰۰ تومان").
+        Payment Allocation (Conceptual - for future thought, but design for flexibility):
+            While not explicitly required for immediate implementation, the system should ideally be designed with flexibility in mind for future payment allocation (e.g., allowing an admin to specify if a payment should be applied to the oldest outstanding invoice or a specific invoice). For now, a simple reduction of the total outstanding balance is acceptable.
+
+III. Detailed Financial Transaction History ("Statement of Account"):
+
+    Requirement: Representatives (or Admins on their behalf) may request a detailed breakdown of how their current Debtor/Creditor balance was calculated.
+    UI Feature:
+        Next to the "Debtor/Creditor Balance" displayed for each representative in "Representative Management," there MUST be a "View Details" (جزئیات) option/icon/button.
+        Functionality: Clicking this "View Details" option MUST display a detailed transactional ledger or "Statement of Account" for that representative. This statement should clearly show:
+            An initial opening balance (if applicable, or starting from zero).
+            A chronological list of all invoices issued to that representative (Invoice Number, Invoice Date, Invoice Amount - as a debit/charge).
+            A chronological list of all payments received from that representative (Payment Date, Payment Amount - as a credit).
+            A running balance calculated after each transaction.
+            The final current Debtor/Creditor balance.
+        Display Format: This detailed view could be a modal pop-up, a new page, or an expandable section. It must be clear, easy to read, and printable or exportable (e.g., to PDF or CSV) if possible.
+
+IV. Backend Implementation Requirements (Chronos to Detail):
+
+    Ledger Table(s) in Database:
+        Design the necessary database table(s) to accurately store all financial transactions (invoice issuances as debits, payments as credits) for each representative. This is more than just summing up existing invoice tables; it's a proper ledger.
+        Each transaction entry should include: Representative ID, Date, Transaction Type (Invoice, Payment), Amount, Running Balance after transaction, reference to the specific Invoice ID or Payment ID.
+    Real-time Calculation Engine:
+        The "Debtor/Creditor Balance" displayed in "Representative Management" MUST be calculated in real-time by summing transactions from this new ledger table for each representative. This ensures it's always up-to-date.
+    API Endpoints:
+        Modify/create backend API endpoints to:
+            Record payments and correctly update the ledger and thus the representative's overall balance.
+            Fetch the detailed transaction history for a representative for the "View Details" feature.
+            Ensure that when new invoices are generated (from .ods processing), corresponding debit entries are automatically created in the representative's ledger.
+    Data Integrity & Atomicity: Ensure all financial calculations and database updates (e.g., recording a payment and updating a balance) are performed atomically to maintain data integrity (e.g., using database transactions).
+
+Integration with Project Pantheon:
+
+    This advanced financial tracking is a critical component of "Pantheon Phase 0: Foundational Website Optimization & Stabilization," specifically under "Full Functional Integrity Verification" and ensuring V2Ray Business Logic Integrity.
+    "Project Aegis" should monitor the health and accuracy of these financial calculations and ledger updates.
+    "Project Nova" (CRM) will benefit from having access to this real-time, accurate debtor/creditor status for each representative to inform CRT interactions.
+
+Your Task (Chronos):
+
+Please confirm your understanding of this advanced financial ledger and dynamic Debtor/Creditor system. Detail your proposed:
+
+    Database schema changes/additions for the financial ledger.
+    Backend logic for real-time balance calculation and transaction recording (upon invoice issuance and payment settlement).
+    API endpoint modifications/additions.
+    UI design concept for the "Debtor/Creditor Balance" display (including color coding) and the "View Details" statement of account.
+
+This system is fundamental to accurate financial management and transparency with our representatives.
+
+Why this prompt is effective:
+
+    Builds on Previous Concepts: It clearly links to the earlier, simpler "Debtor/Creditor" idea and expands it massively.
+    Specific Examples: Uses your examples (2,000,000 Toman debt, 300,000 Toman payment, etc.) to illustrate the logic precisely.
+    Clear UI/UX Requirements: Specifies color coding, currency, and the "View Details" feature.
+    Strong Backend Focus: Emphasizes the need for a proper ledger system in the database and real-time calculations.
+    Highlights Data Integrity: Calls out the need for atomic operations.
+    Contextualizes within Pantheon: Shows how this fits into the larger project.
+    Actionable for Chronos: Asks for specific design proposals (DB schema, backend logic, API, UI).

@@ -283,59 +283,59 @@ export default function RepresentativeManagement() {
                     </div>
                     <div>
                       <Label htmlFor="adminUsername">نام کاربری مدیریت *</Label>
-                        <Input
-                          id="adminUsername"
-                          value={newRepForm.adminUsername}
-                          onChange={(e) => setNewRepForm(prev => ({ ...prev, adminUsername: e.target.value }))}
-                          placeholder="username"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="phoneNumber">شماره تلفن *</Label>
-                        <Input
-                          id="phoneNumber"
-                          value={newRepForm.phoneNumber}
-                          onChange={(e) => setNewRepForm(prev => ({ ...prev, phoneNumber: e.target.value }))}
-                          placeholder="09xxxxxxxxx"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="telegramId">آیدی تلگرام</Label>
-                        <Input
-                          id="telegramId"
-                          value={newRepForm.telegramId}
-                          onChange={(e) => setNewRepForm(prev => ({ ...prev, telegramId: e.target.value }))}
-                          placeholder="@username"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="nationalId">کد ملی</Label>
-                        <Input
-                          id="nationalId"
-                          value={newRepForm.nationalId}
-                          onChange={(e) => setNewRepForm(prev => ({ ...prev, nationalId: e.target.value }))}
-                          placeholder="0000000000"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="initialPassword">رمز عبور اولیه *</Label>
-                        <Input
-                          id="initialPassword"
-                          type="password"
-                          value={newRepForm.initialPassword}
-                          onChange={(e) => setNewRepForm(prev => ({ ...prev, initialPassword: e.target.value }))}
-                          placeholder="حداقل 8 کاراکتر"
-                        />
-                      </div>
+                      <Input
+                        id="adminUsername"
+                        value={newRepForm.adminUsername}
+                        onChange={(e) => setNewRepForm(prev => ({ ...prev, adminUsername: e.target.value }))}
+                        placeholder="username"
+                      />
                     </div>
-                  </TabsContent>
-                  
-                  <TabsContent value="business" className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="storeName">نام فروشگاه</Label>
-                        <Input
-                          id="storeName"
+                    <div>
+                      <Label htmlFor="phoneNumber">شماره تلفن *</Label>
+                      <Input
+                        id="phoneNumber"
+                        value={newRepForm.phoneNumber}
+                        onChange={(e) => setNewRepForm(prev => ({ ...prev, phoneNumber: e.target.value }))}
+                        placeholder="09xxxxxxxxx"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="telegramId">آیدی تلگرام</Label>
+                      <Input
+                        id="telegramId"
+                        value={newRepForm.telegramId}
+                        onChange={(e) => setNewRepForm(prev => ({ ...prev, telegramId: e.target.value }))}
+                        placeholder="@username"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="nationalId">کد ملی</Label>
+                      <Input
+                        id="nationalId"
+                        value={newRepForm.nationalId}
+                        onChange={(e) => setNewRepForm(prev => ({ ...prev, nationalId: e.target.value }))}
+                        placeholder="0000000000"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="initialPassword">رمز عبور اولیه *</Label>
+                      <Input
+                        id="initialPassword"
+                        type="password"
+                        value={newRepForm.initialPassword}
+                        onChange={(e) => setNewRepForm(prev => ({ ...prev, initialPassword: e.target.value }))}
+                        placeholder="حداقل 8 کاراکتر"
+                      />
+                    </div>
+                  </div>
+                </TabsContent>
+                
+                <TabsContent value="business" className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="storeName">نام فروشگاه</Label>
+                      <Input
+                        id="storeName"
                           value={newRepForm.storeName}
                           onChange={(e) => setNewRepForm(prev => ({ ...prev, storeName: e.target.value }))}
                           placeholder="نام فروشگاه موبایل"

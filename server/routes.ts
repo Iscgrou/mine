@@ -440,7 +440,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { vertexAIOrchestrator } = await import('./vertex-ai-orchestrator');
       
       console.log("Initiating Meta-Optimization Initiative...");
-      const results = await vertexAIOrchestrator.executeComprehensiveAudit();
+      const results = await vertexAIOrchestrator.executeComprehensiveAnalysis();
       
       res.json({
         success: true,
@@ -465,7 +465,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/vertex-ai/briefing", async (req, res) => {
     try {
       const { vertexAIOrchestrator } = await import('./vertex-ai-orchestrator');
-      const briefing = await vertexAIOrchestrator.prepareBriefingDocument();
+      const briefing = await vertexAIOrchestrator.loadBriefingDocument();
       
       res.json({
         success: true,
@@ -1365,7 +1365,7 @@ ${invoices.map((inv, index) =>
 
 نمونه تعاملات اخیر:
 ${recentInteractions.slice(0, 10).map(interaction => 
-  `- ${interaction.interactionType}: ${interaction.notes || 'بدون یادداشت'} (وضعیت: ${interaction.status})`
+  `- ${interaction.interactionTypeId}: ${interaction.summary || 'بدون یادداشت'} (وضعیت: ${interaction.direction})`
 ).join('\n')}
 
 موضوعات پربحث:
@@ -1436,13 +1436,13 @@ ${metrics.commonTopics.map(topic => `- ${topic.topic}: ${topic.frequency} مور
                 metrics.anomalies.length > 0 ? 'وجود ناهنجاری در عملکرد' : null
               ].filter(Boolean),
               
-              emergingTrends: metrics.commonTopics.map(topic => 
+              emergingTrends: metrics.commonTopics.map((topic: any) => 
                 `روند ${topic.trend === 'increasing' ? 'افزایشی' : topic.trend === 'decreasing' ? 'کاهشی' : 'ثابت'} در ${topic.topic}`
               )
             },
             
             topicAnalysis: {
-              mostDiscussedIssues: metrics.commonTopics.slice(0, 3).map(t => t.topic),
+              mostDiscussedIssues: metrics.commonTopics.slice(0, 3).map((t: any) => t.topic),
               technicalTrends: ['مشکلات V2Ray', 'راه‌اندازی پنل', 'مشکلات اتصال'],
               supportEffectiveness: metrics.interactionOutcomes.issuesResolved > metrics.overallActivity.totalInteractions * 0.7 ? 'بالا' : 'متوسط'
             },

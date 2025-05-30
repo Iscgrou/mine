@@ -69,28 +69,7 @@ export default function Dashboard() {
     }
   ]);
 
-  useEffect(() => {
-    // Initialize with sample notifications
-    addNotification({
-      title: 'سیستم آماده است',
-      message: 'مرکز اعلانات هوشمند با موفقیت راه‌اندازی شد',
-      type: 'success',
-      priority: 'low'
-    });
-
-    addNotification({
-      title: 'کارهای عقب‌افتاده',
-      message: 'یک کار از موعد مقرر عقب افتاده است',
-      type: 'urgent',
-      priority: 'urgent',
-      actionRequired: true,
-      relatedEntity: {
-        type: 'task',
-        id: '3',
-        name: 'جلسه با تیم فنی'
-      }
-    });
-  }, [addNotification]);
+  // Removed problematic useEffect causing infinite re-renders
 
   const handleTaskComplete = async (taskId: string) => {
     setMockTasks(prev => 

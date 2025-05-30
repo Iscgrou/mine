@@ -80,11 +80,43 @@
     @apply bg-background text-foreground font-sans antialiased;
     font-family: 'Vazirmatn', Inter, system-ui, sans-serif;
     direction: rtl;
-    font-size: 0.875rem; /* Slightly smaller base font for better fit */
+    font-size: 0.875rem;
     line-height: 1.5;
     min-height: 100vh;
-    background: #FFFFFF; /* Pure white background */
-    color: #000000; /* Pure black text */
+    background: #FFFFFF;
+    color: #000000;
+    overflow-x: hidden; /* Prevent horizontal overflow */
+  }
+
+  /* Fix container overflow issues */
+  .container, main {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  /* Fix table overflow problems */
+  .table-container {
+    width: 100%;
+    overflow-x: auto;
+    max-width: 100vw;
+  }
+
+  table {
+    min-width: max-content;
+    table-layout: auto;
+  }
+
+  /* Responsive grid fixes */
+  .grid {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* Fix card container overflow */
+  .card-container {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
   }
 
   /* Persian number styles - Fixed text reversal */

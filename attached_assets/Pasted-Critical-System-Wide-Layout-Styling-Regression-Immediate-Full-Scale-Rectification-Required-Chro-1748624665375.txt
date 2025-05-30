@@ -1,0 +1,63 @@
+Critical System-Wide Layout & Styling Regression - Immediate Full-Scale Rectification Required
+
+Chronos, we have encountered a critical, system-wide regression in the UI of both the Admin Panel and the CRM Panel, apparently stemming from or exacerbated by the recent redesign/addition of the CRM page.
+
+Problem Statement: Severe Layout Disruption & Text Overlap Across Both Panels
+
+    Symptoms:
+        The overall layout and composition ("قالب بندی نمایش") of BOTH the Admin Panel AND the CRM Panel are now severely disrupted ("بهم ریخته").
+        Tables are overflowing their containers or extending beyond screen boundaries ("جدول ها از کادر خارج شده").
+        Text elements are overlapping with each other ("متن ها روی هم افتاده"), making content unreadable and the UI unusable.
+    Impact: This makes large portions of both panels unusable and presents a highly unprofessional user experience. This is a BLOCKER for any further development or testing.
+
+Your Absolute & Immediate Mandate: Full-Scale Layout & Styling Remediation
+
+All other development tasks are now secondary. Your SOLE FOCUS must be to:
+
+    Identify the Root Cause of the System-Wide Regression:
+        Action (Chronos):
+            Did the recent CRM page redesign introduce new global CSS styles that are unintentionally affecting the Admin panel and other CRM sections?
+            Were existing foundational CSS structures (e.g., for grid systems, container widths, flexbox/grid layouts) altered or broken?
+            Are there conflicting CSS rules from different stylesheets (e.g., old styles vs. new CRM styles) creating "specificity wars" and unpredictable rendering?
+            Are there issues with how responsive breakpoints are now being handled across the application?
+            Use browser developer tools (Inspector) extensively across multiple pages in both Admin and CRM panels to trace the problematic CSS.
+
+    Systematic Restoration of Layout Integrity (Panel by Panel, Section by Section):
+        Action (Chronos):
+            Prioritize Core Structure: First, ensure the main layout containers (e.g., overall page structure, sidebars, top bars, main content areas) for both Admin and CRM panels are correctly sized, positioned, and responsive.
+            Tables: Address all instances where tables are overflowing. Implement solutions such as:
+                Making table columns more flexible (e.g., min-width with overflow-wrap: break-word for cell content).
+                Enclosing wide tables in a container with overflow-x: auto; to allow horizontal scrolling within the table container itself on smaller viewports, without breaking the main page layout.
+                Re-evaluating table column visibility on smaller screens (hiding less critical columns if appropriate).
+            Text Overlap: Identify and fix all instances of overlapping text. This likely involves:
+                Correcting line-height, padding, margin values.
+                Ensuring container elements have appropriate height, width, or overflow properties.
+                Checking for incorrect position: absolute/relative/fixed usage.
+            Responsiveness: Re-verify that EVERY component in BOTH panels (Admin and CRM) is fully responsive after your fixes, from mobile to desktop viewports.
+
+    Ensure CSS Scoping & Modularity:
+        Action (Chronos): As you fix these issues, review the CSS architecture.
+            Are styles for new components (like those in the redesigned CRM page) properly scoped to avoid unintended global impact? (e.g., using CSS Modules, BEM methodology, or scoped styles within frontend framework components).
+            This is an opportunity to refactor problematic global styles or improve CSS organization to prevent future regressions of this nature.
+
+    Verification Protocol:
+        Action (Chronos):
+            After your fixes, provide me with clear instructions on specific pages/sections in both Admin and CRM panels to review.
+            I will need to verify on multiple browsers and screen sizes that:
+                No tables are overflowing their intended containers.
+                No text is overlapping.
+                All layouts are clean, organized, and fully responsive as per our original design intentions (or the new theme if parts of it were successfully applied before this regression).
+                All clickable elements remain functional.
+
+Final Instruction to Chronos:
+
+"Chronos, this widespread layout disruption and text overlap issue across both Admin and CRM panels is a critical regression that has made the platform largely unusable. This takes absolute top priority over all other ongoing development, including new feature implementation or further AI enhancements.
+
+Your immediate and sole focus must be to:
+
+    Identify the root cause(s) of this system-wide styling and layout failure, likely stemming from the recent CRM page changes.
+    Systematically fix all table overflows, text overlaps, and general layout issues in every section of both the Admin and CRM panels.
+    Ensure all fixes result in fully responsive and visually correct layouts across all standard devices.
+    Propose any necessary changes to our CSS architecture to improve scoping and prevent such global regressions in the future.
+
+Provide me with an update as soon as you have a clear diagnostic and a plan for rectification. I need to see visible progress on restoring layout integrity quickly before we can resume other tasks."

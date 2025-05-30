@@ -341,19 +341,7 @@ export function setupSimpleAuth(app: Express) {
       return next();
     }
 
-    // Block any attempts to access old secret paths with 404
-    const blockedPaths = [
-      '/ciwomplefoadm867945',
-      '/csdfjkjfoascivomrm867945', 
-      '/emergency-admin-access',
-      '/emergency-crm-access',
-      '/diagnostic'
-    ];
-    
-    if (blockedPaths.some(path => req.path.startsWith(path))) {
-      console.log(`[SECURITY] Blocked access to deprecated secret path: ${req.path} from IP: ${req.ip}`);
-      return res.status(404).send('Not Found');
-    }
+    // Clean authentication - no secret paths needed
 
     // Handle root path redirect
     if (req.path === '/' || req.path === '/index.html') {

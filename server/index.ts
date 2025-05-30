@@ -4,6 +4,7 @@ import { setupVite, serveStatic } from "./vite";
 import { createServer } from "http";
 import { setupSimpleAuth } from "./simple-auth";
 import { registerRepresentativesBalanceEndpoint } from "./representatives-balance-fix";
+import { registerCRTPerformanceRoutes } from "./crt-performance-monitor";
 
 function log(message: string) {
   const formattedTime = new Date().toLocaleTimeString("en-US", {

@@ -1,15 +1,6 @@
-// Secret path configuration for admin and CRM access
+// Clean authentication configuration - username/password only
 export const AUTH_CONFIG = {
-  // Admin access secret path - change this to your desired secret
-  ADMIN_SECRET_PATH: process.env.ADMIN_SECRET_PATH || 'ciwomplefoadm867945',
-  
-  // CRM access secret path - for CRM team access
-  CRM_SECRET_PATH: process.env.CRM_SECRET_PATH || 'csdfjkjfoascivomrm867945',
-  
-  // Base URL rejection message
-  ACCESS_DENIED_MESSAGE: 'دسترسی غیرمجاز - Access Denied',
-  
-  // Security headers
+  // Security headers for all responses
   SECURITY_HEADERS: {
     'X-Frame-Options': 'DENY',
     'X-Content-Type-Options': 'nosniff',
@@ -17,28 +8,3 @@ export const AUTH_CONFIG = {
     'X-Robots-Tag': 'noindex, nofollow'
   }
 };
-
-// Path validation functions with Safari compatibility
-export function isValidAdminPath(path: string): boolean {
-  const normalizedPath = path.toLowerCase().replace(/\/+$/, ''); // Remove trailing slashes and normalize case
-  const adminPath = `/${AUTH_CONFIG.ADMIN_SECRET_PATH}`.toLowerCase();
-  
-  return normalizedPath === adminPath || 
-         normalizedPath.startsWith(`${adminPath}/`) ||
-         path === `/${AUTH_CONFIG.ADMIN_SECRET_PATH}` || 
-         path.startsWith(`/${AUTH_CONFIG.ADMIN_SECRET_PATH}/`);
-}
-
-export function isValidCrmPath(path: string): boolean {
-  const normalizedPath = path.toLowerCase().replace(/\/+$/, ''); // Remove trailing slashes and normalize case
-  const crmPath = `/${AUTH_CONFIG.CRM_SECRET_PATH}`.toLowerCase();
-  
-  return normalizedPath === crmPath || 
-         normalizedPath.startsWith(`${crmPath}/`) ||
-         path === `/${AUTH_CONFIG.CRM_SECRET_PATH}` || 
-         path.startsWith(`/${AUTH_CONFIG.CRM_SECRET_PATH}/`);
-}
-
-export function isAuthorizedPath(path: string): boolean {
-  return isValidAdminPath(path) || isValidCrmPath(path);
-}

@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { NotificationProvider } from "@/hooks/use-notifications";
+import "@/utils/dynamic-layout";
 import Sidebar from "@/components/layout/sidebar";
 import CrmSidebar from "@/components/layout/crm-sidebar";
 import Header from "@/components/layout/header";
@@ -38,9 +39,9 @@ function Router() {
     return (
       <div className="min-h-screen bg-gray-50 rtl">
         <CrmSidebar />
-        <div className="lg:mr-72 md:mr-64 sm:mr-56 w-full">
+        <div className="dynamic-container">
           <Header />
-          <main className="w-full overflow-y-auto p-4 lg:p-6">
+          <main className="responsive-content overflow-y-auto">
             <Switch>
               <Route path="/crm" component={CrmDashboard} />
               <Route path="/crm/" component={CrmDashboard} />
@@ -64,9 +65,9 @@ function Router() {
   return (
     <div className="min-h-screen bg-gray-50 rtl">
       <Sidebar />
-      <div className="w-full">
+      <div className="dynamic-container">
         <Header />
-        <main className="w-full overflow-y-auto p-4 lg:p-6">
+        <main className="responsive-content overflow-y-auto">
           <Switch>
             {/* Admin routes with new clean paths */}
             <Route path="/admin" component={Dashboard} />

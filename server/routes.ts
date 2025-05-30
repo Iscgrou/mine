@@ -11,6 +11,7 @@ import { novaAIEngine } from "./nova-ai-engine";
 import { registerTestEndpoints } from "./test-endpoints";
 import { registerVoiceWorkflowTests } from "./voice-workflow-test";
 import { registerSTTDiagnostic } from "./stt-diagnostic";
+import { metaOptimizer } from "./meta-optimization-analysis";
 import { 
   insertRepresentativeSchema, 
   insertInvoiceSchema, 

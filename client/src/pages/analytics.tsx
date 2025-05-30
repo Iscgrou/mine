@@ -65,8 +65,8 @@ export default function Analytics() {
 
   // Process authentic data into analytics format
   const processAnalyticsData = (): AnalyticsData => {
-    const invoices = invoicesData || [];
-    const representatives = representativesData || [];
+    const invoices = Array.isArray(invoicesData) ? invoicesData : [];
+    const representatives = Array.isArray(representativesData) ? representativesData : [];
     const stats = statsData || {};
 
     // Calculate overview metrics

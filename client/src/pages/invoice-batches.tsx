@@ -151,7 +151,7 @@ export default function InvoiceBatches() {
         </p>
       </div>
 
-      {batches.length === 0 ? (
+      {(!Array.isArray(batches) || batches.length === 0) ? (
         <Card>
           <CardContent className="p-12">
             <div className="text-center">
@@ -256,7 +256,7 @@ function InvoiceBatchContent({
     );
   }
 
-  if (invoices.length === 0) {
+  if (!Array.isArray(invoices) || invoices.length === 0) {
     return (
       <div className="text-center py-8">
         <FileText className="h-12 w-12 text-gray-400 mx-auto mb-2" />

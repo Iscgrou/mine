@@ -825,13 +825,14 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getCommissionRecords(collaboratorId?: number): Promise<CommissionRecord[]> {
-    let query = db.select().from(commissionRecords);
-    
     if (collaboratorId) {
-      query = query.where(eq(commissionRecords.collaboratorId, collaboratorId));
+      return await db.select().from(commissionRecords)
+        .where(eq(commissionRecords.collaboratorId, collaboratorId))
+        .orderBy(desc(commissionRecords.transactionDate));
     }
     
-    return await query.orderBy(desc(commissionRecords.transactionDate));
+    return await db.select().from(commissionRecords)
+      .orderBy(desc(commissionRecords.transactionDate));
   }
 
   async getCollaboratorEarnings(collaboratorId: number, startDate?: Date, endDate?: Date): Promise<{

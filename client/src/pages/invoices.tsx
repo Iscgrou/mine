@@ -183,7 +183,7 @@ export default function Invoices() {
                 onChange={(e) => setRepresentativeFilter(e.target.value)}
               >
                 <option value="all">همه نمایندگان</option>
-                {representatives?.map((rep: any) => (
+                {Array.isArray(representatives) && representatives.map((rep: any) => (
                   <option key={rep.id} value={rep.id.toString()}>
                     {rep.fullName}
                   </option>

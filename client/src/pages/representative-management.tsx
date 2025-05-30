@@ -247,9 +247,10 @@ export default function RepresentativeManagement() {
         <h1 className="text-base md:text-xl font-bold text-center text-purple-900">مدیریت نمایندگان</h1>
         <p className="text-xs text-purple-600 text-center">مدیریت کامل نمایندگان، سطوح همکاری و کمیسیون‌ها</p>
       </div>
-        
-        <div className="flex gap-2">
-          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+
+      {/* Action Buttons */}
+      <div className="flex gap-2">
+        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
             <DialogTrigger asChild>
               <Button className="gap-2">
                 <UserPlus className="w-4 h-4" />

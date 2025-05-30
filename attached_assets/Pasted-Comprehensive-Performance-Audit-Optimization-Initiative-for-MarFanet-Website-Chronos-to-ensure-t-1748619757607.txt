@@ -1,0 +1,80 @@
+Comprehensive Performance Audit & Optimization Initiative for MarFanet Website
+
+Chronos, to ensure the MarFanet platform (both Admin and CRM panels) delivers a fast, fluid, and highly responsive user experience, we need to initiate a Comprehensive Performance Audit & Optimization Initiative.
+
+Your mandate is to systematically identify all factors contributing to slow performance or suboptimal responsiveness and then implement robust optimizations to significantly improve the website's speed and efficiency.
+
+I. Systematic Performance Audit & Bottleneck Identification:
+
+    Action (Chronos - Embody a Performance Engineering Expert):
+        Frontend Performance Analysis:
+            Asset Optimization:
+                Analyze image sizes and formats. Identify opportunities for compression (lossy/lossless), resizing, and use of modern formats (e.g., WebP).
+                Analyze CSS and JavaScript bundle sizes. Identify opportunities for minification, tree-shaking (removing unused code), code-splitting (loading only necessary code for the current view), and efficient bundling.
+            Rendering Path Optimization:
+                Identify render-blocking resources (CSS/JS). Propose strategies like deferring non-critical JS, inlining critical CSS, or using async/defer attributes.
+                Analyze DOM complexity and identify overly nested or large DOM structures that could slow down rendering and manipulation.
+                Evaluate an_d_ optimize React/Vue/Angular (or other framework) component rendering performance (e.g., use of React.memo, shouldComponentUpdate, optimized state management updates, avoiding unnecessary re-renders).
+            Caching Strategies: Review and propose improvements for browser caching of static assets (CSS, JS, images, fonts) using appropriate HTTP headers (e.g., Cache-Control, Expires, ETags).
+            Network Request Optimization: Analyze the number and size of HTTP requests. Identify opportunities to reduce requests (e.g., sprite sheets for icons, combining files where sensible) or optimize their delivery (e.g., using a CDN for static assets if not already planned).
+            Font Loading: Ensure web fonts are loaded efficiently to avoid FOIT/FOUT (Flash of Invisible/Unstyled Text).
+        Backend Performance Analysis:
+            API Response Times: Profile key API endpoints (especially those for fetching representative lists, invoice data, CRM dashboards, and AI-driven reports) to identify slow responders.
+            Database Query Optimization (Revisit & Deepen):
+                Re-analyze critical database queries (identified from slow API endpoints or direct profiling). Look for missing indexes, inefficient join conditions, N+1 query problems, or queries that can be rewritten for better performance. Use EXPLAIN ANALYZE (or equivalent) if you can conceptualize its output.
+                Ensure database connection pooling is effectively utilized.
+            Server-Side Logic Efficiency: Review server-side code (Python, Node.js, etc.) for any computationally expensive operations, inefficient loops, or areas that can be optimized (e.g., caching results of expensive computations, using more efficient algorithms).
+            AI Service Call Optimization (Vertex AI / Google Cloud):
+                Analyze the latency of calls to external Google Cloud AI services (STT, Gemini, Natural Language, Translation).
+                Can any calls be made asynchronous to avoid blocking user interactions?
+                Are there opportunities for batching requests to AI services where appropriate?
+                Is prompt engineering (as per previous token efficiency work) further optimizable for speed without sacrificing quality?
+        Tools & Methodology (Chronos to describe its approach):
+            How will you conceptually use browser developer tools (Lighthouse, Performance tab, Network tab)?
+            How will you profile backend code and database queries?
+            What metrics will you prioritize (e.g., First Contentful Paint, Largest Contentful Paint, Time to Interactive, API response P95/P99 latencies)?
+
+II. Implementation of Performance Optimizations:
+
+    Action (Chronos):
+        For each identified performance bottleneck or area for improvement, propose specific, actionable solutions.
+        Provide the necessary code changes (frontend HTML/CSS/JS, backend logic, database schema/index changes, configuration updates) to implement these optimizations.
+        Prioritize fixes based on their potential impact on user experience and system performance.
+        Ensure optimizations do not negatively affect existing functionality or data integrity.
+
+III. Verification & Monitoring:
+
+    Action (Chronos):
+        After implementing optimizations, describe how their effectiveness will be verified (e.g., re-running Lighthouse scores, comparing before/after API response times, observing reduced bundle sizes).
+        Ensure "Project Aegis" is configured to continuously monitor key performance metrics post-optimization so we can track improvements and detect future regressions.
+
+Expected Output from Chronos:
+
+    Comprehensive Performance Audit Report:
+        Detailed list of identified frontend and backend performance bottlenecks.
+        Analysis of current asset sizes, rendering paths, API latencies, and database query performance.
+    Prioritized List of Optimization Recommendations: With justifications for each.
+    Specific Code Changes & Implementation Plan: For each recommended optimization.
+    Report on Implemented Optimizations & Measured Improvements: (After you proceed with the fixes).
+    Recommendations for Ongoing Performance Monitoring with Aegis.
+
+Final Instruction to Chronos:
+
+"Chronos, the overall speed and responsiveness of the MarFanet platform are critical for user satisfaction and operational efficiency. I need you to conduct a thorough and systematic Performance Audit & Optimization Initiative across the entire application (Admin and CRM panels, frontend, and backend).
+
+Please begin by outlining your detailed plan for this audit:
+
+    How will you analyze frontend performance (assets, rendering, network)?
+    How will you analyze backend performance (APIs, database, server-side logic, AI service calls)?
+    What key performance metrics will you focus on?
+
+Once you have a clear audit plan, proceed with the analysis. I expect a detailed report of your findings, followed by actionable recommendations and code changes to implement the necessary optimizations. Our goal is a significantly faster and more efficient MarFanet platform."
+
+Why this prompt is effective:
+
+    Comprehensive Scope: Covers frontend, backend, database, and even AI service call optimization.
+    Specific Areas to Investigate: Guides Chronos by listing common performance culprits (asset sizes, render-blocking resources, N+1 queries, etc.).
+    Asks for Methodology: Prompts Chronos to think about how it will perform the audit.
+    Action-Oriented: Focuses on not just identifying problems but also implementing solutions.
+    Verification & Monitoring: Includes the crucial steps of verifying improvements and integrating with Aegis for ongoing monitoring.
+    Clear Deliverables: Specifies what kind of reports and outputs are expected.

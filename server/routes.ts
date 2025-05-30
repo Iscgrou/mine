@@ -8,6 +8,7 @@ import { sql, eq } from "drizzle-orm";
 import { aegisLogger, EventType, LogLevel } from "./aegis-logger";
 import { aegisMonitor } from "./aegis-monitor-fixed";
 import { novaAIEngine } from "./nova-ai-engine";
+import { performanceCache, cacheMiddleware } from './performance-cache';
 import { registerTestEndpoints } from "./test-endpoints";
 import { registerVoiceWorkflowTests } from "./voice-workflow-test";
 import { registerSTTDiagnostic } from "./stt-diagnostic";

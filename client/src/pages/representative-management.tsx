@@ -6,7 +6,8 @@ import {
   TrendingUp, DollarSign, Phone, Mail, MapPin,
   Building, Calendar, Award, AlertCircle, CheckCircle,
   Search, Filter, Download, MoreHorizontal, Star,
-  UserCheck, UserX, Settings, Clock, Target
+  UserCheck, UserX, Settings, Clock, Target, FileText,
+  User
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -32,13 +33,13 @@ interface Representative {
   nationalId: string | null;
   status: string | null;
   createdAt: Date | null;
-  commissionRates: {
+  commissionRates?: {
     limited1Month: string | null;
     limited3Month: string | null;
     limited6Month: string | null;
     unlimited: string | null;
   };
-  salesMetrics: {
+  salesMetrics?: {
     totalSales: number;
     monthlyRevenue: number;
     activeSubscriptions: number;
@@ -761,7 +762,7 @@ export default function RepresentativeManagement() {
                   setMoreActionsOpen(false);
                 }}
               >
-                <FileText className="w-4 h-4 ml-2" />
+                <DollarSign className="w-4 h-4 ml-2" />
                 مشاهده تاریخچه مالی
               </Button>
               <Button 

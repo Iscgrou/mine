@@ -634,3 +634,36 @@
 .info-state {
   @apply bg-blue-50 border-blue-200 text-blue-800;
 }
+
+/* Content overflow prevention utilities */
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.truncate-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Analytics content responsiveness fixes */
+.analytics-container {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.analytics-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 1024px) {
+  .analytics-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+}

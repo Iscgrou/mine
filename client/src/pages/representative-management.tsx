@@ -251,38 +251,38 @@ export default function RepresentativeManagement() {
       {/* Action Buttons */}
       <div className="flex gap-2">
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-            <DialogTrigger asChild>
-              <Button className="gap-2">
-                <UserPlus className="w-4 h-4" />
-                افزودن نماینده جدید
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>افزودن نماینده جدید</DialogTitle>
-              </DialogHeader>
-              
-              <div className="space-y-6">
-                <Tabs defaultValue="basic" className="w-full">
-                  <TabsList className="grid w-full grid-cols-3">
-                    <TabsTrigger value="basic">اطلاعات پایه</TabsTrigger>
-                    <TabsTrigger value="business">اطلاعات تجاری</TabsTrigger>
-                    <TabsTrigger value="commission">کمیسیون و همکاری</TabsTrigger>
-                  </TabsList>
-                  
-                  <TabsContent value="basic" className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="fullName">نام و نام خانوادگی *</Label>
-                        <Input
-                          id="fullName"
-                          value={newRepForm.fullName}
-                          onChange={(e) => setNewRepForm(prev => ({ ...prev, fullName: e.target.value }))}
-                          placeholder="نام کامل نماینده"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="adminUsername">نام کاربری مدیریت *</Label>
+          <DialogTrigger asChild>
+            <Button className="gap-2">
+              <UserPlus className="w-4 h-4" />
+              افزودن نماینده جدید
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>افزودن نماینده جدید</DialogTitle>
+            </DialogHeader>
+            
+            <div className="space-y-6">
+              <Tabs defaultValue="basic" className="w-full">
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="basic">اطلاعات پایه</TabsTrigger>
+                  <TabsTrigger value="business">اطلاعات تجاری</TabsTrigger>
+                  <TabsTrigger value="commission">کمیسیون و همکاری</TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="basic" className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="fullName">نام و نام خانوادگی *</Label>
+                      <Input
+                        id="fullName"
+                        value={newRepForm.fullName}
+                        onChange={(e) => setNewRepForm(prev => ({ ...prev, fullName: e.target.value }))}
+                        placeholder="نام کامل نماینده"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="adminUsername">نام کاربری مدیریت *</Label>
                         <Input
                           id="adminUsername"
                           value={newRepForm.adminUsername}

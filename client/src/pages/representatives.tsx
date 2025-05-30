@@ -199,9 +199,16 @@ export default function Representatives() {
         </CardContent>
       </Card>
 
-      {/* Representatives Table - Project Phoenix Enhanced */}
-      <Card>
-        <CardContent className="pt-6">
+      {/* Dynamic Representatives Table */}
+      <div className="dynamic-table-container">
+        <div className="p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="dynamic-chart-title">لیست نمایندگان</h3>
+            <div className="text-sm text-gray-500">
+              مجموع: {filteredRepresentatives?.length || 0} نماینده
+            </div>
+          </div>
+          
           {isLoading ? (
             <div className="space-y-2">
               {[...Array(5)].map((_, i) => (
@@ -209,85 +216,95 @@ export default function Representatives() {
               ))}
             </div>
           ) : (
-            <div className="w-full overflow-hidden">
-              <div className="grid grid-cols-1 gap-4">
+            <table className="dynamic-table">
+              <thead>
+                <tr>
+                  <th>نام نماینده</th>
+                  <th>نام کاربری</th>
+                  <th>تلگرام</th>
+                  <th>نام فروشگاه</th>
+                  <th>وضعیت</th>
+                  <th>موجودی</th>
+                  <th>مشتریان</th>
+                  <th>عملیات</th>
+                </tr>
+              </thead>
+              <tbody>
                 {filteredRepresentatives?.map((rep) => (
-                  <div key={rep.id} className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm hover:shadow-md transition-all duration-200 w-full">
-                    <div className="flex flex-col space-y-4 lg:space-y-0 lg:flex-row lg:items-center justify-between">
-                      <div className="flex-1 min-w-0">
-                        <div className="phoenix-heading text-lg font-medium text-gray-900 mb-2">
-                          {rep.fullName || rep.adminUsername}
+                  <tr key={rep.id}>
+                    <td>
+                      <div className="font-medium">{rep.fullName || rep.adminUsername}</div>
+                    </td>
+                    <td>
+                      <div className="font-mono text-sm">{rep.adminUsername}</div>
+                    </td>
+                    <td>
+                      {rep.telegramId ? (
+                        <div className="flex items-center gap-1">
+                          <i className="fab fa-telegram text-blue-500"></i>
+                          <span className="text-sm">{rep.telegramId}</span>
                         </div>
-                        <div className="phoenix-text text-gray-600 mb-3">
-                          نام کاربری: {rep.adminUsername}
-                        </div>
-                        <div className="flex flex-wrap gap-3 phoenix-small-text text-gray-600">
-                          {rep.phoneNumber && (
-                            <span className="persian-nums flex items-center gap-1">
-                              📞 <span className="hidden sm:inline">تلفن:</span> {rep.phoneNumber}
-                            </span>
-                          )}
-                          {rep.storeName && (
-                            <span className="flex items-center gap-1">
-                              🏪 <span className="hidden sm:inline">فروشگاه:</span> {rep.storeName}
-                            </span>
-                          )}
-                          {rep.telegramId && (
-                            <span className="flex items-center gap-1">
-                              📱 <span className="hidden sm:inline">تلگرام:</span> {rep.telegramId}
-                            </span>
-                          )}
-                        </div>
+                      ) : (
+                        <span className="text-gray-400 text-sm">بدون شناسه</span>
+                      )}
+                    </td>
+                    <td>
+                      <div className="text-sm">{rep.storeName || 'نامشخص'}</div>
+                    </td>
+                    <td>
+                      <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
+                        rep.status === 'active' 
+                          ? 'bg-green-100 text-green-800' 
+                          : rep.status === 'inactive'
+                          ? 'bg-gray-100 text-gray-800'
+                          : 'bg-yellow-100 text-yellow-800'
+                      }`}>
+                        {rep.status === 'active' ? 'فعال' : rep.status === 'inactive' ? 'غیرفعال' : 'معلق'}
+                      </span>
+                    </td>
+                    <td>
+                      <FinancialBalance 
+                        amount={rep.currentBalance || 0}
+                        showCurrency={true}
+                        className="text-sm"
+                      />
+                    </td>
+                    <td>
+                      <div className="text-sm">
+                        <div className="font-medium">{rep.customerSummary?.totalActiveCustomers || 0}</div>
+                        <div className="text-gray-500 text-xs">از {rep.customerSummary?.totalCustomers || 0}</div>
                       </div>
-                      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 lg:gap-4">
-                        <div className="text-center">
-                          {getStatusBadge(rep.status)}
-                        </div>
-                        {/* Show customer summary instead of chaotic customer lists */}
-                        <div className="text-center min-w-[140px]">
-                          <div className="text-xs text-gray-500 mb-1 phoenix-text">مشتریان</div>
-                          <div className="phoenix-text">
-                            <div className="text-sm font-medium text-blue-600">
-                              {Math.floor(Math.random() * 50) + 10}
-                            </div>
-                            <div className="text-xs text-gray-500">فعال</div>
-                          </div>
-                        </div>
-                        <div className="flex flex-row sm:flex-col gap-1">
-                          <Button
-                            variant="outline" 
+                    </td>
+                    <td>
+                      <div className="flex items-center gap-2">
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => handleEdit(rep)}
+                          title="ویرایش"
+                        >
+                          <i className="fas fa-edit"></i>
+                        </Button>
+                        {userRole === 'admin' && (
+                          <Button 
+                            variant="ghost" 
                             size="sm"
-                            onClick={() => handleEdit(rep)}
-                            className="phoenix-button text-xs px-3 py-1 h-7 flex-1 sm:flex-none"
-                          >
-                            ویرایش
-                          </Button>
-                          <Button
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => handleInvoiceView(rep.id)}
-                            className="phoenix-button text-blue-600 hover:text-blue-900 text-xs px-3 py-1 h-7 flex-1 sm:flex-none"
-                          >
-                            فاکتور
-                          </Button>
-                          <Button
-                            variant="outline" 
-                            size="sm"
-                            className="phoenix-button text-red-600 hover:text-red-900 text-xs px-3 py-1 h-7 flex-1 sm:flex-none"
                             onClick={() => handleDelete(rep.id)}
+                            title="حذف"
+                            className="text-red-600 hover:text-red-700"
                           >
-                            حذف
+                            <i className="fas fa-trash"></i>
                           </Button>
-                        </div>
+                        )}
                       </div>
-                    </div>
-                  </div>
+                    </td>
+                  </tr>
                 ))}
-              </div>
-            </div>
+              </tbody>
+            </table>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }

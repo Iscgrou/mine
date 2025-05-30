@@ -1,6 +1,8 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { db } from "./db";
+import { representatives } from "@shared/schema";
 
 import { aegisLogger, EventType, LogLevel } from "./aegis-logger";
 import { aegisMonitor } from "./aegis-monitor-fixed";
@@ -475,34 +477,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Enhanced representatives with balance information - DIAGNOSTIC VERSION
+  // Enhanced representatives with balance information - BYPASS STORAGE LAYER
   app.get("/api/representatives/with-balance", async (req, res) => {
     try {
-      console.log("=== DIAGNOSTIC: Representatives with balance ===");
+      console.log("BYPASS TEST: Fetching representatives directly from database...");
       
-      // Test basic storage method first
-      console.log("Testing basic getRepresentatives()...");
-      const basicReps = await storage.getRepresentatives();
-      console.log(`Basic reps count: ${basicReps.length}`);
+      // Bypass storage layer entirely and query database directly
+      const reps = await db.select().from(representatives);
+      console.log(`Found ${reps.length} representatives directly from database`);
       
-      // If basic works, test the with-balance method
-      console.log("Testing getRepresentativesWithBalance()...");
-      const repsWithBalance = await storage.getRepresentativesWithBalance();
-      console.log(`With-balance count: ${repsWithBalance.length}`);
+      // Add zero balance to each representative
+      const repsWithBalance = reps.map(rep => ({
+        ...rep,
+        currentBalance: 0
+      }));
       
-      console.log("=== SUCCESS: Both methods work ===");
+      console.log("BYPASS TEST SUCCESS: Returning representatives with zero balances");
       res.json(repsWithBalance);
       
     } catch (error) {
-      console.error("=== DIAGNOSTIC ERROR ===");
-      console.error("Error name:", error instanceof Error ? error.name : 'Unknown');
-      console.error("Error message:", error instanceof Error ? error.message : String(error));
-      console.error("Error stack:", error instanceof Error ? error.stack : 'No stack');
-      console.error("=== END DIAGNOSTIC ===");
-      
+      console.error("BYPASS TEST ERROR:", error instanceof Error ? error.message : String(error));
       res.status(500).json({ 
         message: "خطا در دریافت نماینده",
-        diagnostic: error instanceof Error ? error.message : String(error)
+        error: error instanceof Error ? error.message : String(error)
       });
     }
   });

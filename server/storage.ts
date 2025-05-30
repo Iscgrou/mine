@@ -732,14 +732,14 @@ export class DatabaseStorage implements IStorage {
       }
 
       // Get invoice items to calculate volume vs unlimited revenue
-      const invoiceItems = await db.select().from(invoiceItems)
+      const items = await db.select().from(invoiceItems)
         .where(eq(invoiceItems.invoiceId, invoiceId));
 
       let volumeRevenue = 0;
       let unlimitedRevenue = 0;
 
       // Categorize revenue by subscription type
-      for (const item of invoiceItems) {
+      for (const item of items) {
         const itemTotal = parseFloat(item.totalPrice || '0');
         const subscriptionType = item.subscriptionType?.toLowerCase() || '';
         
@@ -922,7 +922,7 @@ export class DatabaseStorage implements IStorage {
     monthlyTrends: Array<{ month: string; earnings: number }>;
   }> {
     // Get collaborator's representatives
-    const representatives = await db.select().from(representatives)
+    const collaboratorReps = await db.select().from(representatives)
       .where(eq(representatives.collaboratorId, collaboratorId));
 
     // Get commission data for timeframe
@@ -955,7 +955,7 @@ export class DatabaseStorage implements IStorage {
       .sort((a, b) => b[1] - a[1])
       .slice(0, 5)
       .map(([repId, commission]) => ({
-        representative: representatives.find(r => r.id === repId)!,
+        representative: collaboratorReps.find(r => r.id === repId)!,
         commissionEarned: commission
       }))
       .filter(item => item.representative);
@@ -965,7 +965,7 @@ export class DatabaseStorage implements IStorage {
 
     return {
       totalEarnings,
-      representativeCount: representatives.length,
+      representativeCount: collaboratorReps.length,
       topRepresentatives,
       commissionBreakdown: {
         volume: volumeEarnings,

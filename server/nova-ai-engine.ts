@@ -485,7 +485,7 @@ class NovaAIEngine {
         language: 'persian'
       });
 
-      // Use dedicated sentiment analysis service or Grok for Persian sentiment
+      // Use dedicated sentiment analysis service or Vertex AI for Persian sentiment
       const response = await fetch('https://api.x.ai/v1/chat/completions', {
         method: 'POST',
         headers: {

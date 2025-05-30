@@ -43,11 +43,6 @@ const navigationItems = [
     icon: "fas fa-analytics",
   },
   {
-    name: "مدیریت نمایندگان",
-    href: "/representatives",
-    icon: "fas fa-users",
-  },
-  {
     name: "آپلود فایل ODS",
     href: "/import",
     icon: "fas fa-upload",

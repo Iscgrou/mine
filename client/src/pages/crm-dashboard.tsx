@@ -281,7 +281,8 @@ export default function CrmDashboard() {
   };
 
   return (
-    <div className="w-full max-w-full overflow-x-hidden bg-gradient-to-br from-blue-50/50 via-white to-purple-50/30 p-4">
+    <div className="w-full max-w-full overflow-x-hidden bg-gradient-to-br from-blue-50/50 via-white to-purple-50/30 p-4 min-h-screen">
+      <div className="max-w-7xl mx-auto">
       {/* Animated Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
@@ -559,6 +560,7 @@ export default function CrmDashboard() {
             </Card>
           </motion.div>
         </div>
+      </div>
       </div>
     </div>
   );

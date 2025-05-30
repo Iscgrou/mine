@@ -31,7 +31,7 @@ export default function Analytics() {
     onError: () => {
       toast({
         title: "خطا",
-        description: "خطا در صادرات گزارش",
+        description: "خطا در صدور گزارش",
         variant: "destructive",
       });
     },
@@ -131,7 +131,7 @@ export default function Analytics() {
         <h1 className="text-3xl font-bold text-foreground">مرکز تحلیل و گزارش</h1>
         <div className="flex items-center gap-2">
           <i className="fas fa-check-circle text-green-500"></i>
-          <span className="text-sm text-muted-foreground">Grok xAI متصل</span>
+          <span className="text-sm text-muted-foreground">Vertex AI متصل</span>
         </div>
       </div>
 
@@ -177,7 +177,7 @@ export default function Analytics() {
           <CardContent>
             <div className="space-y-4">
               <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <h3 className="font-semibold text-blue-800 mb-2">تحلیل هوشمند Grok:</h3>
+                <h3 className="font-semibold text-blue-800 mb-2">تحلیل هوشمند Vertex AI:</h3>
                 <p className="text-blue-700 text-sm">
                   بر اساس داده‌های {selectedPeriod === 'month' ? 'ماه گذشته' : 'دوره انتخابی'}، روند فروش شما در حال بهبود است. 
                   درآمد کل ۲۱۷ نماینده شما نشان‌دهنده رشد پایدار در بازار است.
@@ -281,7 +281,7 @@ export default function Analytics() {
               disabled={exportReportMutation.isPending}
             >
               <i className="fas fa-file-export text-2xl mb-2"></i>
-              <span>{exportReportMutation.isPending ? "در حال صادرات..." : "صادرات گزارش کامل"}</span>
+              <span>{exportReportMutation.isPending ? "در حال صدور..." : "صدور گزارش کامل"}</span>
             </Button>
             <Button 
               variant="outline" 
@@ -303,8 +303,8 @@ export default function Analytics() {
                 {grokConsultationMutation.isPending 
                   ? "در حال اتصال..." 
                   : !isGrokConfigured 
-                    ? "نیاز به تنظیم Grok" 
-                    : "مشاوره هوشمند Grok"
+                    ? "نیاز به تنظیم Vertex AI" 
+                    : "مشاوره هوشمند Vertex AI"
                 }
               </span>
             </Button>

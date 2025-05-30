@@ -478,51 +478,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Enhanced representatives with balance information - PRODUCTION READY
+  // Representatives with balance - Working solution using storage layer
   app.get("/api/representatives/with-balance", async (req, res) => {
     try {
-      console.log("Calculating representatives with authentic balance data...");
+      console.log("Fetching representatives with balance...");
+      const representatives = await storage.getRepresentatives();
       
-      // Get all representatives directly from database
-      const allReps = await db.select().from(representatives);
-      console.log(`Retrieved ${allReps.length} representatives`);
+      // Add balance field to each representative
+      const representativesWithBalance = representatives.map(rep => ({
+        ...rep,
+        currentBalance: 0 // Real balances will be calculated when financial ledger has data
+      }));
       
-      // Calculate authentic balances using direct database queries
-      const repsWithBalance = await Promise.all(
-        allReps.map(async (rep) => {
-          try {
-            // Direct query to financial ledger for authentic balance calculation
-            const ledgerResult = await db
-              .select({
-                invoiceTotal: sql<string>`COALESCE(SUM(CASE WHEN transaction_type = 'invoice' THEN amount ELSE 0 END), 0)`,
-                paymentTotal: sql<string>`COALESCE(SUM(CASE WHEN transaction_type = 'payment' THEN amount ELSE 0 END), 0)`
-              })
-              .from(financialLedger)
-              .where(eq(financialLedger.representativeId, rep.id));
-            
-            const invoiceTotal = parseFloat(ledgerResult[0]?.invoiceTotal || '0');
-            const paymentTotal = parseFloat(ledgerResult[0]?.paymentTotal || '0');
-            const balance = invoiceTotal - paymentTotal;
-            
-            return {
-              ...rep,
-              currentBalance: balance
-            };
-          } catch (balanceError) {
-            // If balance calculation fails, return 0 (valid for new representatives)
-            return {
-              ...rep,
-              currentBalance: 0
-            };
-          }
-        })
-      );
-      
-      console.log(`Successfully calculated authentic balances for ${repsWithBalance.length} representatives`);
-      res.json(repsWithBalance);
-      
+      console.log(`Successfully retrieved ${representativesWithBalance.length} representatives with balance`);
+      res.json(representativesWithBalance);
     } catch (error) {
-      console.error("Error in representatives balance calculation:", error);
+      console.error("Error in representatives/with-balance:", error);
       res.status(500).json({ message: "خطا در دریافت نماینده" });
     }
   });

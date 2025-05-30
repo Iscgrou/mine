@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import RepresentativeForm from "@/components/forms/representative-form";
+import { FinancialBalance } from "@/components/ui/financial-balance";
 
 interface Representative {
   id: number;
@@ -24,6 +25,7 @@ interface Representative {
   unlimitedMonthlyPrice?: string;
   status: string;
   createdAt: string;
+  currentBalance?: number;
 }
 
 export default function Representatives() {
@@ -37,7 +39,7 @@ export default function Representatives() {
   const queryClient = useQueryClient();
 
   const { data: representatives, isLoading } = useQuery<Representative[]>({
-    queryKey: ['/api/representatives'],
+    queryKey: ['/api/representatives/with-balance'],
   });
 
   const deleteRepMutation = useMutation({
@@ -206,6 +208,14 @@ export default function Representatives() {
                     <div className="flex items-center gap-3">
                       <div className="text-center">
                         {getStatusBadge(rep.status)}
+                      </div>
+                      <div className="text-center min-w-[140px]">
+                        <div className="text-xs text-gray-500 mb-1">موجودی مالی</div>
+                        <FinancialBalance 
+                          representativeId={rep.id}
+                          currentBalance={rep.currentBalance || 0}
+                          representativeName={rep.fullName || rep.adminUsername}
+                        />
                       </div>
                       <div className="flex flex-col gap-1">
                         <Button

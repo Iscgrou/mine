@@ -215,8 +215,8 @@ export class DatabaseStorage implements IStorage {
     await this.createLedgerEntry({
       representativeId,
       transactionType: 'invoice',
-      amount: amount,
-      runningBalance: newBalance,
+      amount: amount.toString(),
+      runningBalance: newBalance.toString(),
       referenceId: invoiceId,
       referenceNumber: invoiceNumber,
       description: `فاکتور شماره ${invoiceNumber} - اشتراک V2Ray`,
@@ -231,8 +231,8 @@ export class DatabaseStorage implements IStorage {
     await this.createLedgerEntry({
       representativeId,
       transactionType: 'payment',
-      amount: amount,
-      runningBalance: newBalance,
+      amount: amount.toString(),
+      runningBalance: newBalance.toString(),
       referenceId: paymentId,
       referenceNumber: paymentReference || `PAY-${paymentId}`,
       description: `پرداخت ${amount.toLocaleString()} تومان`,

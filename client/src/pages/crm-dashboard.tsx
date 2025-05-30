@@ -7,12 +7,15 @@ import { useState } from "react";
 import { formatCurrency, formatPersianDate } from "@/lib/persian-utils";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLocation } from "wouter";
 import { 
   Users, Phone, Clock, MessageSquare, CheckCircle, 
   Target, TrendingUp, Search, Filter, ChevronRight,
   BarChart3, PieChart, Activity, Calendar,
-  Star, ThumbsUp, Zap, Award
+  Star, ThumbsUp, Zap, Award, Plus, Bell, FileText
 } from "lucide-react";
+import { NotificationCenter } from "@/components/notification-center";
+import { DailyWorkLog } from "@/components/daily-work-log";
 
 interface CrmStats {
   totalCustomers: number;
@@ -104,50 +107,58 @@ const AnimatedStatsCard = ({ title, value, change, icon: Icon, delay = 0 }: {
 );
 
 // Quick Actions Component
-const QuickActions = () => (
-  <motion.div
-    initial={{ opacity: 0, x: 20 }}
-    animate={{ opacity: 1, x: 0 }}
-    transition={{ duration: 0.6, delay: 0.4 }}
-  >
-    <Card className="bg-gradient-to-br from-white to-purple-50/30 border-purple-100">
-      <CardHeader>
-        <CardTitle className="flex items-center">
-          <Zap className="w-5 h-5 ml-2 text-purple-600" />
-          اقدامات سریع
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        {[
-          { label: "ایجاد تیکت جدید", icon: MessageSquare, color: "blue" },
-          { label: "تماس با مشتری", icon: Phone, color: "green" },
-          { label: "ثبت یادداشت", icon: Calendar, color: "orange" },
-          { label: "مشاهده گزارشات", icon: BarChart3, color: "purple" }
-        ].map((action, idx) => (
-          <motion.button
-            key={action.label}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.6 + idx * 0.1 }}
-            whileHover={{ x: 5, scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className={cn(
-              "w-full flex items-center p-3 rounded-lg border border-gray-200 hover:border-gray-300 transition-all duration-200 group",
-              `hover:bg-${action.color}-50`
-            )}
-          >
-            <action.icon className={cn("w-4 h-4 ml-3", `text-${action.color}-600 group-hover:text-${action.color}-700`)} />
-            <span className="text-gray-700 group-hover:text-gray-900">{action.label}</span>
-            <ChevronRight className="w-4 h-4 mr-auto text-gray-400 group-hover:text-gray-600" />
-          </motion.button>
-        ))}
-      </CardContent>
-    </Card>
-  </motion.div>
-);
+const QuickActions = ({ onNewTicket, onCallCustomer, onCreateNote, onViewReports }: {
+  onNewTicket: () => void;
+  onCallCustomer: () => void;
+  onCreateNote: () => void;
+  onViewReports: () => void;
+}) => {
+  const actions = [
+    { label: "ایجاد تیکت جدید", icon: MessageSquare, color: "blue", onClick: onNewTicket },
+    { label: "تماس با مشتری", icon: Phone, color: "green", onClick: onCallCustomer },
+    { label: "ثبت یادداشت", icon: FileText, color: "orange", onClick: onCreateNote },
+    { label: "مشاهده گزارشات", icon: BarChart3, color: "purple", onClick: onViewReports }
+  ];
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.6, delay: 0.4 }}
+    >
+      <Card className="bg-gradient-to-br from-white to-purple-50/30 border-purple-100">
+        <CardHeader>
+          <CardTitle className="flex items-center">
+            <Zap className="w-5 h-5 ml-2 text-purple-600" />
+            اقدامات سریع
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          {actions.map((action, idx) => (
+            <motion.button
+              key={action.label}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.6 + idx * 0.1 }}
+              whileHover={{ x: 5, scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={action.onClick}
+              className="w-full flex items-center p-3 rounded-lg border border-gray-200 hover:border-gray-300 transition-all duration-200 group hover:bg-blue-50"
+            >
+              <action.icon className="w-4 h-4 ml-3 text-blue-600 group-hover:text-blue-700" />
+              <span className="text-gray-700 group-hover:text-gray-900">{action.label}</span>
+              <ChevronRight className="w-4 h-4 mr-auto text-gray-400 group-hover:text-gray-600" />
+            </motion.button>
+          ))}
+        </CardContent>
+      </Card>
+    </motion.div>
+  );
+};
 
 export default function CrmDashboard() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [, setLocation] = useLocation();
 
   // Fetch real data from API
   const { data: stats } = useQuery({
@@ -155,6 +166,27 @@ export default function CrmDashboard() {
     queryFn: () => fetch('/api/crm/stats').then(res => res.json()),
     refetchInterval: 30000, // Refresh every 30 seconds
   });
+
+  // Button handlers
+  const handleNewCustomer = () => {
+    setLocation('/crm/customers');
+  };
+
+  const handleNewTicket = () => {
+    setLocation('/crm/tickets');
+  };
+
+  const handleCallCustomer = () => {
+    setLocation('/crm/call-preparation');
+  };
+
+  const handleCreateNote = () => {
+    setLocation('/crm/voice-notes');
+  };
+
+  const handleViewReports = () => {
+    setLocation('/analytics');
+  };
 
   const crmStats: CrmStats = stats || {
     totalCustomers: 245,
@@ -283,13 +315,20 @@ export default function CrmDashboard() {
             transition={{ duration: 0.6, delay: 0.4 }}
           >
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-lg">
+              <Button 
+                onClick={handleNewCustomer}
+                className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-lg"
+              >
                 <Users className="w-4 h-4 ml-2" />
                 مشتری جدید
               </Button>
             </motion.div>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button variant="outline" className="border-blue-200 hover:border-blue-300 hover:bg-blue-50">
+              <Button 
+                onClick={handleNewTicket}
+                variant="outline" 
+                className="border-blue-200 hover:border-blue-300 hover:bg-blue-50"
+              >
                 <MessageSquare className="w-4 h-4 ml-2" />
                 تیکت جدید
               </Button>
@@ -433,13 +472,56 @@ export default function CrmDashboard() {
 
         {/* Right Column - Quick Actions & Active Tickets */}
         <div className="space-y-6">
-          <QuickActions />
+          <QuickActions 
+            onNewTicket={handleNewTicket}
+            onCallCustomer={handleCallCustomer}
+            onCreateNote={handleCreateNote}
+            onViewReports={handleViewReports}
+          />
+
+          {/* Animated Notification Center */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.7 }}
+          >
+            <Card className="bg-gradient-to-br from-white to-green-50/30 border-green-100">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Bell className="w-5 h-5 ml-2 text-green-600" />
+                  مرکز اطلاعیه‌ها
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <NotificationCenter />
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Animated Daily Work Log */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.8 }}
+          >
+            <Card className="bg-gradient-to-br from-white to-indigo-50/30 border-indigo-100">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Calendar className="w-5 h-5 ml-2 text-indigo-600" />
+                  ثبت کار روزانه
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <DailyWorkLog />
+              </CardContent>
+            </Card>
+          </motion.div>
 
           {/* Active Tickets */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.8 }}
+            transition={{ duration: 0.6, delay: 0.9 }}
           >
             <Card className="bg-gradient-to-br from-white to-orange-50/30 border-orange-100">
               <CardHeader>
@@ -454,7 +536,7 @@ export default function CrmDashboard() {
                     key={ticket.id}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.9 + idx * 0.1 }}
+                    transition={{ delay: 1.0 + idx * 0.1 }}
                     whileHover={{ x: 5, scale: 1.02 }}
                     className="p-4 border border-gray-200 rounded-lg hover:border-gray-300 transition-all duration-200 cursor-pointer group"
                   >

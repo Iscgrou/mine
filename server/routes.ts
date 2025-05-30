@@ -132,7 +132,7 @@ async function aggregateRevenueData(timeframe: string) {
 // V2Ray Revenue Prediction - Vertex AI Integration
 async function generateRevenuePrediction(revenueData: any, timeframe: string, includeRiskAssessment: boolean) {
   try {
-    const vertexKey = await storage.getSetting('google_ai_studio_api_key');
+    const vertexKey = await storage.getSetting('grok_api_key');
     if (!vertexKey?.value) {
       throw new Error('کلید API Vertex AI یافت نشد');
     }
@@ -180,8 +180,20 @@ ${revenueData.summary.topPerformingReps.map((rep: any) => `${rep.name} (${rep.re
   "recommendations": [""]
 }`;
 
+    // Parse the Google Cloud service account credentials
+    let apiKey;
+    try {
+      const credentials = JSON.parse(vertexKey.value);
+      // For Google AI Studio (Gemini API), we need a different API key format
+      // This appears to be a service account key, but we need an AI Studio API key
+      throw new Error('نوع کلید نامناسب - لطفاً کلید API Google AI Studio را در تنظیمات وارد کنید');
+    } catch (parseError) {
+      // If it's not JSON, treat it as a direct API key
+      apiKey = vertexKey.value;
+    }
+
     // Call Vertex AI API (Google AI Studio API for Gemini)
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${vertexKey.value}`, {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -1014,7 +1026,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/analytics/vertex-consultation", async (req, res) => {
     try {
-      const vertexKey = await storage.getSetting('google_ai_studio_api_key');
+      const vertexKey = await storage.getSetting('grok_api_key');
       if (!vertexKey?.value) {
         return res.status(400).json({ message: "کلید API Vertex AI تنظیم نشده است" });
       }
@@ -1038,7 +1050,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { timeframe = '3-month', includeRiskAssessment = true } = req.body;
       
       // Check if Vertex AI is configured
-      const vertexKey = await storage.getSetting('google_ai_studio_api_key');
+      const vertexKey = await storage.getSetting('grok_api_key');
       if (!vertexKey?.value) {
         return res.status(400).json({ 
           message: "کلید API Vertex AI تنظیم نشده است",

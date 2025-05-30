@@ -245,14 +245,19 @@ export default function Analytics() {
           <CardContent>
             <div className="space-y-4">
               <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg">
-                <h3 className="font-semibold text-purple-800 mb-2">پیش‌بینی Grok xAI:</h3>
+                <h3 className="font-semibold text-purple-800 mb-2">پیش‌بینی Vertex AI:</h3>
                 <p className="text-purple-700 text-sm">
                   بر اساس تحلیل الگوهای فروش، درآمد ماه آینده حدود ۱۵٪ افزایش خواهد یافت.
                 </p>
               </div>
-              <Button variant="outline" className="w-full">
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => revenuePredictionMutation.mutate({ timeframe: selectedPeriod })}
+                disabled={revenuePredictionMutation.isPending || !isGrokConfigured}
+              >
                 <i className="fas fa-chart-line ml-2"></i>
-                جزئیات پیش‌بینی
+                {revenuePredictionMutation.isPending ? "در حال تولید پیش‌بینی..." : "تولید پیش‌بینی درآمد"}
               </Button>
             </div>
           </CardContent>

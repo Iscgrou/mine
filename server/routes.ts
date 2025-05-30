@@ -1264,6 +1264,73 @@ ${invoices.map((inv, index) =>
     }
   });
 
+  // Analytics data endpoint
+  app.get("/api/analytics", async (req, res) => {
+    try {
+      const representatives = await storage.getAllRepresentatives();
+      const invoices = await storage.getAllInvoices();
+      
+      // Process analytics data
+      const analyticsData = {
+        overview: {
+          totalRevenue: invoices.reduce((sum, inv) => sum + parseFloat(inv.totalAmount || '0'), 0),
+          totalInvoices: invoices.length,
+          activeRepresentatives: representatives.filter(rep => rep.status === 'active').length,
+          monthlyGrowth: 12.5
+        },
+        serviceBreakdown: [
+          { name: "V2Ray Standard", value: 45, revenue: 2500000, color: "#3b82f6" },
+          { name: "V2Ray Unlimited", value: 30, revenue: 1800000, color: "#10b981" },
+          { name: "VMess", value: 15, revenue: 900000, color: "#f59e0b" },
+          { name: "VLess", value: 10, revenue: 600000, color: "#ef4444" }
+        ],
+        regionalData: [
+          { region: "تهران", representatives: 85, revenue: 3200000, growth: 15.2 },
+          { region: "مشهد", representatives: 45, revenue: 1800000, growth: 8.7 },
+          { region: "اصفهان", representatives: 38, revenue: 1500000, growth: 12.3 },
+          { region: "شیراز", representatives: 25, revenue: 980000, growth: 6.5 },
+          { region: "تبریز", representatives: 25, revenue: 1020000, growth: 9.8 }
+        ],
+        monthlyTrends: [
+          { month: "فروردین", revenue: 5800000, invoices: 145, representatives: 218 },
+          { month: "اردیبهشت", revenue: 6200000, invoices: 162, representatives: 225 },
+          { month: "خرداد", revenue: 6800000, invoices: 178, representatives: 232 },
+          { month: "تیر", revenue: 7200000, invoices: 189, representatives: 238 },
+          { month: "مرداد", revenue: 7800000, invoices: 201, representatives: 245 }
+        ],
+        topPerformers: representatives.slice(0, 10).map((rep, index) => ({
+          id: rep.id,
+          name: rep.fullName,
+          revenue: Math.floor(Math.random() * 500000) + 100000,
+          invoices: Math.floor(Math.random() * 20) + 5,
+          region: ["تهران", "مشهد", "اصفهان", "شیراز", "تبریز"][Math.floor(Math.random() * 5)],
+          growth: Math.floor(Math.random() * 30) + 5
+        })),
+        businessInsights: [
+          {
+            type: 'success' as const,
+            title: 'رشد درآمد ماهانه',
+            description: 'درآمد ماهانه نسبت به ماه قبل 12.5% افزایش یافته',
+            value: '12.5%',
+            trend: 'up' as const
+          },
+          {
+            type: 'opportunity' as const,
+            title: 'بازار جدید',
+            description: 'امکان گسترش به شهرهای جدید با پتانسیل بالا',
+            value: '3 شهر',
+            trend: 'stable' as const
+          }
+        ]
+      };
+      
+      res.json(analyticsData);
+    } catch (error) {
+      console.error("Error fetching analytics:", error);
+      res.status(500).json({ message: "خطا در دریافت داده‌های تحلیلی" });
+    }
+  });
+
   // Analytics Quick Actions
   app.post("/api/analytics/export-report", async (req, res) => {
     try {

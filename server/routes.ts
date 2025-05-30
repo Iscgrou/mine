@@ -11,7 +11,9 @@ import {
   insertRepresentativeSchema, 
   insertInvoiceSchema, 
   insertPaymentSchema,
-  insertFileImportSchema 
+  insertFileImportSchema,
+  insertCollaboratorSchema,
+  insertCollaboratorPayoutSchema
 } from "@shared/schema";
 import multer from "multer";
 import * as XLSX from "xlsx";
@@ -781,6 +783,18 @@ ${invoices.map((inv, index) =>
               });
             }
 
+            // Automatically calculate and record commission if representative is collaborator-introduced
+            try {
+              await storage.calculateAndRecordCommission(
+                invoice.id,
+                representative.id,
+                undefined // No batch ID for individual imports
+              );
+              aegisLogger.info('Commission', `Auto-calculated commission for invoice ${invoice.invoiceNumber}`);
+            } catch (commissionError) {
+              aegisLogger.warn('Commission', `Failed to calculate commission for invoice ${invoice.invoiceNumber}:`, commissionError);
+            }
+
             invoicesCreated.push(invoice);
             recordsProcessed++;
           } else {
@@ -1386,6 +1400,318 @@ ${invoices.map((inv, index) =>
     } catch (error) {
       aegisLogger.error('API', 'Profile update failed', error);
       res.status(500).json({ message: "خطا در به‌روزرسانی پروفایل" });
+    }
+  });
+
+  // === COMPREHENSIVE COLLABORATOR PROGRAM API ENDPOINTS ===
+  
+  // Core Collaborator Management APIs
+  app.get("/api/collaborators", async (req, res) => {
+    try {
+      aegisLogger.info('API', 'Fetching all collaborators');
+      const collaborators = await storage.getCollaborators();
+      res.json(collaborators);
+    } catch (error) {
+      aegisLogger.error('API', 'Error fetching collaborators', error);
+      res.status(500).json({ message: "خطا در دریافت همکاران" });
+    }
+  });
+
+  app.get("/api/collaborators/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      aegisLogger.info('API', `Fetching collaborator details for ID: ${id}`);
+      
+      const collaborator = await storage.getCollaboratorById(id);
+      if (!collaborator) {
+        return res.status(404).json({ message: "همکار پیدا نشد" });
+      }
+
+      // Get linked representatives
+      const representatives = await storage.getRepresentatives();
+      const linkedReps = representatives.filter(rep => rep.collaboratorId === id);
+
+      // Get earnings summary
+      const earnings = await storage.getCollaboratorEarnings(id);
+
+      res.json({
+        ...collaborator,
+        linkedRepresentatives: linkedReps,
+        earningsSummary: earnings
+      });
+    } catch (error) {
+      aegisLogger.error('API', 'Error fetching collaborator details', error);
+      res.status(500).json({ message: "خطا در دریافت جزئیات همکار" });
+    }
+  });
+
+  app.post("/api/collaborators", async (req, res) => {
+    try {
+      aegisLogger.info('API', 'Creating new collaborator');
+      const validatedData = insertCollaboratorSchema.parse(req.body);
+      const collaborator = await storage.createCollaborator(validatedData);
+      
+      aegisLogger.info('Collaborator', `New collaborator created: ${collaborator.collaboratorName}`);
+      res.status(201).json(collaborator);
+    } catch (error) {
+      aegisLogger.error('API', 'Error creating collaborator', error);
+      res.status(500).json({ message: "خطا در ایجاد همکار جدید" });
+    }
+  });
+
+  app.put("/api/collaborators/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      aegisLogger.info('API', `Updating collaborator ID: ${id}`);
+      
+      const updates = insertCollaboratorSchema.partial().parse(req.body);
+      const collaborator = await storage.updateCollaborator(id, updates);
+      
+      aegisLogger.info('Collaborator', `Collaborator updated: ${collaborator.collaboratorName}`);
+      res.json(collaborator);
+    } catch (error) {
+      aegisLogger.error('API', 'Error updating collaborator', error);
+      res.status(500).json({ message: "خطا در به‌روزرسانی همکار" });
+    }
+  });
+
+  app.delete("/api/collaborators/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      aegisLogger.info('API', `Attempting to delete collaborator ID: ${id}`);
+      
+      await storage.deleteCollaborator(id);
+      
+      aegisLogger.info('Collaborator', `Collaborator deleted: ID ${id}`);
+      res.json({ message: "همکار با موفقیت حذف شد" });
+    } catch (error) {
+      if (error instanceof Error && error.message.includes('linked representatives')) {
+        return res.status(400).json({ message: "نمی‌توان همکاری را که نماینده مرتبط دارد حذف کرد" });
+      }
+      aegisLogger.error('API', 'Error deleting collaborator', error);
+      res.status(500).json({ message: "خطا در حذف همکار" });
+    }
+  });
+
+  app.get("/api/collaborators/search", async (req, res) => {
+    try {
+      const query = req.query.q as string;
+      if (!query) {
+        return res.status(400).json({ message: "پارامتر جستجو مورد نیاز است" });
+      }
+      
+      aegisLogger.info('API', `Searching collaborators: ${query}`);
+      const collaborators = await storage.searchCollaborators(query);
+      res.json(collaborators);
+    } catch (error) {
+      aegisLogger.error('API', 'Error searching collaborators', error);
+      res.status(500).json({ message: "خطا در جستجوی همکاران" });
+    }
+  });
+
+  // Commission and Earnings Management APIs
+  app.get("/api/collaborators/:id/earnings", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { startDate, endDate } = req.query;
+      
+      aegisLogger.info('API', `Fetching earnings for collaborator ID: ${id}`);
+      
+      const earnings = await storage.getCollaboratorEarnings(
+        id,
+        startDate ? new Date(startDate as string) : undefined,
+        endDate ? new Date(endDate as string) : undefined
+      );
+      
+      res.json(earnings);
+    } catch (error) {
+      aegisLogger.error('API', 'Error fetching collaborator earnings', error);
+      res.status(500).json({ message: "خطا در دریافت درآمدهای همکار" });
+    }
+  });
+
+  app.get("/api/collaborators/:id/commission-records", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      aegisLogger.info('API', `Fetching commission records for collaborator ID: ${id}`);
+      
+      const commissions = await storage.getCommissionRecords(id);
+      res.json(commissions);
+    } catch (error) {
+      aegisLogger.error('API', 'Error fetching commission records', error);
+      res.status(500).json({ message: "خطا در دریافت سوابق کمیسیون" });
+    }
+  });
+
+  app.get("/api/collaborators/:id/performance", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { timeframe = '4-week' } = req.query;
+      
+      aegisLogger.info('API', `Fetching performance data for collaborator ID: ${id}, timeframe: ${timeframe}`);
+      
+      const performance = await storage.getCollaboratorPerformanceData(id, timeframe as string);
+      res.json(performance);
+    } catch (error) {
+      aegisLogger.error('API', 'Error fetching collaborator performance', error);
+      res.status(500).json({ message: "خطا در دریافت عملکرد همکار" });
+    }
+  });
+
+  // Payout Management APIs
+  app.post("/api/collaborators/:id/payouts", async (req, res) => {
+    try {
+      const collaboratorId = parseInt(req.params.id);
+      aegisLogger.info('API', `Recording payout for collaborator ID: ${collaboratorId}`);
+      
+      const validatedData = insertCollaboratorPayoutSchema.parse({
+        ...req.body,
+        collaboratorId
+      });
+      
+      const payout = await storage.recordCollaboratorPayout(validatedData);
+      
+      aegisLogger.info('Payout', `Payout recorded for collaborator ${collaboratorId}: ${validatedData.payoutAmount}`);
+      res.status(201).json(payout);
+    } catch (error) {
+      if (error instanceof Error && error.message.includes('Insufficient balance')) {
+        return res.status(400).json({ message: "موجودی ناکافی برای پرداخت" });
+      }
+      aegisLogger.error('API', 'Error recording payout', error);
+      res.status(500).json({ message: "خطا در ثبت پرداخت" });
+    }
+  });
+
+  app.get("/api/collaborators/:id/payouts", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      aegisLogger.info('API', `Fetching payout history for collaborator ID: ${id}`);
+      
+      const payouts = await storage.getCollaboratorPayouts(id);
+      res.json(payouts);
+    } catch (error) {
+      aegisLogger.error('API', 'Error fetching payout history', error);
+      res.status(500).json({ message: "خطا در دریافت سابقه پرداخت‌ها" });
+    }
+  });
+
+  app.get("/api/collaborators/:id/balance", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      aegisLogger.info('API', `Fetching balance for collaborator ID: ${id}`);
+      
+      const balance = await storage.getCollaboratorBalance(id);
+      res.json({ balance });
+    } catch (error) {
+      aegisLogger.error('API', 'Error fetching collaborator balance', error);
+      res.status(500).json({ message: "خطا در دریافت موجودی همکار" });
+    }
+  });
+
+  // AI-Powered Detailed Earnings Report
+  app.get("/api/collaborators/:id/earnings-report", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { timeframe = '4-week' } = req.query;
+      
+      aegisLogger.info('API', `Generating AI earnings report for collaborator ID: ${id}`);
+      
+      // Check if AI is configured
+      const aiKey = await storage.getSetting('grok_api_key');
+      if (!aiKey?.value) {
+        return res.status(400).json({ 
+          message: "کلید API هوش مصنوعی تنظیم نشده است",
+          requiresSetup: true 
+        });
+      }
+
+      // Get comprehensive performance data
+      const performance = await storage.getCollaboratorPerformanceData(id, timeframe as string);
+      const earnings = await storage.getCollaboratorEarnings(id);
+      const collaborator = await storage.getCollaboratorById(id);
+
+      // Generate AI-powered analysis
+      const aiAnalysis = await novaAIEngine.generateCollaboratorAnalysis({
+        collaborator,
+        performance,
+        earnings,
+        timeframe: timeframe as string
+      });
+
+      res.json({
+        collaborator,
+        performance,
+        earnings,
+        aiAnalysis,
+        generatedAt: new Date()
+      });
+    } catch (error) {
+      aegisLogger.error('API', 'Error generating earnings report', error);
+      res.status(500).json({ message: "خطا در تولید گزارش درآمدی" });
+    }
+  });
+
+  // Admin Reports on Collaborator Program Performance
+  app.get("/api/admin/collaborator-reports", async (req, res) => {
+    try {
+      const { timeframe = '4-week' } = req.query;
+      aegisLogger.info('API', `Generating admin collaborator reports, timeframe: ${timeframe}`);
+      
+      const collaborators = await storage.getCollaborators();
+      const reports = [];
+
+      for (const collaborator of collaborators) {
+        const performance = await storage.getCollaboratorPerformanceData(collaborator.id, timeframe as string);
+        const earnings = await storage.getCollaboratorEarnings(collaborator.id);
+        
+        reports.push({
+          collaborator,
+          performance,
+          earnings
+        });
+      }
+
+      // Sort by total earnings (descending)
+      reports.sort((a, b) => b.performance.totalEarnings - a.performance.totalEarnings);
+
+      res.json({
+        reports,
+        summary: {
+          totalCollaborators: collaborators.length,
+          topEarner: reports[0]?.collaborator,
+          totalCommissionsPaid: reports.reduce((sum, r) => sum + r.performance.totalEarnings, 0),
+          avgEarningsPerCollaborator: reports.reduce((sum, r) => sum + r.performance.totalEarnings, 0) / Math.max(reports.length, 1)
+        },
+        generatedAt: new Date()
+      });
+    } catch (error) {
+      aegisLogger.error('API', 'Error generating admin collaborator reports', error);
+      res.status(500).json({ message: "خطا در تولید گزارش‌های مدیریتی" });
+    }
+  });
+
+  // Commission calculation trigger (integrated with invoice processing)
+  app.post("/api/invoices/:id/calculate-commission", async (req, res) => {
+    try {
+      const invoiceId = parseInt(req.params.id);
+      aegisLogger.info('API', `Calculating commission for invoice ID: ${invoiceId}`);
+      
+      const invoice = await storage.getInvoiceById(invoiceId);
+      if (!invoice || !invoice.representativeId) {
+        return res.status(404).json({ message: "فاکتور یا نماینده پیدا نشد" });
+      }
+
+      await storage.calculateAndRecordCommission(
+        invoiceId,
+        invoice.representativeId,
+        invoice.batchId || undefined
+      );
+
+      aegisLogger.info('Commission', `Commission calculated for invoice ${invoiceId}`);
+      res.json({ message: "کمیسیون با موفقیت محاسبه شد" });
+    } catch (error) {
+      aegisLogger.error('API', 'Error calculating commission', error);
+      res.status(500).json({ message: "خطا در محاسبه کمیسیون" });
     }
   });
 

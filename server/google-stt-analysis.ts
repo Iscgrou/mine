@@ -67,13 +67,14 @@ export const googleSTTAnalysis: GoogleSTTOption[] = [
       languageCode: "fa", // Persian language understanding
       accuracy: "Very High - Advanced multimodal Persian comprehension",
       models: [
-        "gemini-1.5-pro", // Latest multimodal model
+        "gemini-2.5-pro-preview-05-06", // Latest experimental model
+        "gemini-1.5-pro", // Previous multimodal model
         "gemini-1.0-pro-vision", // Vision and audio capable
         "gemini-pro" // Text-focused but multimodal
       ]
     },
     apiIntegration: {
-      endpoint: "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent",
+      endpoint: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro-preview-05-06:generateContent",
       authMethod: "Google AI Studio API Key or Vertex AI Service Account",
       requestFormat: "REST API with multimodal content blocks",
       libraries: [
@@ -192,7 +193,7 @@ export const geminiImplementation = {
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
-const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });`,
+const model = genAI.getGenerativeModel({ model: 'gemini-2.5-pro-preview-05-06' });`,
     
     persianConfig: `
 const prompt = "لطفاً این فایل صوتی فارسی را با دقت بالا به متن تبدیل کنید:";
@@ -214,7 +215,7 @@ private async convertSpeechToTextGemini(audioUrl: string): Promise<string> {
     const audioBuffer = await audioResponse.arrayBuffer();
     const audioBase64 = Buffer.from(audioBuffer).toString('base64');
     
-    const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent', {
+    const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-pro-preview-05-06:generateContent', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -24,7 +24,7 @@ interface ComponentAnalysis {
 class LayoutDiagnosticAnalyzer {
   private readonly PROJECT_ID = 'gen-lang-client-0093550503';
   private readonly LOCATION = 'us-central1';
-  private readonly MODEL_ID = 'gemini-1.5-pro';
+  private readonly MODEL_ID = 'gemini-2.5-pro-preview-05-06';
 
   private readonly LAYOUT_ISSUES_ANALYSIS = `
   Analyze the following React component structure and identify layout issues:

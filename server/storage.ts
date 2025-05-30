@@ -396,7 +396,7 @@ export class DatabaseStorage implements IStorage {
     if (!invoice) return undefined;
 
     const items = await this.getInvoiceItems(id);
-    const batch = invoice.batchId ? await this.getInvoiceBatchById(invoice.batchId) : null;
+    const batch = invoice.batchId ? await this.getInvoiceBatchById(invoice.batchId) || null : null;
     
     return { ...invoice, items, batch };
   }

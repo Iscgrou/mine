@@ -338,36 +338,59 @@ export default function CrmDashboard() {
         </div>
       </motion.div>
 
-      {/* Responsive Stats Cards with Container Queries */}
-      <div className="stats-grid mb-8">
-        <AnimatedStatsCard
-          title="کل مشتریان"
-          value={crmStats.totalCustomers}
-          change={{ value: 12, type: 'increase' }}
-          icon={Users}
-          delay={0}
-        />
-        <AnimatedStatsCard
-          title="تیکت‌های فعال"
-          value={crmStats.activeTickets}
-          change={{ value: -4, type: 'decrease' }}
-          icon={MessageSquare}
-          delay={0.1}
-        />
-        <AnimatedStatsCard
-          title="تعاملات امروز"
-          value={crmStats.todayInteractions}
-          change={{ value: 8, type: 'increase' }}
-          icon={Phone}
-          delay={0.2}
-        />
-        <AnimatedStatsCard
-          title="پیگیری‌های معلق"
-          value={crmStats.pendingFollowups}
-          change={{ value: 2, type: 'increase' }}
-          icon={Clock}
-          delay={0.3}
-        />
+      {/* Dynamic Stats Grid */}
+      <div className="dynamic-stats-grid">
+        <div className="dynamic-stats-card">
+          <div className="stats-card-header">
+            <div className="stats-card-icon" style={{ background: '#3b82f6' }}>
+              <Users className="w-5 h-5" />
+            </div>
+          </div>
+          <div className="stats-card-value">{crmStats.totalCustomers}</div>
+          <div className="stats-card-label">کل مشتریان</div>
+          <div className="stats-card-change positive">
+            +۱۲% افزایش
+          </div>
+        </div>
+
+        <div className="dynamic-stats-card">
+          <div className="stats-card-header">
+            <div className="stats-card-icon" style={{ background: '#f59e0b' }}>
+              <MessageSquare className="w-5 h-5" />
+            </div>
+          </div>
+          <div className="stats-card-value">{crmStats.activeTickets}</div>
+          <div className="stats-card-label">تیکت‌های فعال</div>
+          <div className="stats-card-change negative">
+            -۴ کاهش
+          </div>
+        </div>
+
+        <div className="dynamic-stats-card">
+          <div className="stats-card-header">
+            <div className="stats-card-icon" style={{ background: '#10b981' }}>
+              <Phone className="w-5 h-5" />
+            </div>
+          </div>
+          <div className="stats-card-value">{crmStats.todayInteractions}</div>
+          <div className="stats-card-label">تعاملات امروز</div>
+          <div className="stats-card-change positive">
+            +۸ افزایش
+          </div>
+        </div>
+
+        <div className="dynamic-stats-card">
+          <div className="stats-card-header">
+            <div className="stats-card-icon" style={{ background: '#ef4444' }}>
+              <Clock className="w-5 h-5" />
+            </div>
+          </div>
+          <div className="stats-card-value">{crmStats.pendingFollowups}</div>
+          <div className="stats-card-label">پیگیری‌های معلق</div>
+          <div className="stats-card-change negative">
+            +۲ نیاز به توجه
+          </div>
+        </div>
       </div>
 
       {/* Reorganized Main Content - Single Column Layout */}

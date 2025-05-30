@@ -314,13 +314,13 @@ export default function Dashboard() {
         </Card>
       </div>
 
-      {/* Recent Invoices Table */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle>آخرین صورتحساب‌ها</CardTitle>
-            <div className="flex items-center space-x-reverse space-x-3">
-              <select className="text-sm border-gray-300 rounded-md">
+      {/* Dynamic Recent Invoices Table */}
+      <div className="dynamic-table-container">
+        <div className="p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="dynamic-chart-title">آخرین صورتحساب‌ها</h3>
+            <div className="flex items-center gap-3">
+              <select className="text-sm border border-gray-300 rounded-md px-3 py-1">
                 <option>همه نمایندگان</option>
                 <option>فعال</option>
                 <option>غیرفعال</option>
@@ -333,8 +333,7 @@ export default function Dashboard() {
               </Link>
             </div>
           </div>
-        </CardHeader>
-        <CardContent>
+          
           {invoicesLoading ? (
             <div className="space-y-2">
               {[...Array(3)].map((_, i) => (
@@ -342,85 +341,80 @@ export default function Dashboard() {
               ))}
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      نماینده
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      مبلغ
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      تاریخ
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      عملیات
-                    </th>
+            <table className="dynamic-table">
+              <thead>
+                <tr>
+                  <th>نماینده</th>
+                  <th>شماره فاکتور</th>
+                  <th>مبلغ</th>
+                  <th>وضعیت</th>
+                  <th>تاریخ</th>
+                  <th>عملیات</th>
+                </tr>
+              </thead>
+              <tbody>
+                {recentInvoices?.map((invoice) => (
+                  <tr key={invoice.id}>
+                    <td>
+                      <div className="font-medium">
+                        {invoice.representative?.adminUsername || 'نامشخص'}
+                      </div>
+                    </td>
+                    <td>
+                      <div className="font-mono text-sm">
+                        {invoice.invoiceNumber}
+                      </div>
+                    </td>
+                    <td>
+                      <div className="font-medium">
+                        {formatPersianNumber(invoice.totalAmount)} تومان
+                      </div>
+                    </td>
+                    <td>
+                      {getStatusBadge(invoice.status)}
+                    </td>
+                    <td>
+                      <div className="text-sm">
+                        {new Date(invoice.createdAt).toLocaleDateString('fa-IR')}
+                      </div>
+                    </td>
+                    <td>
+                      <div className="flex items-center gap-2">
+                        <Link href={`/admin/invoices/${invoice.id}`}>
+                          <Button variant="ghost" size="sm" title="مشاهده جزئیات">
+                            <i className="fas fa-eye"></i>
+                          </Button>
+                        </Link>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          title="دانلود فاکتور"
+                          onClick={() => window.open(`/api/invoices/${invoice.id}/download`, '_blank')}
+                        >
+                          <i className="fas fa-download"></i>
+                        </Button>
+                      </div>
+                    </td>
                   </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {recentInvoices?.map((invoice) => (
-                    <tr key={invoice.id} className="table-row-hover">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">
-                          {invoice.representative?.adminUsername || 'نامشخص'}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900 persian-nums">
-                          {formatPersianNumber(invoice.totalAmount)} تومان
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900 persian-nums">
-                          {new Date(invoice.createdAt).toLocaleDateString('fa-IR')}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <div className="flex items-center space-x-reverse space-x-2">
-                          <Link href={`/admin/invoices/${invoice.id}`}>
-                            <Button variant="ghost" size="sm" title="مشاهده جزئیات">
-                              <i className="fas fa-eye"></i>
-                            </Button>
-                          </Link>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            title="دانلود فاکتور"
-                            onClick={() => {
-                              window.open(`/api/invoices/${invoice.id}/download`, '_blank');
-                            }}
-                          >
-                            <i className="fas fa-download"></i>
-                          </Button>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            title="ارسال به تلگرام"
-                            onClick={() => {
-                              // Implementation for Telegram sharing
-                              toast({
-                                title: "ارسال به تلگرام",
-                                description: "در حال پیاده‌سازی...",
-                              });
-                            }}
-                          >
-                            <i className="fab fa-telegram"></i>
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
           )}
-        </CardContent>
-      </Card>
-      
+        </div>
+      </div>
 
+      {/* Daily Work Log */}
+      <div className="dynamic-chart-container">
+        <div className="dynamic-chart-wrapper">
+          <h3 className="dynamic-chart-title">مدیریت کارهای روزانه</h3>
+          <DailyWorkLog 
+            tasks={mockTasks}
+            onTaskComplete={handleTaskComplete}
+            onTaskView={handleTaskView}
+            onTaskSnooze={handleTaskSnooze}
+          />
+        </div>
+      </div>
     </div>
   );
 }

@@ -300,9 +300,58 @@ export default function ImportOds() {
                         {getStatusBadge(fileImport.status)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <Button variant="ghost" size="sm">
-                          مشاهده جزئیات
-                        </Button>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => handleViewDetails(fileImport)}
+                            >
+                              مشاهده جزئیات
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="max-w-2xl">
+                            <DialogHeader>
+                              <DialogTitle>جزئیات وارد کردن فایل</DialogTitle>
+                            </DialogHeader>
+                            <div className="space-y-4">
+                              <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                  <label className="text-sm font-medium text-gray-500">نام فایل</label>
+                                  <p className="text-sm text-gray-900">{selectedImport?.fileName}</p>
+                                </div>
+                                <div>
+                                  <label className="text-sm font-medium text-gray-500">تاریخ آپلود</label>
+                                  <p className="text-sm text-gray-900 persian-nums">
+                                    {selectedImport ? new Date(selectedImport.createdAt).toLocaleDateString('fa-IR') : ''}
+                                  </p>
+                                </div>
+                                <div>
+                                  <label className="text-sm font-medium text-gray-500">تعداد رکورد پردازش شده</label>
+                                  <p className="text-sm text-gray-900 persian-nums">{selectedImport?.recordsProcessed}</p>
+                                </div>
+                                <div>
+                                  <label className="text-sm font-medium text-gray-500">تعداد رکورد رد شده</label>
+                                  <p className="text-sm text-gray-900 persian-nums">{selectedImport?.recordsSkipped}</p>
+                                </div>
+                                <div>
+                                  <label className="text-sm font-medium text-gray-500">وضعیت</label>
+                                  <div className="mt-1">
+                                    {selectedImport ? getStatusBadge(selectedImport.status) : ''}
+                                  </div>
+                                </div>
+                              </div>
+                              {selectedImport?.errorDetails && (
+                                <div>
+                                  <label className="text-sm font-medium text-gray-500">جزئیات خطا</label>
+                                  <p className="text-sm text-red-600 bg-red-50 p-2 rounded">
+                                    {selectedImport.errorDetails}
+                                  </p>
+                                </div>
+                              )}
+                            </div>
+                          </DialogContent>
+                        </Dialog>
                       </td>
                     </tr>
                   ))}

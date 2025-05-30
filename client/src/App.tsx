@@ -25,6 +25,7 @@ import CrmCallPreparation from "@/pages/crm-call-preparation";
 import CrmVoiceNotes from "@/pages/crm-voice-notes";
 import CRTPerformance from "@/pages/crt-performance";
 import RepresentativeManagement from "@/pages/representative-management";
+import CollaboratorManagement from "@/pages/collaborator-management";
 import AegisDashboard from "@/pages/aegis-dashboard";
 import AegisTest from "@/pages/aegis-test";
 import GoogleCloudSetup from "@/pages/google-cloud-setup";
@@ -81,6 +82,7 @@ function Router() {
             <Route path="/admin/" component={Dashboard} />
             <Route path="/admin/dashboard" component={Dashboard} />
             <Route path="/admin/representatives" component={RepresentativeManagement} />
+            <Route path="/admin/collaborators" component={CollaboratorManagement} />
             <Route path="/admin/invoices" component={Invoices} />
             <Route path="/admin/invoice-batches" component={InvoiceBatches} />
             <Route path="/admin/analytics" component={Analytics} />

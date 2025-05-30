@@ -23,6 +23,11 @@ const navigationItems = [
     icon: "fas fa-users",
   },
   {
+    name: "مدیریت همکاران فروش",
+    href: "/collaborators",
+    icon: "fas fa-handshake",
+  },
+  {
     name: "صورتحساب‌ها",
     href: "/invoices", 
     icon: "fas fa-file-invoice",

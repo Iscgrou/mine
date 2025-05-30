@@ -475,43 +475,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Enhanced representatives with balance information
+  // Enhanced representatives with balance information - DIAGNOSTIC VERSION
   app.get("/api/representatives/with-balance", async (req, res) => {
     try {
-      console.log("=== REPRESENTATIVES WITH BALANCE DEBUG START ===");
+      console.log("=== DIAGNOSTIC: Representatives with balance ===");
       
-      // Step 1: Test storage.getRepresentatives()
-      console.log("Step 1: Testing storage.getRepresentatives()...");
-      const reps = await storage.getRepresentatives();
-      console.log(`Step 1 SUCCESS: Retrieved ${reps.length} representatives`);
+      // Test basic storage method first
+      console.log("Testing basic getRepresentatives()...");
+      const basicReps = await storage.getRepresentatives();
+      console.log(`Basic reps count: ${basicReps.length}`);
       
-      // Step 2: Map with balance
-      console.log("Step 2: Mapping representatives with balance...");
-      const repsWithBalance = reps.map(rep => {
-        console.log(`Mapping rep ${rep.id}: ${rep.fullName}`);
-        return {
-          ...rep,
-          currentBalance: 0
-        };
-      });
-      console.log(`Step 2 SUCCESS: Mapped ${repsWithBalance.length} representatives with balance`);
+      // If basic works, test the with-balance method
+      console.log("Testing getRepresentativesWithBalance()...");
+      const repsWithBalance = await storage.getRepresentativesWithBalance();
+      console.log(`With-balance count: ${repsWithBalance.length}`);
       
-      console.log("=== REPRESENTATIVES WITH BALANCE DEBUG SUCCESS ===");
+      console.log("=== SUCCESS: Both methods work ===");
       res.json(repsWithBalance);
       
     } catch (error) {
-      console.error("=== REPRESENTATIVES WITH BALANCE ERROR ===");
-      console.error("Error occurred at:", new Date().toISOString());
-      console.error("Error type:", typeof error);
+      console.error("=== DIAGNOSTIC ERROR ===");
       console.error("Error name:", error instanceof Error ? error.name : 'Unknown');
       console.error("Error message:", error instanceof Error ? error.message : String(error));
-      console.error("Error stack:", error instanceof Error ? error.stack : 'No stack trace');
-      console.error("=== END ERROR DETAILS ===");
+      console.error("Error stack:", error instanceof Error ? error.stack : 'No stack');
+      console.error("=== END DIAGNOSTIC ===");
       
       res.status(500).json({ 
         message: "خطا در دریافت نماینده",
-        error: error instanceof Error ? error.message : String(error),
-        timestamp: new Date().toISOString()
+        diagnostic: error instanceof Error ? error.message : String(error)
       });
     }
   });

@@ -92,6 +92,55 @@ export default function Dashboard() {
     });
   }, [addNotification]);
 
+  const handleTaskComplete = async (taskId: string) => {
+    setMockTasks(prev => 
+      prev.map(task => 
+        task.id === taskId 
+          ? { ...task, status: 'completed' as const, completedAt: new Date() }
+          : task
+      )
+    );
+    
+    addNotification({
+      title: 'کار تکمیل شد',
+      message: 'کار با موفقیت به عنوان انجام شده علامت‌گذاری شد',
+      type: 'success',
+      priority: 'low'
+    });
+  };
+
+  const handleTaskView = (task: any) => {
+    addNotification({
+      title: 'جزئیات کار',
+      message: `مشاهده جزئیات: ${task.title}`,
+      type: 'info',
+      priority: 'medium',
+      actionRequired: true,
+      relatedEntity: {
+        type: 'task',
+        id: task.id,
+        name: task.title
+      }
+    });
+  };
+
+  const handleTaskSnooze = (taskId: string, newDate: Date) => {
+    setMockTasks(prev => 
+      prev.map(task => 
+        task.id === taskId 
+          ? { ...task, dueDate: newDate }
+          : task
+      )
+    );
+    
+    addNotification({
+      title: 'کار به تعویق افتاد',
+      message: `کار به تاریخ ${newDate.toLocaleDateString('fa-IR')} موکول شد`,
+      type: 'info',
+      priority: 'low'
+    });
+  };
+
   const { data: stats, isLoading: statsLoading } = useQuery<Stats>({
     queryKey: ['/api/stats'],
   });
@@ -439,6 +488,25 @@ export default function Dashboard() {
               </table>
             </div>
           )}
+        </CardContent>
+      </Card>
+      
+      {/* Daily Work Log Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <i className="fas fa-tasks text-purple-600"></i>
+            کارتابل روزانه
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <DailyWorkLog
+            tasks={mockTasks}
+            onTaskComplete={handleTaskComplete}
+            onTaskView={handleTaskView}
+            onTaskSnooze={handleTaskSnooze}
+            compact={true}
+          />
         </CardContent>
       </Card>
     </div>

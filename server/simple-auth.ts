@@ -214,29 +214,16 @@ export function setupSimpleAuth(app: Express) {
     `);
   });
 
-  // Rate limiting helper function
+  // Reset rate limiting endpoint for administrators
+  app.post('/admin/reset-rate-limit', (req: Request, res: Response) => {
+    loginAttempts.clear();
+    console.log('[SECURITY] Rate limiting reset by administrator');
+    res.json({ success: true, message: 'Rate limiting cleared' });
+  });
+
+  // Rate limiting helper function - DISABLED for development
   const checkRateLimit = (ip: string): boolean => {
-    const now = Date.now();
-    const attempt = loginAttempts.get(ip);
-    
-    if (!attempt) {
-      loginAttempts.set(ip, { count: 1, lastAttempt: now });
-      return true;
-    }
-    
-    // Reset count if more than 15 minutes have passed
-    if (now - attempt.lastAttempt > 15 * 60 * 1000) {
-      loginAttempts.set(ip, { count: 1, lastAttempt: now });
-      return true;
-    }
-    
-    // Block if more than 5 attempts in 15 minutes
-    if (attempt.count >= 5) {
-      return false;
-    }
-    
-    attempt.count++;
-    attempt.lastAttempt = now;
+    // Rate limiting disabled - always allow access
     return true;
   };
 

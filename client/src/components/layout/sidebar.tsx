@@ -96,12 +96,12 @@ export default function Sidebar() {
 
       {/* Sidebar - Hidden by default */}
       <div className={cn(
-        "fixed inset-y-0 right-0 z-50 bg-white shadow-xl border-l border-gray-200 transition-all duration-300 ease-in-out",
+        "fixed inset-y-0 right-0 z-50 bg-white shadow-xl border-l border-gray-200 transition-all duration-300 ease-in-out flex flex-col",
         "w-80 sm:w-72 md:w-64",
         state.isOpen ? "translate-x-0" : "translate-x-full"
       )}>
         {/* Logo/Header */}
-        <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200">
+        <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200 flex-shrink-0">
           <div className="flex items-center space-x-reverse space-x-3">
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
               <i className="fas fa-chart-line text-white text-sm"></i>
@@ -118,8 +118,8 @@ export default function Sidebar() {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto mt-6 px-3 pb-20">
-          <div className="space-y-1">
+        <nav className="flex-1 overflow-y-auto mt-6 px-3 pb-6">
+          <div className="space-y-2">
             {navigationItems.map((item) => {
               const fullHref = basePath + item.href;
               const isActive = location === fullHref || (item.href === "/dashboard" && (location === basePath || location === basePath + "/"));

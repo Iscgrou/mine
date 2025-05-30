@@ -145,8 +145,7 @@ export class VertexAIPhaseOrchestrator {
     `;
 
     try {
-      const result = await this.model.generateContent(prompt);
-      const response = result.response.candidates[0].content.parts[0].text;
+      const response = await this.generateContent(prompt);
       
       return this.parsePhase2Plan(response);
     } catch (error) {
@@ -191,8 +190,7 @@ export class VertexAIPhaseOrchestrator {
     `;
 
     try {
-      const result = await this.model.generateContent(prompt);
-      const response = result.response.candidates[0].content.parts[0].text;
+      const response = await this.generateContent(prompt);
       
       return this.parseHealthAnalysis(response);
     } catch (error) {

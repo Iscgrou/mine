@@ -215,9 +215,27 @@ export default function Settings() {
                   <label className="block text-sm font-medium text-foreground mb-3">انتخاب قالب طراحی</label>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {[
-                      { id: 'modern', name: 'مدرن و پاک', desc: 'طراحی مینیمال با استفاده از رنگ آبی برند', icon: 'fa-laptop' },
-                      { id: 'classic', name: 'کلاسیک و رسمی', desc: 'طراحی سنتی تجاری با حاشیه و فرم منظم', icon: 'fa-building' },
-                      { id: 'persian', name: 'بهینه شده فارسی', desc: 'طراحی راست-چین با قلم و فاصله مناسب فارسی', icon: 'fa-align-right' }
+                      { 
+                        id: 'modern_clean', 
+                        name: 'مدرن و پاک', 
+                        desc: 'طراحی مدرن با گرادیانت‌های هندسی، سایه‌های نرم و layout شبکه‌ای', 
+                        icon: 'fa-magic',
+                        colors: ['#4f46e5', '#10b981', '#667eea']
+                      },
+                      { 
+                        id: 'classic_formal', 
+                        name: 'کلاسیک و رسمی', 
+                        desc: 'ساختار رسمی اداری با حاشیه‌های دوبل و قالب‌بندی جدولی کلاسیک', 
+                        icon: 'fa-university',
+                        colors: ['#1f2937', '#d97706', '#374151']
+                      },
+                      { 
+                        id: 'persian_optimized', 
+                        name: 'بهینه شده فارسی', 
+                        desc: 'طراحی هنری با المان‌های فرهنگی ایرانی، خوشنویسی و رنگ‌های سنتی', 
+                        icon: 'fa-star-and-crescent',
+                        colors: ['#059669', '#dc2626', '#34d399']
+                      }
                     ].map((style) => (
                       <div
                         key={style.id}
@@ -230,7 +248,29 @@ export default function Settings() {
                           <i className={`fas ${style.icon} text-lg ${templateStyle === style.id ? 'text-primary' : 'text-gray-400'}`}></i>
                           <h3 className={`font-medium ${templateStyle === style.id ? 'text-primary' : 'text-gray-700'}`}>{style.name}</h3>
                         </div>
-                        <p className="text-sm text-gray-600">{style.desc}</p>
+                        <p className="text-sm text-gray-600 mb-3">{style.desc}</p>
+                        
+                        {/* Color palette preview */}
+                        <div className="flex gap-2 mb-3">
+                          {style.colors.map((color, index) => (
+                            <div 
+                              key={index}
+                              className="w-4 h-4 rounded-full border border-gray-300"
+                              style={{ backgroundColor: color }}
+                            />
+                          ))}
+                        </div>
+                        
+                        {/* Preview button */}
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            window.open(`/api/invoice/preview/${style.id}`, '_blank');
+                          }}
+                          className="text-xs bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition-colors"
+                        >
+                          پیش‌نمایش
+                        </button>
                       </div>
                     ))}
                   </div>

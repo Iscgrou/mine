@@ -5,12 +5,26 @@
 
 import { type Express, type Request, type Response } from "express";
 import session from "express-session";
+import bcrypt from "bcrypt";
 
-// Simple login credentials
-const ADMIN_CREDENTIALS = {
-  username: "admin",
-  password: "marfanet2025"
+// Secure credentials with role-based access
+const CREDENTIALS = {
+  mgr: {
+    username: "mgr",
+    passwordHash: bcrypt.hashSync("m867945", 10),
+    role: "admin",
+    redirectPath: "/admin"
+  },
+  crm: {
+    username: "crm", 
+    passwordHash: bcrypt.hashSync("c867945", 10),
+    role: "crm",
+    redirectPath: "/crm"
+  }
 };
+
+// Rate limiting storage
+const loginAttempts: Map<string, { count: number; lastAttempt: number }> = new Map();
 
 export function setupSimpleAuth(app: Express) {
   // Configure session middleware
@@ -200,33 +214,107 @@ export function setupSimpleAuth(app: Express) {
     `);
   });
 
-  // Login POST route
+  // Rate limiting helper function
+  const checkRateLimit = (ip: string): boolean => {
+    const now = Date.now();
+    const attempt = loginAttempts.get(ip);
+    
+    if (!attempt) {
+      loginAttempts.set(ip, { count: 1, lastAttempt: now });
+      return true;
+    }
+    
+    // Reset count if more than 15 minutes have passed
+    if (now - attempt.lastAttempt > 15 * 60 * 1000) {
+      loginAttempts.set(ip, { count: 1, lastAttempt: now });
+      return true;
+    }
+    
+    // Block if more than 5 attempts in 15 minutes
+    if (attempt.count >= 5) {
+      return false;
+    }
+    
+    attempt.count++;
+    attempt.lastAttempt = now;
+    return true;
+  };
+
+  // Login POST route with enhanced security
   app.post('/login', (req: Request, res: Response) => {
     const { username, password } = req.body;
+    const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
     
-    if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+    // Rate limiting check
+    if (!checkRateLimit(clientIP)) {
+      console.log(`[SECURITY] Rate limit exceeded for IP: ${clientIP}`);
+      return res.json({ 
+        success: false, 
+        message: 'تعداد تلاش‌های ورود بیش از حد مجاز. لطفاً 15 دقیقه صبر کنید.' 
+      });
+    }
+    
+    // Find matching credentials
+    const userCredentials = Object.values(CREDENTIALS).find(cred => cred.username === username);
+    
+    if (!userCredentials) {
+      console.log(`[SECURITY] Invalid username attempt: ${username} from IP: ${clientIP}`);
+      return res.json({ success: false, message: 'نام کاربری یا رمز عبور اشتباه است' });
+    }
+    
+    // Verify password using bcrypt
+    const isPasswordValid = bcrypt.compareSync(password, userCredentials.passwordHash);
+    
+    if (isPasswordValid) {
+      // Successful login
       (req.session as any).authenticated = true;
-      res.json({ success: true });
+      (req.session as any).username = username;
+      (req.session as any).role = userCredentials.role;
+      
+      // Reset rate limiting for this IP on successful login
+      loginAttempts.delete(clientIP);
+      
+      console.log(`[SECURITY] Successful login: ${username} (${userCredentials.role}) from IP: ${clientIP}`);
+      
+      res.json({ 
+        success: true, 
+        redirect: userCredentials.redirectPath,
+        role: userCredentials.role
+      });
     } else {
-      res.json({ success: false, message: 'Invalid credentials' });
+      console.log(`[SECURITY] Invalid password attempt for user: ${username} from IP: ${clientIP}`);
+      res.json({ success: false, message: 'نام کاربری یا رمز عبور اشتباه است' });
     }
   });
 
-  // Admin panel route (protected)
+  // Admin panel route (protected - admin role only)
   app.get('/admin', (req: Request, res: Response, next) => {
     if (!(req.session as any)?.authenticated) {
       return res.redirect('/login');
     }
-    // Continue to serve the admin panel from the frontend
+    
+    // Ensure user has admin role
+    if ((req.session as any).role !== 'admin') {
+      console.log(`[SECURITY] Unauthorized admin access attempt by user: ${(req.session as any).username} (${(req.session as any).role})`);
+      return res.redirect('/crm'); // Redirect CRM users to their panel
+    }
+    
     next();
   });
 
-  // CRM panel route (protected)
+  // CRM panel route (protected - both admin and crm roles allowed)
   app.get('/crm', (req: Request, res: Response, next) => {
     if (!(req.session as any)?.authenticated) {
       return res.redirect('/login');
     }
-    // Continue to serve the CRM panel from the frontend
+    
+    // Both admin and crm roles can access CRM panel
+    const userRole = (req.session as any).role;
+    if (userRole !== 'admin' && userRole !== 'crm') {
+      console.log(`[SECURITY] Unauthorized CRM access attempt by user: ${(req.session as any).username} (${userRole})`);
+      return res.redirect('/login');
+    }
+    
     next();
   });
 
@@ -240,7 +328,7 @@ export function setupSimpleAuth(app: Express) {
     });
   });
 
-  // Authentication middleware
+  // Authentication middleware with enhanced protection
   return (req: Request, res: Response, next: any) => {
     // Allow static assets, API routes, and login page
     if (req.path.startsWith('/api') || 
@@ -253,17 +341,38 @@ export function setupSimpleAuth(app: Express) {
       return next();
     }
 
+    // Block any attempts to access old secret paths with 404
+    const blockedPaths = [
+      '/ciwomplefoadm867945',
+      '/csdfjkjfoascivomrm867945', 
+      '/emergency-admin-access',
+      '/emergency-crm-access',
+      '/diagnostic'
+    ];
+    
+    if (blockedPaths.some(path => req.path.startsWith(path))) {
+      console.log(`[SECURITY] Blocked access to deprecated secret path: ${req.path} from IP: ${req.ip}`);
+      return res.status(404).send('Not Found');
+    }
+
+    // Handle root path redirect
+    if (req.path === '/' || req.path === '/index.html') {
+      if (!(req.session as any)?.authenticated) {
+        return res.redirect('/login');
+      }
+      
+      // Redirect authenticated users to their appropriate panel
+      const userRole = (req.session as any).role;
+      const redirectPath = userRole === 'admin' ? '/admin' : '/crm';
+      return res.redirect(redirectPath);
+    }
+
     // Check if user is authenticated
     if ((req.session as any)?.authenticated) {
       return next();
     }
-
-    // Redirect to login page
-    if (req.path === '/') {
-      return res.redirect('/login');
-    }
     
-    // For other paths, redirect to login
+    // Redirect unauthenticated users to login
     return res.redirect('/login');
   };
 }

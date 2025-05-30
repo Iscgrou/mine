@@ -77,6 +77,10 @@ export default function RepresentativeManagement() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [collaborationFilter, setCollaborationFilter] = useState('all');
+  const [selectedRepresentative, setSelectedRepresentative] = useState<Representative | null>(null);
+  const [viewModalOpen, setViewModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [moreActionsOpen, setMoreActionsOpen] = useState(false);
   
   const [newRepForm, setNewRepForm] = useState<NewRepresentativeForm>({
     fullName: '',
@@ -600,10 +604,8 @@ export default function RepresentativeManagement() {
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
-                          toast({
-                            title: "مشاهده جزئیات",
-                            description: `در حال بارگذاری اطلاعات ${rep.fullName}`,
-                          });
+                          setSelectedRepresentative(rep);
+                          setViewModalOpen(true);
                           console.log('Viewing representative:', rep.id);
                         }}
                       >
@@ -617,10 +619,8 @@ export default function RepresentativeManagement() {
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
-                          toast({
-                            title: "ویرایش نماینده",
-                            description: `در حال بارگذاری فرم ویرایش ${rep.fullName}`,
-                          });
+                          setSelectedRepresentative(rep);
+                          setEditModalOpen(true);
                           console.log('Editing representative:', rep.id);
                         }}
                       >
@@ -633,10 +633,8 @@ export default function RepresentativeManagement() {
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
-                          toast({
-                            title: "عملیات اضافی",
-                            description: `گزینه‌های بیشتر برای ${rep.fullName}`,
-                          });
+                          setSelectedRepresentative(rep);
+                          setMoreActionsOpen(true);
                           console.log('More actions for representative:', rep.id);
                         }}
                       >
@@ -660,6 +658,145 @@ export default function RepresentativeManagement() {
           </CardContent>
         </Card>
       )}
+
+      {/* View Representative Details Dialog */}
+      <Dialog open={viewModalOpen} onOpenChange={setViewModalOpen}>
+        <DialogContent className="max-w-2xl" dir="rtl">
+          <DialogHeader>
+            <DialogTitle>جزئیات نماینده</DialogTitle>
+          </DialogHeader>
+          {selectedRepresentative && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-sm font-medium">نام کامل</Label>
+                  <p className="text-base">{selectedRepresentative.fullName}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">نام کاربری</Label>
+                  <p className="text-base">@{selectedRepresentative.adminUsername}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">شماره تلفن</Label>
+                  <p className="text-base">{selectedRepresentative.phoneNumber || 'ثبت نشده'}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">تلگرام</Label>
+                  <p className="text-base">{selectedRepresentative.telegramId || 'ثبت نشده'}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">نام فروشگاه</Label>
+                  <p className="text-base">{selectedRepresentative.storeName || 'ثبت نشده'}</p>
+                </div>
+                <div>
+                  <Label className="text-sm font-medium">وضعیت تایید</Label>
+                  <Badge variant={selectedRepresentative.verificationStatus === 'verified' ? 'default' : 'secondary'}>
+                    {selectedRepresentative.verificationStatus === 'verified' ? 'تایید شده' : 'در انتظار'}
+                  </Badge>
+                </div>
+              </div>
+              
+              <div className="bg-red-50 p-4 rounded-lg">
+                <Label className="text-sm font-medium">میزان بدهی کل</Label>
+                <p className="text-xl font-bold text-red-700">{(0).toLocaleString('fa-IR')} تومان</p>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Representative Dialog */}
+      <Dialog open={editModalOpen} onOpenChange={setEditModalOpen}>
+        <DialogContent className="max-w-3xl" dir="rtl">
+          <DialogHeader>
+            <DialogTitle>ویرایش نماینده</DialogTitle>
+          </DialogHeader>
+          {selectedRepresentative && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label>نام کامل</Label>
+                  <Input defaultValue={selectedRepresentative.fullName} />
+                </div>
+                <div>
+                  <Label>شماره تلفن</Label>
+                  <Input defaultValue={selectedRepresentative.phoneNumber || ''} />
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={() => setEditModalOpen(false)}>
+                  انصراف
+                </Button>
+                <Button onClick={() => {
+                  toast({
+                    title: "ویرایش انجام شد",
+                    description: "اطلاعات نماینده با موفقیت به‌روزرسانی شد",
+                  });
+                  setEditModalOpen(false);
+                }}>
+                  ذخیره تغییرات
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* More Actions Dialog */}
+      <Dialog open={moreActionsOpen} onOpenChange={setMoreActionsOpen}>
+        <DialogContent className="max-w-md" dir="rtl">
+          <DialogHeader>
+            <DialogTitle>عملیات اضافی</DialogTitle>
+          </DialogHeader>
+          {selectedRepresentative && (
+            <div className="space-y-3">
+              <Button 
+                variant="outline" 
+                className="w-full justify-start"
+                onClick={() => {
+                  toast({
+                    title: "تاریخچه مالی",
+                    description: `مشاهده تراکنش‌های ${selectedRepresentative.fullName}`,
+                  });
+                  setMoreActionsOpen(false);
+                }}
+              >
+                <FileText className="w-4 h-4 ml-2" />
+                مشاهده تاریخچه مالی
+              </Button>
+              <Button 
+                variant="outline" 
+                className="w-full justify-start"
+                onClick={() => {
+                  toast({
+                    title: "تنظیمات نماینده",
+                    description: `ویرایش تنظیمات ${selectedRepresentative.fullName}`,
+                  });
+                  setMoreActionsOpen(false);
+                }}
+              >
+                <Settings className="w-4 h-4 ml-2" />
+                تنظیمات پیشرفته
+              </Button>
+              <Button 
+                variant="destructive" 
+                className="w-full justify-start"
+                onClick={() => {
+                  toast({
+                    title: "حذف نماینده",
+                    description: "این عملیات قابل بازگشت نیست",
+                    variant: "destructive"
+                  });
+                  setMoreActionsOpen(false);
+                }}
+              >
+                <Trash2 className="w-4 h-4 ml-2" />
+                حذف نماینده
+              </Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -21,6 +21,8 @@ import {
 } from "@shared/schema";
 import multer from "multer";
 import * as XLSX from "xlsx";
+import path from "path";
+import fs from "fs";
 
 // Authentic Data Analysis for V2Ray Revenue Prediction - ABSOLUTE DATA INTEGRITY
 async function generateAuthenticDataAnalysis(revenueData: any, timeframe: string) {

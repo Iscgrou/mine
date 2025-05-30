@@ -537,6 +537,174 @@ export default function Settings() {
           </Card>
         );
 
+      case "training":
+        return (
+          <Card className="bg-card border-border">
+            <CardHeader>
+              <CardTitle className="text-primary flex items-center gap-2">
+                <i className="fas fa-graduation-cap"></i>
+                راهنماهای آموزشی MarFanet
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                {/* Overview */}
+                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <h3 className="font-semibold text-blue-800 mb-2">درباره راهنماهای کاربری</h3>
+                  <p className="text-blue-700 text-sm">
+                    راهنماهای جامع و حرفه‌ای برای استفاده از تمام بخش‌های سیستم MarFanet با پشتیبانی کامل از زبان فارسی
+                  </p>
+                </div>
+
+                {/* Admin Panel Guide */}
+                <div className="border border-gray-200 rounded-lg p-6">
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0">
+                      <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <i className="fas fa-tools text-blue-600 text-xl"></i>
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">راهنمای پنل مدیریت</h3>
+                      <p className="text-gray-600 text-sm mb-4">
+                        راهنمای کامل برای مدیران سیستم شامل مدیریت نمایندگان، فاکتورها، تحلیل‌گری پیشرفته و تنظیمات سیستم
+                      </p>
+                      <div className="grid grid-cols-2 gap-4 mb-4">
+                        <div className="text-sm">
+                          <span className="font-medium">شامل موضوعات:</span>
+                          <ul className="list-disc list-inside mt-1 text-gray-600 space-y-1">
+                            <li>مدیریت 218 نماینده فعال</li>
+                            <li>صدور و پیگیری 68 فاکتور</li>
+                            <li>تحلیل‌گری با Vertex AI</li>
+                            <li>سیستم نظارت Aegis</li>
+                          </ul>
+                        </div>
+                        <div className="text-sm">
+                          <span className="font-medium">ویژگی‌ها:</span>
+                          <ul className="list-disc list-inside mt-1 text-gray-600 space-y-1">
+                            <li>طراحی حرفه‌ای RTL</li>
+                            <li>فونت فارسی Vazirmatn</li>
+                            <li>آماده چاپ PDF</li>
+                            <li>تصاویر و نمودار</li>
+                          </ul>
+                        </div>
+                      </div>
+                      <div className="flex gap-3">
+                        <Button 
+                          onClick={() => window.open('/docs/admin-panel-user-guide.html', '_blank')}
+                          className="flex items-center gap-2"
+                        >
+                          <i className="fas fa-eye"></i>
+                          پیش‌نمایش آنلاین
+                        </Button>
+                        <Button 
+                          variant="outline"
+                          onClick={() => {
+                            window.open('/docs/admin-panel-user-guide.html', '_blank');
+                            setTimeout(() => window.print(), 1000);
+                          }}
+                          className="flex items-center gap-2"
+                        >
+                          <i className="fas fa-download"></i>
+                          دانلود PDF
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* CRM Panel Guide */}
+                <div className="border border-gray-200 rounded-lg p-6">
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0">
+                      <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                        <i className="fas fa-users text-green-600 text-xl"></i>
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold text-gray-900 mb-2">راهنمای پنل CRM</h3>
+                      <p className="text-gray-600 text-sm mb-4">
+                        راهنمای کاربری برای نمایندگان فروش شامل مدیریت مشتریان، تیکت‌ها و ویژگی‌های هوش مصنوعی
+                      </p>
+                      <div className="grid grid-cols-2 gap-4 mb-4">
+                        <div className="text-sm">
+                          <span className="font-medium">شامل موضوعات:</span>
+                          <ul className="list-disc list-inside mt-1 text-gray-600 space-y-1">
+                            <li>مدیریت 245 مشتری</li>
+                            <li>سیستم تیکت‌گذاری</li>
+                            <li>پردازش صوت فارسی</li>
+                            <li>آماده‌سازی هوشمند تماس</li>
+                          </ul>
+                        </div>
+                        <div className="text-sm">
+                          <span className="font-medium">ویژگی‌های ویژه:</span>
+                          <ul className="list-disc list-inside mt-1 text-gray-600 space-y-1">
+                            <li>تشخیص اصطلاحات V2Ray</li>
+                            <li>دقت 95% پردازش فارسی</li>
+                            <li>تقویم شمسی</li>
+                            <li>هوش مصنوعی Nova</li>
+                          </ul>
+                        </div>
+                      </div>
+                      <div className="flex gap-3">
+                        <Button 
+                          onClick={() => window.open('/docs/crm-panel-user-guide.html', '_blank')}
+                          className="flex items-center gap-2"
+                        >
+                          <i className="fas fa-eye"></i>
+                          پیش‌نمایش آنلاین
+                        </Button>
+                        <Button 
+                          variant="outline"
+                          onClick={() => {
+                            window.open('/docs/crm-panel-user-guide.html', '_blank');
+                            setTimeout(() => window.print(), 1000);
+                          }}
+                          className="flex items-center gap-2"
+                        >
+                          <i className="fas fa-download"></i>
+                          دانلود PDF
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* System Statistics */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="text-center p-4 bg-gray-50 rounded-lg">
+                    <div className="text-2xl font-bold text-blue-600">2.0</div>
+                    <div className="text-sm text-gray-600">نسخه راهنما</div>
+                  </div>
+                  <div className="text-center p-4 bg-gray-50 rounded-lg">
+                    <div className="text-2xl font-bold text-green-600">95%</div>
+                    <div className="text-sm text-gray-600">دقت پردازش فارسی</div>
+                  </div>
+                  <div className="text-center p-4 bg-gray-50 rounded-lg">
+                    <div className="text-2xl font-bold text-purple-600">Vertex AI</div>
+                    <div className="text-sm text-gray-600">هوش مصنوعی</div>
+                  </div>
+                  <div className="text-center p-4 bg-gray-50 rounded-lg">
+                    <div className="text-2xl font-bold text-orange-600">24/7</div>
+                    <div className="text-sm text-gray-600">پشتیبانی سیستم</div>
+                  </div>
+                </div>
+
+                {/* Instructions */}
+                <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  <h4 className="font-medium text-yellow-800 mb-2">نحوه تبدیل به PDF:</h4>
+                  <ol className="list-decimal list-inside text-sm text-yellow-700 space-y-1">
+                    <li>روی دکمه "دانلود PDF" کلیک کنید یا پیش‌نمایش را باز کنید</li>
+                    <li>کلیدهای Ctrl+P (یا Cmd+P در Mac) را فشار دهید</li>
+                    <li>گزینه "Save as PDF" را انتخاب کنید</li>
+                    <li>تنظیمات مناسب صفحه را انتخاب کنید</li>
+                  </ol>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        );
+
       case "danger":
         return (
           <Card className="bg-card border-border border-red-200">
@@ -624,7 +792,8 @@ export default function Settings() {
               {[
                 { id: 'company', label: 'شرکت', icon: 'fa-building' },
                 { id: 'invoice', label: 'قالب فاکتور', icon: 'fa-file-invoice' },
-                { id: 'grok', label: 'Grok xAI', icon: 'fa-robot' },
+                { id: 'grok', label: 'Vertex AI', icon: 'fa-robot' },
+                { id: 'training', label: 'آموزش', icon: 'fa-graduation-cap' },
                 { id: 'danger', label: 'منطقه خطر', icon: 'fa-exclamation-triangle' }
               ].map((tab) => (
                 <button

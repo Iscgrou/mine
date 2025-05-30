@@ -1434,6 +1434,92 @@ ${invoices.map((inv, index) =>
     }
   });
 
+  // PDF Guide Download Endpoints
+  app.get("/api/docs/admin-guide/download", async (req, res) => {
+    try {
+      // Read the HTML guide file
+      const fs = await import('fs');
+      const path = await import('path');
+      
+      const guidePath = path.join(process.cwd(), 'docs', 'admin-panel-user-guide.html');
+      
+      if (!fs.existsSync(guidePath)) {
+        return res.status(404).json({ message: "راهنمای کاربری یافت نشد" });
+      }
+      
+      const htmlContent = fs.readFileSync(guidePath, 'utf8');
+      
+      // Set headers for PDF download
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', 'attachment; filename="admin-panel-guide.pdf"');
+      
+      // For now, return the HTML content with PDF headers
+      // This will prompt the browser to download as PDF
+      const pdfHeaders = `
+        <style>
+          @media print {
+            body { -webkit-print-color-adjust: exact; }
+            .no-print { display: none !important; }
+          }
+        </style>
+        <script>
+          window.onload = function() {
+            setTimeout(() => window.print(), 500);
+          }
+        </script>
+      `;
+      
+      const fullContent = htmlContent.replace('</head>', pdfHeaders + '</head>');
+      res.send(fullContent);
+      
+    } catch (error) {
+      console.error("Error generating admin guide PDF:", error);
+      res.status(500).json({ message: "خطا در تولید فایل PDF راهنمای مدیریت" });
+    }
+  });
+
+  app.get("/api/docs/crm-guide/download", async (req, res) => {
+    try {
+      // Read the HTML guide file
+      const fs = await import('fs');
+      const path = await import('path');
+      
+      const guidePath = path.join(process.cwd(), 'docs', 'crm-panel-user-guide.html');
+      
+      if (!fs.existsSync(guidePath)) {
+        return res.status(404).json({ message: "راهنمای CRM یافت نشد" });
+      }
+      
+      const htmlContent = fs.readFileSync(guidePath, 'utf8');
+      
+      // Set headers for PDF download
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', 'attachment; filename="crm-panel-guide.pdf"');
+      
+      // For now, return the HTML content with PDF headers
+      const pdfHeaders = `
+        <style>
+          @media print {
+            body { -webkit-print-color-adjust: exact; }
+            .no-print { display: none !important; }
+          }
+        </style>
+        <script>
+          window.onload = function() {
+            setTimeout(() => window.print(), 500);
+          }
+        </script>
+      `;
+      
+      const fullContent = htmlContent.replace('</head>', pdfHeaders + '</head>');
+      res.send(fullContent);
+      
+    } catch (error) {
+      console.error("Error generating CRM guide PDF:", error);
+      res.status(500).json({ message: "خطا در تولید فایل PDF راهنمای CRM" });
+    }
+  });
+
   // CRM Panel Endpoints
   app.get("/api/voice-notes", async (req, res) => {
     try {

@@ -640,8 +640,7 @@ export default function Settings() {
                         <Button 
                           variant="outline"
                           onClick={() => {
-                            window.open('/docs/admin-panel-user-guide.html', '_blank');
-                            setTimeout(() => window.print(), 1000);
+                            window.open('/api/docs/admin-guide/download', '_blank');
                           }}
                           className="flex items-center gap-2"
                         >
@@ -697,8 +696,7 @@ export default function Settings() {
                         <Button 
                           variant="outline"
                           onClick={() => {
-                            window.open('/docs/crm-panel-user-guide.html', '_blank');
-                            setTimeout(() => window.print(), 1000);
+                            window.open('/api/docs/crm-guide/download', '_blank');
                           }}
                           className="flex items-center gap-2"
                         >

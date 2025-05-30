@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { aegisLogger, EventType, LogLevel } from "./aegis-logger";
-import { aegisMonitor } from "./aegis-monitor";
+import { aegisMonitor } from "./aegis-monitor-fixed";
 import { novaAIEngine } from "./nova-ai-engine";
 import { registerTestEndpoints } from "./test-endpoints";
 import { registerVoiceWorkflowTests } from "./voice-workflow-test";

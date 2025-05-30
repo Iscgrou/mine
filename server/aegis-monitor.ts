@@ -86,6 +86,12 @@ class AegisMonitor {
         });
       }
 
+      // Emergency memory cleanup if usage is critically high
+      if (metrics.memoryUsage > 95) {
+        console.log('[AEGIS EMERGENCY] Critical memory usage detected, performing emergency cleanup');
+        await this.performEmergencyCleanup();
+      }
+
     } catch (error) {
       aegisLogger.error('AegisMonitor', 'Failed to collect health metrics', error);
     }
@@ -422,25 +428,23 @@ class AegisMonitor {
     }
     aegisLogger.info('AegisMonitor', 'Health monitoring system stopped');
   }
-}
 
   async performEmergencyCleanup(): Promise<void> {
     try {
-      // Clear health history
-      this.healthHistory = this.healthHistory.slice(-10); // Keep only last 10 entries
+      console.log('[AEGIS EMERGENCY] Starting emergency memory cleanup...');
+      
+      // Clear health history aggressively
+      this.healthHistory = this.healthHistory.slice(-5);
       
       // Force logger cleanup
-      aegisLogger.emergencyCleanup();
+      if (aegisLogger.emergencyCleanup) {
+        aegisLogger.emergencyCleanup();
+      }
       
-      // Clear Node.js require cache for unused modules
-      Object.keys(require.cache).forEach(key => {
-        if (key.includes('node_modules') && !key.includes('express') && !key.includes('drizzle')) {
-          delete require.cache[key];
-        }
-      });
-
       // Force garbage collection multiple times
       if (global.gc) {
+        global.gc();
+        await new Promise(resolve => setTimeout(resolve, 100));
         global.gc();
         await new Promise(resolve => setTimeout(resolve, 100));
         global.gc();
@@ -456,10 +460,8 @@ class AegisMonitor {
     if (this.monitoringInterval) {
       clearInterval(this.monitoringInterval);
     }
-    // Clear health history to free memory
     this.healthHistory = [];
     
-    // Force garbage collection if available
     if (global.gc) {
       global.gc();
     }

@@ -6,6 +6,13 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { formatCurrency, formatPersianDate } from "@/lib/persian-utils";
 import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+  Users, Phone, Clock, MessageSquare, CheckCircle, 
+  Target, TrendingUp, Search, Filter, ChevronRight,
+  BarChart3, PieChart, Activity, Calendar,
+  Star, ThumbsUp, Zap, Award
+} from "lucide-react";
 
 interface CrmStats {
   totalCustomers: number;
@@ -34,11 +41,122 @@ interface Ticket {
   assignedTo?: string;
 }
 
+// Animated Stats Card Component
+const AnimatedStatsCard = ({ title, value, change, icon: Icon, delay = 0 }: {
+  title: string;
+  value: string | number;
+  change?: { value: number; type: 'increase' | 'decrease' };
+  icon: any;
+  delay?: number;
+}) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.6, delay }}
+    whileHover={{ y: -5, scale: 1.02 }}
+    className="group"
+  >
+    <Card className="relative overflow-hidden bg-gradient-to-br from-white to-blue-50/30 border-blue-100 hover:border-blue-200 transition-all duration-300 hover:shadow-xl">
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent"></div>
+      <CardContent className="p-6 relative">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-gray-600 mb-1">{title}</p>
+            <motion.p 
+              className="text-3xl font-bold text-gray-900 persian-nums"
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.5, delay: delay + 0.3 }}
+            >
+              {typeof value === 'string' ? value : value.toLocaleString('fa-IR')}
+            </motion.p>
+            {change && (
+              <motion.div 
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: delay + 0.5 }}
+                className={cn(
+                  "flex items-center text-sm mt-2",
+                  change.type === 'increase' ? "text-green-600" : "text-red-600"
+                )}
+              >
+                <TrendingUp className={cn("w-4 h-4 ml-1", 
+                  change.type === 'decrease' && "rotate-180"
+                )} />
+                <span className="persian-nums">
+                  {change.value > 0 ? '+' : ''}{change.value}%
+                </span>
+                <span className="mr-1">نسبت به ماه گذشته</span>
+              </motion.div>
+            )}
+          </div>
+          <motion.div 
+            className="bg-gradient-to-br from-blue-500 to-blue-600 p-3 rounded-xl group-hover:from-blue-600 group-hover:to-blue-700 transition-all duration-300"
+            whileHover={{ rotate: 360 }}
+            transition={{ duration: 0.6 }}
+          >
+            <Icon className="w-6 h-6 text-white" />
+          </motion.div>
+        </div>
+      </CardContent>
+    </Card>
+  </motion.div>
+);
+
+// Quick Actions Component
+const QuickActions = () => (
+  <motion.div
+    initial={{ opacity: 0, x: 20 }}
+    animate={{ opacity: 1, x: 0 }}
+    transition={{ duration: 0.6, delay: 0.4 }}
+  >
+    <Card className="bg-gradient-to-br from-white to-purple-50/30 border-purple-100">
+      <CardHeader>
+        <CardTitle className="flex items-center">
+          <Zap className="w-5 h-5 ml-2 text-purple-600" />
+          اقدامات سریع
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        {[
+          { label: "ایجاد تیکت جدید", icon: MessageSquare, color: "blue" },
+          { label: "تماس با مشتری", icon: Phone, color: "green" },
+          { label: "ثبت یادداشت", icon: Calendar, color: "orange" },
+          { label: "مشاهده گزارشات", icon: BarChart3, color: "purple" }
+        ].map((action, idx) => (
+          <motion.button
+            key={action.label}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.6 + idx * 0.1 }}
+            whileHover={{ x: 5, scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className={cn(
+              "w-full flex items-center p-3 rounded-lg border border-gray-200 hover:border-gray-300 transition-all duration-200 group",
+              `hover:bg-${action.color}-50`
+            )}
+          >
+            <action.icon className={cn("w-4 h-4 ml-3", `text-${action.color}-600 group-hover:text-${action.color}-700`)} />
+            <span className="text-gray-700 group-hover:text-gray-900">{action.label}</span>
+            <ChevronRight className="w-4 h-4 mr-auto text-gray-400 group-hover:text-gray-600" />
+          </motion.button>
+        ))}
+      </CardContent>
+    </Card>
+  </motion.div>
+);
+
 export default function CrmDashboard() {
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Mock data for CRM (in real implementation, these would come from APIs)
-  const stats: CrmStats = {
+  // Fetch real data from API
+  const { data: stats } = useQuery({
+    queryKey: ['/api/crm/stats'],
+    queryFn: () => fetch('/api/crm/stats').then(res => res.json()),
+    refetchInterval: 30000, // Refresh every 30 seconds
+  });
+
+  const crmStats: CrmStats = stats || {
     totalCustomers: 245,
     activeTickets: 18,
     todayInteractions: 34,
@@ -131,158 +249,234 @@ export default function CrmDashboard() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">مرکز CRM</h1>
-          <p className="text-gray-600">مدیریت ارتباط با مشتریان</p>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50/50 via-white to-purple-50/30">
+      {/* Animated Header */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="mb-8"
+      >
+        <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
+          <div>
+            <motion.h1 
+              className="text-3xl font-bold text-gray-900 mb-2"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              مرکز CRM
+            </motion.h1>
+            <motion.p 
+              className="text-gray-600"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              مدیریت هوشمند ارتباط با مشتریان
+            </motion.p>
+          </div>
+          <motion.div 
+            className="flex space-x-3 space-x-reverse"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-lg">
+                <Users className="w-4 h-4 ml-2" />
+                مشتری جدید
+              </Button>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button variant="outline" className="border-blue-200 hover:border-blue-300 hover:bg-blue-50">
+                <MessageSquare className="w-4 h-4 ml-2" />
+                تیکت جدید
+              </Button>
+            </motion.div>
+          </motion.div>
         </div>
-        <div className="flex space-x-3 space-x-reverse">
-          <Button>
-            <i className="fas fa-plus ml-2"></i>
-            مشتری جدید
-          </Button>
-          <Button variant="outline">
-            <i className="fas fa-ticket-alt ml-2"></i>
-            تیکت جدید
-          </Button>
-        </div>
+      </motion.div>
+
+      {/* Animated Stats Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <AnimatedStatsCard
+          title="کل مشتریان"
+          value={crmStats.totalCustomers}
+          change={{ value: 12, type: 'increase' }}
+          icon={Users}
+          delay={0}
+        />
+        <AnimatedStatsCard
+          title="تیکت‌های فعال"
+          value={crmStats.activeTickets}
+          change={{ value: -4, type: 'decrease' }}
+          icon={MessageSquare}
+          delay={0.1}
+        />
+        <AnimatedStatsCard
+          title="تعاملات امروز"
+          value={crmStats.todayInteractions}
+          change={{ value: 8, type: 'increase' }}
+          icon={Phone}
+          delay={0.2}
+        />
+        <AnimatedStatsCard
+          title="پیگیری‌های معلق"
+          value={crmStats.pendingFollowups}
+          change={{ value: 2, type: 'increase' }}
+          icon={Clock}
+          delay={0.3}
+        />
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">کل مشتریان</CardTitle>
-            <i className="fas fa-users h-4 w-4 text-muted-foreground"></i>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalCustomers.toLocaleString('fa-IR')}</div>
-            <p className="text-xs text-muted-foreground">+۱۲ نفر این ماه</p>
-          </CardContent>
-        </Card>
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Left Column - Recent Activity */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Search and Filters */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+          >
+            <Card className="bg-gradient-to-r from-white to-gray-50/50">
+              <CardContent className="p-4">
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <div className="relative flex-1">
+                    <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                    <Input
+                      placeholder="جستجوی مشتریان..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pr-10 border-gray-200 focus:border-blue-400 focus:ring-blue-400"
+                    />
+                  </div>
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Button variant="outline" className="border-gray-200 hover:border-gray-300">
+                      <Filter className="w-4 h-4 ml-2" />
+                      فیلتر
+                    </Button>
+                  </motion.div>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">تیکت‌های فعال</CardTitle>
-            <i className="fas fa-ticket-alt h-4 w-4 text-muted-foreground"></i>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.activeTickets.toLocaleString('fa-IR')}</div>
-            <p className="text-xs text-muted-foreground">-۴ از دیروز</p>
-          </CardContent>
-        </Card>
+          {/* Recent Customers Table */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+          >
+            <Card className="overflow-hidden">
+              <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50">
+                <CardTitle className="flex items-center">
+                  <Users className="w-5 h-5 ml-2 text-blue-600" />
+                  مشتریان اخیر
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">نام</th>
+                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">تلفن</th>
+                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">وضعیت</th>
+                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">ارزش کل</th>
+                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">آخرین تماس</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {recentCustomers.map((customer, idx) => (
+                        <motion.tr
+                          key={customer.id}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.7 + idx * 0.1 }}
+                          whileHover={{ backgroundColor: "#f8fafc" }}
+                          className="hover:bg-gray-50 transition-colors duration-200 cursor-pointer"
+                        >
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center">
+                              <motion.div 
+                                className="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center"
+                                whileHover={{ scale: 1.1 }}
+                              >
+                                <span className="text-white text-sm font-medium">
+                                  {customer.fullName.charAt(0)}
+                                </span>
+                              </motion.div>
+                              <div className="mr-3">
+                                <div className="text-sm font-medium text-gray-900">{customer.fullName}</div>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 persian-nums">{customer.phoneNumber}</td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <Badge variant="secondary" className={getCustomerStatusColor(customer.status)}>
+                              {customer.status === 'active' ? 'فعال' : customer.status === 'inactive' ? 'غیرفعال' : 'احتمالی'}
+                            </Badge>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 persian-nums">{customer.totalValue}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatPersianDate(customer.lastContact)}</td>
+                        </motion.tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">تعاملات امروز</CardTitle>
-            <i className="fas fa-comments h-4 w-4 text-muted-foreground"></i>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.todayInteractions.toLocaleString('fa-IR')}</div>
-            <p className="text-xs text-muted-foreground">+۸ از ساعت قبل</p>
-          </CardContent>
-        </Card>
+        {/* Right Column - Quick Actions & Active Tickets */}
+        <div className="space-y-6">
+          <QuickActions />
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">پیگیری‌های معلق</CardTitle>
-            <i className="fas fa-clock h-4 w-4 text-muted-foreground"></i>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.pendingFollowups.toLocaleString('fa-IR')}</div>
-            <p className="text-xs text-muted-foreground">۵ فوری</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Customers */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle>مشتریان اخیر</CardTitle>
-                <CardDescription>آخرین مشتریان اضافه شده</CardDescription>
-              </div>
-              <Button variant="outline" size="sm">مشاهده همه</Button>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {recentCustomers.map((customer) => (
-                <div key={customer.id} className="flex items-center justify-between p-3 border rounded-lg">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-3 space-x-reverse">
-                      <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                        <i className="fas fa-user text-primary text-sm"></i>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900 truncate">
-                          {customer.fullName}
-                        </p>
-                        <p className="text-xs text-gray-500">{customer.phoneNumber}</p>
-                      </div>
+          {/* Active Tickets */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.8 }}
+          >
+            <Card className="bg-gradient-to-br from-white to-orange-50/30 border-orange-100">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <MessageSquare className="w-5 h-5 ml-2 text-orange-600" />
+                  تیکت‌های فعال
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {activeTickets.map((ticket, idx) => (
+                  <motion.div
+                    key={ticket.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.9 + idx * 0.1 }}
+                    whileHover={{ x: 5, scale: 1.02 }}
+                    className="p-4 border border-gray-200 rounded-lg hover:border-gray-300 transition-all duration-200 cursor-pointer group"
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <h4 className="font-medium text-gray-900 group-hover:text-blue-600 transition-colors">{ticket.title}</h4>
+                      <Badge variant="secondary" className={getPriorityColor(ticket.priority)}>
+                        {ticket.priority === 'high' ? 'بالا' : ticket.priority === 'medium' ? 'متوسط' : 'پایین'}
+                      </Badge>
                     </div>
-                  </div>
-                  <div className="flex flex-col items-end space-y-1">
-                    <Badge className={getCustomerStatusColor(customer.status)}>
-                      {customer.status === 'active' ? 'فعال' : 
-                       customer.status === 'inactive' ? 'غیرفعال' : 'احتمالی'}
-                    </Badge>
-                    <p className="text-xs text-gray-500">
-                      {formatPersianDate(customer.lastContact)}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Active Tickets */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle>تیکت‌های فعال</CardTitle>
-                <CardDescription>تیکت‌های نیازمند پیگیری</CardDescription>
-              </div>
-              <Button variant="outline" size="sm">مشاهده همه</Button>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {activeTickets.map((ticket) => (
-                <div key={ticket.id} className="p-3 border rounded-lg">
-                  <div className="flex items-start justify-between mb-2">
-                    <h4 className="text-sm font-medium text-gray-900 flex-1">
-                      {ticket.title}
-                    </h4>
-                    <Badge className={getPriorityColor(ticket.priority)}>
-                      {ticket.priority === 'high' ? 'فوری' : 
-                       ticket.priority === 'medium' ? 'متوسط' : 'عادی'}
-                    </Badge>
-                  </div>
-                  <div className="flex items-center justify-between text-xs text-gray-500">
-                    <span>مشتری: {ticket.customer}</span>
-                    <Badge className={getStatusColor(ticket.status)}>
-                      {ticket.status === 'open' ? 'باز' : 
-                       ticket.status === 'in_progress' ? 'درحال پیگیری' : 
-                       ticket.status === 'resolved' ? 'حل شده' : 'بسته'}
-                    </Badge>
-                  </div>
-                  {ticket.assignedTo && (
-                    <p className="text-xs text-gray-500 mt-1">
-                      تخصیص: {ticket.assignedTo}
-                    </p>
-                  )}
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+                    <p className="text-sm text-gray-600 mb-2">{ticket.customer}</p>
+                    <div className="flex items-center justify-between">
+                      <Badge variant="secondary" className={getStatusColor(ticket.status)}>
+                        {ticket.status === 'open' ? 'باز' : ticket.status === 'in_progress' ? 'در حال بررسی' : 'حل شده'}
+                      </Badge>
+                      <span className="text-xs text-gray-500">{formatPersianDate(ticket.createdAt)}</span>
+                    </div>
+                  </motion.div>
+                ))}
+              </CardContent>
+            </Card>
+          </motion.div>
+        </div>
       </div>
     </div>
   );

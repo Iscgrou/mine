@@ -164,109 +164,59 @@ export default function Dashboard() {
 
   return (
     <div className="p-6">
-      {/* Responsive Stats Cards */}
-      <div className="stats-grid mb-8">
-        <Card className="stats-card">
-          <CardContent className="pt-6">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <div className="w-10 h-10 bg-primary bg-opacity-10 rounded-lg flex items-center justify-center">
-                  <i className="fas fa-users text-primary"></i>
-                </div>
-              </div>
-              <div className="mr-5 w-0 flex-1">
-                <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">تعداد نمایندگان فعال</dt>
-                  <dd className="text-2xl font-bold text-gray-900 persian-nums">
-                    {formatPersianNumber(stats?.activeReps || 0)}
-                  </dd>
-                </dl>
-              </div>
-            </div>
-          </CardContent>
-          <div className="bg-gray-50 px-5 py-3">
-            <div className="text-sm">
-              <span className="font-medium text-green-600">+۱۲%</span>
-              <span className="text-gray-500 mr-2">نسبت به ماه گذشته</span>
+      {/* Dynamic Stats Grid */}
+      <div className="dynamic-stats-grid">
+        <div className="dynamic-stats-card">
+          <div className="stats-card-header">
+            <div className="stats-card-icon" style={{ background: '#3b82f6' }}>
+              <i className="fas fa-users"></i>
             </div>
           </div>
-        </Card>
+          <div className="stats-card-value">{formatPersianNumber(stats?.activeReps || 0)}</div>
+          <div className="stats-card-label">تعداد نمایندگان فعال</div>
+          <div className="stats-card-change positive">
+            +۱۲% نسبت به ماه گذشته
+          </div>
+        </div>
 
-        <Card className="stats-card">
-          <CardContent className="pt-6">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                  <i className="fas fa-file-invoice-dollar text-green-600"></i>
-                </div>
-              </div>
-              <div className="mr-5 w-0 flex-1">
-                <dl>
-                  <dt className="text-sm font-medium text-muted-foreground truncate">مجموع فروش این ماه</dt>
-                  <dd className="text-2xl font-bold text-foreground currency-display">
-                    <span className="persian-nums">{formatPersianNumber(stats?.monthlyRevenue || '0')}</span> تومان
-                  </dd>
-                </dl>
-              </div>
-            </div>
-          </CardContent>
-          <div className="bg-gray-50 px-5 py-3">
-            <div className="text-sm">
-              <span className="font-medium text-green-600">+۸%</span>
-              <span className="text-gray-500 mr-2">نسبت به ماه گذشته</span>
+        <div className="dynamic-stats-card">
+          <div className="stats-card-header">
+            <div className="stats-card-icon" style={{ background: '#10b981' }}>
+              <i className="fas fa-file-invoice-dollar"></i>
             </div>
           </div>
-        </Card>
+          <div className="stats-card-value">{formatPersianNumber(stats?.monthlyRevenue || '0')}</div>
+          <div className="stats-card-label">مجموع فروش این ماه (تومان)</div>
+          <div className="stats-card-change positive">
+            +۸% نسبت به ماه گذشته
+          </div>
+        </div>
 
-        <Card className="stats-card">
-          <CardContent className="pt-6">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
-                  <i className="fas fa-clock text-yellow-600"></i>
-                </div>
-              </div>
-              <div className="mr-5 w-0 flex-1">
-                <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">صورتحساب‌های معوق</dt>
-                  <dd className="text-2xl font-bold text-gray-900 persian-nums">
-                    {formatPersianNumber(stats?.overduePayments || 0)}
-                  </dd>
-                </dl>
-              </div>
-            </div>
-          </CardContent>
-          <div className="bg-gray-50 px-5 py-3">
-            <div className="text-sm">
-              <span className="font-medium text-red-600">+۳</span>
-              <span className="text-gray-500 mr-2">نسبت به هفته گذشته</span>
+        <div className="dynamic-stats-card">
+          <div className="stats-card-header">
+            <div className="stats-card-icon" style={{ background: '#f59e0b' }}>
+              <i className="fas fa-clock"></i>
             </div>
           </div>
-        </Card>
+          <div className="stats-card-value">{formatPersianNumber(stats?.overduePayments || 0)}</div>
+          <div className="stats-card-label">صورتحساب‌های معوق</div>
+          <div className="stats-card-change negative">
+            +۳ نسبت به هفته گذشته
+          </div>
+        </div>
 
-        <Card className="stats-card">
-          <CardContent className="pt-6">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <i className="fas fa-percentage text-blue-600"></i>
-                </div>
-              </div>
-              <div className="mr-5 w-0 flex-1">
-                <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">درصد وصولی</dt>
-                  <dd className="text-2xl font-bold text-gray-900 persian-nums">۸۷%</dd>
-                </dl>
-              </div>
-            </div>
-          </CardContent>
-          <div className="bg-gray-50 px-5 py-3">
-            <div className="text-sm">
-              <span className="font-medium text-green-600">+۵%</span>
-              <span className="text-gray-500 mr-2">نسبت به ماه گذشته</span>
+        <div className="dynamic-stats-card">
+          <div className="stats-card-header">
+            <div className="stats-card-icon" style={{ background: '#3b82f6' }}>
+              <i className="fas fa-percentage"></i>
             </div>
           </div>
-        </Card>
+          <div className="stats-card-value">۸۷%</div>
+          <div className="stats-card-label">درصد وصولی</div>
+          <div className="stats-card-change positive">
+            +۵% نسبت به ماه گذشته
+          </div>
+        </div>
       </div>
 
       {/* Responsive Quick Actions and Activity */}

@@ -281,15 +281,15 @@ export default function Analytics() {
           </TabsList>
         </div>
 
-        <TabsContent value="overview" className="space-y-2 md:space-y-4">
-          <div className="grid gap-2 md:gap-4 grid-cols-1 md:grid-cols-2">
+        <TabsContent value="overview" className="space-y-2 md:space-y-3">
+          <div className="grid gap-2 md:gap-3 grid-cols-1 lg:grid-cols-2 max-w-full">
             <Card>
-              <CardHeader>
-                <CardTitle>روند درآمد ماهانه</CardTitle>
-                <CardDescription>مقایسه عملکرد سه ماه اخیر</CardDescription>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm md:text-base">روند درآمد ماهانه</CardTitle>
+                <CardDescription className="text-xs md:text-sm">مقایسه عملکرد سه ماه اخیر</CardDescription>
               </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={125}>
+              <CardContent className="pt-2">
+                <ResponsiveContainer width="100%" height={110}>
                   <AreaChart data={analyticsData.monthlyTrends}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="month" fontSize={10} />
@@ -308,21 +308,21 @@ export default function Analytics() {
             </Card>
 
             <Card>
-              <CardHeader>
-                <CardTitle>بینش‌های کسب و کار</CardTitle>
-                <CardDescription>نکات مهم برای تصمیم‌گیری</CardDescription>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm md:text-base">بینش‌های کسب و کار</CardTitle>
+                <CardDescription className="text-xs md:text-sm">نکات مهم برای تصمیم‌گیری</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="pt-2 space-y-2">
                 {analyticsData.businessInsights.map((insight, index) => (
-                  <div key={index} className="flex items-start space-x-3 space-x-reverse">
-                    <Badge variant={insight.type === 'success' ? 'default' : insight.type === 'warning' ? 'destructive' : 'secondary'}>
+                  <div key={index} className="flex items-start space-x-2 space-x-reverse">
+                    <Badge variant={insight.type === 'success' ? 'default' : insight.type === 'warning' ? 'destructive' : 'secondary'} className="text-xs">
                       {insight.type === 'success' ? 'موفقیت' : insight.type === 'warning' ? 'هشدار' : insight.type === 'opportunity' ? 'فرصت' : 'اطلاعات'}
                     </Badge>
-                    <div className="flex-1 space-y-1">
-                      <h4 className="text-sm font-medium">{insight.title}</h4>
-                      <p className="text-xs text-muted-foreground">{insight.description}</p>
+                    <div className="flex-1 space-y-1 min-w-0">
+                      <h4 className="text-xs md:text-sm font-medium truncate">{insight.title}</h4>
+                      <p className="text-xs text-muted-foreground line-clamp-2">{insight.description}</p>
                       {insight.value && (
-                        <p className="text-xs font-medium">{insight.value}</p>
+                        <p className="text-xs font-medium text-blue-600">{insight.value}</p>
                       )}
                     </div>
                     {insight.trend && (

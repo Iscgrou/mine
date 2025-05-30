@@ -214,17 +214,17 @@ export default function Analytics() {
 
   const MetricCard = ({ title, value, subtitle, icon: Icon, trend }: any) => (
     <Card className="h-full">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-xs md:text-sm font-medium text-right">{title}</CardTitle>
-        <Icon className="h-3 w-3 md:h-4 md:w-4 text-muted-foreground" />
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1">
+        <CardTitle className="text-xs font-medium text-right">{title}</CardTitle>
+        <Icon className="h-3 w-3 text-muted-foreground" />
       </CardHeader>
-      <CardContent className="pb-3">
-        <div className="text-lg md:text-2xl font-bold text-right break-words">{value}</div>
+      <CardContent className="pb-2">
+        <div className="text-sm md:text-lg font-bold text-right break-words">{value}</div>
         {subtitle && (
           <p className="text-xs text-muted-foreground text-right mt-1">
             {trend && (
               <span className={`inline-flex items-center ${trend === 'up' ? 'text-green-600' : 'text-red-600'}`}>
-                {trend === 'up' ? <TrendingUp className="h-3 w-3 ml-1" /> : <TrendingDown className="h-3 w-3 ml-1" />}
+                {trend === 'up' ? <TrendingUp className="h-2 w-2 ml-1" /> : <TrendingDown className="h-2 w-2 ml-1" />}
               </span>
             )}
             {subtitle}
@@ -235,10 +235,10 @@ export default function Analytics() {
   );
 
   return (
-    <div className="p-3 md:p-6 space-y-4 md:space-y-6" dir="rtl">
-      <div className="flex flex-col space-y-2">
-        <h1 className="text-2xl md:text-3xl font-bold">داشبورد تحلیلی</h1>
-        <p className="text-sm md:text-base text-muted-foreground">تحلیل جامع عملکرد کسب و کار و نمایندگان</p>
+    <div className="p-2 md:p-4 space-y-3 md:space-y-4" dir="rtl">
+      <div className="flex flex-col space-y-1 text-center">
+        <h1 className="text-lg md:text-xl font-bold">مرکز تحلیل گزارش</h1>
+        <p className="text-xs md:text-sm text-muted-foreground">تحلیل جامع عملکرد کسب و کار و نمایندگان</p>
       </div>
 
       {/* Overview Metrics */}
@@ -290,17 +290,17 @@ export default function Analytics() {
                 <CardDescription>مقایسه عملکرد سه ماه اخیر</CardDescription>
               </CardHeader>
               <CardContent>
-                <ResponsiveContainer width="100%" height={250}>
+                <ResponsiveContainer width="100%" height={125}>
                   <AreaChart data={analyticsData.monthlyTrends}>
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="month" fontSize={12} />
-                    <YAxis fontSize={12} />
+                    <XAxis dataKey="month" fontSize={10} />
+                    <YAxis fontSize={10} />
                     <Tooltip 
                       formatter={(value, name) => [
                         name === 'revenue' ? formatCurrency(Number(value)) : value,
                         name === 'revenue' ? 'درآمد' : name === 'invoices' ? 'فاکتور' : 'نمایندگان'
                       ]} 
-                      contentStyle={{ fontSize: '12px' }}
+                      contentStyle={{ fontSize: '10px' }}
                     />
                     <Area type="monotone" dataKey="revenue" stackId="1" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
                   </AreaChart>
@@ -346,7 +346,7 @@ export default function Analytics() {
                 <CardDescription>درصد استفاده از انواع خدمات</CardDescription>
               </CardHeader>
               <CardContent>
-                <ResponsiveContainer width="100%" height={250}>
+                <ResponsiveContainer width="100%" height={125}>
                   <PieChart>
                     <Pie
                       data={analyticsData.serviceBreakdown}
@@ -354,16 +354,16 @@ export default function Analytics() {
                       cy="50%"
                       labelLine={false}
                       label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                      outerRadius={60}
+                      outerRadius={40}
                       fill="#8884d8"
                       dataKey="value"
-                      fontSize={10}
+                      fontSize={8}
                     >
                       {analyticsData.serviceBreakdown.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
-                    <Tooltip contentStyle={{ fontSize: '12px' }} />
+                    <Tooltip contentStyle={{ fontSize: '10px' }} />
                   </PieChart>
                 </ResponsiveContainer>
               </CardContent>

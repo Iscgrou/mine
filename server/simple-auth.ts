@@ -212,6 +212,24 @@ export function setupSimpleAuth(app: Express) {
     }
   });
 
+  // Admin panel route (protected)
+  app.get('/admin', (req: Request, res: Response, next) => {
+    if (!(req.session as any)?.authenticated) {
+      return res.redirect('/login');
+    }
+    // Continue to serve the admin panel from the frontend
+    next();
+  });
+
+  // CRM panel route (protected)
+  app.get('/crm', (req: Request, res: Response, next) => {
+    if (!(req.session as any)?.authenticated) {
+      return res.redirect('/login');
+    }
+    // Continue to serve the CRM panel from the frontend
+    next();
+  });
+
   // Logout route
   app.get('/logout', (req: Request, res: Response) => {
     req.session.destroy((err) => {

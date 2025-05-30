@@ -199,7 +199,7 @@ async function aggregateRevenueData(timeframe: string) {
 // V2Ray Revenue Prediction - Vertex AI Integration
 async function generateRevenuePrediction(revenueData: any, timeframe: string, includeRiskAssessment: boolean) {
   try {
-    const vertexKey = await storage.getSetting('grok_api_key');
+    const vertexKey = await storage.getSetting('google_cloud_credentials');
     if (!vertexKey?.value) {
       throw new Error('کلید API Vertex AI یافت نشد');
     }
@@ -968,16 +968,13 @@ ${invoices.map((inv, index) =>
   app.get("/api/api-keys/status", async (req, res) => {
     try {
       const telegramKey = await storage.getSetting('telegram_api_key');
-      const aiKey = await storage.getSetting('ai_api_key');
-      const grokKey = await storage.getSetting('grok_api_key');
+      const vertexKey = await storage.getSetting('google_cloud_credentials');
       
       res.json({
         telegram: !!telegramKey?.value,
-        ai: !!aiKey?.value,
-        grok: !!grokKey?.value,
+        vertexAI: !!vertexKey?.value,
         telegramSet: telegramKey?.value ? 'کلید تلگرام تنظیم شده' : 'کلید تلگرام تنظیم نشده',
-        aiSet: aiKey?.value ? 'کلید هوش مصنوعی تنظیم شده' : 'کلید هوش مصنوعی تنظیم نشده',
-        grokSet: grokKey?.value ? 'کلید Grok تنظیم شده' : 'کلید Grok تنظیم نشده'
+        vertexAISet: vertexKey?.value ? 'کلید Vertex AI تنظیم شده' : 'کلید Vertex AI تنظیم نشده'
       });
     } catch (error) {
       console.error("Error checking API keys:", error);
@@ -1401,7 +1398,7 @@ ${invoices.map((inv, index) =>
 
   app.post("/api/analytics/vertex-consultation", async (req, res) => {
     try {
-      const vertexKey = await storage.getSetting('grok_api_key');
+      const vertexKey = await storage.getSetting('google_cloud_credentials');
       if (!vertexKey?.value) {
         return res.status(400).json({ message: "کلید API Vertex AI تنظیم نشده است" });
       }
@@ -1425,7 +1422,7 @@ ${invoices.map((inv, index) =>
       const { timeframe = '3-month', includeRiskAssessment = true } = req.body;
       
       // Check if Vertex AI is configured
-      const vertexKey = await storage.getSetting('grok_api_key');
+      const vertexKey = await storage.getSetting('google_cloud_credentials');
       if (!vertexKey?.value) {
         return res.status(400).json({ 
           message: "کلید API Vertex AI تنظیم نشده است",
@@ -1792,7 +1789,7 @@ ${invoices.map((inv, index) =>
       aegisLogger.info('API', `Generating AI earnings report for collaborator ID: ${id}`);
       
       // Check if AI is configured
-      const aiKey = await storage.getSetting('grok_api_key');
+      const aiKey = await storage.getSetting('google_cloud_credentials');
       if (!aiKey?.value) {
         return res.status(400).json({ 
           message: "کلید API هوش مصنوعی تنظیم نشده است",

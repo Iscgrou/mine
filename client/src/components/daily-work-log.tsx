@@ -17,7 +17,7 @@ interface WorkLogEntry {
   category: 'call' | 'ticket' | 'followup' | 'admin' | 'other';
 }
 
-export function DailyWorkLog() {
+function DailyWorkLog() {
   const [entries, setEntries] = useState<WorkLogEntry[]>([
     {
       id: '1',
@@ -192,3 +192,6 @@ export function DailyWorkLog() {
     </div>
   );
 }
+
+export { DailyWorkLog };
+export default DailyWorkLog;

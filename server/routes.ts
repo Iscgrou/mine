@@ -1889,6 +1889,40 @@ ${invoices.map((inv, index) =>
     }
   });
 
+  // Documentation serving endpoint for PDF user guides
+  app.get("/docs/:filename", (req, res) => {
+    try {
+      const filename = req.params.filename;
+      const docsPath = path.join(process.cwd(), 'docs', filename);
+      
+      // Security check - ensure filename is valid
+      if (!filename.match(/^[a-zA-Z0-9._-]+\.(html|md)$/)) {
+        return res.status(400).json({ message: "نام فایل نامعتبر است" });
+      }
+      
+      // Check if file exists
+      if (!fs.existsSync(docsPath)) {
+        return res.status(404).json({ message: "فایل راهنما پیدا نشد" });
+      }
+      
+      // Set appropriate content type
+      const ext = path.extname(filename).toLowerCase();
+      if (ext === '.html') {
+        res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      } else if (ext === '.md') {
+        res.setHeader('Content-Type', 'text/markdown; charset=utf-8');
+      }
+      
+      // Serve the file
+      res.sendFile(docsPath);
+      
+      aegisLogger.info('API', `Documentation file served: ${filename}`);
+    } catch (error) {
+      aegisLogger.error('API', 'Error serving documentation file', error);
+      res.status(500).json({ message: "خطا در بارگیری فایل راهنما" });
+    }
+  });
+
   // Register test endpoints for Aegis validation
   registerTestEndpoints(app);
   registerVoiceWorkflowTests(app);

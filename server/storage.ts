@@ -206,28 +206,24 @@ export class DatabaseStorage implements IStorage {
   // Advanced Financial Ledger System - Real-time Balance Calculations
   async getRepresentativeBalance(id: number): Promise<number> {
     try {
-      // Check if financial ledger has any data for this representative
-      const ledgerEntries = await db.select()
+      // Use a simpler aggregation query to calculate balance
+      const result = await db
+        .select({
+          invoiceTotal: sql<string>`COALESCE(SUM(CASE WHEN transaction_type = 'invoice' THEN amount ELSE 0 END), 0)`,
+          paymentTotal: sql<string>`COALESCE(SUM(CASE WHEN transaction_type = 'payment' THEN amount ELSE 0 END), 0)`
+        })
         .from(financialLedger)
         .where(eq(financialLedger.representativeId, id));
       
-      if (ledgerEntries.length === 0) {
+      if (!result || result.length === 0) {
         return 0;
       }
       
-      const [result] = await db.select({
-        balance: sql<string>`COALESCE(SUM(
-          CASE 
-            WHEN ${financialLedger.transactionType} = 'invoice' THEN CAST(${financialLedger.amount} AS DECIMAL)
-            WHEN ${financialLedger.transactionType} = 'payment' THEN -CAST(${financialLedger.amount} AS DECIMAL)
-            ELSE 0
-          END
-        ), 0)`
-      })
-      .from(financialLedger)
-      .where(eq(financialLedger.representativeId, id));
+      const invoiceTotal = parseFloat(result[0].invoiceTotal || '0');
+      const paymentTotal = parseFloat(result[0].paymentTotal || '0');
+      const balance = invoiceTotal - paymentTotal;
       
-      return parseFloat(result?.balance || '0');
+      return balance;
     } catch (error) {
       console.error(`Error calculating balance for representative ${id}:`, error);
       // Return 0 instead of throwing to prevent the entire API from failing
@@ -236,14 +232,35 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getRepresentativesWithBalance(): Promise<(Representative & { currentBalance: number })[]> {
-    const representatives = await this.getRepresentatives();
-    const balances = await Promise.all(
-      representatives.map(async (rep) => ({
-        ...rep,
-        currentBalance: await this.getRepresentativeBalance(rep.id)
-      }))
-    );
-    return balances;
+    try {
+      console.log("Getting representatives...");
+      const representatives = await this.getRepresentatives();
+      console.log(`Found ${representatives.length} representatives`);
+      
+      console.log("Calculating balances...");
+      const balancesPromises = representatives.map(async (rep) => {
+        try {
+          const balance = await this.getRepresentativeBalance(rep.id);
+          return {
+            ...rep,
+            currentBalance: balance
+          };
+        } catch (error) {
+          console.error(`Error getting balance for rep ${rep.id}:`, error);
+          return {
+            ...rep,
+            currentBalance: 0
+          };
+        }
+      });
+      
+      const result = await Promise.all(balancesPromises);
+      console.log("Successfully calculated all balances");
+      return result;
+    } catch (error) {
+      console.error("Error in getRepresentativesWithBalance:", error);
+      throw error;
+    }
   }
 
   // Financial Ledger Methods with Atomic Transactions

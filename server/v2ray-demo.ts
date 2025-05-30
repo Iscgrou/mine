@@ -180,7 +180,7 @@ class V2RayVoicePipelineDemo {
       console.log(`   📈 Health Score: ${systemHealth.score}/100`);
       console.log(`   🤖 AI Success Rate: ${aiPerformance.successRate}%`);
       console.log(`   ⚡ Average Response Time: ${aiPerformance.averageResponseTime}ms`);
-      console.log(`   📝 Total AI Requests: ${aiPerformance.totalRequests}`);
+      console.log(`   📝 Quality Score: ${aiPerformance.qualityScore}%`);
 
       if (systemHealth.issues.length > 0) {
         console.log('\n⚠️  Active Issues:');

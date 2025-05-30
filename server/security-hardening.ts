@@ -13,9 +13,9 @@ export const ValidationSchemas = {
   representativeInput: z.object({
     fullName: z.string().min(2).max(100).regex(/^[\u0600-\u06FFa-zA-Z\s]+$/, "Only Persian/Arabic and Latin characters allowed"),
     adminUsername: z.string().min(3).max(50).regex(/^[a-zA-Z0-9_]+$/, "Only alphanumeric and underscore allowed"),
-    phoneNumber: z.string().optional().refine((val) => !val || /^[\+]?[0-9\-\s\(\)]+$/.test(val), "Invalid phone format"),
-    storeName: z.string().optional().max(200),
-    telegramId: z.string().optional().max(100)
+    phoneNumber: z.string().refine((val) => !val || /^[\+]?[0-9\-\s\(\)]+$/.test(val), "Invalid phone format").optional(),
+    storeName: z.string().max(200).optional(),
+    telegramId: z.string().max(100).optional()
   }),
 
   // Financial data validation
@@ -31,7 +31,7 @@ export const ValidationSchemas = {
     representativeId: z.number().int().positive(),
     amount: z.string().regex(/^\d+(\.\d{1,2})?$/, "Invalid amount format"),
     paymentType: z.enum(['cash', 'bank_transfer', 'check', 'digital']),
-    referenceNumber: z.string().optional().max(100)
+    referenceNumber: z.string().max(100).optional()
   }),
 
   // Search and pagination validation
@@ -106,7 +106,7 @@ export class EnhancedAuth {
       return next();
     }
 
-    const validation = this.validatePath(req);
+    const validation = EnhancedAuth.validatePath(req);
     
     if (!validation.isValid) {
       return res.status(403).json({ 
@@ -217,8 +217,8 @@ export function secureErrorHandler(error: any, req: Request, res: Response, next
   // Security audit for errors
   SecurityAuditLogger.logSecurityEvent({
     type: 'validation_error',
-    ip: req.ip,
-    userAgent: req.get('User-Agent'),
+    ip: req.ip || 'unknown',
+    userAgent: req.get('User-Agent') || 'unknown',
     path: req.path,
     details: error.message
   });

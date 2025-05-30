@@ -426,6 +426,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Meta-Optimization Initiative - Vertex AI Orchestration
+  app.post("/api/vertex-ai/meta-optimization", async (req, res) => {
+    try {
+      const { vertexAIOrchestrator } = await import('./vertex-ai-orchestrator');
+      
+      console.log("Initiating Meta-Optimization Initiative...");
+      const results = await vertexAIOrchestrator.executeComprehensiveAudit();
+      
+      res.json({
+        success: true,
+        message: "Meta-Optimization Initiative completed successfully",
+        results: {
+          codeAudit: results.codeAudit,
+          strategicRecommendations: results.strategicRecommendations,
+          promptOptimizations: results.promptOptimizations,
+          timestamp: new Date().toISOString()
+        }
+      });
+    } catch (error) {
+      console.error("Meta-Optimization Initiative error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Meta-Optimization Initiative failed",
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  app.get("/api/vertex-ai/briefing", async (req, res) => {
+    try {
+      const { vertexAIOrchestrator } = await import('./vertex-ai-orchestrator');
+      const briefing = await vertexAIOrchestrator.prepareBriefingDocument();
+      
+      res.json({
+        success: true,
+        briefing: briefing,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Briefing preparation error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to prepare briefing document",
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
   // Enhanced representatives with balance information
   app.get("/api/representatives/with-balance", async (req, res) => {
     try {

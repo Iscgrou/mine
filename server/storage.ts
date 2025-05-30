@@ -159,7 +159,15 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getRepresentatives(): Promise<Representative[]> {
-    return await db.select().from(representatives).orderBy(desc(representatives.createdAt));
+    try {
+      console.log("Querying representatives table...");
+      const result = await db.select().from(representatives).orderBy(desc(representatives.createdAt));
+      console.log(`Retrieved ${result.length} representatives from database`);
+      return result;
+    } catch (error) {
+      console.error("Error in getRepresentatives:", error);
+      throw error;
+    }
   }
 
   async getRepresentativeById(id: number): Promise<Representative | undefined> {

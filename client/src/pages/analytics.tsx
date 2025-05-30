@@ -273,12 +273,12 @@ export default function Analytics() {
 
       <Tabs defaultValue="overview" className="space-y-4">
         <div className="overflow-x-auto">
-          <TabsList className="grid w-full grid-cols-5 min-w-max">
-            <TabsTrigger value="overview" className="text-xs md:text-sm">کلی</TabsTrigger>
-            <TabsTrigger value="services" className="text-xs md:text-sm">خدمات</TabsTrigger>
-            <TabsTrigger value="regions" className="text-xs md:text-sm">مناطق</TabsTrigger>
-            <TabsTrigger value="representatives" className="text-xs md:text-sm">نمایندگان</TabsTrigger>
-            <TabsTrigger value="trends" className="text-xs md:text-sm">روندها</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-5 min-w-max h-8">
+            <TabsTrigger value="overview" className="text-xs px-2 py-1">کلی</TabsTrigger>
+            <TabsTrigger value="services" className="text-xs px-2 py-1">خدمات</TabsTrigger>
+            <TabsTrigger value="regions" className="text-xs px-2 py-1">مناطق</TabsTrigger>
+            <TabsTrigger value="representatives" className="text-xs px-2 py-1">نمایندگان</TabsTrigger>
+            <TabsTrigger value="trends" className="text-xs px-2 py-1">روندها</TabsTrigger>
           </TabsList>
         </div>
 
@@ -375,14 +375,14 @@ export default function Analytics() {
                 <CardDescription>مقایسه درآمد انواع خدمات</CardDescription>
               </CardHeader>
               <CardContent>
-                <ResponsiveContainer width="100%" height={250}>
+                <ResponsiveContainer width="100%" height={125}>
                   <BarChart data={analyticsData.serviceBreakdown}>
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" fontSize={12} />
-                    <YAxis fontSize={12} />
+                    <XAxis dataKey="name" fontSize={10} />
+                    <YAxis fontSize={10} />
                     <Tooltip 
                       formatter={(value) => formatCurrency(Number(value))} 
-                      contentStyle={{ fontSize: '12px' }}
+                      contentStyle={{ fontSize: '10px' }}
                     />
                     <Bar dataKey="revenue" fill="#8884d8" />
                   </BarChart>
@@ -464,13 +464,13 @@ export default function Analytics() {
               <CardDescription>بررسی تغییرات عملکرد در طول زمان</CardDescription>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
+              <ResponsiveContainer width="100%" height={150}>
                 <LineChart data={analyticsData.monthlyTrends}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" fontSize={12} />
-                  <YAxis yAxisId="left" fontSize={12} />
-                  <YAxis yAxisId="right" orientation="right" fontSize={12} />
-                  <Tooltip contentStyle={{ fontSize: '12px' }} />
+                  <XAxis dataKey="month" fontSize={10} />
+                  <YAxis yAxisId="left" fontSize={10} />
+                  <YAxis yAxisId="right" orientation="right" fontSize={10} />
+                  <Tooltip contentStyle={{ fontSize: '10px' }} />
                   <Line yAxisId="left" type="monotone" dataKey="revenue" stroke="#8884d8" name="درآمد" strokeWidth={2} />
                   <Line yAxisId="right" type="monotone" dataKey="invoices" stroke="#82ca9d" name="فاکتور" strokeWidth={2} />
                   <Line yAxisId="right" type="monotone" dataKey="representatives" stroke="#ffc658" name="نمایندگان" strokeWidth={2} />

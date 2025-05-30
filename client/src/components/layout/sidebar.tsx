@@ -5,10 +5,10 @@ import { useState } from "react";
 // Helper to get the correct base path based on current location
 const getBasePath = () => {
   const currentPath = window.location.pathname;
-  if (currentPath.startsWith('/ciwomplefoadm867945')) {
-    return '/ciwomplefoadm867945';
+  if (currentPath.startsWith('/admin')) {
+    return '/admin';
   }
-  return ''; // fallback for development
+  return '/admin'; // default to admin
 };
 
 const navigationItems = [

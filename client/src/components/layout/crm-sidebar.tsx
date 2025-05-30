@@ -5,10 +5,10 @@ import { useState } from "react";
 // Helper to get the correct base path for CRM
 const getCrmBasePath = () => {
   const currentPath = window.location.pathname;
-  if (currentPath.startsWith('/csdfjkjfoascivomrm867945')) {
-    return '/csdfjkjfoascivomrm867945';
+  if (currentPath.startsWith('/crm')) {
+    return '/crm';
   }
-  return ''; // fallback for development
+  return '/crm'; // default to crm
 };
 
 const crmNavigationItems = [

@@ -27,41 +27,8 @@ import NotFound from "@/pages/not-found";
 
 function Router() {
   const currentPath = window.location.pathname;
-  const isCrmSection = currentPath.startsWith('/csdfjkjfoascivomrm867945');
-  const isAdminSection = currentPath.startsWith('/ciwomplefoadm867945');
-
-  // Safari URL Security Check: Prevent access if secure path was stripped
-  if (currentPath === '/' || currentPath === '/index.html') {
-    return (
-      <div style={{
-        fontFamily: 'Tahoma',
-        direction: 'rtl',
-        textAlign: 'center',
-        padding: '50px',
-        background: '#f5f5f5',
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
-      }}>
-        <div style={{
-          background: 'white',
-          padding: '40px',
-          borderRadius: '8px',
-          maxWidth: '400px',
-          boxShadow: '0 2px 10px rgba(0,0,0,0.1)'
-        }}>
-          <h1 style={{ color: '#d32f2f', marginBottom: '20px' }}>🚫 خطای دسترسی</h1>
-          <p style={{ color: '#666', lineHeight: '1.6' }}>URL امنیتی حذف شده است.</p>
-          <p style={{ color: '#666', lineHeight: '1.6' }}>لطفاً از لینک کامل و صحیح استفاده کنید.</p>
-          <p style={{ color: '#ff6b35', fontWeight: 'bold', marginTop: '15px' }}>
-            ⚠️ Safari: حتماً لینک کامل را وارد کنید
-          </p>
-          <small style={{ color: '#999' }}>Security Error - Use Complete URL</small>
-        </div>
-      </div>
-    );
-  }
+  const isCrmSection = currentPath.startsWith('/crm');
+  const isAdminSection = currentPath.startsWith('/admin');
 
   // CRM Layout
   if (isCrmSection) {
@@ -72,15 +39,15 @@ function Router() {
           <Header />
           <main className="w-full overflow-y-auto p-4 lg:p-6">
             <Switch>
-              <Route path="/csdfjkjfoascivomrm867945" component={CrmDashboard} />
-              <Route path="/csdfjkjfoascivomrm867945/" component={CrmDashboard} />
-              <Route path="/csdfjkjfoascivomrm867945/dashboard" component={CrmDashboard} />
-              <Route path="/csdfjkjfoascivomrm867945/customers" component={CrmCustomers} />
-              <Route path="/csdfjkjfoascivomrm867945/tickets" component={CrmTickets} />
-              <Route path="/csdfjkjfoascivomrm867945/call-preparation" component={CrmCallPreparation} />
-              <Route path="/csdfjkjfoascivomrm867945/voice-notes" component={CrmVoiceNotes} />
-              <Route path="/csdfjkjfoascivomrm867945/followups" component={CrmTickets} />
-              <Route path="/csdfjkjfoascivomrm867945/reports" component={Analytics} />
+              <Route path="/crm" component={CrmDashboard} />
+              <Route path="/crm/" component={CrmDashboard} />
+              <Route path="/crm/dashboard" component={CrmDashboard} />
+              <Route path="/crm/customers" component={CrmCustomers} />
+              <Route path="/crm/tickets" component={CrmTickets} />
+              <Route path="/crm/call-preparation" component={CrmCallPreparation} />
+              <Route path="/crm/voice-notes" component={CrmVoiceNotes} />
+              <Route path="/crm/followups" component={CrmTickets} />
+              <Route path="/crm/reports" component={Analytics} />
               <Route component={NotFound} />
             </Switch>
           </main>
@@ -97,32 +64,21 @@ function Router() {
         <Header />
         <main className="w-full overflow-y-auto p-4 lg:p-6">
           <Switch>
-            {/* Admin routes with secret path prefix */}
-            <Route path="/ciwomplefoadm867945" component={Dashboard} />
-            <Route path="/ciwomplefoadm867945/" component={Dashboard} />
-            <Route path="/ciwomplefoadm867945/dashboard" component={Dashboard} />
-            <Route path="/ciwomplefoadm867945/representatives" component={Representatives} />
-            <Route path="/ciwomplefoadm867945/invoices" component={Invoices} />
-            <Route path="/ciwomplefoadm867945/invoice-batches" component={InvoiceBatches} />
-            <Route path="/ciwomplefoadm867945/analytics" component={Analytics} />
-            <Route path="/ciwomplefoadm867945/import" component={ImportOds} />
-            <Route path="/ciwomplefoadm867945/payments" component={Payments} />
-            <Route path="/ciwomplefoadm867945/backup" component={Backup} />
-            <Route path="/ciwomplefoadm867945/settings" component={Settings} />
-            <Route path="/ciwomplefoadm867945/aegis" component={AegisDashboard} />
-            <Route path="/ciwomplefoadm867945/aegis-test" component={AegisTest} />
-            <Route path="/ciwomplefoadm867945/google-cloud-setup" component={GoogleCloudSetup} />
-            
-            {/* Legacy routes for development */}
-            <Route path="/" component={Dashboard} />
-            <Route path="/dashboard" component={Dashboard} />
-            <Route path="/representatives" component={Representatives} />
-            <Route path="/invoices" component={Invoices} />
-            <Route path="/analytics" component={Analytics} />
-            <Route path="/import" component={ImportOds} />
-            <Route path="/payments" component={Payments} />
-            <Route path="/backup" component={Backup} />
-            <Route path="/settings" component={Settings} />
+            {/* Admin routes with new clean paths */}
+            <Route path="/admin" component={Dashboard} />
+            <Route path="/admin/" component={Dashboard} />
+            <Route path="/admin/dashboard" component={Dashboard} />
+            <Route path="/admin/representatives" component={Representatives} />
+            <Route path="/admin/invoices" component={Invoices} />
+            <Route path="/admin/invoice-batches" component={InvoiceBatches} />
+            <Route path="/admin/analytics" component={Analytics} />
+            <Route path="/admin/import" component={ImportOds} />
+            <Route path="/admin/payments" component={Payments} />
+            <Route path="/admin/backup" component={Backup} />
+            <Route path="/admin/settings" component={Settings} />
+            <Route path="/admin/aegis" component={AegisDashboard} />
+            <Route path="/admin/aegis-test" component={AegisTest} />
+            <Route path="/admin/google-cloud-setup" component={GoogleCloudSetup} />
             
             <Route component={NotFound} />
           </Switch>

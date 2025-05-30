@@ -263,12 +263,29 @@ Provide detailed, actionable recommendations for each area mentioned in the mand
   }
 }
 
-export const vertexAIOrchestrator = new VertexAIOrchestrator();
+  async executeComprehensiveAudit(): Promise<any> {
+    console.log('[VERTEX AI ORCHESTRATOR] Executing comprehensive analysis via new meta-optimizer...');
+    
+    try {
+      const { vertexAIMetaOptimizer } = await import('./vertex-ai-meta-optimizer');
+      const result = await vertexAIMetaOptimizer.executeComprehensiveAnalysis();
+      
+      return {
+        codeAudit: result.analysis ? [result.analysis] : [],
+        strategicRecommendations: [],
+        promptOptimizations: [],
+        success: result.success,
+        timestamp: result.timestamp,
+        model: result.model
+      };
+    } catch (error) {
+      console.error('[VERTEX AI ORCHESTRATOR] Analysis failed:', error);
+      throw error;
+    }
   }
+}
 
-  /**
-   * Phase 2: Execute Vertex AI audit with comprehensive context
-   */
+export const vertexAIOrchestrator = new VertexAIOrchestrator();
   async executeComprehensiveAudit(): Promise<{
     codeAudit: any[];
     strategicRecommendations: VertexAIRecommendation[];

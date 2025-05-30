@@ -126,7 +126,14 @@ export default function CrmCustomers() {
           <h1 className="text-2xl font-bold text-gray-900">مدیریت مشتریان</h1>
           <p className="text-gray-600">مشاهده و مدیریت اطلاعات مشتریان</p>
         </div>
-        <Button>
+        <Button
+          onClick={() => {
+            // Open new customer dialog
+            setSelectedCustomer(null);
+            // In a real implementation, this would open a modal for creating new customer
+            alert("فرم ایجاد مشتری جدید - در حال پیاده‌سازی");
+          }}
+        >
           <i className="fas fa-plus ml-2"></i>
           مشتری جدید
         </Button>

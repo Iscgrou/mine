@@ -454,7 +454,24 @@ export default function Settings() {
 
                 {/* Save Settings */}
                 <div className="pt-4 border-t border-gray-200">
-                  <Button className="w-full">
+                  <Button 
+                    className="w-full"
+                    onClick={() => {
+                      // Save invoice template settings
+                      saveSettingMutation.mutate({
+                        key: 'invoice_template_settings',
+                        value: JSON.stringify({
+                          templateStyle,
+                          includeStoreName,
+                          includeTelegramId,
+                          includeNotes,
+                          outputFormat
+                        }),
+                        description: 'Invoice template configuration'
+                      });
+                    }}
+                    disabled={saveSettingMutation.isPending}
+                  >
                     <i className="fas fa-save ml-2"></i>
                     ذخیره تنظیمات قالب فاکتور
                   </Button>

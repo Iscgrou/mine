@@ -213,7 +213,7 @@ export default function Invoices() {
                         فاکتور: {invoice.invoiceNumber}
                       </div>
                       <div className="text-sm text-gray-600 mb-1">
-                        نماینده: {invoice.representative?.fullName || 'نامشخص'}
+                        نماینده: {invoice.representative?.adminUsername || 'نامشخص'}
                       </div>
                       <div className="text-lg font-bold text-blue-600 persian-nums mb-2">
                         {formatPersianNumber(invoice.totalAmount)} تومان

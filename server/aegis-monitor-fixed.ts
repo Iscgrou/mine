@@ -39,7 +39,7 @@ class AegisMonitorFixed {
   private monitoringInterval: NodeJS.Timeout | null = null;
   private healthHistory: HealthMetrics[] = [];
   private readonly MAX_HISTORY = 10; // Minimal history to prevent memory leaks
-  private readonly MONITORING_INTERVAL = 300000; // 5 minutes to reduce overhead
+  private readonly MONITORING_INTERVAL = 600000; // 10 minutes to reduce overhead further
 
   constructor() {
     // Start with reduced monitoring frequency
@@ -73,8 +73,8 @@ class AegisMonitorFixed {
         this.healthHistory = this.healthHistory.slice(-this.MAX_HISTORY);
       }
 
-      // Emergency cleanup for high memory usage
-      if (metrics.memoryUsage > 90) {
+      // Emergency cleanup for high memory usage (lowered threshold)
+      if (metrics.memoryUsage > 80) {
         await this.performEmergencyCleanup();
       }
 

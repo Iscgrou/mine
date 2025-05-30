@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+
 import { aegisLogger, EventType, LogLevel } from "./aegis-logger";
 import { aegisMonitor } from "./aegis-monitor-fixed";
 import { novaAIEngine } from "./nova-ai-engine";
@@ -477,17 +478,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Enhanced representatives with balance information
   app.get("/api/representatives/with-balance", async (req, res) => {
     try {
-      console.log("Fetching representatives with balance...");
-      const representatives = await storage.getRepresentatives();
-      const representativesWithBalance = representatives.map(rep => ({
-        ...rep,
-        currentBalance: 0
-      }));
-      console.log(`Found ${representativesWithBalance.length} representatives with balance`);
-      res.json(representativesWithBalance);
+      console.log("=== REPRESENTATIVES WITH BALANCE DEBUG START ===");
+      
+      // Step 1: Test storage.getRepresentatives()
+      console.log("Step 1: Testing storage.getRepresentatives()...");
+      const reps = await storage.getRepresentatives();
+      console.log(`Step 1 SUCCESS: Retrieved ${reps.length} representatives`);
+      
+      // Step 2: Map with balance
+      console.log("Step 2: Mapping representatives with balance...");
+      const repsWithBalance = reps.map(rep => {
+        console.log(`Mapping rep ${rep.id}: ${rep.fullName}`);
+        return {
+          ...rep,
+          currentBalance: 0
+        };
+      });
+      console.log(`Step 2 SUCCESS: Mapped ${repsWithBalance.length} representatives with balance`);
+      
+      console.log("=== REPRESENTATIVES WITH BALANCE DEBUG SUCCESS ===");
+      res.json(repsWithBalance);
+      
     } catch (error) {
-      console.error("Error in representatives/with-balance:", error);
-      res.status(500).json({ message: "خطا در دریافت نماینده" });
+      console.error("=== REPRESENTATIVES WITH BALANCE ERROR ===");
+      console.error("Error occurred at:", new Date().toISOString());
+      console.error("Error type:", typeof error);
+      console.error("Error name:", error instanceof Error ? error.name : 'Unknown');
+      console.error("Error message:", error instanceof Error ? error.message : String(error));
+      console.error("Error stack:", error instanceof Error ? error.stack : 'No stack trace');
+      console.error("=== END ERROR DETAILS ===");
+      
+      res.status(500).json({ 
+        message: "خطا در دریافت نماینده",
+        error: error instanceof Error ? error.message : String(error),
+        timestamp: new Date().toISOString()
+      });
     }
   });
 

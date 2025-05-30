@@ -48,7 +48,9 @@ interface AuthenticatedRequest extends Request {
     role?: string;
     loginTime?: number;
     lastActivity?: number;
-  } & Express.Session;
+    destroy?: (callback: (err?: any) => void) => void;
+    save?: (callback: (err?: any) => void) => void;
+  } & any;
 }
 
 export function setupBulletproofAuth(app: Express) {
@@ -336,19 +338,28 @@ export function setupBulletproofAuth(app: Express) {
       console.log(`[SECURITY] Successful login: ${userCredentials.username} (${userCredentials.role}) from IP: ${clientIP}`);
       
       // Force session save
-      req.session.save((err) => {
-        if (err) {
-          console.error('[SESSION] Error saving session:', err);
-          return res.json({ success: false, message: 'خطای سرور در ذخیره جلسه' });
-        }
-        
+      if (req.session.save) {
+        req.session.save((err: any) => {
+          if (err) {
+            console.error('[SESSION] Error saving session:', err);
+            return res.json({ success: false, message: 'خطای سرور در ذخیره جلسه' });
+          }
+          
+          res.json({ 
+            success: true, 
+            redirect: userCredentials.redirectPath,
+            role: userCredentials.role,
+            username: userCredentials.username
+          });
+        });
+      } else {
         res.json({ 
           success: true, 
           redirect: userCredentials.redirectPath,
           role: userCredentials.role,
           username: userCredentials.username
         });
-      });
+      }
 
     } catch (error) {
       console.error('[AUTH] Login error:', error);
@@ -360,16 +371,22 @@ export function setupBulletproofAuth(app: Express) {
   app.post('/logout', (req: AuthenticatedRequest, res: Response) => {
     const username = req.session.username;
     
-    req.session.destroy((err) => {
-      if (err) {
-        console.error('[SESSION] Error destroying session:', err);
-        return res.json({ success: false, message: 'خطا در خروج از سیستم' });
-      }
-      
+    if (req.session.destroy) {
+      req.session.destroy((err: any) => {
+        if (err) {
+          console.error('[SESSION] Error destroying session:', err);
+          return res.json({ success: false, message: 'خطا در خروج از سیستم' });
+        }
+        
+        res.clearCookie('marfanet.sid');
+        console.log(`[SECURITY] User logged out: ${username}`);
+        res.json({ success: true, redirect: '/login' });
+      });
+    } else {
       res.clearCookie('marfanet.sid');
       console.log(`[SECURITY] User logged out: ${username}`);
       res.json({ success: true, redirect: '/login' });
-    });
+    }
   });
 
   // Bulletproof authentication middleware

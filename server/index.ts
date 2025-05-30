@@ -2,7 +2,7 @@ import express, { type Request, type Response, type NextFunction } from "express
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic } from "./vite";
 import { createServer } from "http";
-import { setupBulletproofAuth } from "./bulletproof-auth";
+import { setupSimpleAuth } from "./simple-auth";
 import { registerRepresentativesBalanceEndpoint } from "./representatives-balance-fix";
 import { registerCRTPerformanceRoutes } from "./crt-performance-monitor";
 
@@ -21,8 +21,9 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Setup bulletproof authentication system
-setupBulletproofAuth(app);
+// Setup simple authentication with login page
+const authMiddleware = setupSimpleAuth(app);
+app.use(authMiddleware);
 
 app.use((req, res, next) => {
   const start = Date.now();

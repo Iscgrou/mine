@@ -6,7 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 
 export default function Analytics() {
-  const [selectedPeriod, setSelectedPeriod] = useState("month");
+  const [selectedPeriod, setSelectedPeriod] = useState("4-week");
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -163,12 +163,13 @@ export default function Analytics() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             {[
-              { id: 'week', label: 'هفته گذشته' },
-              { id: 'month', label: 'ماه گذشته' },
-              { id: 'quarter', label: 'سه ماه گذشته' },
-              { id: 'year', label: 'سال گذشته' }
+              { id: '1-week', label: '۱ هفته' },
+              { id: '2-week', label: '۲ هفته' },
+              { id: '3-week', label: '۳ هفته' },
+              { id: '4-week', label: '۴ هفته' },
+              { id: '8-week', label: '۸ هفته' }
             ].map((period) => (
               <Button
                 key={period.id}

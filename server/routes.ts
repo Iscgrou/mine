@@ -16,16 +16,16 @@ import {
 import multer from "multer";
 import * as XLSX from "xlsx";
 
-// Authentic Data Analysis for V2Ray Revenue Prediction
+// Authentic Data Analysis for V2Ray Revenue Prediction - ABSOLUTE DATA INTEGRITY
 async function generateAuthenticDataAnalysis(revenueData: any, timeframe: string) {
   const currentRevenue = revenueData.summary.totalRevenue;
-  const monthlyTrends = revenueData.trends;
+  const weeklyTrends = revenueData.trends;
   const topReps = revenueData.summary.topPerformingReps;
   
-  // Calculate growth rate based on historical trends
-  const recentMonths = monthlyTrends.slice(-3);
-  const averageMonthlyRevenue = recentMonths.reduce((sum: number, month: any) => sum + month.revenue, 0) / recentMonths.length;
-  const growthRate = averageMonthlyRevenue > 0 ? ((currentRevenue - averageMonthlyRevenue) / averageMonthlyRevenue) * 100 : 0;
+  // Calculate growth rate based on actual historical trends from PostgreSQL
+  const recentWeeks = weeklyTrends.slice(-2); // Last 2 weeks for trend analysis
+  const averageWeeklyRevenue = recentWeeks.reduce((sum: number, week: any) => sum + week.revenue, 0) / Math.max(recentWeeks.length, 1);
+  const growthRate = averageWeeklyRevenue > 0 ? ((currentRevenue - averageWeeklyRevenue) / averageWeeklyRevenue) * 100 : 0;
   
   // Predict future revenue based on trends
   const projectedGrowthRate = Math.max(-10, Math.min(25, growthRate * 1.1)); // Cap between -10% and 25%
@@ -33,7 +33,7 @@ async function generateAuthenticDataAnalysis(revenueData: any, timeframe: string
   
   // Analyze representative performance
   const activeReps = topReps.filter((rep: any) => rep.revenue > 0);
-  const highPerformers = activeReps.filter((rep: any) => rep.revenue > averageMonthlyRevenue / 10);
+  const highPerformers = activeReps.filter((rep: any) => rep.revenue > averageWeeklyRevenue / 10);
   
   // Generate V2Ray-specific insights
   const analysis = {
@@ -45,9 +45,10 @@ async function generateAuthenticDataAnalysis(revenueData: any, timeframe: string
     },
     analysis: {
       keyDrivers: [
-        `${highPerformers.length} نماینده پرفروش با عملکرد مستقل`,
-        `روند ${growthRate > 0 ? 'صعودی' : 'نزولی'} فروش V2Ray در ${timeframe} گذشته`,
-        `میانگین فاکتور ${revenueData.summary.averageInvoiceValue.toLocaleString()} تومان`
+        `${highPerformers.length} نماینده فعال در سیستم MarFanet با عملکرد ثبت‌شده`,
+        `روند ${growthRate >= 0 ? 'صعودی' : 'نزولی'} فروش V2Ray در ${timeframe === '1-week' ? '۱ هفته' : timeframe === '2-week' ? '۲ هفته' : timeframe === '3-week' ? '۳ هفته' : timeframe === '4-week' ? '۴ هفته' : '۸ هفته'} گذشته (${Math.abs(growthRate).toFixed(1)}%)`,
+        `میانگین فاکتور ${Math.round(revenueData.summary.averageInvoiceValue)} تومان بر اساس ${revenueData.summary.invoiceCount} فاکتور ثبت‌شده`,
+        `مجموع درآمد واقعی: ${currentRevenue.toLocaleString()} تومان در دوره انتخابی`
       ],
       riskFactors: [
         "تغییرات سیاست‌های اینترنت در ایران",
@@ -76,22 +77,25 @@ async function aggregateRevenueData(timeframe: string) {
   const endDate = new Date();
   const startDate = new Date();
   
-  // Calculate date range based on timeframe
+  // Calculate date range based on standardized timeframes
   switch (timeframe) {
-    case '1-month':
-      startDate.setMonth(endDate.getMonth() - 1);
+    case '1-week':
+      startDate.setDate(endDate.getDate() - 7);
       break;
-    case '3-month':
-      startDate.setMonth(endDate.getMonth() - 3);
+    case '2-week':
+      startDate.setDate(endDate.getDate() - 14);
       break;
-    case '6-month':
-      startDate.setMonth(endDate.getMonth() - 6);
+    case '3-week':
+      startDate.setDate(endDate.getDate() - 21);
       break;
-    case '1-year':
-      startDate.setFullYear(endDate.getFullYear() - 1);
+    case '4-week':
+      startDate.setDate(endDate.getDate() - 28);
+      break;
+    case '8-week':
+      startDate.setDate(endDate.getDate() - 56);
       break;
     default:
-      startDate.setMonth(endDate.getMonth() - 3);
+      startDate.setDate(endDate.getDate() - 28); // Default to 4-week
   }
 
   try {
@@ -131,32 +135,34 @@ async function aggregateRevenueData(timeframe: string) {
       };
     });
 
-    // Monthly revenue trend
-    const monthlyTrends = [];
-    for (let i = 0; i < 6; i++) {
-      const monthStart = new Date();
-      monthStart.setMonth(endDate.getMonth() - i);
-      monthStart.setDate(1);
+    // Precise timeframe trends based on selected period
+    const trendsData = [];
+    const weeksToAnalyze = timeframe === '8-week' ? 8 : timeframe === '4-week' ? 4 : timeframe === '3-week' ? 3 : timeframe === '2-week' ? 2 : 1;
+    
+    for (let i = 0; i < weeksToAnalyze; i++) {
+      const weekStart = new Date();
+      weekStart.setDate(endDate.getDate() - (i + 1) * 7);
       
-      const monthEnd = new Date();
-      monthEnd.setMonth(endDate.getMonth() - i + 1);
-      monthEnd.setDate(0);
+      const weekEnd = new Date();
+      weekEnd.setDate(endDate.getDate() - i * 7);
       
-      const monthInvoices = invoices.filter(invoice => {
+      const weekInvoices = invoices.filter(invoice => {
         if (!invoice.createdAt) return false;
         const invoiceDate = new Date(invoice.createdAt);
-        return invoiceDate >= monthStart && invoiceDate <= monthEnd;
+        return invoiceDate >= weekStart && invoiceDate < weekEnd;
       });
       
-      const monthRevenue = monthInvoices.reduce((sum, invoice) => {
+      const weekRevenue = weekInvoices.reduce((sum, invoice) => {
         const amount = typeof invoice.totalAmount === 'string' ? parseFloat(invoice.totalAmount) : invoice.totalAmount;
         return sum + (amount || 0);
       }, 0);
       
-      monthlyTrends.unshift({
-        month: monthStart.toISOString().slice(0, 7),
-        revenue: monthRevenue,
-        invoiceCount: monthInvoices.length
+      trendsData.unshift({
+        period: `Week ${weeksToAnalyze - i}`,
+        startDate: weekStart.toISOString().slice(0, 10),
+        endDate: weekEnd.toISOString().slice(0, 10),
+        revenue: weekRevenue,
+        invoiceCount: weekInvoices.length
       });
     }
 
@@ -170,7 +176,7 @@ async function aggregateRevenueData(timeframe: string) {
           .sort((a, b) => b.revenue - a.revenue)
           .slice(0, 5)
       },
-      trends: monthlyTrends,
+      trends: trendsData,
       representatives: repPerformance,
       timeRange: {
         start: startDate.toISOString(),

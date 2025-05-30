@@ -370,121 +370,125 @@ export default function CrmDashboard() {
         />
       </div>
 
-      {/* Main Content Grid */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 max-w-full">
-        {/* Left Column - Recent Activity */}
-        <div className="xl:col-span-2 space-y-6 min-w-0">
-          {/* Search and Filters */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-          >
-            <Card className="bg-gradient-to-r from-white to-gray-50/50">
-              <CardContent className="p-4">
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <div className="relative flex-1">
-                    <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                    <Input
-                      placeholder="جستجوی مشتریان..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pr-10 border-gray-200 focus:border-blue-400 focus:ring-blue-400"
-                    />
-                  </div>
-                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                    <Button variant="outline" className="border-gray-200 hover:border-gray-300">
-                      <Filter className="w-4 h-4 ml-2" />
-                      فیلتر
-                    </Button>
-                  </motion.div>
+      {/* Reorganized Main Content - Single Column Layout */}
+      <div className="space-y-6 max-w-full">
+        {/* Search and Filters */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+        >
+          <Card className="bg-gradient-to-r from-white to-gray-50/50">
+            <CardContent className="p-4">
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="relative flex-1">
+                  <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <Input
+                    placeholder="جستجوی مشتریان..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pr-10 border-gray-200 focus:border-blue-400 focus:ring-blue-400"
+                  />
                 </div>
-              </CardContent>
-            </Card>
-          </motion.div>
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <Button variant="outline" className="border-gray-200 hover:border-gray-300">
+                    <Filter className="w-4 h-4 ml-2" />
+                    فیلتر
+                  </Button>
+                </motion.div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
 
-          {/* Recent Customers Table */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-          >
-            <Card className="overflow-hidden">
-              <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50">
-                <CardTitle className="flex items-center">
-                  <Users className="w-5 h-5 ml-2 text-blue-600" />
-                  مشتریان اخیر
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">نام</th>
-                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">تلفن</th>
-                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">وضعیت</th>
-                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">ارزش کل</th>
-                        <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">آخرین تماس</th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {recentCustomers.map((customer, idx) => (
-                        <motion.tr
-                          key={customer.id}
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 0.7 + idx * 0.1 }}
-                          whileHover={{ backgroundColor: "#f8fafc" }}
-                          className="hover:bg-gray-50 transition-colors duration-200 cursor-pointer"
-                        >
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="flex items-center">
-                              <motion.div 
-                                className="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center"
-                                whileHover={{ scale: 1.1 }}
-                              >
-                                <span className="text-white text-sm font-medium">
-                                  {customer.fullName.charAt(0)}
-                                </span>
-                              </motion.div>
-                              <div className="mr-3">
-                                <div className="text-sm font-medium text-gray-900">{customer.fullName}</div>
-                              </div>
+        {/* Recent Customers Table */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+        >
+          <Card className="overflow-hidden">
+            <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50">
+              <CardTitle className="flex items-center">
+                <Users className="w-5 h-5 ml-2 text-blue-600" />
+                مشتریان اخیر
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">نام</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">تلفن</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">وضعیت</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">ارزش کل</th>
+                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">آخرین تماس</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {recentCustomers.map((customer, idx) => (
+                      <motion.tr
+                        key={customer.id}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.7 + idx * 0.1 }}
+                        whileHover={{ backgroundColor: "#f8fafc" }}
+                        className="hover:bg-gray-50 transition-colors duration-200 cursor-pointer"
+                      >
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <motion.div 
+                              className="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center"
+                              whileHover={{ scale: 1.1 }}
+                            >
+                              <span className="text-white text-sm font-medium">
+                                {customer.fullName.charAt(0)}
+                              </span>
+                            </motion.div>
+                            <div className="mr-3">
+                              <div className="text-sm font-medium text-gray-900">{customer.fullName}</div>
                             </div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 persian-nums">{customer.phoneNumber}</td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <Badge variant="secondary" className={getCustomerStatusColor(customer.status)}>
-                              {customer.status === 'active' ? 'فعال' : customer.status === 'inactive' ? 'غیرفعال' : 'احتمالی'}
-                            </Badge>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 persian-nums">{customer.totalValue}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatPersianDate(customer.lastContact)}</td>
-                        </motion.tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 persian-nums">{customer.phoneNumber}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <Badge variant="secondary" className={getCustomerStatusColor(customer.status)}>
+                            {customer.status === 'active' ? 'فعال' : customer.status === 'inactive' ? 'غیرفعال' : 'احتمالی'}
+                          </Badge>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 persian-nums">{customer.totalValue}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatPersianDate(customer.lastContact)}</td>
+                      </motion.tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
 
-        {/* Right Column - Quick Actions & Active Tickets */}
-        <div className="space-y-6">
-          <QuickActions 
-            onNewTicket={handleNewTicket}
-            onCallCustomer={handleCallCustomer}
-            onCreateNote={handleCreateNote}
-            onViewReports={handleViewReports}
-          />
-
-          {/* Animated Notification Center */}
+        {/* Relocated Sections: Quick Actions & Notification Center Below Recent Customers */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Quick Actions - Now Below Recent Customers */}
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.7 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.8 }}
+          >
+            <QuickActions 
+              onNewTicket={handleNewTicket}
+              onCallCustomer={handleCallCustomer}
+              onCreateNote={handleCreateNote}
+              onViewReports={handleViewReports}
+            />
+          </motion.div>
+
+          {/* Notification Center - Now Below Recent Customers */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.9 }}
           >
             <Card className="bg-gradient-to-br from-white to-green-50/30 border-green-100">
               <CardHeader>
@@ -498,25 +502,26 @@ export default function CrmDashboard() {
               </CardContent>
             </Card>
           </motion.div>
+        </div>
 
-          {/* Animated Daily Work Log */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.8 }}
-          >
-            <Card className="bg-gradient-to-br from-white to-indigo-50/30 border-indigo-100">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Calendar className="w-5 h-5 ml-2 text-indigo-600" />
-                  ثبت کار روزانه
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <DailyWorkLog />
-              </CardContent>
-            </Card>
-          </motion.div>
+        {/* Additional CRM Analytics Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 1.0 }}
+        >
+          <Card className="bg-gradient-to-br from-white to-indigo-50/30 border-indigo-100">
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Calendar className="w-5 h-5 ml-2 text-indigo-600" />
+                ثبت کار روزانه
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <DailyWorkLog />
+            </CardContent>
+          </Card>
+        </motion.div>
 
           {/* Active Tickets */}
           <motion.div
@@ -560,7 +565,6 @@ export default function CrmDashboard() {
             </Card>
           </motion.div>
         </div>
-      </div>
       </div>
     </div>
   );

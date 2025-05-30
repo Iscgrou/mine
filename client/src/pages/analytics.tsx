@@ -273,11 +273,10 @@ export default function Analytics() {
 
       <Tabs key="mobile-optimized-tabs" defaultValue="overview" className="space-y-2 md:space-y-4">
         <div className="overflow-x-auto px-1">
-          <TabsList className="grid w-full grid-cols-5 min-w-max h-6 md:h-10 bg-blue-50 border border-blue-200">
+          <TabsList className="grid w-full grid-cols-4 min-w-max h-6 md:h-10 bg-blue-50 border border-blue-200">
             <TabsTrigger value="overview" className="text-xs md:text-sm px-1 py-0.5 md:px-3 md:py-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white">کلی</TabsTrigger>
             <TabsTrigger value="services" className="text-xs md:text-sm px-1 py-0.5 md:px-3 md:py-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white">خدمات</TabsTrigger>
             <TabsTrigger value="regions" className="text-xs md:text-sm px-1 py-0.5 md:px-3 md:py-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white">مناطق</TabsTrigger>
-            <TabsTrigger value="representatives" className="text-xs md:text-sm px-1 py-0.5 md:px-3 md:py-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white">نمایندگان</TabsTrigger>
             <TabsTrigger value="trends" className="text-xs md:text-sm px-1 py-0.5 md:px-3 md:py-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white">روندها</TabsTrigger>
           </TabsList>
         </div>
@@ -423,39 +422,7 @@ export default function Analytics() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="representatives" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>برترین نمایندگان</CardTitle>
-              <CardDescription>رتبه‌بندی بر اساس عملکرد مالی</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {analyticsData.topPerformers.map((performer, index) => (
-                  <div key={performer.id} className="flex items-center justify-between p-4 border rounded-lg">
-                    <div className="flex items-center space-x-3 space-x-reverse">
-                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                        <span className="text-sm font-medium text-blue-800">{index + 1}</span>
-                      </div>
-                      <div>
-                        <h4 className="font-medium">{performer.name}</h4>
-                        <p className="text-sm text-muted-foreground">
-                          {performer.region} • {performer.invoices} فاکتور
-                        </p>
-                      </div>
-                    </div>
-                    <div className="text-left">
-                      <p className="font-medium">{formatCurrency(performer.revenue)}</p>
-                      <Badge variant={performer.growth > 0 ? 'default' : 'secondary'} className="mt-1">
-                        {performer.growth > 0 ? '+' : ''}{performer.growth.toFixed(1)}%
-                      </Badge>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+
 
         <TabsContent value="trends" className="space-y-4">
           <Card>

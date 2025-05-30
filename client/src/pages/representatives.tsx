@@ -264,9 +264,9 @@ export default function Representatives() {
                     </td>
                     <td>
                       <FinancialBalance 
-                        amount={rep.currentBalance || 0}
-                        showCurrency={true}
-                        className="text-sm"
+                        representativeId={rep.id}
+                        currentBalance={rep.currentBalance || 0}
+                        representativeName={rep.fullName}
                       />
                     </td>
                     <td>

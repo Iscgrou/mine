@@ -246,17 +246,22 @@ export class DatabaseStorage implements IStorage {
 
   async getRepresentativesWithBalance(): Promise<(Representative & { currentBalance: number })[]> {
     try {
-      console.log("Getting representatives...");
+      console.log("Getting representatives with real balance calculations...");
       const representatives = await this.getRepresentatives();
       console.log(`Found ${representatives.length} representatives`);
       
-      // Simple approach: return representatives with zero balance to fix API failure
-      const result = representatives.map(rep => ({
-        ...rep,
-        currentBalance: 0
-      }));
+      // Calculate real balance for each representative
+      const result = await Promise.all(
+        representatives.map(async (rep) => {
+          const balance = await this.getRepresentativeBalance(rep.id);
+          return {
+            ...rep,
+            currentBalance: balance
+          };
+        })
+      );
       
-      console.log("Successfully returned representatives with default balances");
+      console.log("Successfully returned representatives with calculated balances");
       return result;
     } catch (error) {
       console.error("Error in getRepresentativesWithBalance:", error);
@@ -307,6 +312,129 @@ export class DatabaseStorage implements IStorage {
       description: `پرداخت ${amount.toLocaleString()} تومان`,
       transactionDate: new Date()
     });
+  }
+
+  // Collaborator Management Methods (duplicate removed - using implementation below)
+
+  // Commission tracking and calculation
+  async calculateCommissionForInvoice(invoiceId: number): Promise<void> {
+    const invoice = await this.getInvoiceById(invoiceId);
+    if (!invoice || !invoice.representativeId) return;
+
+    const representative = await this.getRepresentativeById(invoice.representativeId);
+    if (!representative || representative.sourcingType !== 'collaborator_introduced' || !representative.collaboratorId) {
+      return;
+    }
+
+    // Parse invoice data to calculate commissions
+    const invoiceData = typeof invoice.invoiceData === 'string' 
+      ? JSON.parse(invoice.invoiceData) 
+      : invoice.invoiceData;
+
+    let volumeRevenue = 0;
+    let unlimitedRevenue = 0;
+
+    // Calculate revenue by type from invoice data
+    if (invoiceData && invoiceData.services) {
+      for (const service of invoiceData.services) {
+        if (service.type === 'volume') {
+          volumeRevenue += parseFloat(service.amount || '0');
+        } else if (service.type === 'unlimited') {
+          unlimitedRevenue += parseFloat(service.amount || '0');
+        }
+      }
+    }
+
+    // Calculate commissions
+    const volumeCommission = representative.volumeCommissionRate 
+      ? (volumeRevenue * parseFloat(representative.volumeCommissionRate.toString())) / 100 
+      : 0;
+    
+    const unlimitedCommission = representative.unlimitedCommissionRate 
+      ? (unlimitedRevenue * parseFloat(representative.unlimitedCommissionRate.toString())) / 100 
+      : 0;
+
+    // Record commission transactions
+    if (volumeCommission > 0) {
+      await this.recordCommission({
+        collaboratorId: representative.collaboratorId,
+        representativeId: representative.id,
+        invoiceId: invoiceId,
+        revenueType: 'volume',
+        baseRevenueAmount: volumeRevenue.toString(),
+        commissionRate: representative.volumeCommissionRate?.toString() || '0',
+        commissionAmount: volumeCommission.toString(),
+        batchId: invoice.batchId
+      });
+    }
+
+    if (unlimitedCommission > 0) {
+      await this.recordCommission({
+        collaboratorId: representative.collaboratorId,
+        representativeId: representative.id,
+        invoiceId: invoiceId,
+        revenueType: 'unlimited',
+        baseRevenueAmount: unlimitedRevenue.toString(),
+        commissionRate: representative.unlimitedCommissionRate?.toString() || '0',
+        commissionAmount: unlimitedCommission.toString(),
+        batchId: invoice.batchId
+      });
+    }
+
+    // Update collaborator accumulated earnings
+    const totalCommission = volumeCommission + unlimitedCommission;
+    if (totalCommission > 0) {
+      await this.updateCollaboratorEarnings(representative.collaboratorId, totalCommission);
+    }
+  }
+
+  async recordCommission(commission: InsertCommissionRecord): Promise<CommissionRecord> {
+    const [created] = await db.insert(commissionRecords).values(commission).returning();
+    return created;
+  }
+
+  async updateCollaboratorEarnings(collaboratorId: number, commissionAmount: number): Promise<void> {
+    const collaborator = await this.getCollaboratorById(collaboratorId);
+    if (!collaborator) return;
+
+    const currentEarnings = parseFloat(collaborator.currentAccumulatedEarnings?.toString() || '0');
+    const totalEarnings = parseFloat(collaborator.totalEarningsToDate?.toString() || '0');
+
+    await this.updateCollaborator(collaboratorId, {
+      currentAccumulatedEarnings: (currentEarnings + commissionAmount).toString(),
+      totalEarningsToDate: (totalEarnings + commissionAmount).toString()
+    });
+  }
+
+  async recordCollaboratorPayout(payout: InsertCollaboratorPayout): Promise<CollaboratorPayout> {
+    const [created] = await db.insert(collaboratorPayouts).values(payout).returning();
+    
+    // Update collaborator balance
+    const collaborator = await this.getCollaboratorById(payout.collaboratorId);
+    if (collaborator) {
+      const currentEarnings = parseFloat(collaborator.currentAccumulatedEarnings?.toString() || '0');
+      const totalPayouts = parseFloat(collaborator.totalPayoutsToDate?.toString() || '0');
+      const payoutAmount = parseFloat(payout.payoutAmount.toString());
+
+      await this.updateCollaborator(payout.collaboratorId, {
+        currentAccumulatedEarnings: (currentEarnings - payoutAmount).toString(),
+        totalPayoutsToDate: (totalPayouts + payoutAmount).toString()
+      });
+    }
+
+    return created;
+  }
+
+  async getCollaboratorCommissionHistory(collaboratorId: number): Promise<CommissionRecord[]> {
+    return await db.select().from(commissionRecords)
+      .where(eq(commissionRecords.collaboratorId, collaboratorId))
+      .orderBy(desc(commissionRecords.transactionDate));
+  }
+
+  async getCollaboratorPayoutHistory(collaboratorId: number): Promise<CollaboratorPayout[]> {
+    return await db.select().from(collaboratorPayouts)
+      .where(eq(collaboratorPayouts.collaboratorId, collaboratorId))
+      .orderBy(desc(collaboratorPayouts.payoutDate));
   }
 
   // Invoice batch methods

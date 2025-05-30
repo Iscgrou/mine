@@ -301,6 +301,8 @@ export const insertPaymentSchema = createInsertSchema(payments).omit({
   createdAt: true,
 });
 
+// Collaborator schemas moved below to avoid duplicates
+
 export const insertFileImportSchema = createInsertSchema(fileImports).omit({
   id: true,
   createdAt: true,

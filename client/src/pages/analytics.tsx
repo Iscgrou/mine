@@ -271,19 +271,19 @@ export default function Analytics() {
         />
       </div>
 
-      <Tabs defaultValue="overview" className="space-y-4">
-        <div className="overflow-x-auto">
-          <TabsList className="grid w-full grid-cols-5 min-w-max h-8">
-            <TabsTrigger value="overview" className="text-xs px-2 py-1">کلی</TabsTrigger>
-            <TabsTrigger value="services" className="text-xs px-2 py-1">خدمات</TabsTrigger>
-            <TabsTrigger value="regions" className="text-xs px-2 py-1">مناطق</TabsTrigger>
-            <TabsTrigger value="representatives" className="text-xs px-2 py-1">نمایندگان</TabsTrigger>
-            <TabsTrigger value="trends" className="text-xs px-2 py-1">روندها</TabsTrigger>
+      <Tabs key="mobile-optimized-tabs" defaultValue="overview" className="space-y-2 md:space-y-4">
+        <div className="overflow-x-auto px-1">
+          <TabsList className="grid w-full grid-cols-5 min-w-max h-6 md:h-10 bg-blue-50 border border-blue-200">
+            <TabsTrigger value="overview" className="text-xs md:text-sm px-1 py-0.5 md:px-3 md:py-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white">کلی</TabsTrigger>
+            <TabsTrigger value="services" className="text-xs md:text-sm px-1 py-0.5 md:px-3 md:py-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white">خدمات</TabsTrigger>
+            <TabsTrigger value="regions" className="text-xs md:text-sm px-1 py-0.5 md:px-3 md:py-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white">مناطق</TabsTrigger>
+            <TabsTrigger value="representatives" className="text-xs md:text-sm px-1 py-0.5 md:px-3 md:py-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white">نمایندگان</TabsTrigger>
+            <TabsTrigger value="trends" className="text-xs md:text-sm px-1 py-0.5 md:px-3 md:py-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white">روندها</TabsTrigger>
           </TabsList>
         </div>
 
-        <TabsContent value="overview" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2">
+        <TabsContent value="overview" className="space-y-2 md:space-y-4">
+          <div className="grid gap-2 md:gap-4 grid-cols-1 md:grid-cols-2">
             <Card>
               <CardHeader>
                 <CardTitle>روند درآمد ماهانه</CardTitle>

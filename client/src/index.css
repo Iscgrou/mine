@@ -4,6 +4,41 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Dynamic Layout System - CSS Custom Properties */
+:root {
+  --sidebar-width: 250px;
+  --sidebar-collapsed-width: 60px;
+  --content-padding: clamp(1rem, 3vw, 2rem);
+  --dynamic-margin: 0px;
+  --available-width: 100vw;
+  --layout-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Sidebar state management */
+[data-sidebar="open"] {
+  --dynamic-margin: var(--sidebar-width);
+  --available-width: calc(100vw - var(--sidebar-width));
+}
+
+[data-sidebar="closed"] {
+  --dynamic-margin: var(--sidebar-collapsed-width);
+  --available-width: calc(100vw - var(--sidebar-collapsed-width));
+}
+
+[data-sidebar="hidden"] {
+  --dynamic-margin: 0px;
+  --available-width: 100vw;
+}
+
+/* Mobile-first approach */
+@media (max-width: 767px) {
+  :root {
+    --dynamic-margin: 0px;
+    --available-width: 100vw;
+    --content-padding: 1rem;
+  }
+}
+
 :root {
   /* MarFanet Clean White Theme - High Contrast */
   --background: 0 0% 100%; /* #FFFFFF - Pure white background */
@@ -668,41 +703,53 @@
   }
 }
 
-/* CRM Dashboard positioning - 25% right shift */
-.crm-dashboard-centered {
-  margin-left: 0;
-  margin-right: auto;
-  padding: 0 1rem;
+/* Dynamic Container System */
+.dynamic-container {
   width: 100%;
+  max-width: var(--available-width);
+  margin-left: var(--dynamic-margin);
+  padding: 0 var(--content-padding);
+  box-sizing: border-box;
+  transition: var(--layout-transition);
 }
 
-@media (min-width: 768px) {
-  .crm-dashboard-centered {
-    margin-left: 20%;
-    margin-right: auto;
-    max-width: 75%;
-    padding: 0 1.5rem;
-    transform: translateX(5%);
+.dynamic-centered {
+  margin-left: calc(var(--dynamic-margin) + (var(--available-width) - 100%) / 2);
+  max-width: calc(var(--available-width) * 0.85);
+  transform: translateX(calc(var(--available-width) * 0.15));
+  transition: var(--layout-transition);
+}
+
+/* Dynamic grid system with container queries */
+.dynamic-grid {
+  display: grid;
+  gap: clamp(0.5rem, 2vw, 1.5rem);
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+  width: 100%;
+  max-width: 100%;
+  container-type: inline-size;
+}
+
+@container (min-width: 768px) {
+  .dynamic-grid {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
   }
 }
 
-@media (min-width: 1024px) {
-  .crm-dashboard-centered {
-    margin-left: 25%;
-    margin-right: auto;
-    max-width: 70%;
-    padding: 0 2rem;
-    transform: translateX(0%);
+@container (min-width: 1024px) {
+  .dynamic-grid {
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   }
 }
 
-@media (min-width: 1440px) {
-  .crm-dashboard-centered {
-    margin-left: 25%;
-    margin-right: auto;
-    max-width: 65%;
-    transform: translateX(0%);
-  }
+/* Responsive content wrapper */
+.responsive-content {
+  width: 100%;
+  max-width: var(--available-width);
+  margin-left: var(--dynamic-margin);
+  padding: 0 var(--content-padding);
+  overflow-x: hidden;
+  transition: var(--layout-transition);
 }
 
 /* Analytics content overflow prevention - Enhanced laptop screen optimization */

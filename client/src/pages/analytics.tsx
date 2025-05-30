@@ -235,7 +235,7 @@ export default function Analytics() {
   );
 
   return (
-    <div className="p-2 md:p-4 space-y-2 md:space-y-4 max-w-full overflow-x-hidden" dir="rtl">
+    <div className="responsive-content space-y-2 md:space-y-4" dir="rtl">
       <div className="flex flex-col items-center space-y-2 py-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg mx-1">
         <h1 className="text-base md:text-xl font-bold text-center text-blue-900">مرکز تحلیل گزارش</h1>
         <p className="text-xs text-blue-600 text-center">تحلیل جامع عملکرد کسب و کار</p>
@@ -281,9 +281,9 @@ export default function Analytics() {
           </TabsList>
         </div>
 
-        <TabsContent value="overview" className="analytics-overview-tab space-y-1 md:space-y-2">
-          <div className="grid gap-1 md:gap-2 grid-cols-1 lg:grid-cols-2 w-full">
-            <Card className="analytics-card">
+        <TabsContent value="overview" className="space-y-2">
+          <div className="dynamic-grid">
+            <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm md:text-base">روند درآمد ماهانه</CardTitle>
                 <CardDescription className="text-xs md:text-sm">مقایسه عملکرد سه ماه اخیر</CardDescription>
@@ -307,7 +307,7 @@ export default function Analytics() {
               </CardContent>
             </Card>
 
-            <Card className="analytics-card">
+            <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm md:text-base">بینش‌های کسب و کار</CardTitle>
                 <CardDescription className="text-xs md:text-sm">نکات مهم برای تصمیم‌گیری</CardDescription>

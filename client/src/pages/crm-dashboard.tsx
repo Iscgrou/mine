@@ -282,7 +282,7 @@ export default function CrmDashboard() {
 
   return (
     <div className="page-wrapper bg-gradient-to-br from-blue-50/50 via-white to-purple-50/30 min-h-screen">
-      <div className="dashboard-container crm-dashboard-centered max-w-full">
+      <div className="dynamic-centered responsive-content">
       {/* Animated Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}

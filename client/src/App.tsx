@@ -28,6 +28,7 @@ import RepresentativeManagement from "@/pages/representative-management";
 import AegisDashboard from "@/pages/aegis-dashboard";
 import AegisTest from "@/pages/aegis-test";
 import GoogleCloudSetup from "@/pages/google-cloud-setup";
+import AIIntelligence from "@/pages/ai-intelligence";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -90,6 +91,7 @@ function Router() {
             <Route path="/admin/aegis" component={AegisDashboard} />
             <Route path="/admin/aegis-test" component={AegisTest} />
             <Route path="/admin/google-cloud-setup" component={GoogleCloudSetup} />
+            <Route path="/admin/ai-intelligence" component={AIIntelligence} />
             
             <Route component={NotFound} />
           </Switch>

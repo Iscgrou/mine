@@ -47,22 +47,22 @@ async function buildCustomerAnalysisData(customerId: number): Promise<CustomerAn
     
     // Build interaction history from actual invoices and payments
     const interactionHistory = customerInvoices.map(invoice => ({
-      date: new Date(invoice.issueDate),
-      type: 'payment' as const,
+      date: new Date(invoice.createdAt || Date.now()),
+      type: 'payment' as 'payment',
       sentiment: (invoice.status === 'paid' ? 'positive' : 
-                 invoice.status === 'overdue' ? 'negative' : 'neutral') as const,
+                 invoice.status === 'overdue' ? 'negative' : 'neutral') as 'positive' | 'negative' | 'neutral',
       content: `فاکتور ${invoice.invoiceNumber} - ${invoice.totalAmount} تومان`,
       resolved: invoice.status === 'paid'
     }));
 
     // Build subscription history from invoices
     const subscriptionHistory = customerInvoices.map(invoice => ({
-      date: new Date(invoice.issueDate),
-      serviceType: (invoice.serviceType || 'unlimited') as 'unlimited' | 'limited',
+      date: new Date(invoice.createdAt || Date.now()),
+      serviceType: 'unlimited' as 'unlimited' | 'limited',
       amount: parseFloat(invoice.totalAmount || '0'),
       duration: 30, // Default monthly duration
       status: (invoice.status === 'paid' ? 'active' : 
-              invoice.status === 'overdue' ? 'expired' : 'cancelled') as const
+              invoice.status === 'overdue' ? 'expired' : 'cancelled') as 'active' | 'expired' | 'cancelled'
     }));
 
     // Calculate financial metrics from actual data
@@ -75,7 +75,7 @@ async function buildCustomerAnalysisData(customerId: number): Promise<CustomerAn
       paidInvoices.length / customerInvoices.length : 0;
     
     const lastPaidInvoice = paidInvoices
-      .sort((a, b) => new Date(b.issueDate).getTime() - new Date(a.issueDate).getTime())[0];
+      .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())[0];
 
     return {
       customerId,
@@ -85,10 +85,10 @@ async function buildCustomerAnalysisData(customerId: number): Promise<CustomerAn
         totalRevenue,
         averageMonthlyValue: customerInvoices.length > 0 ? totalRevenue / customerInvoices.length : 0,
         paymentReliability,
-        lastPaymentDate: lastPaidInvoice ? new Date(lastPaidInvoice.issueDate) : new Date()
+        lastPaymentDate: lastPaidInvoice ? new Date(lastPaidInvoice.createdAt || Date.now()) : new Date()
       },
       demographicData: {
-        region: customer.region || 'نامشخص',
+        region: customer.storeName || 'نامشخص',
         representativeId: customerId,
         accountAge: Math.floor((Date.now() - new Date(customer.createdAt || Date.now()).getTime()) / (1000 * 60 * 60 * 24)),
         preferredContactTime: '10:00-12:00' // Default business hours

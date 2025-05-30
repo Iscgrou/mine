@@ -67,6 +67,11 @@ const navigationItems = [
     href: "/aegis",
     icon: "fas fa-shield-alt",
   },
+  {
+    name: "هوش مصنوعی Vertex",
+    href: "/ai-intelligence",
+    icon: "fas fa-brain",
+  },
 ];
 
 export default function Sidebar() {

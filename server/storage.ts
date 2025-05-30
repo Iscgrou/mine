@@ -453,6 +453,34 @@ export class DatabaseStorage implements IStorage {
       monthlyInteractions
     };
   }
+
+  async clearAllData(): Promise<void> {
+    try {
+      // Delete data in order to respect foreign key constraints
+      // First delete dependent records
+      await db.delete(invoiceItems);
+      await db.delete(payments);
+      await db.delete(invoices);
+      await db.delete(crmTasks);
+      await db.delete(crmCallPreparations);
+      await db.delete(crmInteractions);
+      await db.delete(crmRepresentativeProfiles);
+      await db.delete(fileImports);
+      await db.delete(backups);
+      
+      // Then delete main records
+      await db.delete(representatives);
+      await db.delete(users);
+      
+      // Reset settings to defaults
+      await db.delete(settings);
+      
+      console.log('All data cleared successfully');
+    } catch (error) {
+      console.error('Error clearing data:', error);
+      throw error;
+    }
+  }
 }
 
 export const storage = new DatabaseStorage();

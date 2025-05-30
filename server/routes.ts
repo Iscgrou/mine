@@ -15,6 +15,11 @@ import {
   registerOptimizedEndpoints,
   registerTokenOptimizationAPI 
 } from "./immediate-priority-fixes";
+import { 
+  registerPerformanceEndpoints,
+  initializePerformanceOptimizations,
+  performanceMiddleware 
+} from "./performance-optimization";
 
 import { aegisLogger, EventType, LogLevel } from "./aegis-logger";
 import { aegisMonitor } from "./aegis-monitor-fixed";
@@ -1826,10 +1831,16 @@ ${invoices.map((inv, index) =>
   // Register Security Hardening middleware and endpoints
   registerSecurityMiddleware(app);
   
+  // Register Performance Optimization endpoints
+  registerPerformanceEndpoints(app);
+  
   // Register Immediate Priority Fixes optimized endpoints
   registerStableRepresentativesAPI(app);
   registerOptimizedEndpoints(app);
   registerTokenOptimizationAPI(app);
+
+  // Initialize Performance Optimizations
+  initializePerformanceOptimizations().catch(console.error);
 
   const httpServer = createServer(app);
   return httpServer;

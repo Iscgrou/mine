@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { NotificationProvider } from "@/hooks/use-notifications";
+import { SidebarProvider } from "@/contexts/SidebarContext";
 import "@/utils/dynamic-layout";
 import Sidebar from "@/components/layout/sidebar";
 import CrmSidebar from "@/components/layout/crm-sidebar";
@@ -37,11 +38,11 @@ function Router() {
   // CRM Layout
   if (isCrmSection) {
     return (
-      <div className="min-h-screen bg-gray-50 rtl">
-        <CrmSidebar />
-        <div className="dynamic-container">
-          <Header />
-          <main className="responsive-content overflow-y-auto">
+      <div className="app-layout min-h-screen bg-gray-50 rtl">
+        <CrmSidebar className="sidebar-element" data-sidebar-element />
+        <div className="dynamic-main-content">
+          <Header className="dynamic-header" />
+          <main className="responsive-content">
             <Switch>
               <Route path="/crm" component={CrmDashboard} />
               <Route path="/crm/" component={CrmDashboard} />

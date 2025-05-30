@@ -4,38 +4,129 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Dynamic Layout System - CSS Custom Properties */
+/* Phase 1: Core Infrastructure - CSS Grid Layout System */
 :root {
   --sidebar-width: 250px;
-  --sidebar-collapsed-width: 60px;
-  --content-padding: clamp(1rem, 3vw, 2rem);
-  --dynamic-margin: 0px;
-  --available-width: 100vw;
-  --layout-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --content-padding: 2rem;
+  --available-width: calc(100vw - var(--sidebar-width));
+  --transition-duration: 0.3s;
+  --transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Sidebar state management */
+/* Sidebar State Variables */
 [data-sidebar="open"] {
-  --dynamic-margin: var(--sidebar-width);
-  --available-width: calc(100vw - var(--sidebar-width));
+  --sidebar-width: 250px;
+  --available-width: calc(100vw - 250px);
 }
 
 [data-sidebar="closed"] {
-  --dynamic-margin: var(--sidebar-collapsed-width);
-  --available-width: calc(100vw - var(--sidebar-collapsed-width));
+  --sidebar-width: 0px;
+  --available-width: 100vw;
 }
 
 [data-sidebar="hidden"] {
-  --dynamic-margin: 0px;
+  --sidebar-width: 0px;
   --available-width: 100vw;
+}
+
+[data-sidebar="collapsed"] {
+  --sidebar-width: 60px;
+  --available-width: calc(100vw - 60px);
+}
+
+/* Main Application Layout - CSS Grid */
+.app-layout {
+  display: grid;
+  grid-template-columns: var(--sidebar-width) 1fr;
+  grid-template-rows: 1fr;
+  min-height: 100vh;
+  transition: grid-template-columns var(--transition-duration) var(--transition-easing);
+  position: relative;
+  overflow-x: hidden;
+}
+
+[data-sidebar="closed"] .app-layout,
+[data-sidebar="hidden"] .app-layout {
+  grid-template-columns: 0fr 1fr;
+}
+
+[data-sidebar="collapsed"] .app-layout {
+  grid-template-columns: 60px 1fr;
+}
+
+/* Dynamic Content Area */
+.dynamic-main-content {
+  grid-column: 2;
+  min-width: 0; /* Prevents grid blowout */
+  display: flex;
+  flex-direction: column;
+  container-type: inline-size;
+  width: 100%;
+  position: relative;
+}
+
+/* Header within dynamic content */
+.dynamic-header {
+  width: 100%;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--background);
+  border-bottom: 1px solid var(--border);
+}
+
+/* Main content area with container queries */
+.responsive-content {
+  flex: 1;
+  width: 100%;
+  padding: var(--content-padding);
+  overflow-y: auto;
+  min-height: 0; /* Allow flex child to shrink */
+}
+
+/* Container Query Based Responsive Grid */
+@container (min-width: 400px) {
+  .content-grid-responsive {
+    grid-template-columns: 1fr;
+  }
+}
+
+@container (min-width: 600px) {
+  .content-grid-responsive {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@container (min-width: 900px) {
+  .content-grid-responsive {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@container (min-width: 1200px) {
+  .content-grid-responsive {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Sidebar Element Identification */
+.sidebar-element {
+  grid-column: 1;
+  position: relative;
+  overflow: hidden;
+  transition: width var(--transition-duration) var(--transition-easing);
 }
 
 /* Mobile-first approach */
 @media (max-width: 767px) {
   :root {
-    --dynamic-margin: 0px;
-    --available-width: 100vw;
     --content-padding: 1rem;
+  }
+  
+  [data-sidebar="open"] {
+    --sidebar-width: 0px;
+    --available-width: 100vw;
   }
 }
 

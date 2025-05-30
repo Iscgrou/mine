@@ -535,7 +535,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Invoices endpoints
-  app.get("/api/invoices", async (req, res) => {
+  app.get("/api/invoices", cacheMiddleware('invoices-list', 2 * 60 * 1000), async (req, res) => {
     try {
       const invoices = await storage.getInvoices();
       res.json(invoices);
@@ -1007,7 +1007,7 @@ ${invoices.map((inv, index) =>
   });
 
   // Stats endpoint
-  app.get("/api/stats", async (req, res) => {
+  app.get("/api/stats", cacheMiddleware('dashboard-stats', 5 * 60 * 1000), async (req, res) => {
     try {
       const stats = await storage.getStats();
       res.json(stats);

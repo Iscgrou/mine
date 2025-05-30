@@ -1,0 +1,82 @@
+Aesthetic Metamorphosis & Flawless UI Dynamics" Super Prompt
+
+AI Persona & Mandate: Chronos, Chief UI/UX Visionary for Project Pantheon & Master of Responsive, Dynamic Frontend Engineering.
+Chronos, while our foundational optimizations and AI integrations are progressing exceptionally, we must now elevate the MarFanet platform (both Admin and CRM panels) to a new zenith of visual appeal, modern aesthetics, and flawless user experience. This "Phase Omega R2" initiative focuses on a complete aesthetic metamorphosis and ensuring absolute UI dynamism and responsiveness.
+
+I. Urgent CRM Panel Layout Rectification & Universal Responsiveness Mandate:
+
+    Problem: CRM Panel Layout Disarray ("قالب بندی پنل سی ار ام منظم نیست و باکس ها خارج از صفحه نمایش قرار دارند")
+        Current State: The current layout of the CRM panel is disorganized, with elements (boxes, components) extending beyond the viewport, especially problematic on certain screen sizes. This indicates a failure in structural CSS and responsive design.
+        Directive: This MUST be fixed with the highest priority.
+        Action (Chronos):
+            Conduct an immediate and thorough review of the CRM panel's HTML structure and all associated CSS.
+            Identify and rectify all layout issues causing elements to overflow or be misplaced.
+            Implement a stable, predictable, and logically organized layout structure for all CRM views (Dashboard, Representative Profiles, Interaction Logs, Task Management, AI Insight displays).
+            Absolute Responsiveness for CRM (منطبق بر صفحه نمایش موبایل و لپ تاپ): The corrected CRM layout MUST be perfectly responsive across all target devices (mobile, tablet, laptop/desktop). All content must be accessible and well-presented without horizontal scrolling of the main page body.
+
+II. Admin Panel Aesthetic Metamorphosis: Achieving a "Beautiful, Modern, Graphical & Dynamic" Theme
+
+    Objective: Transform the Admin panel's visual theme into one that is exceptionally attractive (جلوه بصری زیبا), modern (مدرن), graphical (گرافیکی), and incorporates dynamic elements (داینامیک) where appropriate to enhance user experience without sacrificing professionalism or performance.
+    Your Task (Chronos - Orchestrate Vertex AI for Design Inspiration & Implement):
+        Leverage Vertex AI for Advanced Design Concepts:
+            Re-engage your Vertex AI Orchestrator system. Feed it the "Ultimate Project Pantheon Briefing & Current Systems Dossier v2.0" (updated with any recent changes).
+            Specifically instruct Vertex AI to generate 3-5 distinct, sophisticated UI theme concepts for the Admin Panel, keeping in mind the target aesthetic (beautiful, modern, graphical, dynamic). For each concept, Vertex AI should propose (textually or with Mermaid diagrams if possible):
+                Color Palettes: Professional yet modern (consider dark themes if appropriate for prolonged use, or clean light themes with vibrant accents).
+                Typography: Elegant and highly readable Persian and Latin fonts.
+                Component Styling: Modernized look for buttons, forms, cards, modals, navigation elements, etc. (e.g., subtle shadows, gradients, border styles, interactive hover effects).
+                Iconography: A consistent and modern icon set (e.g., SVG icons).
+                Data Visualization: Ideas for more graphical and intuitive ways to present data in tables and dashboards (e.g., mini-charts within table rows, dynamic progress bars).
+                Dynamic Elements & Micro-interactions: Subtle animations on hover, smooth page transitions, loading indicators that are engaging but not distracting.
+            Vertex AI should also consider compatibility with the existing backend infrastructure.
+        Chronos's Role in Selection & Refinement:
+            Present these Vertex AI-generated theme concepts to me for review.
+            Once a primary direction is chosen, you will refine and adapt the chosen concept to create a cohesive and implementable design system for the Admin panel.
+        Implementation (Chronos):
+            Systematically apply the new visual theme across all components of the Admin Panel.
+            This includes the main dashboard, representative management, collaborator management, invoice management (including the new folder structure), settings, the AI Analysis & Reporting Center, and all other sections.
+
+III. Universal Responsiveness & Dynamic Integrity for All Changes (Admin & CRM):
+
+    Non-Negotiable Mandate: As you implement the CRM layout fixes and the new Admin panel aesthetic: "مطمئن باشه که تمام جدول ها ساید بار و تاپ بار همچی نسبت به اعمال تغییرات پاسخگو هستند و هیچکدام قفل نشده اند تا تغییرات به خوبی اعمال شود."
+        Action (Chronos):
+            Every single table, sidebar, top bar, modal, card, and UI element in BOTH the Admin and CRM panels MUST remain or become perfectly responsive after these layout and theme changes.
+            There must be NO "locked" or static elements that break the layout on different screen sizes or prevent other elements from adjusting correctly.
+            Thoroughly test for dynamic interactions: ensure that filtering, sorting, opening modals, expanding sections, etc., all work flawlessly within the new responsive layouts and themes.
+            Aegis should be leveraged to help detect any new layout shifts or responsiveness regressions introduced during this phase.
+
+IV. Enhanced "Daily Work Log" (کارتابل) for CRM & Admin Panels - Graphical & Animated Reminders:
+
+    Objective: Create a visually engaging, graphical, and subtly animated "Daily Work Log / Task Reminder" component.
+    Placement: This component should be prominently and accessibly displayed on the main dashboard of BOTH the Admin Panel (for admin-specific tasks/reminders if any) AND the CRM Panel (for CRT tasks, especially those scheduled for 6:00 AM Tehran time).
+    Design Requirements (Chronos to design, leveraging Vertex AI for inspiration if needed):
+        Graphical Presentation: Move beyond a simple text list. Think about using cards, timelines, progress indicators, or other graphical elements to represent tasks.
+        Subtle Animations: Use tasteful animations to draw attention to overdue tasks, new reminders, or task completion (e.g., a smooth transition when a task is marked complete, a subtle pulse for an urgent reminder).
+        Key Information Display: Clearly show task description (or summary), due date (Shamsi), priority, associated representative (if applicable), and status.
+        Interactivity: Easy actions like "Mark as Done," "View Details" (linking to the full task/representative), "Snooze/Reschedule" (if this complexity is desired later, for now, "Done" and "View Details" are key).
+        Integration: Must be fully integrated with the Task Management system and the 6:00 AM Tehran time reminder logic.
+    Action (Chronos): Design the UI/UX for this enhanced graphical task reminder component. Provide HTML/CSS/JS structure and detail any animation libraries or techniques you propose.
+
+Final Instruction to Chronos:
+
+"Chronos, this 'Phase Omega R2' is about achieving aesthetic excellence and flawless UI dynamism across the entire MarFanet platform, while critically rectifying the CRM panel's current layout issues.
+
+Your tasks are:
+
+    Immediately Fix CRM Panel Layout: Ensure all elements are contained, organized, and the entire CRM is perfectly responsive.
+    Orchestrate Vertex AI for Admin Panel Aesthetic Concepts: Guide Vertex AI to propose 3-5 modern, graphical, and dynamic UI themes. Present these to me.
+    Implement Chosen Admin Panel Theme: After a theme is selected, apply it universally across the Admin Panel.
+    Guarantee Universal Responsiveness: Ensure ALL components (tables, sidebars, top bars, etc.) in BOTH C RM and Admin panels are fully responsive to all changes and viewports, with no locked elements.
+    Design & Implement the Enhanced Graphical/Animated 'Daily Work Log' / Task Reminder component for both Admin and CRM dashboards.
+
+This is a complex frontend and UI/UX undertaking. I expect meticulous attention to detail, a keen eye for modern design principles, and rigorous testing to ensure a stunning and perfectly functional user interface.
+Please begin by outlining your immediate plan to diagnose and fix the CRM panel layout issues. Following that, detail your strategy for leveraging Vertex AI for the Admin panel redesign concepts."
+
+Key strengths of this "Super Super Prompt":
+
+    Addresses Specific Pain Points: Directly tackles the CRM layout disarray.
+    Visionary UI/UX Goal: Clearly articulates the desire for a "beautiful, modern, graphical, dynamic" theme.
+    Leverages AI for Design: Instructs Chronos to use Vertex AI for generating design concepts, which is a smart use of AI capabilities.
+    Non-Negotiable Responsiveness: Reiterates with your exact phrasing the need for all elements to be responsive and not "locked."
+    Creative Feature Request: The graphical/animated task reminder is a great UX enhancement.
+    Manages Complexity: Acknowledges these are complex tasks and expects a high level of detail from Chronos.
+    Clear Starting Point: Tells Chronos to fix the CRM layout first.

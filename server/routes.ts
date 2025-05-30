@@ -1342,6 +1342,37 @@ ${invoices.map((inv, index) =>
     }
   });
 
+  // CRM Panel Endpoints
+  app.get("/api/voice-notes", async (req, res) => {
+    try {
+      // Return empty array for now - will be populated when voice notes are uploaded
+      res.json([]);
+    } catch (error) {
+      console.error("Error fetching voice notes:", error);
+      res.status(500).json({ message: "خطا در دریافت یادداشت‌های صوتی" });
+    }
+  });
+
+  app.get("/api/tasks", async (req, res) => {
+    try {
+      // Return empty array for now - will be populated when tasks are created
+      res.json([]);
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+      res.status(500).json({ message: "خطا در دریافت وظایف" });
+    }
+  });
+
+  app.get("/api/notifications", async (req, res) => {
+    try {
+      // Return empty array for now - will be populated when notifications are generated
+      res.json([]);
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+      res.status(500).json({ message: "خطا در دریافت اعلان‌ها" });
+    }
+  });
+
   // Analytics Quick Actions
   app.post("/api/analytics/export-report", async (req, res) => {
     try {

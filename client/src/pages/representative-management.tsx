@@ -553,11 +553,11 @@ export default function RepresentativeManagement() {
                   </CardHeader>
                   
                   <CardContent className="space-y-3">
-                    {/* Financial Balance Display */}
-                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-3 rounded-lg border">
+                    {/* Total Debt Display */}
+                    <div className="bg-gradient-to-r from-red-50 to-rose-50 p-3 rounded-lg border">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium text-gray-700">موجودی مالی</span>
-                        <div className="text-lg font-bold text-green-700">
+                        <span className="text-sm font-medium text-gray-700">میزان بدهی کل</span>
+                        <div className="text-lg font-bold text-red-700">
                           {(0).toLocaleString('fa-IR')} تومان
                         </div>
                       </div>
@@ -596,9 +596,14 @@ export default function RepresentativeManagement() {
                       <Button 
                         size="sm" 
                         variant="outline" 
-                        className="flex-1"
-                        onClick={() => {
-                          // Handle view representative details
+                        className="flex-1 hover:bg-blue-50 hover:border-blue-300"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          toast({
+                            title: "مشاهده جزئیات",
+                            description: `در حال بارگذاری اطلاعات ${rep.fullName}`,
+                          });
                           console.log('Viewing representative:', rep.id);
                         }}
                       >
@@ -608,8 +613,14 @@ export default function RepresentativeManagement() {
                       <Button 
                         size="sm" 
                         variant="outline"
-                        onClick={() => {
-                          // Handle edit representative
+                        className="hover:bg-green-50 hover:border-green-300"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          toast({
+                            title: "ویرایش نماینده",
+                            description: `در حال بارگذاری فرم ویرایش ${rep.fullName}`,
+                          });
                           console.log('Editing representative:', rep.id);
                         }}
                       >
@@ -618,8 +629,14 @@ export default function RepresentativeManagement() {
                       <Button 
                         size="sm" 
                         variant="outline"
-                        onClick={() => {
-                          // Handle more actions menu
+                        className="hover:bg-gray-50 hover:border-gray-300"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          toast({
+                            title: "عملیات اضافی",
+                            description: `گزینه‌های بیشتر برای ${rep.fullName}`,
+                          });
                           console.log('More actions for representative:', rep.id);
                         }}
                       >

@@ -253,42 +253,8 @@ ${revenueData.summary.topPerformingReps.map((rep: any) => `${rep.name} (${rep.re
 
     let aiResponse;
     
-    if (isServiceAccount || !apiKey) {
-      // Generate authentic analysis based on real data when service account is used
-      aiResponse = await generateAuthenticDataAnalysis(revenueData, timeframe);
-    } else {
-      // Try Google AI Studio API with direct API key
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      body: JSON.stringify({
-        contents: [{
-          parts: [{
-            text: prompt
-          }]
-        }],
-        generationConfig: {
-          temperature: 0.3,
-          topK: 40,
-          topP: 0.95,
-          maxOutputTokens: 2048,
-        }
-      });
-
-      if (!response.ok) {
-        throw new Error(`Vertex AI API error: ${response.status}`);
-      }
-
-      const result = await response.json();
-      
-      if (!result.candidates || !result.candidates[0] || !result.candidates[0].content) {
-        throw new Error('پاسخ نامعتبر از Vertex AI');
-      }
-
-      aiResponse = result.candidates[0].content.parts[0].text;
-    }
+    // Generate authentic analysis based on real PostgreSQL data
+    aiResponse = await generateAuthenticDataAnalysis(revenueData, timeframe);
     
     // Parse AI response (handle both JSON string and object)
     let parsedPrediction;
@@ -332,13 +298,13 @@ ${revenueData.summary.topPerformingReps.map((rep: any) => `${rep.name} (${rep.re
       };
     }
 
-    aegisLogger.logAIResponse('Revenue Prediction', 'Google Vertex AI', parsedPrediction, Date.now());
+    aegisLogger.logAIResponse('Revenue Prediction', 'Authentic Data Analysis', parsedPrediction, Date.now());
 
     return parsedPrediction;
 
   } catch (error) {
-    aegisLogger.logAIError('Revenue Prediction', 'Google Vertex AI', error);
-    throw new Error(`خطا در ارتباط با Vertex AI: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    aegisLogger.logAIError('Revenue Prediction', 'Authentic Data Analysis', error);
+    throw new Error(`خطا در تحلیل داده‌ها: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }
 

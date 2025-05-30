@@ -43,8 +43,8 @@ class AegisMonitor {
   private readonly MAX_HISTORY = 100; // Reduce history size to prevent memory leaks
 
   constructor() {
-    // Monitor system health every 30 seconds
-    this.monitoringInterval = setInterval(() => this.collectHealthMetrics(), 30000);
+    // Monitor system health every 2 minutes to reduce memory pressure
+    this.monitoringInterval = setInterval(() => this.collectHealthMetrics(), 120000);
     
     // Initial health check
     this.collectHealthMetrics();
@@ -421,6 +421,48 @@ class AegisMonitor {
       clearInterval(this.monitoringInterval);
     }
     aegisLogger.info('AegisMonitor', 'Health monitoring system stopped');
+  }
+}
+
+  async performEmergencyCleanup(): Promise<void> {
+    try {
+      // Clear health history
+      this.healthHistory = this.healthHistory.slice(-10); // Keep only last 10 entries
+      
+      // Force logger cleanup
+      aegisLogger.emergencyCleanup();
+      
+      // Clear Node.js require cache for unused modules
+      Object.keys(require.cache).forEach(key => {
+        if (key.includes('node_modules') && !key.includes('express') && !key.includes('drizzle')) {
+          delete require.cache[key];
+        }
+      });
+
+      // Force garbage collection multiple times
+      if (global.gc) {
+        global.gc();
+        await new Promise(resolve => setTimeout(resolve, 100));
+        global.gc();
+      }
+
+      console.log('[AEGIS EMERGENCY] Emergency cleanup completed');
+    } catch (error) {
+      console.error('[AEGIS EMERGENCY] Failed to perform emergency cleanup:', error);
+    }
+  }
+
+  cleanup(): void {
+    if (this.monitoringInterval) {
+      clearInterval(this.monitoringInterval);
+    }
+    // Clear health history to free memory
+    this.healthHistory = [];
+    
+    // Force garbage collection if available
+    if (global.gc) {
+      global.gc();
+    }
   }
 }
 

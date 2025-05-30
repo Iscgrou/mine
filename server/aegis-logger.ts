@@ -293,6 +293,22 @@ class AegisLogger {
       clearInterval(this.flushInterval);
     }
     this.flushLogs(); // Final flush
+    // Clear buffer to free memory immediately
+    this.logBuffer = [];
+    
+    // Force garbage collection if available
+    if (global.gc) {
+      global.gc();
+    }
+  }
+
+  // Emergency memory cleanup function
+  emergencyCleanup(): void {
+    console.log('[AEGIS EMERGENCY] Performing emergency memory cleanup');
+    this.logBuffer = [];
+    if (global.gc) {
+      global.gc();
+    }
   }
 }
 

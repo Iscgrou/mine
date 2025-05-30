@@ -489,9 +489,9 @@ export default function RepresentativeManagement() {
                   </CardHeader>
                   
                   <CardContent className="space-y-3">
-                    {/* Financial Balance Component */}
+                    {/* Financial Balance Component - Using actual currentBalance from API */}
                     <FinancialBalance 
-                      balance={rep.salesMetrics.monthlyRevenue - (rep.salesMetrics.totalSales * 0.7)}
+                      balance={rep.currentBalance || 0}
                     />
                     
                     {/* Store Info */}
@@ -518,7 +518,7 @@ export default function RepresentativeManagement() {
                         </span>
                       </div>
                       <Badge variant="outline">
-                        {rep.salesMetrics.activeSubscriptions} فعال
+                        {rep.status || 'فعال'}
                       </Badge>
                     </div>
                     

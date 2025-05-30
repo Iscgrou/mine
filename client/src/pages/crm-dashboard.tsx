@@ -424,72 +424,68 @@ export default function CrmDashboard() {
           </Card>
         </motion.div>
 
-        {/* Recent Customers Table */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-        >
-          <Card className="overflow-hidden">
-            <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50">
-              <CardTitle className="flex items-center">
-                <Users className="w-5 h-5 ml-2 text-blue-600" />
-                مشتریان اخیر
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-0">
-              <div className="responsive-table-container">
-                <table className="responsive-table w-full">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">نام</th>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">تلفن</th>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">وضعیت</th>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">ارزش کل</th>
-                      <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">آخرین تماس</th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {recentCustomers.map((customer, idx) => (
-                      <motion.tr
-                        key={customer.id}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.7 + idx * 0.1 }}
-                        whileHover={{ backgroundColor: "#f8fafc" }}
-                        className="hover:bg-gray-50 transition-colors duration-200 cursor-pointer"
-                      >
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <motion.div 
-                              className="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center"
-                              whileHover={{ scale: 1.1 }}
-                            >
-                              <span className="text-white text-sm font-medium">
-                                {customer.fullName.charAt(0)}
-                              </span>
-                            </motion.div>
-                            <div className="mr-3">
-                              <div className="text-sm font-medium text-gray-900">{customer.fullName}</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 persian-nums">{customer.phoneNumber}</td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <Badge variant="secondary" className={getCustomerStatusColor(customer.status)}>
-                            {customer.status === 'active' ? 'فعال' : customer.status === 'inactive' ? 'غیرفعال' : 'احتمالی'}
-                          </Badge>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 persian-nums">{customer.totalValue}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatPersianDate(customer.lastContact)}</td>
-                      </motion.tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
+        {/* Dynamic Recent Customers Table */}
+        <div className="dynamic-table-container">
+          <div className="p-6">
+            <div className="flex items-center mb-4">
+              <Users className="w-5 h-5 ml-2 text-blue-600" />
+              <h3 className="dynamic-chart-title">مشتریان اخیر</h3>
+            </div>
+            
+            <table className="dynamic-table">
+              <thead>
+                <tr>
+                  <th>نام</th>
+                  <th>تلفن</th>
+                  <th>وضعیت</th>
+                  <th>ارزش کل</th>
+                  <th>آخرین تماس</th>
+                  <th>عملیات</th>
+                </tr>
+              </thead>
+              <tbody>
+                {recentCustomers.map((customer) => (
+                  <tr key={customer.id}>
+                    <td>
+                      <div className="flex items-center">
+                        <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center ml-2">
+                          <span className="text-white text-sm font-medium">
+                            {customer.fullName.charAt(0)}
+                          </span>
+                        </div>
+                        <div className="font-medium">{customer.fullName}</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div className="font-mono text-sm">{customer.phoneNumber}</div>
+                    </td>
+                    <td>
+                      <Badge variant="secondary" className={getCustomerStatusColor(customer.status)}>
+                        {customer.status === 'active' ? 'فعال' : customer.status === 'inactive' ? 'غیرفعال' : 'احتمالی'}
+                      </Badge>
+                    </td>
+                    <td>
+                      <div className="font-medium">{customer.totalValue} تومان</div>
+                    </td>
+                    <td>
+                      <div className="text-sm">{formatPersianDate(customer.lastContact)}</div>
+                    </td>
+                    <td>
+                      <div className="flex items-center gap-2">
+                        <Button variant="ghost" size="sm" title="تماس">
+                          <Phone className="w-4 h-4" />
+                        </Button>
+                        <Button variant="ghost" size="sm" title="پیام">
+                          <MessageSquare className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
 
         {/* Responsive Quick Actions & Notification Center */}
         <div className="card-grid gap-6">

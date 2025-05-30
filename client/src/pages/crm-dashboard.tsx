@@ -338,8 +338,8 @@ export default function CrmDashboard() {
         </div>
       </motion.div>
 
-      {/* Animated Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      {/* Responsive Stats Cards with Container Queries */}
+      <div className="stats-grid mb-8">
         <AnimatedStatsCard
           title="کل مشتریان"
           value={crmStats.totalCustomers}
@@ -415,8 +415,8 @@ export default function CrmDashboard() {
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
-              <div className="overflow-x-auto">
-                <table className="w-full">
+              <div className="responsive-table-container">
+                <table className="responsive-table w-full">
                   <thead className="bg-gray-50">
                     <tr>
                       <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">نام</th>
@@ -468,8 +468,8 @@ export default function CrmDashboard() {
           </Card>
         </motion.div>
 
-        {/* Relocated Sections: Quick Actions & Notification Center Below Recent Customers */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Responsive Quick Actions & Notification Center */}
+        <div className="card-grid gap-6">
           {/* Quick Actions - Now Below Recent Customers */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}

@@ -164,8 +164,8 @@ export default function Dashboard() {
 
   return (
     <div className="p-6">
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      {/* Responsive Stats Cards */}
+      <div className="stats-grid mb-8">
         <Card className="stats-card">
           <CardContent className="pt-6">
             <div className="flex items-center">
@@ -269,8 +269,8 @@ export default function Dashboard() {
         </Card>
       </div>
 
-      {/* Recent Activity and Quick Actions */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      {/* Responsive Quick Actions and Activity */}
+      <div className="card-grid gap-6 mb-8">
         {/* Quick Actions */}
         <Card>
           <CardHeader>

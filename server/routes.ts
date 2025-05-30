@@ -15,6 +15,7 @@ import { registerSTTDiagnostic } from "./stt-diagnostic";
 import { projectPhoenixOrchestrator } from './project-phoenix-orchestrator';
 import { phase2Orchestrator } from './phase2-vertex-ai-orchestrator';
 import { vertexAICustomerIntelligence, type CustomerAnalysisData, type CustomerPrediction } from "./vertex-ai-customer-intelligence";
+import { vertexAIPerformanceMonitor, type PerformanceMetrics, type SystemAlert, type PerformancePrediction } from "./vertex-ai-performance-monitor";
 import { 
   insertRepresentativeSchema, 
   insertInvoiceSchema, 
@@ -1852,6 +1853,64 @@ ${metrics.commonTopics.map((topic: any) => `- ${topic.topic}: ${topic.frequency}
       console.error("Intervention strategy error:", error);
       res.status(500).json({ 
         message: "خطا در تولید استراتژی مداخله",
+        error: error instanceof Error ? error.message : "خطای نامشخص"
+      });
+    }
+  });
+
+  // Advanced Performance Monitoring endpoints
+  app.get("/api/performance/metrics", async (req, res) => {
+    try {
+      const count = parseInt(req.query.count as string) || 20;
+      const metrics = vertexAIPerformanceMonitor.getRecentMetrics(count);
+      
+      res.json({
+        success: true,
+        metrics,
+        count: metrics.length,
+        generatedAt: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Performance metrics error:", error);
+      res.status(500).json({ 
+        message: "خطا در دریافت متریک‌های عملکرد",
+        error: error instanceof Error ? error.message : "خطای نامشخص"
+      });
+    }
+  });
+
+  app.get("/api/performance/alerts", async (req, res) => {
+    try {
+      const alerts = vertexAIPerformanceMonitor.getActiveAlerts();
+      
+      res.json({
+        success: true,
+        alerts,
+        totalAlerts: alerts.length,
+        generatedAt: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Performance alerts error:", error);
+      res.status(500).json({ 
+        message: "خطا در دریافت هشدارهای سیستم",
+        error: error instanceof Error ? error.message : "خطای نامشخص"
+      });
+    }
+  });
+
+  app.get("/api/performance/analysis", async (req, res) => {
+    try {
+      const analysis = await vertexAIPerformanceMonitor.getCurrentAnalysis();
+      
+      res.json({
+        success: true,
+        analysis,
+        generatedAt: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Performance analysis error:", error);
+      res.status(500).json({ 
+        message: "خطا در تحلیل عملکرد سیستم",
         error: error instanceof Error ? error.message : "خطای نامشخص"
       });
     }

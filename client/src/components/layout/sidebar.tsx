@@ -72,6 +72,11 @@ const navigationItems = [
     href: "/ai-intelligence",
     icon: "fas fa-brain",
   },
+  {
+    name: "نظارت عملکرد پیشرفته",
+    href: "/performance-monitoring",
+    icon: "fas fa-tachometer-alt",
+  },
 ];
 
 export default function Sidebar() {

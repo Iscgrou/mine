@@ -81,7 +81,7 @@ class VertexAICRTAnalyzer {
     });
     this.projectId = process.env.GOOGLE_CLOUD_PROJECT_ID || 'marfanet-ai';
     this.location = 'us-central1';
-    this.model = 'gemini-1.5-pro';
+    this.model = 'gemini-2.5-pro-preview-05-06';
   }
 
   /**

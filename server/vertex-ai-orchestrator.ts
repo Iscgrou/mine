@@ -222,7 +222,7 @@ Provide concrete, implementable prompt templates optimized for Vertex AI.
         throw new Error('Unable to obtain access token for Vertex AI');
       }
 
-      const endpoint = `https://us-central1-aiplatform.googleapis.com/v1/projects/${this.projectId}/locations/us-central1/publishers/google/models/gemini-pro:generateContent`;
+      const endpoint = `https://us-central1-aiplatform.googleapis.com/v1/projects/${this.projectId}/locations/us-central1/publishers/google/models/gemini-2.5-pro-preview-05-06:generateContent`;
       
       const response = await fetch(endpoint, {
         method: 'POST',

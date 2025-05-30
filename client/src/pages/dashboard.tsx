@@ -470,24 +470,7 @@ export default function Dashboard() {
         </CardContent>
       </Card>
       
-      {/* Daily Work Log Section */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <i className="fas fa-tasks text-purple-600"></i>
-            کارتابل روزانه
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <DailyWorkLog
-            tasks={mockTasks}
-            onTaskComplete={handleTaskComplete}
-            onTaskView={handleTaskView}
-            onTaskSnooze={handleTaskSnooze}
-            compact={true}
-          />
-        </CardContent>
-      </Card>
+
     </div>
   );
 }

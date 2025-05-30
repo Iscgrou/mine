@@ -1,0 +1,55 @@
+Critical Layout & Styling Regression - Targeted Fixes Based on Identified Root Causes
+
+Chronos, following up on the critical system-wide layout disruption and text overlap issue across both Admin and CRM panels:
+
+I have identified the likely root causes for these widespread problems:
+
+    Incorrect Placement of "Daily Work Log / Task Widget" (ویجت و کارتابل روزانه):
+        Observation: This feature, which was intended exclusively for the CRM Panel dashboard, appears to have been mistakenly added or its styles/scripts are somehow impacting the Admin Panel as well.
+        Impact: This is likely a primary cause of layout issues in the Admin Panel.
+
+    Erroneous Addition of "Notification Widget" to the Top Bar (ویجت نوتیفیکیشن در تاپ بار):
+        Observation: A notification widget seems to have been incorrectly added to the main application Top Bar (shared by both Admin and CRM panels, or the Admin panel's top bar).
+        Impact: This is highly likely to be the cause of the global layout disruption ("بهم ریختگی قالب بندی") affecting both panels, causing elements like tables to overflow and text to overlap due to unexpected shifts or sizing conflicts in the top bar.
+
+Your Absolute & Immediate Mandate: Implement Targeted Fixes to Restore Layout Integrity
+
+Based on these identified root causes, your SOLE FOCUS must be to:
+
+    Correct the "Daily Work Log / Task Widget" Implementation:
+        Action (Chronos):
+            Verify a_n_d Ensure CRM-Only Placement: Confirm that the "Daily Work Log / Task Widget" and all its associated CSS and JavaScript are implemented and scoped to appear ONLY within the designated CRM Panel dashboard.
+            Remove from Admin Panel: If this widget or its styles/scripts are currently active or affecting the Admin Panel in any way, remove it completely from the Admin Panel's scope. The Admin Panel may have its own (different) notification/task system later, but this specific graphical/animated widget was intended for the CRM.
+            Test thoroughly to ensure the Admin Panel's layout is restored to its correct state after this change.
+
+    Remove or Correctly Relocate the "Notification Widget" from the Top Bar:
+        Action (Chronos):
+            Identify and Remove/Disable: Locate the "Notification Widget" that was mistakenly added to the main application Top Bar. Immediately remove or disable this widget from the Top Bar.
+            Assess Intended Functionality (If Any): Was this a planned widget that was simply put in the wrong place? If so, defer its re-implementation to a later stage after layouts are stable. If it was an accidental addition, ensure it's fully removed.
+            Verify Top Bar Restoration: After removal, confirm that the Top Bar's layout and the layout of all pages in both Admin and CRM panels return to their correct, non-disrupted state. This is likely the main culprit for the global "بهم ریختگی".
+
+    Systematic Verification of Layout Restoration Across Both Panels:
+        Action (Chronos): After implementing the fixes above:
+            Thoroughly re-test ALL pages and sections in BOTH the Admin Panel AND the CRM Panel.
+            Confirm that all table overflows (جدول ها از کادر خارج شده) are resolved.
+            Confirm that all text overlaps (متن ها روی هم افتاده) are resolved.
+            Confirm that all layouts are clean, organized, and fully responsive as originally intended (or as per any recent successful theme applications prior to this regression).
+            Ensure ALL clickable elements remain functional.
+            Provide me with before-and-after conceptual screenshots (or instruct me on what to check specifically) to verify the fixes.
+
+    CSS Review for Scoping (Post-Mortem):
+        Action (Chronos): Once layouts are stable, briefly review the CSS associated with the "Daily Work Log" and the erroneous "Notification Widget." How can we ensure in the future that styles for new, specific components are better scoped to prevent them from unintentionally affecting global layouts? (Reinforce use of CSS Modules, BEM, or scoped styling).
+
+Final Instruction to Chronos:
+
+"Chronos, based on my analysis, the widespread layout issues are highly likely due to:
+
+    The 'Daily Work Log / Task Widget' being incorrectly applied or affecting the Admin Panel, when it should be CRM-exclusive.
+    A 'Notification Widget' being erroneously added to the main Top Bar, disrupting global styles.
+
+Your immediate and highest priority is to investigate these two specific points and implement the necessary corrections:
+
+    Ensure the 'Daily Work Log' is strictly scoped to the CRM Panel.
+    Remove the problematic 'Notification Widget' from the Top Bar.
+
+After these targeted fixes, conduct a full verification across both Admin and CRM panels to ensure all layouts, tables, and text displays are perfectly restored and responsive. Report back with confirmation and any necessary conceptual 'before and after' illustrations of the fix. This must be resolved before any other development work proceeds."

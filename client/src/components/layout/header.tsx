@@ -94,15 +94,6 @@ export default function Header() {
         </div>
         
         <div className="flex items-center space-x-reverse space-x-4">
-          {/* Notification Center */}
-          <NotificationCenter
-            notifications={notifications}
-            onMarkAsRead={markAsRead}
-            onMarkAllAsRead={markAllAsRead}
-            onDismiss={dismiss}
-            onActionClick={handleNotificationAction}
-          />
-          
           {/* System Status */}
           <div className="flex items-center text-sm text-gray-600">
             <div className="w-2 h-2 bg-green-500 rounded-full ml-2"></div>

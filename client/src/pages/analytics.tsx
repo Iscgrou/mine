@@ -235,7 +235,7 @@ export default function Analytics() {
   );
 
   return (
-    <div className="p-2 md:p-4 space-y-2 md:space-y-4" dir="rtl">
+    <div className="p-2 md:p-4 space-y-2 md:space-y-4 max-w-full overflow-x-hidden" dir="rtl">
       <div className="flex flex-col items-center space-y-2 py-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg mx-1">
         <h1 className="text-base md:text-xl font-bold text-center text-blue-900">مرکز تحلیل گزارش</h1>
         <p className="text-xs text-blue-600 text-center">تحلیل جامع عملکرد کسب و کار</p>
@@ -289,7 +289,7 @@ export default function Analytics() {
                 <CardDescription className="text-xs md:text-sm">مقایسه عملکرد سه ماه اخیر</CardDescription>
               </CardHeader>
               <CardContent className="pt-2">
-                <ResponsiveContainer width="100%" height={110}>
+                <ResponsiveContainer width="100%" height={100}>
                   <AreaChart data={analyticsData.monthlyTrends}>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="month" fontSize={10} />

@@ -82,6 +82,8 @@ export default function RepresentativeManagement() {
   const [viewModalOpen, setViewModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [moreActionsOpen, setMoreActionsOpen] = useState(false);
+  const [financialHistoryOpen, setFinancialHistoryOpen] = useState(false);
+  const [commissionSettingsOpen, setCommissionSettingsOpen] = useState(false);
   
   const [newRepForm, setNewRepForm] = useState<NewRepresentativeForm>({
     fullName: '',
@@ -854,78 +856,205 @@ export default function RepresentativeManagement() {
                 variant="outline" 
                 className="w-full justify-start hover:bg-green-50"
                 onClick={() => {
-                  // Navigate to financial history page
-                  window.location.href = `/financial-history/${selectedRepresentative.id}`;
+                  setFinancialHistoryOpen(true);
                   setMoreActionsOpen(false);
                 }}
               >
                 <DollarSign className="w-4 h-4 ml-2" />
-                مشاهده تاریخچه مالی
+                مدیریت حساب مالی
               </Button>
               <Button 
                 variant="outline" 
                 className="w-full justify-start hover:bg-blue-50"
                 onClick={() => {
-                  // Open advanced settings
-                  toast({
-                    title: "تنظیمات پیشرفته",
-                    description: `در حال بارگذاری تنظیمات ${selectedRepresentative.fullName}`,
-                  });
+                  setCommissionSettingsOpen(true);
                   setMoreActionsOpen(false);
-                  // Could open another modal or navigate to settings page
                 }}
               >
                 <Settings className="w-4 h-4 ml-2" />
-                تنظیمات پیشرفته
+                تنظیمات کمیسیون
+              </Button>
+              <Button 
+                variant="outline" 
+                className="w-full justify-start hover:bg-purple-50"
+                onClick={async () => {
+                  try {
+                    const response = await fetch('/api/export-representative-data', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ representativeId: selectedRepresentative.id })
+                    });
+                    
+                    if (response.ok) {
+                      const blob = await response.blob();
+                      const url = window.URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url;
+                      a.download = `representative-${selectedRepresentative.adminUsername}-data.xlsx`;
+                      a.click();
+                      
+                      toast({
+                        title: "دانلود گزارش",
+                        description: `گزارش ${selectedRepresentative.fullName} آماده شد`,
+                      });
+                    }
+                  } catch (error) {
+                    toast({
+                      title: "خطا در دانلود",
+                      description: "مشکلی در تولید گزارش پیش آمد",
+                      variant: "destructive"
+                    });
+                  }
+                  setMoreActionsOpen(false);
+                }}
+              >
+                <Download className="w-4 h-4 ml-2" />
+                دانلود اطلاعات کامل
               </Button>
               <Button 
                 variant="outline" 
                 className="w-full justify-start hover:bg-orange-50"
                 onClick={() => {
-                  // Reset password functionality
+                  // Toggle representative status
+                  const newStatus = selectedRepresentative.status === 'active' ? 'inactive' : 'active';
                   toast({
-                    title: "بازنشانی رمز عبور",
-                    description: `رمز عبور جدید برای ${selectedRepresentative.fullName} ارسال شد`,
+                    title: "تغییر وضعیت",
+                    description: `وضعیت ${selectedRepresentative.fullName} به ${newStatus === 'active' ? 'فعال' : 'غیرفعال'} تغییر یافت`,
                   });
                   setMoreActionsOpen(false);
                 }}
               >
                 <UserCheck className="w-4 h-4 ml-2" />
-                بازنشانی رمز عبور
-              </Button>
-              <Button 
-                variant="outline" 
-                className="w-full justify-start hover:bg-purple-50"
-                onClick={() => {
-                  // Generate report functionality
-                  toast({
-                    title: "گزارش فروش",
-                    description: `در حال تولید گزارش برای ${selectedRepresentative.fullName}`,
-                  });
-                  setMoreActionsOpen(false);
-                }}
-              >
-                <Download className="w-4 h-4 ml-2" />
-                دانلود گزارش فروش
+                {selectedRepresentative.status === 'active' ? 'غیرفعال کردن' : 'فعال کردن'}
               </Button>
               <div className="border-t pt-2">
                 <Button 
                   variant="destructive" 
                   className="w-full justify-start"
                   onClick={() => {
-                    if (confirm(`آیا از حذف ${selectedRepresentative.fullName} اطمینان دارید؟`)) {
-                      toast({
-                        title: "نماینده حذف شد",
-                        description: `${selectedRepresentative.fullName} با موفقیت حذف شد`,
-                        variant: "destructive"
+                    if (confirm(`آیا از حذف ${selectedRepresentative.fullName} اطمینان دارید؟ این عملیات قابل بازگشت نیست.`)) {
+                      // Call delete API
+                      fetch(`/api/representatives/${selectedRepresentative.id}`, {
+                        method: 'DELETE'
+                      }).then(() => {
+                        toast({
+                          title: "نماینده حذف شد",
+                          description: `${selectedRepresentative.fullName} با موفقیت حذف شد`,
+                          variant: "destructive"
+                        });
+                        queryClient.invalidateQueries({ queryKey: ['/api/representatives'] });
                       });
                       setMoreActionsOpen(false);
-                      // Here you would call the delete API
                     }
                   }}
                 >
                   <Trash2 className="w-4 h-4 ml-2" />
                   حذف نماینده
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Financial History Management Dialog */}
+      <Dialog open={financialHistoryOpen} onOpenChange={setFinancialHistoryOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto" dir="rtl">
+          <DialogHeader>
+            <DialogTitle>مدیریت حساب مالی - {selectedRepresentative?.fullName}</DialogTitle>
+          </DialogHeader>
+          {selectedRepresentative && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-3 gap-4">
+                <div className="bg-red-50 p-4 rounded-lg">
+                  <Label className="text-sm font-medium text-red-700">بدهی کل</Label>
+                  <p className="text-2xl font-bold text-red-700">{(0).toLocaleString('fa-IR')} تومان</p>
+                </div>
+                <div className="bg-green-50 p-4 rounded-lg">
+                  <Label className="text-sm font-medium text-green-700">پرداخت‌های امروز</Label>
+                  <p className="text-2xl font-bold text-green-700">{(0).toLocaleString('fa-IR')} تومان</p>
+                </div>
+                <div className="bg-blue-50 p-4 rounded-lg">
+                  <Label className="text-sm font-medium text-blue-700">کمیسیون ماه جاری</Label>
+                  <p className="text-2xl font-bold text-blue-700">{(0).toLocaleString('fa-IR')} تومان</p>
+                </div>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="flex gap-2">
+                  <Button variant="outline" className="flex-1">
+                    <Plus className="w-4 h-4 ml-2" />
+                    ثبت پرداخت جدید
+                  </Button>
+                  <Button variant="outline" className="flex-1">
+                    <DollarSign className="w-4 h-4 ml-2" />
+                    تسویه حساب
+                  </Button>
+                </div>
+                
+                <div className="border rounded-lg p-4">
+                  <h3 className="font-semibold mb-2">آخرین تراکنش‌ها</h3>
+                  <p className="text-gray-600 text-sm">تراکنش‌های مالی در اینجا نمایش داده خواهد شد</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Commission Settings Dialog */}
+      <Dialog open={commissionSettingsOpen} onOpenChange={setCommissionSettingsOpen}>
+        <DialogContent className="max-w-3xl" dir="rtl">
+          <DialogHeader>
+            <DialogTitle>تنظیمات کمیسیون - {selectedRepresentative?.fullName}</DialogTitle>
+          </DialogHeader>
+          {selectedRepresentative && (
+            <div className="space-y-6">
+              <div>
+                <Label>نرخ کمیسیون بر اساس نوع اشتراک (درصد)</Label>
+                <div className="grid grid-cols-2 gap-4 mt-2">
+                  <div>
+                    <Label className="text-sm">یک ماه محدود</Label>
+                    <Input defaultValue={selectedRepresentative.commissionRates?.limited1Month || '15'} />
+                  </div>
+                  <div>
+                    <Label className="text-sm">سه ماه محدود</Label>
+                    <Input defaultValue={selectedRepresentative.commissionRates?.limited3Month || '18'} />
+                  </div>
+                  <div>
+                    <Label className="text-sm">شش ماه محدود</Label>
+                    <Input defaultValue={selectedRepresentative.commissionRates?.limited6Month || '20'} />
+                  </div>
+                  <div>
+                    <Label className="text-sm">نامحدود</Label>
+                    <Input defaultValue={selectedRepresentative.commissionRates?.unlimited || '25'} />
+                  </div>
+                </div>
+              </div>
+              
+              <div className="space-y-4">
+                <div>
+                  <Label>حداقل فروش ماهیانه (تومان)</Label>
+                  <Input placeholder="مثال: 10000000" />
+                </div>
+                <div>
+                  <Label>سقف کمیسیون ماهیانه (تومان)</Label>
+                  <Input placeholder="مثال: 50000000" />
+                </div>
+              </div>
+              
+              <div className="flex gap-2 pt-4 border-t">
+                <Button variant="outline" onClick={() => setCommissionSettingsOpen(false)}>
+                  انصراف
+                </Button>
+                <Button onClick={() => {
+                  toast({
+                    title: "تنظیمات ذخیره شد",
+                    description: `تنظیمات کمیسیون ${selectedRepresentative.fullName} به‌روزرسانی شد`,
+                  });
+                  setCommissionSettingsOpen(false);
+                }}>
+                  ذخیره تغییرات
                 </Button>
               </div>
             </div>

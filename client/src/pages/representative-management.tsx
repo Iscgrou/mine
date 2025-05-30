@@ -708,30 +708,129 @@ export default function RepresentativeManagement() {
 
       {/* Edit Representative Dialog */}
       <Dialog open={editModalOpen} onOpenChange={setEditModalOpen}>
-        <DialogContent className="max-w-3xl" dir="rtl">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto" dir="rtl">
           <DialogHeader>
-            <DialogTitle>ویرایش نماینده</DialogTitle>
+            <DialogTitle>ویرایش کامل نماینده</DialogTitle>
           </DialogHeader>
           {selectedRepresentative && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label>نام کامل</Label>
-                  <Input defaultValue={selectedRepresentative.fullName} />
-                </div>
-                <div>
-                  <Label>شماره تلفن</Label>
-                  <Input defaultValue={selectedRepresentative.phoneNumber || ''} />
-                </div>
-              </div>
-              <div className="flex gap-2">
+            <div className="space-y-6">
+              <Tabs defaultValue="personal" className="w-full">
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="personal">اطلاعات شخصی</TabsTrigger>
+                  <TabsTrigger value="business">اطلاعات کسب‌وکار</TabsTrigger>
+                  <TabsTrigger value="commission">کمیسیون و تنظیمات</TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="personal" className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label>نام کامل</Label>
+                      <Input defaultValue={selectedRepresentative.fullName} />
+                    </div>
+                    <div>
+                      <Label>نام کاربری</Label>
+                      <Input defaultValue={selectedRepresentative.adminUsername} />
+                    </div>
+                    <div>
+                      <Label>شماره تلفن</Label>
+                      <Input defaultValue={selectedRepresentative.phoneNumber || ''} />
+                    </div>
+                    <div>
+                      <Label>شناسه تلگرام</Label>
+                      <Input defaultValue={selectedRepresentative.telegramId || ''} />
+                    </div>
+                    <div>
+                      <Label>کد ملی</Label>
+                      <Input defaultValue={selectedRepresentative.nationalId || ''} />
+                    </div>
+                    <div>
+                      <Label>وضعیت تایید</Label>
+                      <Select defaultValue={selectedRepresentative.verificationStatus}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="pending">در انتظار</SelectItem>
+                          <SelectItem value="verified">تایید شده</SelectItem>
+                          <SelectItem value="rejected">رد شده</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </TabsContent>
+                
+                <TabsContent value="business" className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label>نام فروشگاه</Label>
+                      <Input defaultValue={selectedRepresentative.storeName || ''} />
+                    </div>
+                    <div>
+                      <Label>آدرس فروشگاه</Label>
+                      <Input defaultValue={selectedRepresentative.storeAddress || ''} />
+                    </div>
+                    <div>
+                      <Label>سطح همکاری</Label>
+                      <Select defaultValue={selectedRepresentative.collaborationLevel}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="basic">پایه</SelectItem>
+                          <SelectItem value="advanced">پیشرفته</SelectItem>
+                          <SelectItem value="premium">ویژه</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label>وضعیت</Label>
+                      <Select defaultValue={selectedRepresentative.status || 'active'}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="active">فعال</SelectItem>
+                          <SelectItem value="inactive">غیرفعال</SelectItem>
+                          <SelectItem value="suspended">تعلیق</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                </TabsContent>
+                
+                <TabsContent value="commission" className="space-y-4">
+                  <div>
+                    <Label>نرخ کمیسیون (درصد)</Label>
+                    <div className="grid grid-cols-2 gap-4 mt-2">
+                      <div>
+                        <Label className="text-sm">یک ماه محدود</Label>
+                        <Input defaultValue={selectedRepresentative.commissionRates?.limited1Month || '15'} />
+                      </div>
+                      <div>
+                        <Label className="text-sm">سه ماه محدود</Label>
+                        <Input defaultValue={selectedRepresentative.commissionRates?.limited3Month || '18'} />
+                      </div>
+                      <div>
+                        <Label className="text-sm">شش ماه محدود</Label>
+                        <Input defaultValue={selectedRepresentative.commissionRates?.limited6Month || '20'} />
+                      </div>
+                      <div>
+                        <Label className="text-sm">نامحدود</Label>
+                        <Input defaultValue={selectedRepresentative.commissionRates?.unlimited || '25'} />
+                      </div>
+                    </div>
+                  </div>
+                </TabsContent>
+              </Tabs>
+              
+              <div className="flex gap-2 pt-4 border-t">
                 <Button variant="outline" onClick={() => setEditModalOpen(false)}>
                   انصراف
                 </Button>
                 <Button onClick={() => {
                   toast({
                     title: "ویرایش انجام شد",
-                    description: "اطلاعات نماینده با موفقیت به‌روزرسانی شد",
+                    description: `اطلاعات ${selectedRepresentative.fullName} با موفقیت به‌روزرسانی شد`,
                   });
                   setEditModalOpen(false);
                 }}>
@@ -753,12 +852,10 @@ export default function RepresentativeManagement() {
             <div className="space-y-3">
               <Button 
                 variant="outline" 
-                className="w-full justify-start"
+                className="w-full justify-start hover:bg-green-50"
                 onClick={() => {
-                  toast({
-                    title: "تاریخچه مالی",
-                    description: `مشاهده تراکنش‌های ${selectedRepresentative.fullName}`,
-                  });
+                  // Navigate to financial history page
+                  window.location.href = `/financial-history/${selectedRepresentative.id}`;
                   setMoreActionsOpen(false);
                 }}
               >
@@ -767,33 +864,70 @@ export default function RepresentativeManagement() {
               </Button>
               <Button 
                 variant="outline" 
-                className="w-full justify-start"
+                className="w-full justify-start hover:bg-blue-50"
                 onClick={() => {
+                  // Open advanced settings
                   toast({
-                    title: "تنظیمات نماینده",
-                    description: `ویرایش تنظیمات ${selectedRepresentative.fullName}`,
+                    title: "تنظیمات پیشرفته",
+                    description: `در حال بارگذاری تنظیمات ${selectedRepresentative.fullName}`,
                   });
                   setMoreActionsOpen(false);
+                  // Could open another modal or navigate to settings page
                 }}
               >
                 <Settings className="w-4 h-4 ml-2" />
                 تنظیمات پیشرفته
               </Button>
               <Button 
-                variant="destructive" 
-                className="w-full justify-start"
+                variant="outline" 
+                className="w-full justify-start hover:bg-orange-50"
                 onClick={() => {
+                  // Reset password functionality
                   toast({
-                    title: "حذف نماینده",
-                    description: "این عملیات قابل بازگشت نیست",
-                    variant: "destructive"
+                    title: "بازنشانی رمز عبور",
+                    description: `رمز عبور جدید برای ${selectedRepresentative.fullName} ارسال شد`,
                   });
                   setMoreActionsOpen(false);
                 }}
               >
-                <Trash2 className="w-4 h-4 ml-2" />
-                حذف نماینده
+                <UserCheck className="w-4 h-4 ml-2" />
+                بازنشانی رمز عبور
               </Button>
+              <Button 
+                variant="outline" 
+                className="w-full justify-start hover:bg-purple-50"
+                onClick={() => {
+                  // Generate report functionality
+                  toast({
+                    title: "گزارش فروش",
+                    description: `در حال تولید گزارش برای ${selectedRepresentative.fullName}`,
+                  });
+                  setMoreActionsOpen(false);
+                }}
+              >
+                <Download className="w-4 h-4 ml-2" />
+                دانلود گزارش فروش
+              </Button>
+              <div className="border-t pt-2">
+                <Button 
+                  variant="destructive" 
+                  className="w-full justify-start"
+                  onClick={() => {
+                    if (confirm(`آیا از حذف ${selectedRepresentative.fullName} اطمینان دارید؟`)) {
+                      toast({
+                        title: "نماینده حذف شد",
+                        description: `${selectedRepresentative.fullName} با موفقیت حذف شد`,
+                        variant: "destructive"
+                      });
+                      setMoreActionsOpen(false);
+                      // Here you would call the delete API
+                    }
+                  }}
+                >
+                  <Trash2 className="w-4 h-4 ml-2" />
+                  حذف نماینده
+                </Button>
+              </div>
             </div>
           )}
         </DialogContent>

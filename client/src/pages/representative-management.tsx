@@ -57,6 +57,8 @@ interface NewRepresentativeForm {
   storeAddress: string;
   nationalId: string;
   collaborationLevel: 'basic' | 'advanced' | 'premium';
+  introducerType: 'direct' | 'collaborator';
+  introducerCollaboratorId: number | null;
   commissionRates: {
     limited1Month: string;
     limited3Month: string;
@@ -85,6 +87,8 @@ export default function RepresentativeManagement() {
     storeAddress: '',
     nationalId: '',
     collaborationLevel: 'basic',
+    introducerType: 'direct',
+    introducerCollaboratorId: null,
     commissionRates: {
       limited1Month: '15',
       limited3Month: '18',
@@ -101,6 +105,16 @@ export default function RepresentativeManagement() {
     queryFn: async () => {
       const response = await fetch('/api/representatives');
       if (!response.ok) throw new Error('Failed to fetch representatives');
+      return response.json();
+    }
+  });
+
+  // Query for collaborators data
+  const { data: collaborators = [] } = useQuery({
+    queryKey: ['/api/collaborators'],
+    queryFn: async () => {
+      const response = await fetch('/api/collaborators');
+      if (!response.ok) throw new Error('Failed to fetch collaborators');
       return response.json();
     }
   });
@@ -168,6 +182,8 @@ export default function RepresentativeManagement() {
       storeAddress: '',
       nationalId: '',
       collaborationLevel: 'basic',
+      introducerType: 'direct',
+      introducerCollaboratorId: null,
       commissionRates: {
         limited1Month: '15',
         limited3Month: '18',
@@ -321,6 +337,54 @@ export default function RepresentativeManagement() {
                       </SelectContent>
                     </Select>
                   </div>
+
+                  <div>
+                    <Label>نوع معرف</Label>
+                    <Select
+                      value={newRepForm.introducerType}
+                      onValueChange={(value: 'direct' | 'collaborator') => {
+                        setNewRepForm(prev => ({ 
+                          ...prev, 
+                          introducerType: value,
+                          introducerCollaboratorId: value === 'direct' ? null : prev.introducerCollaboratorId
+                        }));
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="direct">مستقیم</SelectItem>
+                        <SelectItem value="collaborator">معرفی شده توسط همکار</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {newRepForm.introducerType === 'collaborator' && (
+                    <div>
+                      <Label>همکار معرف</Label>
+                      <Select
+                        value={newRepForm.introducerCollaboratorId?.toString() || ''}
+                        onValueChange={(value) => 
+                          setNewRepForm(prev => ({ 
+                            ...prev, 
+                            introducerCollaboratorId: value ? parseInt(value) : null 
+                          }))
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="انتخاب همکار معرف" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {collaborators.map((collaborator: any) => (
+                            <SelectItem key={collaborator.id} value={collaborator.id.toString()}>
+                              {collaborator.collaboratorName}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
                   
                   <div>
                     <Label>نرخ کمیسیون (درصد)</Label>
@@ -489,10 +553,15 @@ export default function RepresentativeManagement() {
                   </CardHeader>
                   
                   <CardContent className="space-y-3">
-                    {/* Financial Balance Component - Using actual currentBalance from API */}
-                    <FinancialBalance 
-                      balance={rep.currentBalance || 0}
-                    />
+                    {/* Financial Balance Display */}
+                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-3 rounded-lg border">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-gray-700">موجودی مالی</span>
+                        <div className="text-lg font-bold text-green-700">
+                          {(0).toLocaleString('fa-IR')} تومان
+                        </div>
+                      </div>
+                    </div>
                     
                     {/* Store Info */}
                     {rep.storeName && (
@@ -524,14 +593,36 @@ export default function RepresentativeManagement() {
                     
                     {/* Action Buttons */}
                     <div className="flex gap-2 pt-2">
-                      <Button size="sm" variant="outline" className="flex-1">
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="flex-1"
+                        onClick={() => {
+                          // Handle view representative details
+                          console.log('Viewing representative:', rep.id);
+                        }}
+                      >
                         <Eye className="w-3 h-3 ml-1" />
                         مشاهده
                       </Button>
-                      <Button size="sm" variant="outline">
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => {
+                          // Handle edit representative
+                          console.log('Editing representative:', rep.id);
+                        }}
+                      >
                         <Edit3 className="w-3 h-3" />
                       </Button>
-                      <Button size="sm" variant="outline">
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => {
+                          // Handle more actions menu
+                          console.log('More actions for representative:', rep.id);
+                        }}
+                      >
                         <MoreHorizontal className="w-3 h-3" />
                       </Button>
                     </div>

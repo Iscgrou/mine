@@ -1,0 +1,389 @@
+
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>راهنمای جامع پنل مدیریت MarFanet</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Vazirmatn', 'Tahoma', 'Arial', sans-serif;
+            line-height: 1.8;
+            color: #333;
+            background: #fff;
+            direction: rtl;
+            text-align: right;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .header h2 {
+            font-size: 18px;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+        
+        .toc {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            border-right: 4px solid #667eea;
+        }
+        
+        .toc h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        
+        .toc ul {
+            list-style: none;
+        }
+        
+        .toc li {
+            margin: 8px 0;
+            padding-right: 15px;
+        }
+        
+        .toc a {
+            color: #555;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .toc a:hover {
+            color: #667eea;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            color: #2c3e50;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+        
+        h1 {
+            font-size: 26px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        h2 {
+            font-size: 22px;
+            color: #667eea;
+        }
+        
+        h3 {
+            font-size: 18px;
+            color: #764ba2;
+        }
+        
+        h4 {
+            font-size: 16px;
+            color: #555;
+        }
+        
+        p {
+            margin: 15px 0;
+            text-align: justify;
+        }
+        
+        ul, ol {
+            margin: 15px 0;
+            padding-right: 30px;
+        }
+        
+        li {
+            margin: 8px 0;
+        }
+        
+        .section {
+            margin: 40px 0;
+            padding: 25px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .highlight {
+            background: #e3f2fd;
+            padding: 20px;
+            border-right: 4px solid #2196f3;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .warning {
+            background: #fff3e0;
+            padding: 20px;
+            border-right: 4px solid #ff9800;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .success {
+            background: #e8f5e8;
+            padding: 20px;
+            border-right: 4px solid #4caf50;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .code {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            direction: ltr;
+            text-align: left;
+            margin: 15px 0;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+        
+        .stat-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #e9ecef;
+        }
+        
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #667eea;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .footer {
+            margin-top: 60px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .page-break {
+            page-break-before: always;
+        }
+        
+        @media print {
+            body {
+                font-size: 12px;
+            }
+            
+            .header {
+                background: #667eea !important;
+                color: white !important;
+            }
+            
+            .section {
+                box-shadow: none;
+                border: 1px solid #eee;
+            }
+            
+            .page-break {
+                page-break-before: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+    <div class="header">
+        <h1>راهنمای جامع پنل مدیریت MarFanet</h1>
+        <h2>سیستم مدیریت هوشمند V2Ray برای فروشگاه‌های موبایل ایران</h2>
+    </div>
+    
+    <div class="toc">
+        <h3>فهرست مطالب</h3>
+        <ul>
+            <li><a href="#introduction">مقدمه و ورود به سیستم</a></li>
+            <li><a href="#dashboard">داشبورد اصلی</a></li>
+            <li><a href="#representatives">مدیریت نمایندگان</a></li>
+            <li><a href="#invoices">مدیریت فاکتورها</a></li>
+            <li><a href="#analytics">تحلیل‌گری پیشرفته</a></li>
+            <li><a href="#settings">تنظیمات سیستم</a></li>
+            <li><a href="#advanced-features">ویژگی‌های پیشرفته</a></li>
+        </ul>
+    </div>
+    
+    <div class="stats-grid">
+        <div class="stat-card">
+            <span class="stat-number">218</span>
+            <div class="stat-label">نماینده فعال</div>
+        </div>
+        <div class="stat-card">
+            <span class="stat-number">68</span>
+            <div class="stat-label">فاکتور صادر شده</div>
+        </div>
+        <div class="stat-card">
+            <span class="stat-number">95%</span>
+            <div class="stat-label">دقت پردازش صوت فارسی</div>
+        </div>
+        <div class="stat-card">
+            <span class="stat-number">24/7</span>
+            <div class="stat-label">پشتیبانی سیستم Aegis</div>
+        </div>
+    </div>
+    
+    <h1>راهنمای جامع پنل مدیریت MarFanet</h1>
+<h2>سیستم مدیریت هوشمند V2Ray برای فروشگاه‌های موبایل ایران</h2><p>---</p><h2>فهرست مطالب</h2>
+<ul><li>1. [مقدمه و ورود به سیستم](#introduction)</li>
+<li>2. [داشبورد اصلی](#dashboard)</li>
+<li>3. [مدیریت نمایندگان](#representatives)</li>
+<li>4. [مدیریت فاکتورها](#invoices)</li>
+<li>5. [تحلیل‌گری پیشرفته](#analytics)</li>
+<li>6. [تنظیمات سیستم](#settings)</li>
+<li>7. [ویژگی‌های پیشرفته](#advanced-features)</li></p><p></ul>---</p><h2>مقدمه و ورود به سیستم {#introduction}</h2><h3>درباره MarFanet</h3>
+MarFanet یک پلتفرم جامع مدیریت نمایندگان V2Ray است که به طور ویژه برای فروشگاه‌های موبایل ایران طراحی شده است. این سیستم با استفاده از هوش مصنوعی Google Vertex AI امکان مدیریت هوشمند و پیشرفته را فراهم می‌کند.</p><h3>ورود به پنل مدیریت</h3>
+<ul><li>1. آدرس پنل مدیریت: `[دامنه]/ciwomplefoadm867945`</li>
+<li>2. از نام کاربری و رمز عبور ارائه شده توسط مدیر سیستم استفاده کنید</li>
+<li>3. پس از ورود موفق، به داشبورد اصلی هدایت می‌شوید</li></p><p></ul><h3>امنیت و احراز هویت</h3>
+<ul><li>سیستم از احراز هویت مبتنی بر مسیر (Path-based Authentication) استفاده می‌کند</li>
+<li>تمام اتصالات با پروتکل‌های امن محافظت می‌شوند</li>
+<li>برای امنیت بیشتر، همیشه پس از اتمام کار از سیستم خارج شوید</li></p><p></ul>---</p><h2>داشبورد اصلی {#dashboard}</h2><h3>نمای کلی داشبورد</h3>
+داشبورد اصلی شامل اطلاعات زیر است:</p><h4>آمار کلی سیستم</h4>
+<ul><li><strong>تعداد کل نمایندگان</strong>: <span class="stat-number">218</span><span class="stat-label">نماینده فعال</span></li>
+<li><strong>درآمد ماهانه</strong>: نمایش درآمد جاری و مقایسه با ماه قبل</li>
+<li><strong>فاکتورهای صادر شده</strong>: <span class="stat-number">68</span><span class="stat-label">فاکتور صادر شده</span> با مجموع درآمد</li>
+<li><strong>رشد عملکرد</strong>: درصد رشد نسبت به دوره قبل</li></p><p></ul><h4>فاکتورهای اخیر (ساده‌شده برای موبایل)</h4>
+<ul><li>نام کاربری مدیر</li>
+<li>مبلغ فاکتور</li>
+<li>تاریخ صدور</li></p><p></ul><h4>نمودار عملکرد</h4>
+<ul><li>نمودار خطی درآمد ماهانه</li>
+<li>نمودار دایره‌ای توزیع خدمات V2Ray</li>
+<li>نمودار ستونی عملکرد نمایندگان</li></p><p></ul><h3>کارهای سریع</h3>
+<ul><li>ایجاد فاکتور جدید</li>
+<li>افزودن نماینده جدید</li>
+<li>مشاهده گزارش‌های فوری</li>
+<li>دسترسی به تنظیمات</li></p><p></ul>---</p><h2>مدیریت نمایندگان {#representatives}</h2><h3>مشاهده لیست نمایندگان</h3>
+در بخش نمایندگان می‌توانید:
+<ul><li>لیست کامل <span class="stat-number">218</span><span class="stat-label">نماینده فعال</span> را مشاهده کنید</li>
+<li>اطلاعات هر نماینده شامل:</li>
+  </ul>- نام کامل
+  - نام کاربری مدیر
+  - شماره تلفن
+  - نام فروشگاه
+  - وضعیت (فعال/غیرفعال)
+  - تاریخ عضویت</p><h3>جستجو و فیلتر</h3>
+<ul><li>جستجو بر اساس نام، شماره تلفن یا نام فروشگاه</li>
+<li>فیلتر بر اساس وضعیت (فعال/غیرفعال)</li>
+<li>مرتب‌سازی بر اساس تاریخ عضویت یا درآمد</li></p><p></ul><h3>افزودن نماینده جدید</h3>
+<ul><li>1. کلیک روی دکمه "نماینده جدید"</li>
+<li>2. تکمیل فرم اطلاعات:</li>
+   </ul>- نام کامل (اجباری)
+   - نام کاربری مدیر (اجباری)
+   - شماره تلفن
+   - نام فروشگاه
+   - آدرس فروشگاه
+   - اطلاعات تماس</p><h3>مدیریت قیمت‌ها و کمیسیون</h3>
+<ul><li>تعیین قیمت اشتراک 1 ماهه محدود</li>
+<li>تعیین قیمت اشتراک 1 ماهه نامحدود</li>
+<li>تنظیم نرخ کمیسیون محدود</li>
+<li>تنظیم نرخ کمیسیون نامحدود</li></p><p></ul>---</p><h2>مدیریت فاکتورها {#invoices}</h2><h3>مشاهده فاکتورها</h3>
+<ul><li>لیست کامل <span class="stat-number">68</span><span class="stat-label">فاکتور صادر شده</span> صادر شده</li>
+<li>اطلاعات هر فاکتور:</li>
+  </ul>- شماره فاکتور
+  - نام نماینده
+  - مبلغ کل
+  - تاریخ صدور
+  - وضعیت پرداخت</p><h3>ایجاد فاکتور جدید</h3>
+<ul><li>1. انتخاب نماینده از لیست</li>
+<li>2. افزودن آیتم‌های فاکتور:</li>
+   </ul>- نوع اشتراک (محدود/نامحدود)
+   - مدت زمان (ماه)
+   - تعداد
+   - قیمت واحد
+<ul><li>3. محاسبه خودکار مجموع</li>
+<li>4. افزودن یادداشت (اختیاری)</li>
+<li>5. صدور فاکتور</li></p><p></ul><h3>ویژگی‌های پیشرفته فاکتور</h3>
+<ul><li>قالب‌های حرفه‌ای با برندینگ فارسی</li>
+<li>سفارشی‌سازی طراحی فاکتور</li>
+<li>نمایش جزئیات فنی V2Ray</li>
+<li>اضافه کردن لوگو و واترمارک</li>
+<li>تولید فاکتور به صورت PDF</li></p><p></ul>---</p><h2>تحلیل‌گری پیشرفته {#analytics}</h2><h3>داشبورد تحلیلی</h3>
+مرکز تحلیل گزارش شامل:</p><h4>نمودارهای عملکرد</h4>
+<ul><li><strong>نمودار دایره‌ای خدمات</strong>: توزیع انواع V2Ray</li>
+  </ul>- V2Ray Standard: 45% (2,500,000 تومان)
+  - V2Ray Unlimited: 30% (1,800,000 تومان)
+  - VMess: 15% (900,000 تومان)
+  - VLess: 10% (600,000 تومان)</p><h4>تحلیل منطقه‌ای</h4>
+<ul><li>تهران: 85 نماینده، 3,200,000 تومان، رشد 15.2%</li>
+<li>مشهد: 45 نماینده، 1,800,000 تومان، رشد 8.7%</li>
+<li>اصفهان: 38 نماینده، 1,500,000 تومان، رشد 12.3%</li>
+<li>شیراز: 25 نماینده، 1,100,000 تومان، رشد 10.1%</li></p><p></ul><h4>پیش‌بینی درآمد با Vertex AI</h4>
+<ul><li>تحلیل ترندهای فروش</li>
+<li>پیش‌بینی عملکرد ماه آینده</li>
+<li>شناسایی فرصت‌های رشد</li>
+<li>تشخیص نمایندگان پرخطر</li></p><p></ul>---</p><h2>تنظیمات سیستم {#settings}</h2><h3>تنظیمات Vertex AI</h3>
+<ul><li>وضعیت: <strong>تنظیم شده و آماده استفاده</strong></li>
+<li>پروژه: gen-lang-client-0093550503</li>
+<li>کلیدهای احراز هویت Google Cloud</li>
+<li>تنظیم سطح دسترسی API</li></p><p></ul><h3>تنظیمات فاکتور</h3>
+<ul><li>انتخاب قالب فاکتور (مدرن/کلاسیک/مینیمال)</li>
+<li>تنظیمات نمایش</li>
+<li>فرمت خروجی: PDF/HTML</li></p><p></ul>---</p><h2>ویژگی‌های پیشرفته {#advanced-features}</h2><h3>سیستم Aegis (نگهبان قابلیت اطمینان)</h3>
+<ul><li>مانیتورینگ سلامت سیستم</li>
+<li>هشدارهای خودکار</li>
+<li>بک‌آپ‌گیری اتوماتیک</li></p><p></ul><h3>هوش مصنوعی Nova</h3>
+<ul><li>تحلیل رفتار نمایندگان</li>
+<li>پیش‌بینی ترک نمایندگان</li>
+<li>شناسایی فرصت‌های فروش</li></p><p></ul><h3>تقویم شمسی</h3>
+<ul><li>نمایش تاریخ‌های شمسی</li>
+<li>محاسبه سررسید بر اساس تقویم فارسی</li></p><p></ul><h3>پردازش صوت فارسی</h3>
+<ul><li>تشخیص اصطلاحات V2Ray فارسی</li>
+<li>دقت 95% در تشخیص گفتار فارسی</li></p><p></ul>---</p><p>*نسخه 2.0 - 30 مه 2025*</p>
+    
+    <div class="footer">
+        <p><strong>MarFanet Admin Panel User Guide v2.0</strong></p>
+        <p>تاریخ تهیه: 30 مه 2025 | نسخه: 2.0 | زبان: فارسی</p>
+        <p>این راهنما برای استفاده مدیران سیستم MarFanet تهیه شده است</p>
+    </div>
+    
+    </div>
+</body>
+</html>

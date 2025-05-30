@@ -527,7 +527,7 @@ try {
   process.exit(1);
 }
 
-module.exports = {
+export {
   generateAdminGuide,
   generateCRMGuide,
   generateIndexPage

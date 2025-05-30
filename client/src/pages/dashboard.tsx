@@ -308,16 +308,10 @@ export default function Dashboard() {
                       نماینده
                     </th>
                     <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      شماره صورتحساب
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                       مبلغ
                     </th>
                     <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                       تاریخ
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      وضعیت
                     </th>
                     <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                       عملیات
@@ -328,25 +322,8 @@ export default function Dashboard() {
                   {recentInvoices?.map((invoice) => (
                     <tr key={invoice.id} className="table-row-hover">
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center ml-3">
-                            <span className="text-xs font-medium text-gray-700">
-                              {invoice.representative?.fullName.charAt(0) || 'ن'}
-                            </span>
-                          </div>
-                          <div>
-                            <div className="text-sm font-medium text-gray-900">
-                              {invoice.representative?.fullName || 'نامشخص'}
-                            </div>
-                            <div className="text-sm text-gray-500">
-                              {invoice.representative?.adminUsername || ''}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900 persian-nums">
-                          {invoice.invoiceNumber}
+                        <div className="text-sm font-medium text-gray-900">
+                          {invoice.representative?.adminUsername || 'نامشخص'}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -358,9 +335,6 @@ export default function Dashboard() {
                         <div className="text-sm text-gray-900 persian-nums">
                           {new Date(invoice.createdAt).toLocaleDateString('fa-IR')}
                         </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {getStatusBadge(invoice.status)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex items-center space-x-reverse space-x-2">

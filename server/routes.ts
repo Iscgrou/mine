@@ -440,6 +440,76 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Advanced Phase Orchestration with Vertex AI
+  app.get("/api/vertex-ai/phase-analysis", async (req, res) => {
+    try {
+      const { vertexAIPhaseOrchestrator } = await import('./vertex-ai-phase-orchestrator');
+      
+      console.log("Initiating Phase 1 Completion Analysis...");
+      const analysis = await vertexAIPhaseOrchestrator.analyzePhase1Completion();
+      
+      res.json({
+        success: true,
+        message: "Phase analysis completed successfully",
+        analysis: analysis,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Phase Analysis error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Phase analysis failed",
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  app.get("/api/vertex-ai/phase2-plan", async (req, res) => {
+    try {
+      const { vertexAIPhaseOrchestrator } = await import('./vertex-ai-phase-orchestrator');
+      
+      console.log("Generating Phase 2 Strategic Plan...");
+      const plan = await vertexAIPhaseOrchestrator.generatePhase2Plan();
+      
+      res.json({
+        success: true,
+        message: "Phase 2 plan generated successfully",
+        plan: plan,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("Phase 2 Planning error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Phase 2 planning failed",
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  app.get("/api/vertex-ai/system-health", async (req, res) => {
+    try {
+      const { vertexAIPhaseOrchestrator } = await import('./vertex-ai-phase-orchestrator');
+      
+      console.log("Performing System Health Analysis...");
+      const health = await vertexAIPhaseOrchestrator.performSystemHealthAnalysis();
+      
+      res.json({
+        success: true,
+        message: "System health analysis completed",
+        health: health,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      console.error("System Health Analysis error:", error);
+      res.status(500).json({
+        success: false,
+        message: "System health analysis failed",
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
   // Meta-Optimization Initiative - Vertex AI Orchestration
   app.post("/api/vertex-ai/meta-optimization", async (req, res) => {
     try {

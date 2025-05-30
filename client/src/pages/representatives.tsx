@@ -209,19 +209,19 @@ export default function Representatives() {
               ))}
             </div>
           ) : (
-            <div className="responsive-container">
-              <div className="space-y-3">
+            <div className="w-full overflow-hidden">
+              <div className="grid grid-cols-1 gap-4">
                 {filteredRepresentatives?.map((rep) => (
-                  <div key={rep.id} className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                  <div key={rep.id} className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm hover:shadow-md transition-all duration-200 w-full">
+                    <div className="flex flex-col space-y-4 lg:space-y-0 lg:flex-row lg:items-center justify-between">
                       <div className="flex-1 min-w-0">
-                        <div className="phoenix-heading text-sm font-medium text-gray-900 mb-1 truncate">
+                        <div className="phoenix-heading text-lg font-medium text-gray-900 mb-2">
                           {rep.fullName || rep.adminUsername}
                         </div>
-                        <div className="text-xs text-gray-500 mb-2 phoenix-text">
+                        <div className="phoenix-text text-gray-600 mb-3">
                           نام کاربری: {rep.adminUsername}
                         </div>
-                        <div className="flex flex-wrap gap-2 lg:gap-4 text-xs text-gray-600 phoenix-text">
+                        <div className="flex flex-wrap gap-3 phoenix-small-text text-gray-600">
                           {rep.phoneNumber && (
                             <span className="persian-nums flex items-center gap-1">
                               📞 <span className="hidden sm:inline">تلفن:</span> {rep.phoneNumber}

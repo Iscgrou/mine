@@ -130,11 +130,20 @@ export default function Invoices() {
       <div className="flex justify-between items-center">
         <CardTitle className="text-lg font-medium text-gray-900">مدیریت صورتحساب‌ها</CardTitle>
         <div className="flex space-x-2 space-x-reverse">
-          <Button variant="outline">
+          <Button 
+            variant="outline"
+            onClick={() => {
+              alert("دانلود همه صورتحساب‌ها - در حال پیاده‌سازی");
+            }}
+          >
             <i className="fas fa-download ml-2"></i>
             دانلود همه
           </Button>
-          <Button>
+          <Button
+            onClick={() => {
+              alert("تولید گروهی صورتحساب - در حال پیاده‌سازی");
+            }}
+          >
             <i className="fas fa-plus ml-2"></i>
             تولید گروهی
           </Button>

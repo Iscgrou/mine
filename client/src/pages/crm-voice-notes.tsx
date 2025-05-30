@@ -583,15 +583,33 @@ export default function CrmVoiceNotes() {
 
                           {/* Actions */}
                           <div className="flex flex-wrap gap-2 pt-2 border-t">
-                            <Button size="sm" variant="outline">
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              onClick={() => {
+                                alert("ایجاد وظایف بر اساس یادداشت صوتی - در حال پیاده‌سازی");
+                              }}
+                            >
                               <i className="fas fa-tasks ml-1"></i>
                               ایجاد وظایف
                             </Button>
-                            <Button size="sm" variant="outline">
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              onClick={() => {
+                                alert("زمان‌بندی پیگیری - در حال پیاده‌سازی");
+                              }}
+                            >
                               <i className="fas fa-calendar-plus ml-1"></i>
                               زمان‌بندی پیگیری
                             </Button>
-                            <Button size="sm" variant="outline">
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              onClick={() => {
+                                alert("اشتراک‌گذاری یادداشت - در حال پیاده‌سازی");
+                              }}
+                            >
                               <i className="fas fa-share ml-1"></i>
                               اشتراک‌گذاری
                             </Button>

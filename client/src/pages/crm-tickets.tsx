@@ -153,7 +153,12 @@ export default function CrmTickets() {
           <h1 className="text-2xl font-bold text-gray-900">مدیریت تیکت‌ها</h1>
           <p className="text-gray-600">پیگیری و حل مشکلات مشتریان</p>
         </div>
-        <Button>
+        <Button
+          onClick={() => {
+            // Open new ticket creation dialog
+            alert("فرم ایجاد تیکت جدید - در حال پیاده‌سازی");
+          }}
+        >
           <i className="fas fa-plus ml-2"></i>
           تیکت جدید
         </Button>
@@ -347,16 +352,35 @@ export default function CrmTickets() {
                           placeholder="پاسخ خود را اینجا بنویسید..." 
                           className="mt-2"
                         />
-                        <Button className="mt-2">ارسال پاسخ</Button>
+                        <Button 
+                          className="mt-2"
+                          onClick={() => {
+                            alert("پاسخ ارسال شد - در حال پیاده‌سازی");
+                          }}
+                        >
+                          ارسال پاسخ
+                        </Button>
                       </div>
                     </div>
                   </DialogContent>
                 </Dialog>
-                <Button variant="outline" size="sm">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => {
+                    alert(`ویرایش تیکت #${ticket.id} - در حال پیاده‌سازی`);
+                  }}
+                >
                   <i className="fas fa-edit ml-1"></i>
                   ویرایش
                 </Button>
-                <Button variant="outline" size="sm">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => {
+                    window.open(`tel:${ticket.customerPhone}`, '_self');
+                  }}
+                >
                   <i className="fas fa-phone ml-1"></i>
                   تماس
                 </Button>

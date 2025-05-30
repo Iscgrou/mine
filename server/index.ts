@@ -40,61 +40,12 @@ app.use((req: Request, res: Response, next: NextFunction) => {
     return next();
   }
 
-  // Handle root path - redirect to admin interface for testing during development
+  // Handle root path - redirect to admin panel
   if (req.path === '/' || req.path === '/index.html') {
-    if (app.get("env") === "development") {
-      // In development, redirect to admin secret path for easier testing
-      return res.redirect(`/${AUTH_CONFIG.ADMIN_SECRET_PATH}`);
-    } else {
-      // In production, show access denied
-      console.log(`[SECURITY] Unauthorized access attempt: ${req.path} from ${req.ip} - User-Agent: ${req.get('User-Agent')}`);
-      
-      res.set({
-        'Cache-Control': 'no-cache, no-store, must-revalidate, private',
-        'Pragma': 'no-cache',
-        'Expires': '0',
-        'X-Safari-No-Redirect': '1',
-        'Strict-Transport-Security': 'max-age=31536000; includeSubDomains'
-      });
-      
-      return res.status(403).send(`
-        <!DOCTYPE html>
-        <html dir="rtl" lang="fa">
-        <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>دسترسی غیرمجاز</title>
-          <style>
-            body { 
-              font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-              text-align: center; 
-              padding: 50px; 
-              background: #f5f5f5; 
-              color: #333; 
-            }
-            .container { 
-              max-width: 400px; 
-              margin: 0 auto; 
-              background: white; 
-              padding: 40px; 
-              border-radius: 8px; 
-              box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
-            }
-            h1 { color: #d32f2f; margin-bottom: 20px; }
-          </style>
-        </head>
-        <body>
-          <div class="container">
-            <h1>🚫 دسترسی غیرمجاز</h1>
-            <p>شما مجاز به دسترسی به این صفحه نیستید</p>
-            <p>Access Denied - Unauthorized</p>
-          </div>
-        </body>
-        </html>
-      `);
-    }
+    console.log(`[DEBUG] Root access - redirecting to admin panel`);
+    return res.redirect(`/${AUTH_CONFIG.ADMIN_SECRET_PATH}`);
   }
-
+  
   // Check if path is authorized (admin or CRM secret paths)
   const isAuthorized = isAuthorizedPath(req.path);
   console.log(`[DEBUG] Path authorization check: ${req.path} -> ${isAuthorized}`);
@@ -105,19 +56,24 @@ app.use((req: Request, res: Response, next: NextFunction) => {
     return next();
   }
   
-  // Block unauthorized paths (except development mode)
-  if (app.get("env") !== "development" && !isAuthorized) {
-    console.log(`[SECURITY] Unauthorized access attempt: ${req.path} from ${req.ip} - User-Agent: ${req.get('User-Agent')}`);
-    
-    res.set({
-      'Cache-Control': 'no-cache, no-store, must-revalidate, private',
-      'Pragma': 'no-cache',
-      'Expires': '0',
-      'X-Safari-No-Redirect': '1',
-      'Strict-Transport-Security': 'max-age=31536000; includeSubDomains'
-    });
-    
-    return res.status(403).send(`
+  // In development mode, allow all paths for easier debugging
+  if (app.get("env") === "development") {
+    console.log(`[DEBUG] Development mode - allowing path: ${req.path}`);
+    return next();
+  }
+  
+  // Block unauthorized paths in production
+  console.log(`[SECURITY] Unauthorized access attempt: ${req.path} from ${req.ip} - User-Agent: ${req.get('User-Agent')}`);
+  
+  res.set({
+    'Cache-Control': 'no-cache, no-store, must-revalidate, private',
+    'Pragma': 'no-cache',
+    'Expires': '0',
+    'X-Safari-No-Redirect': '1',
+    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains'
+  });
+  
+  return res.status(403).send(`
       <!DOCTYPE html>
       <html dir="rtl" lang="fa">
       <head>
@@ -152,16 +108,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
       </body>
       </html>
     `);
-  }
-
-  // In development mode, allow all paths for easier debugging
-  if (app.get("env") === "development") {
-    console.log(`[DEBUG] Development mode - allowing path: ${req.path}`);
-    return next();
-  }
-  
-  // If authorized path, continue to serve the application
-  next();
+});
 });
 
 app.use((req, res, next) => {

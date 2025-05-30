@@ -792,21 +792,28 @@ ${invoices.map((inv, index) =>
           // Get or create representative
           let representative = await storage.getRepresentativeByAdminUsername(adminUsername);
           if (!representative) {
-            // Create new representative with minimal data
+            // Create new representative with complete pricing data from .ods columns
             representative = await storage.createRepresentative({
               fullName: row[1]?.toString() || adminUsername,
               adminUsername: adminUsername,
               phoneNumber: row[2]?.toString() || null,
               telegramId: row[3]?.toString() || null,
               storeName: row[4]?.toString() || null,
+              // Complete pricing structure (columns F-K for limited prices)
               limitedPrice1Month: row[5] ? row[5].toString() : null,
-              unlimitedMonthlyPrice: row[6] ? row[6].toString() : null
+              limitedPrice2Month: row[6] ? row[6].toString() : null,
+              limitedPrice3Month: row[7] ? row[7].toString() : null,
+              limitedPrice4Month: row[8] ? row[8].toString() : null,
+              limitedPrice5Month: row[9] ? row[9].toString() : null,
+              limitedPrice6Month: row[10] ? row[10].toString() : null,
+              // Unlimited monthly price (column L)
+              unlimitedMonthlyPrice: row[11] ? row[11].toString() : null
             });
           }
 
-          // Check for null values in columns H-M and T-Y
-          const hasStandardSubscriptions = row.slice(7, 13).some(val => val !== null && val !== undefined && val !== '');
-          const hasUnlimitedSubscriptions = row.slice(19, 25).some(val => val !== null && val !== undefined && val !== '');
+          // Check for null values in columns M-R (subscription data) and S-X (unlimited subscription data)
+          const hasStandardSubscriptions = row.slice(12, 18).some(val => val !== null && val !== undefined && val !== '');
+          const hasUnlimitedSubscriptions = row.slice(18, 24).some(val => val !== null && val !== undefined && val !== '');
 
           if (!hasStandardSubscriptions && !hasUnlimitedSubscriptions) {
             recordsSkipped++;
@@ -828,9 +835,9 @@ ${invoices.map((inv, index) =>
               representative.limitedPrice6Month
             ];
             
-            for (let col = 7; col < 13; col++) { // H to M
+            for (let col = 12; col < 18; col++) { // M to R
               const quantity = parseFloat(row[col]?.toString() || '0');
-              const monthIndex = col - 7;
+              const monthIndex = col - 12;
               const unitPrice = limitedPrices[monthIndex];
               
               if (quantity > 0 && unitPrice) {
@@ -850,10 +857,10 @@ ${invoices.map((inv, index) =>
 
           // Part 2: Unlimited Monthly Subscriptions (Columns T-Y)
           if (hasUnlimitedSubscriptions && representative.unlimitedMonthlyPrice) {
-            for (let col = 19; col < 25; col++) { // T to Y
+            for (let col = 18; col < 24; col++) { // S to X
               const quantity = parseFloat(row[col]?.toString() || '0');
               if (quantity > 0) {
-                const months = col - 18;
+                const months = col - 17;
                 const unitPrice = parseFloat(representative.unlimitedMonthlyPrice) * months;
                 const price = unitPrice * quantity;
                 totalAmount += price;

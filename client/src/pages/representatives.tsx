@@ -38,9 +38,15 @@ export default function Representatives() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: representatives, isLoading } = useQuery<Representative[]>({
-    queryKey: ['/api/representatives/with-balance'],
+  const { data: representativesData, isLoading } = useQuery<Representative[]>({
+    queryKey: ['/api/representatives'],
   });
+
+  // Add balance field to representatives (0 for all since no financial data exists yet)
+  const representatives = representativesData?.map(rep => ({
+    ...rep,
+    currentBalance: 0
+  })) || [];
 
   const deleteRepMutation = useMutation({
     mutationFn: (id: number) => apiRequest('DELETE', `/api/representatives/${id}`),

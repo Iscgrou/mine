@@ -112,37 +112,43 @@ export default function PerformanceMonitoringPage() {
           </TabsList>
         </div>
 
-          {/* Overview Tab */}
-          <TabsContent value="overview" className="space-y-6">
-            {/* Current Metrics Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium">استفاده CPU</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold mb-2">
-                    <span className={getMetricColor(currentMetrics?.cpuUsage || 0, {good: 50, warning: 80})}>
-                      {currentMetrics?.cpuUsage?.toFixed(1) || '0'}%
-                    </span>
+          {/* Overview Tab with Dynamic System */}
+          <TabsContent value="overview" className="space-y-4">
+            {/* Dynamic Performance Metrics */}
+            <div className="dynamic-stats-grid">
+              <div className="dynamic-stats-card">
+                <div className="stats-card-header">
+                  <div className="stats-card-icon" style={{ background: '#ef4444' }}>
+                    <i className="fas fa-microchip text-white"></i>
                   </div>
+                </div>
+                <div className="stats-card-value">
+                  <span className={getMetricColor(currentMetrics?.cpuUsage || 0, {good: 50, warning: 80})}>
+                    {currentMetrics?.cpuUsage?.toFixed(1) || '0'}%
+                  </span>
+                </div>
+                <div className="stats-card-label">استفاده CPU</div>
+                <div className="stats-card-change">
                   <Progress value={currentMetrics?.cpuUsage || 0} className="h-2" />
-                </CardContent>
-              </Card>
+                </div>
+              </div>
 
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium">استفاده حافظه</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold mb-2">
-                    <span className={getMetricColor(currentMetrics?.memoryUsage || 0, {good: 60, warning: 85})}>
-                      {currentMetrics?.memoryUsage?.toFixed(1) || '0'}%
-                    </span>
+              <div className="dynamic-stats-card">
+                <div className="stats-card-header">
+                  <div className="stats-card-icon" style={{ background: '#f59e0b' }}>
+                    <i className="fas fa-memory text-white"></i>
                   </div>
+                </div>
+                <div className="stats-card-value">
+                  <span className={getMetricColor(currentMetrics?.memoryUsage || 0, {good: 60, warning: 85})}>
+                    {currentMetrics?.memoryUsage?.toFixed(1) || '0'}%
+                  </span>
+                </div>
+                <div className="stats-card-label">استفاده حافظه</div>
+                <div className="stats-card-change">
                   <Progress value={currentMetrics?.memoryUsage || 0} className="h-2" />
-                </CardContent>
-              </Card>
+                </div>
+              </div>
 
               <Card>
                 <CardHeader className="pb-2">

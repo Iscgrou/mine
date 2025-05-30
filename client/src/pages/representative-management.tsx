@@ -241,15 +241,12 @@ export default function RepresentativeManagement() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">مدیریت نمایندگان</h1>
-          <p className="text-gray-600 mt-1">
-            مدیریت کامل نمایندگان، سطوح همکاری و کمیسیون‌ها
-          </p>
-        </div>
+    <div className="responsive-content space-y-4" dir="rtl">
+      {/* Dynamic Header */}
+      <div className="flex flex-col items-center space-y-2 py-3 bg-gradient-to-r from-purple-50 to-violet-50 rounded-lg mx-1">
+        <h1 className="text-base md:text-xl font-bold text-center text-purple-900">مدیریت نمایندگان</h1>
+        <p className="text-xs text-purple-600 text-center">مدیریت کامل نمایندگان، سطوح همکاری و کمیسیون‌ها</p>
+      </div>
         
         <div className="flex gap-2">
           <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>

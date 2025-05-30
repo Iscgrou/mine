@@ -1,370 +1,193 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Clock, User, AlertCircle, CheckCircle2, Calendar, ArrowRight } from 'lucide-react';
+import { Calendar, Clock, Plus, CheckCircle, AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useNotifications } from '@/hooks/use-notifications';
 
-interface Task {
+interface WorkLogEntry {
   id: string;
-  title: string;
-  description?: string;
-  priority: 'low' | 'medium' | 'high' | 'urgent';
-  status: 'pending' | 'in_progress' | 'completed' | 'overdue';
-  dueDate: Date;
-  scheduledTime?: string;
-  representativeId?: number;
-  representativeName?: string;
-  category: 'followup' | 'call' | 'meeting' | 'document' | 'review' | 'reminder';
-  createdAt: Date;
-  completedAt?: Date;
+  task: string;
+  description: string;
+  startTime: string;
+  endTime?: string;
+  status: 'in-progress' | 'completed' | 'pending';
+  priority: 'low' | 'medium' | 'high';
+  category: 'call' | 'ticket' | 'followup' | 'admin' | 'other';
 }
 
-interface DailyWorkLogProps {
-  tasks: Task[];
-  onTaskComplete: (taskId: string) => void;
-  onTaskView: (task: Task) => void;
-  onTaskSnooze?: (taskId: string, newDate: Date) => void;
-  compact?: boolean;
-}
+export function DailyWorkLog() {
+  const [entries, setEntries] = useState<WorkLogEntry[]>([
+    {
+      id: '1',
+      task: 'پیگیری تیکت مشتری',
+      description: 'بررسی مشکل اتصال V2Ray مشتری احمدی',
+      startTime: '09:30',
+      endTime: '10:15',
+      status: 'completed',
+      priority: 'high',
+      category: 'ticket'
+    },
+    {
+      id: '2',
+      task: 'تماس با نماینده',
+      description: 'هماهنگی برای ارسال فاکتور جدید',
+      startTime: '11:00',
+      status: 'in-progress',
+      priority: 'medium',
+      category: 'call'
+    }
+  ]);
 
-const priorityColors = {
-  low: 'bg-gray-100 text-gray-700 border-gray-300',
-  medium: 'bg-blue-100 text-blue-700 border-blue-300',
-  high: 'bg-orange-100 text-orange-700 border-orange-300',
-  urgent: 'bg-red-100 text-red-700 border-red-300'
-};
+  const [newTask, setNewTask] = useState('');
+  const [newDescription, setNewDescription] = useState('');
 
-const statusColors = {
-  pending: 'bg-yellow-100 text-yellow-800',
-  in_progress: 'bg-blue-100 text-blue-800',
-  completed: 'bg-green-100 text-green-800',
-  overdue: 'bg-red-100 text-red-800'
-};
+  const addNewEntry = () => {
+    if (!newTask.trim()) return;
 
-const categoryIcons = {
-  followup: Clock,
-  call: User,
-  meeting: Calendar,
-  document: ArrowRight,
-  review: CheckCircle2,
-  reminder: AlertCircle
-};
-
-export default function DailyWorkLog({ 
-  tasks, 
-  onTaskComplete, 
-  onTaskView, 
-  onTaskSnooze,
-  compact = false 
-}: DailyWorkLogProps) {
-  const [completingTasks, setCompletingTasks] = useState<Set<string>>(new Set());
-  const [currentTime, setCurrentTime] = useState(new Date());
-  const { addNotification } = useNotifications();
-
-  // Update current time every minute
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 60000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  // Sort tasks by priority and due time
-  const sortedTasks = tasks
-    .filter(task => task.status !== 'completed')
-    .sort((a, b) => {
-      // First by status (overdue first)
-      if (a.status === 'overdue' && b.status !== 'overdue') return -1;
-      if (b.status === 'overdue' && a.status !== 'overdue') return 1;
-      
-      // Then by priority
-      const priorityOrder = { urgent: 4, high: 3, medium: 2, low: 1 };
-      const priorityDiff = priorityOrder[b.priority] - priorityOrder[a.priority];
-      if (priorityDiff !== 0) return priorityDiff;
-      
-      // Finally by due time
-      return a.dueDate.getTime() - b.dueDate.getTime();
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString('fa-IR', { 
+      hour: '2-digit', 
+      minute: '2-digit',
+      hour12: false 
     });
 
-  const todayTasks = sortedTasks.filter(task => {
-    const today = new Date();
-    const taskDate = new Date(task.dueDate);
-    return taskDate.toDateString() === today.toDateString();
-  });
+    const newEntry: WorkLogEntry = {
+      id: Date.now().toString(),
+      task: newTask,
+      description: newDescription,
+      startTime: timeStr,
+      status: 'in-progress',
+      priority: 'medium',
+      category: 'other'
+    };
 
-  const overdueTasks = sortedTasks.filter(task => {
-    return task.status === 'overdue' || task.dueDate < currentTime;
-  });
+    setEntries([newEntry, ...entries]);
+    setNewTask('');
+    setNewDescription('');
+  };
 
-  const upcomingTasks = sortedTasks.filter(task => {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    return task.dueDate > currentTime && task.dueDate < tomorrow;
-  });
+  const completeTask = (id: string) => {
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString('fa-IR', { 
+      hour: '2-digit', 
+      minute: '2-digit',
+      hour12: false 
+    });
 
-  const handleTaskComplete = async (taskId: string) => {
-    setCompletingTasks(prev => new Set(prev).add(taskId));
-    
-    try {
-      await onTaskComplete(taskId);
-      
-      // Add success notification
-      addNotification({
-        title: 'کار تکمیل شد',
-        message: 'کار با موفقیت به عنوان انجام شده علامت‌گذاری شد',
-        type: 'success',
-        priority: 'low'
-      });
-    } catch (error) {
-      addNotification({
-        title: 'خطا در تکمیل کار',
-        message: 'نتوانستیم کار را به عنوان انجام شده علامت‌گذاری کنیم',
-        type: 'error',
-        priority: 'medium'
-      });
-    } finally {
-      setCompletingTasks(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(taskId);
-        return newSet;
-      });
+    setEntries(entries.map(entry => 
+      entry.id === id 
+        ? { ...entry, status: 'completed', endTime: timeStr }
+        : entry
+    ));
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'completed': return 'bg-green-100 text-green-700 border-green-300';
+      case 'in-progress': return 'bg-blue-100 text-blue-700 border-blue-300';
+      case 'pending': return 'bg-yellow-100 text-yellow-700 border-yellow-300';
+      default: return 'bg-gray-100 text-gray-700 border-gray-300';
     }
   };
 
-  const formatTime = (date: Date, scheduledTime?: string) => {
-    if (scheduledTime) {
-      return scheduledTime;
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case 'high': return 'bg-red-100 text-red-700 border-red-300';
+      case 'medium': return 'bg-orange-100 text-orange-700 border-orange-300';
+      case 'low': return 'bg-green-100 text-green-700 border-green-300';
+      default: return 'bg-gray-100 text-gray-700 border-gray-300';
     }
-    return date.toLocaleTimeString('fa-IR', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
   };
 
-  const formatShamsiDate = (date: Date) => {
-    return date.toLocaleDateString('fa-IR');
-  };
+  return (
+    <div className="space-y-4">
+      {/* Add New Task Form */}
+      <div className="p-4 border border-gray-200 rounded-lg bg-gray-50">
+        <div className="space-y-3">
+          <Input
+            placeholder="عنوان کار جدید..."
+            value={newTask}
+            onChange={(e) => setNewTask(e.target.value)}
+            className="text-right"
+          />
+          <Textarea
+            placeholder="توضیحات (اختیاری)..."
+            value={newDescription}
+            onChange={(e) => setNewDescription(e.target.value)}
+            className="text-right resize-none"
+            rows={2}
+          />
+          <Button
+            onClick={addNewEntry}
+            disabled={!newTask.trim()}
+            className="w-full"
+            size="sm"
+          >
+            <Plus className="w-4 h-4 ml-2" />
+            افزودن کار جدید
+          </Button>
+        </div>
+      </div>
 
-  const TaskCard = ({ task, showAnimation = false }: { task: Task; showAnimation?: boolean }) => {
-    const IconComponent = categoryIcons[task.category];
-    const isCompleting = completingTasks.has(task.id);
-    
-    return (
-      <div
-        className={cn(
-          "group border rounded-lg p-3 transition-all duration-300 hover:shadow-md",
-          "bg-white border-gray-200",
-          task.status === 'overdue' && "border-red-300 bg-red-50",
-          task.priority === 'urgent' && "border-orange-300",
-          showAnimation && "animate-pulse",
-          isCompleting && "opacity-50"
-        )}
-      >
-        <div className="flex items-start gap-3">
-          <div className="flex-shrink-0 mt-1">
-            <Checkbox
-              checked={false}
-              disabled={isCompleting}
-              onCheckedChange={() => handleTaskComplete(task.id)}
-              className="data-[state=checked]:bg-green-500"
-            />
-          </div>
-          
-          <div className="flex-grow min-w-0">
-            <div className="flex items-center justify-between mb-2">
+      {/* Work Log Entries */}
+      <div className="space-y-2 max-h-64 overflow-y-auto">
+        {entries.map((entry) => (
+          <div
+            key={entry.id}
+            className="p-3 border border-gray-200 rounded-lg hover:border-gray-300 transition-all duration-200 bg-white"
+          >
+            <div className="flex items-start justify-between mb-2">
+              <h4 className="font-medium text-gray-900 text-sm">{entry.task}</h4>
               <div className="flex items-center gap-2">
-                <IconComponent className="h-4 w-4 text-gray-500" />
-                <h4 className={cn(
-                  "font-medium text-sm truncate",
-                  task.status === 'overdue' && "text-red-700"
-                )}>
-                  {task.title}
-                </h4>
-              </div>
-              
-              <div className="flex items-center gap-1">
-                <Badge 
-                  variant="outline"
-                  className={cn("text-xs", priorityColors[task.priority])}
-                >
-                  {task.priority === 'urgent' && 'فوری'}
-                  {task.priority === 'high' && 'مهم'}
-                  {task.priority === 'medium' && 'متوسط'}
-                  {task.priority === 'low' && 'کم'}
+                <Badge variant="outline" className={cn("text-xs", getPriorityColor(entry.priority))}>
+                  {entry.priority === 'high' ? 'مهم' : entry.priority === 'medium' ? 'متوسط' : 'کم'}
                 </Badge>
-                
-                {task.status === 'overdue' && (
-                  <Badge variant="destructive" className="text-xs animate-pulse">
-                    عقب‌افتاده
-                  </Badge>
-                )}
+                <Badge variant="outline" className={cn("text-xs", getStatusColor(entry.status))}>
+                  {entry.status === 'completed' ? 'تکمیل شده' : 
+                   entry.status === 'in-progress' ? 'در حال انجام' : 'در انتظار'}
+                </Badge>
               </div>
             </div>
             
-            {task.description && !compact && (
-              <p className="text-sm text-gray-600 mb-2 line-clamp-2">
-                {task.description}
-              </p>
+            {entry.description && (
+              <p className="text-sm text-gray-600 mb-2">{entry.description}</p>
             )}
             
-            <div className="flex items-center justify-between text-xs text-gray-500">
-              <div className="flex items-center gap-2">
-                <span className="flex items-center gap-1">
-                  <Clock className="h-3 w-3" />
-                  {formatTime(task.dueDate, task.scheduledTime)}
-                </span>
-                
-                <span>
-                  {formatShamsiDate(task.dueDate)}
-                </span>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-xs text-gray-500">
+                <Clock className="w-3 h-3" />
+                <span>{entry.startTime}</span>
+                {entry.endTime && (
+                  <>
+                    <span>-</span>
+                    <span>{entry.endTime}</span>
+                  </>
+                )}
               </div>
               
-              {task.representativeName && (
-                <span className="flex items-center gap-1 truncate max-w-24">
-                  <User className="h-3 w-3" />
-                  {task.representativeName}
-                </span>
-              )}
-            </div>
-            
-            <div className="flex items-center gap-2 mt-2">
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => onTaskView(task)}
-                className="text-xs h-6"
-              >
-                جزئیات
-              </Button>
-              
-              {onTaskSnooze && task.status !== 'overdue' && (
+              {entry.status === 'in-progress' && (
                 <Button
+                  onClick={() => completeTask(entry.id)}
                   size="sm"
-                  variant="ghost"
-                  onClick={() => {
-                    const tomorrow = new Date();
-                    tomorrow.setDate(tomorrow.getDate() + 1);
-                    onTaskSnooze(task.id, tomorrow);
-                  }}
-                  className="text-xs h-6"
+                  variant="outline"
+                  className="h-6 text-xs"
                 >
-                  تعویق
+                  <CheckCircle className="w-3 h-3 ml-1" />
+                  تکمیل
                 </Button>
               )}
             </div>
           </div>
-        </div>
+        ))}
       </div>
-    );
-  };
-
-  if (compact) {
-    return (
-      <Card className="w-full">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Clock className="h-5 w-5" />
-            کارتابل امروز
-            {(overdueTasks.length > 0 || todayTasks.length > 0) && (
-              <Badge variant="outline" className="mr-auto">
-                {overdueTasks.length + todayTasks.length}
-              </Badge>
-            )}
-          </CardTitle>
-        </CardHeader>
-        
-        <CardContent className="space-y-2">
-          {overdueTasks.length === 0 && todayTasks.length === 0 ? (
-            <div className="text-center py-4 text-gray-500">
-              <CheckCircle2 className="h-8 w-8 mx-auto mb-2 opacity-50" />
-              <p>همه کارهای امروز انجام شده است</p>
-            </div>
-          ) : (
-            <>
-              {overdueTasks.slice(0, 3).map(task => (
-                <TaskCard key={task.id} task={task} showAnimation />
-              ))}
-              {todayTasks.slice(0, 5).map(task => (
-                <TaskCard key={task.id} task={task} />
-              ))}
-            </>
-          )}
-        </CardContent>
-      </Card>
-    );
-  }
-
-  return (
-    <div className="space-y-4">
-      {overdueTasks.length > 0 && (
-        <Card className="border-red-300 bg-red-50">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg text-red-700 flex items-center gap-2">
-              <AlertCircle className="h-5 w-5 animate-pulse" />
-              کارهای عقب‌افتاده
-              <Badge variant="destructive" className="mr-auto">
-                {overdueTasks.length}
-              </Badge>
-            </CardTitle>
-          </CardHeader>
-          
-          <CardContent className="space-y-2">
-            {overdueTasks.map(task => (
-              <TaskCard key={task.id} task={task} showAnimation />
-            ))}
-          </CardContent>
-        </Card>
-      )}
       
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Calendar className="h-5 w-5" />
-            کارهای امروز
-            {todayTasks.length > 0 && (
-              <Badge variant="outline" className="mr-auto">
-                {todayTasks.length}
-              </Badge>
-            )}
-          </CardTitle>
-        </CardHeader>
-        
-        <CardContent className="space-y-2">
-          {todayTasks.length === 0 ? (
-            <div className="text-center py-4 text-gray-500">
-              <CheckCircle2 className="h-8 w-8 mx-auto mb-2 opacity-50" />
-              <p>کاری برای امروز تعریف نشده است</p>
-            </div>
-          ) : (
-            todayTasks.map(task => (
-              <TaskCard key={task.id} task={task} />
-            ))
-          )}
-        </CardContent>
-      </Card>
-      
-      {upcomingTasks.length > 0 && (
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Clock className="h-5 w-5" />
-              کارهای آینده
-              <Badge variant="outline" className="mr-auto">
-                {upcomingTasks.length}
-              </Badge>
-            </CardTitle>
-          </CardHeader>
-          
-          <CardContent className="space-y-2">
-            {upcomingTasks.slice(0, 5).map(task => (
-              <TaskCard key={task.id} task={task} />
-            ))}
-          </CardContent>
-        </Card>
+      {entries.length === 0 && (
+        <div className="text-center py-8 text-gray-500">
+          <Calendar className="w-8 h-8 mx-auto mb-2 opacity-50" />
+          <p>هنوز کاری ثبت نشده است</p>
+        </div>
       )}
     </div>
   );

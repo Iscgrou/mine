@@ -28,6 +28,11 @@ const navigationItems = [
     icon: "fas fa-file-invoice",
   },
   {
+    name: "دسته‌بندی صورتحساب‌ها",
+    href: "/invoice-batches",
+    icon: "fas fa-layer-group",
+  },
+  {
     name: "مرکز تحلیل و گزارش",
     href: "/analytics",
     icon: "fas fa-chart-bar",

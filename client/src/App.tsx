@@ -102,7 +102,8 @@ function Router() {
             <Route path="/ciwomplefoadm867945/" component={Dashboard} />
             <Route path="/ciwomplefoadm867945/dashboard" component={Dashboard} />
             <Route path="/ciwomplefoadm867945/representatives" component={Representatives} />
-            <Route path="/ciwomplefoadm867945/invoices" component={InvoiceBatches} />
+            <Route path="/ciwomplefoadm867945/invoices" component={Invoices} />
+            <Route path="/ciwomplefoadm867945/invoice-batches" component={InvoiceBatches} />
             <Route path="/ciwomplefoadm867945/analytics" component={Analytics} />
             <Route path="/ciwomplefoadm867945/import" component={ImportOds} />
             <Route path="/ciwomplefoadm867945/payments" component={Payments} />

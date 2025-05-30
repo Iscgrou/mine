@@ -4,6 +4,17 @@ import { storage } from "./storage";
 import { db } from "./db";
 import { representatives, financialLedger } from "@shared/schema";
 import { sql, eq } from "drizzle-orm";
+import { 
+  registerSecurityMiddleware, 
+  ValidationSchemas, 
+  sanitizeInput,
+  SecurityAuditLogger 
+} from "./security-hardening";
+import { 
+  registerStableRepresentativesAPI,
+  registerOptimizedEndpoints,
+  registerTokenOptimizationAPI 
+} from "./immediate-priority-fixes";
 
 import { aegisLogger, EventType, LogLevel } from "./aegis-logger";
 import { aegisMonitor } from "./aegis-monitor-fixed";
@@ -1811,6 +1822,14 @@ ${invoices.map((inv, index) =>
   registerTestEndpoints(app);
   registerVoiceWorkflowTests(app);
   registerSTTDiagnostic(app);
+
+  // Register Security Hardening middleware and endpoints
+  registerSecurityMiddleware(app);
+  
+  // Register Immediate Priority Fixes optimized endpoints
+  registerStableRepresentativesAPI(app);
+  registerOptimizedEndpoints(app);
+  registerTokenOptimizationAPI(app);
 
   const httpServer = createServer(app);
   return httpServer;

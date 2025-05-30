@@ -56,16 +56,16 @@ const crmNavigationItems = [
 
 export default function CrmSidebar() {
   const [location] = useLocation();
-  const { state } = useSidebar();
+  const { state, close } = useSidebar();
   const basePath = getCrmBasePath();
 
   return (
     <>
-      {/* Overlay for mobile */}
+      {/* Overlay - clickable to close */}
       {state.isOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
-          onClick={() => {}}
+          className="fixed inset-0 bg-black bg-opacity-50 z-30"
+          onClick={close}
         />
       )}
 
@@ -85,6 +85,13 @@ export default function CrmSidebar() {
               <h1 className="text-lg font-bold text-gray-900 truncate">مرکز CRM</h1>
               <p className="text-sm text-gray-500 truncate">MarFanet Customer Relations</p>
             </div>
+            <button
+              onClick={close}
+              className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md transition-colors"
+              title="بستن منو"
+            >
+              <i className="fas fa-times text-lg"></i>
+            </button>
           </div>
         </div>
 

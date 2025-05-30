@@ -71,16 +71,16 @@ const navigationItems = [
 
 export default function Sidebar() {
   const [location] = useLocation();
-  const { state } = useSidebar();
+  const { state, close } = useSidebar();
   const basePath = getBasePath();
 
   return (
     <>
-      {/* Overlay */}
+      {/* Overlay - clickable to close */}
       {state.isOpen && (
         <div 
           className="fixed inset-0 bg-black bg-opacity-50 z-40"
-          onClick={() => {}}
+          onClick={close}
         />
       )}
 
@@ -91,13 +91,20 @@ export default function Sidebar() {
         state.isOpen ? "translate-x-0" : "translate-x-full"
       )}>
         {/* Logo/Header */}
-        <div className="flex items-center justify-center h-16 px-4 border-b border-gray-200">
+        <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200">
           <div className="flex items-center space-x-reverse space-x-3">
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
               <i className="fas fa-chart-line text-white text-sm"></i>
             </div>
             <h1 className="text-lg xl:text-xl font-bold text-gray-900 truncate">مارفانت</h1>
           </div>
+          <button
+            onClick={close}
+            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md transition-colors"
+            title="بستن منو"
+          >
+            <i className="fas fa-times text-lg"></i>
+          </button>
         </div>
 
         {/* Navigation */}

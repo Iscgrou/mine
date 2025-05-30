@@ -649,6 +649,64 @@ ${invoices.map((inv, index) =>
     }
   });
 
+  // Invoice template preview endpoint with enhanced styling
+  app.get('/api/invoice/preview/:templateId', async (req, res) => {
+    try {
+      const { templateId } = req.params;
+      
+      // Import the enhanced templates
+      const { enhancedInvoiceTemplates } = await import('./enhanced-invoice-templates');
+      
+      // Get sample invoice data
+      const sampleInvoice = {
+        invoiceNumber: 'INV-2025-SAMPLE',
+        representative: {
+          fullName: 'محمد رضا احمدی',
+          phoneNumber: '09121234567',
+          storeName: 'فروشگاه موبایل پارس'
+        },
+        items: [
+          {
+            description: 'سرویس V2Ray Standard - یک ماه',
+            quantity: '1',
+            unitPrice: '75000',
+            totalPrice: '75000'
+          },
+          {
+            description: 'V2Ray Premium - سه ماه',
+            quantity: '1',
+            unitPrice: '200000',
+            totalPrice: '200000'
+          }
+        ],
+        totalAmount: '275000',
+        status: 'پرداخت شده'
+      };
+
+      // Generate invoice HTML using enhanced templates
+      const invoiceHTML = enhancedInvoiceTemplates.generateInvoice(sampleInvoice, templateId);
+      
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      res.send(invoiceHTML);
+    } catch (error) {
+      console.error('Invoice preview error:', error);
+      res.status(500).json({ error: 'خطا در نمایش پیش‌نمایش فاکتور' });
+    }
+  });
+
+  // Get available invoice templates
+  app.get('/api/invoice/templates', async (req, res) => {
+    try {
+      const { enhancedInvoiceTemplates } = await import('./enhanced-invoice-templates');
+      const templates = enhancedInvoiceTemplates.getAvailableTemplates();
+      
+      res.json(templates);
+    } catch (error) {
+      console.error('Templates fetch error:', error);
+      res.status(500).json({ error: 'خطا در دریافت قالب‌ها' });
+    }
+  });
+
   // Individual invoice share to representative's Telegram
   app.post("/api/invoices/:id/share-telegram", async (req, res) => {
     try {

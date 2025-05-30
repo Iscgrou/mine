@@ -88,20 +88,70 @@ interface GeneratedInvoice {
 }
 
 class AdvancedInvoiceTemplating {
-  private readonly DEFAULT_TEMPLATES: Record<string, Partial<InvoiceTemplate>> = {
-    'professional_blue': {
-      name: 'قالب حرفه‌ای آبی',
-      type: 'standard',
+  private readonly ADVANCED_TEMPLATES: Record<string, Partial<InvoiceTemplate>> = {
+    'modern_clean': {
+      name: 'مدرن و پاک',
+      type: 'premium',
       design: {
-        headerColor: '#1e40af',
-        accentColor: '#3b82f6',
-        fontFamily: 'vazir',
-        logoPosition: 'right',
+        headerColor: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        accentColor: '#4f46e5',
+        fontFamily: 'iran_sans',
+        logoPosition: 'left',
         layoutStyle: 'modern'
       },
+      algorithm: 'minimalist_geometry',
+      branding: {
+        companyName: 'MarFanet',
+        companySlogan: 'آینده ارتباطات',
+        brandColors: {
+          primary: '#4f46e5',
+          secondary: '#e5e7eb',
+          accent: '#10b981'
+        }
+      }
+    },
+    'classic_formal': {
+      name: 'کلاسیک و رسمی',
+      type: 'standard',
+      design: {
+        headerColor: '#1f2937',
+        accentColor: '#374151',
+        fontFamily: 'vazir',
+        logoPosition: 'center',
+        layoutStyle: 'classic'
+      },
+      algorithm: 'traditional_borders',
+      branding: {
+        companyName: 'MarFanet',
+        companySlogan: 'خدمات ارتباطی پیشرفته',
+        brandColors: {
+          primary: '#1f2937',
+          secondary: '#f3f4f6',
+          accent: '#d97706'
+        }
+      }
+    },
+    'persian_optimized': {
+      name: 'بهینه شده فارسی',
+      type: 'premium',
+      design: {
+        headerColor: '#059669',
+        accentColor: '#10b981',
+        fontFamily: 'sahel',
+        logoPosition: 'right',
+        layoutStyle: 'minimal'
+      },
+      algorithm: 'calligraphy_enhanced',
       branding: {
         companyName: 'مارفانت',
-        companySlogan: 'ارائه‌دهنده خدمات V2Ray',
+        companySlogan: 'فناوری در خدمت ایرانیان',
+        brandColors: {
+          primary: '#059669',
+          secondary: '#f0fdf4',
+          accent: '#dc2626'
+        }
+      }
+    }
         brandColors: {
           primary: '#1e40af',
           secondary: '#64748b',

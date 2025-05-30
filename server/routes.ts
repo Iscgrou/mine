@@ -769,13 +769,17 @@ ${invoices.map((inv, index) =>
         let consecutiveEmptyRows = 0;
         const invoicesCreated = [];
 
+        console.log(`Processing .ods file with ${data.length} total rows`);
+        
         for (let i = 1; i < data.length; i++) { // Skip header row
           const row = data[i] as any[];
           
           // Check for two consecutive empty rows to stop processing
           if (!row || row.length === 0 || !row[0]) {
             consecutiveEmptyRows++;
+            console.log(`Empty row at ${i}, consecutive count: ${consecutiveEmptyRows}`);
             if (consecutiveEmptyRows >= 2) {
+              console.log(`Stopping processing at row ${i} due to consecutive empty rows`);
               break;
             }
             continue;
@@ -785,9 +789,12 @@ ${invoices.map((inv, index) =>
 
           const adminUsername = row[0]?.toString().trim();
           if (!adminUsername) {
+            console.log(`Skipping row ${i}: no admin username`);
             recordsSkipped++;
             continue;
           }
+          
+          console.log(`Processing row ${i}: ${adminUsername}`);
 
           // Get or create representative
           let representative = await storage.getRepresentativeByAdminUsername(adminUsername);
@@ -815,7 +822,11 @@ ${invoices.map((inv, index) =>
           const hasStandardSubscriptions = row.slice(12, 18).some(val => val !== null && val !== undefined && val !== '');
           const hasUnlimitedSubscriptions = row.slice(18, 24).some(val => val !== null && val !== undefined && val !== '');
 
+          console.log(`Row ${i} subscription check: standard=${hasStandardSubscriptions}, unlimited=${hasUnlimitedSubscriptions}`);
+          console.log(`Row ${i} data length: ${row.length}, sample columns: [${row.slice(0, 25).map((v, idx) => `${idx}:${v}`).join(', ')}]`);
+
           if (!hasStandardSubscriptions && !hasUnlimitedSubscriptions) {
+            console.log(`Skipping row ${i}: no subscription data found`);
             recordsSkipped++;
             continue;
           }

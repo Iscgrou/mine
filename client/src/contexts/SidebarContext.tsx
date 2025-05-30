@@ -54,19 +54,34 @@ export const SidebarProvider: React.FC<SidebarProviderProps> = ({ children }) =>
 
   const [state, setState] = useState<SidebarState>(getInitialState);
 
-  // Update CSS custom properties whenever state changes
+  // Integrated content adaptation - automatically adjusts content when sidebar state changes
   const updateCSSProperties = useCallback((newState: SidebarState) => {
     const root = document.documentElement;
     
     if (newState.isOpen) {
+      // Sidebar open: content adapts to remaining space
       root.style.setProperty('--sidebar-width', `${newState.width}px`);
       root.style.setProperty('--content-width', `calc(100vw - ${newState.width}px)`);
       root.setAttribute('data-sidebar', 'open');
+      
+      // Trigger content reflow for responsive components
+      root.style.setProperty('--content-max-width', `calc(100vw - ${newState.width}px)`);
+      root.style.setProperty('--grid-container-width', `calc(100vw - ${newState.width}px - 3rem)`);
     } else {
+      // Sidebar closed: content expands to full width automatically
       root.style.setProperty('--sidebar-width', '0px');
       root.style.setProperty('--content-width', '100vw');
       root.setAttribute('data-sidebar', 'closed');
+      
+      // Expand content to full available space
+      root.style.setProperty('--content-max-width', '100vw');
+      root.style.setProperty('--grid-container-width', 'calc(100vw - 3rem)');
     }
+    
+    // Dispatch event for components that need to recalculate layouts
+    window.dispatchEvent(new CustomEvent('sidebar-layout-change', {
+      detail: { isOpen: newState.isOpen, width: newState.width }
+    }));
   }, []);
 
   // Handle window resize for mobile detection

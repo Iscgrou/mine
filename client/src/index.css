@@ -4,10 +4,12 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Enhanced Dynamic Layout System - Flexbox Based */
+/* Integrated Dynamic Layout System - Single Toggle Control */
 :root {
   --sidebar-width: 250px;
   --content-width: calc(100vw - var(--sidebar-width));
+  --content-max-width: calc(100vw - var(--sidebar-width));
+  --grid-container-width: calc(100vw - var(--sidebar-width) - 3rem);
   --content-padding: 2rem;
   --transition-duration: 0.3s;
   --transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
@@ -67,13 +69,15 @@
   border-bottom: 1px solid var(--border);
 }
 
-/* Page Content */
+/* Page Content - Automatically adapts to sidebar state */
 .page-content {
   flex: 1;
   padding: var(--content-padding);
   overflow-y: auto;
-  width: 100%;
+  width: var(--content-width);
+  max-width: var(--content-max-width);
   container-type: inline-size;
+  transition: width var(--transition-duration) var(--transition-easing);
 }
 
 /* Responsive Container Queries */
@@ -101,12 +105,14 @@
   }
 }
 
-/* Dashboard Stats Grid */
+/* Integrated Stats Grid - Adapts automatically to sidebar state */
 .stats-grid {
   display: grid;
   gap: 1.5rem;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   container-type: inline-size;
+  width: var(--grid-container-width);
+  transition: width var(--transition-duration) var(--transition-easing);
 }
 
 @container (max-width: 400px) {
@@ -116,11 +122,14 @@
   }
 }
 
-/* Card Grid System */
+/* Integrated Card Grid - Single toggle automatically adjusts layout */
 .card-grid {
   display: grid;
   gap: 1.5rem;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  width: var(--grid-container-width);
+  container-type: inline-size;
+  transition: width var(--transition-duration) var(--transition-easing);
 }
 
 /* Table Responsiveness */

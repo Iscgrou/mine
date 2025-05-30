@@ -71,6 +71,25 @@ export default function Analytics() {
     },
   });
 
+  // Revenue Prediction mutation
+  const revenuePredictionMutation = useMutation({
+    mutationFn: (params: { timeframe: string }) => 
+      apiRequest('POST', '/api/analytics/revenue-prediction', params),
+    onSuccess: (data: any) => {
+      toast({
+        title: "موفقیت",
+        description: "پیش‌بینی درآمد با موفقیت تولید شد",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "خطا",
+        description: error?.message || "خطا در پیش‌بینی درآمد",
+        variant: "destructive",
+      });
+    },
+  });
+
   if (apiKeysLoading) {
     return (
       <div className="space-y-6">

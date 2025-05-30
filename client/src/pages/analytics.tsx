@@ -213,13 +213,13 @@ export default function Analytics() {
   };
 
   const MetricCard = ({ title, value, subtitle, icon: Icon, trend }: any) => (
-    <Card>
+    <Card className="h-full">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium text-right">{title}</CardTitle>
-        <Icon className="h-4 w-4 text-muted-foreground" />
+        <CardTitle className="text-xs md:text-sm font-medium text-right">{title}</CardTitle>
+        <Icon className="h-3 w-3 md:h-4 md:w-4 text-muted-foreground" />
       </CardHeader>
-      <CardContent>
-        <div className="text-2xl font-bold text-right">{value}</div>
+      <CardContent className="pb-3">
+        <div className="text-lg md:text-2xl font-bold text-right break-words">{value}</div>
         {subtitle && (
           <p className="text-xs text-muted-foreground text-right mt-1">
             {trend && (
@@ -235,14 +235,14 @@ export default function Analytics() {
   );
 
   return (
-    <div className="p-6 space-y-6" dir="rtl">
+    <div className="p-3 md:p-6 space-y-4 md:space-y-6" dir="rtl">
       <div className="flex flex-col space-y-2">
-        <h1 className="text-3xl font-bold">داشبورد تحلیلی</h1>
-        <p className="text-muted-foreground">تحلیل جامع عملکرد کسب و کار و نمایندگان</p>
+        <h1 className="text-2xl md:text-3xl font-bold">داشبورد تحلیلی</h1>
+        <p className="text-sm md:text-base text-muted-foreground">تحلیل جامع عملکرد کسب و کار و نمایندگان</p>
       </div>
 
       {/* Overview Metrics */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 md:gap-4 grid-cols-2 lg:grid-cols-4">
         <MetricCard
           title="کل درآمد"
           value={formatCurrency(analyticsData.overview.totalRevenue)}
@@ -272,13 +272,15 @@ export default function Analytics() {
       </div>
 
       <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="overview">کلی</TabsTrigger>
-          <TabsTrigger value="services">خدمات</TabsTrigger>
-          <TabsTrigger value="regions">مناطق</TabsTrigger>
-          <TabsTrigger value="representatives">نمایندگان</TabsTrigger>
-          <TabsTrigger value="trends">روندها</TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto">
+          <TabsList className="grid w-full grid-cols-5 min-w-max">
+            <TabsTrigger value="overview" className="text-xs md:text-sm">کلی</TabsTrigger>
+            <TabsTrigger value="services" className="text-xs md:text-sm">خدمات</TabsTrigger>
+            <TabsTrigger value="regions" className="text-xs md:text-sm">مناطق</TabsTrigger>
+            <TabsTrigger value="representatives" className="text-xs md:text-sm">نمایندگان</TabsTrigger>
+            <TabsTrigger value="trends" className="text-xs md:text-sm">روندها</TabsTrigger>
+          </TabsList>
+        </div>
 
         <TabsContent value="overview" className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2">
@@ -288,15 +290,18 @@ export default function Analytics() {
                 <CardDescription>مقایسه عملکرد سه ماه اخیر</CardDescription>
               </CardHeader>
               <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
+                <ResponsiveContainer width="100%" height={250}>
                   <AreaChart data={analyticsData.monthlyTrends}>
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="month" />
-                    <YAxis />
-                    <Tooltip formatter={(value, name) => [
-                      name === 'revenue' ? formatCurrency(Number(value)) : value,
-                      name === 'revenue' ? 'درآمد' : name === 'invoices' ? 'فاکتور' : 'نمایندگان'
-                    ]} />
+                    <XAxis dataKey="month" fontSize={12} />
+                    <YAxis fontSize={12} />
+                    <Tooltip 
+                      formatter={(value, name) => [
+                        name === 'revenue' ? formatCurrency(Number(value)) : value,
+                        name === 'revenue' ? 'درآمد' : name === 'invoices' ? 'فاکتور' : 'نمایندگان'
+                      ]} 
+                      contentStyle={{ fontSize: '12px' }}
+                    />
                     <Area type="monotone" dataKey="revenue" stackId="1" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
                   </AreaChart>
                 </ResponsiveContainer>
@@ -341,7 +346,7 @@ export default function Analytics() {
                 <CardDescription>درصد استفاده از انواع خدمات</CardDescription>
               </CardHeader>
               <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
+                <ResponsiveContainer width="100%" height={250}>
                   <PieChart>
                     <Pie
                       data={analyticsData.serviceBreakdown}
@@ -349,15 +354,16 @@ export default function Analytics() {
                       cy="50%"
                       labelLine={false}
                       label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                      outerRadius={80}
+                      outerRadius={60}
                       fill="#8884d8"
                       dataKey="value"
+                      fontSize={10}
                     >
                       {analyticsData.serviceBreakdown.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.color} />
                       ))}
                     </Pie>
-                    <Tooltip />
+                    <Tooltip contentStyle={{ fontSize: '12px' }} />
                   </PieChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -369,12 +375,15 @@ export default function Analytics() {
                 <CardDescription>مقایسه درآمد انواع خدمات</CardDescription>
               </CardHeader>
               <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
+                <ResponsiveContainer width="100%" height={250}>
                   <BarChart data={analyticsData.serviceBreakdown}>
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip formatter={(value) => formatCurrency(Number(value))} />
+                    <XAxis dataKey="name" fontSize={12} />
+                    <YAxis fontSize={12} />
+                    <Tooltip 
+                      formatter={(value) => formatCurrency(Number(value))} 
+                      contentStyle={{ fontSize: '12px' }}
+                    />
                     <Bar dataKey="revenue" fill="#8884d8" />
                   </BarChart>
                 </ResponsiveContainer>
@@ -455,16 +464,16 @@ export default function Analytics() {
               <CardDescription>بررسی تغییرات عملکرد در طول زمان</CardDescription>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={400}>
+              <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={analyticsData.monthlyTrends}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis yAxisId="left" />
-                  <YAxis yAxisId="right" orientation="right" />
-                  <Tooltip />
-                  <Line yAxisId="left" type="monotone" dataKey="revenue" stroke="#8884d8" name="درآمد" />
-                  <Line yAxisId="right" type="monotone" dataKey="invoices" stroke="#82ca9d" name="فاکتور" />
-                  <Line yAxisId="right" type="monotone" dataKey="representatives" stroke="#ffc658" name="نمایندگان" />
+                  <XAxis dataKey="month" fontSize={12} />
+                  <YAxis yAxisId="left" fontSize={12} />
+                  <YAxis yAxisId="right" orientation="right" fontSize={12} />
+                  <Tooltip contentStyle={{ fontSize: '12px' }} />
+                  <Line yAxisId="left" type="monotone" dataKey="revenue" stroke="#8884d8" name="درآمد" strokeWidth={2} />
+                  <Line yAxisId="right" type="monotone" dataKey="invoices" stroke="#82ca9d" name="فاکتور" strokeWidth={2} />
+                  <Line yAxisId="right" type="monotone" dataKey="representatives" stroke="#ffc658" name="نمایندگان" strokeWidth={2} />
                 </LineChart>
               </ResponsiveContainer>
             </CardContent>

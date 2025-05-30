@@ -21,6 +21,7 @@ import CrmCustomers from "@/pages/crm-customers";
 import CrmTickets from "@/pages/crm-tickets";
 import CrmCallPreparation from "@/pages/crm-call-preparation";
 import CrmVoiceNotes from "@/pages/crm-voice-notes";
+import CRTPerformance from "@/pages/crt-performance";
 import AegisDashboard from "@/pages/aegis-dashboard";
 import AegisTest from "@/pages/aegis-test";
 import GoogleCloudSetup from "@/pages/google-cloud-setup";
@@ -47,6 +48,7 @@ function Router() {
               <Route path="/crm/tickets" component={CrmTickets} />
               <Route path="/crm/call-preparation" component={CrmCallPreparation} />
               <Route path="/crm/voice-notes" component={CrmVoiceNotes} />
+              <Route path="/crm/crt-performance" component={CRTPerformance} />
               <Route path="/crm/followups" component={CrmTickets} />
               <Route path="/crm/reports" component={Analytics} />
               <Route component={NotFound} />
@@ -73,6 +75,7 @@ function Router() {
             <Route path="/admin/invoices" component={Invoices} />
             <Route path="/admin/invoice-batches" component={InvoiceBatches} />
             <Route path="/admin/analytics" component={Analytics} />
+            <Route path="/admin/crt-performance" component={CRTPerformance} />
             <Route path="/admin/import" component={ImportOds} />
             <Route path="/admin/payments" component={Payments} />
             <Route path="/admin/backup" component={Backup} />

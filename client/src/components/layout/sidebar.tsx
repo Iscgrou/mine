@@ -38,6 +38,11 @@ const navigationItems = [
     icon: "fas fa-chart-bar",
   },
   {
+    name: "نظارت عملکرد CRT",
+    href: "/crt-performance",
+    icon: "fas fa-analytics",
+  },
+  {
     name: "آپلود فایل ODS",
     href: "/import",
     icon: "fas fa-upload",

@@ -38,6 +38,11 @@ const crmNavigationItems = [
     icon: "fas fa-microphone",
   },
   {
+    name: "نظارت عملکرد CRT",
+    href: "/crt-performance",
+    icon: "fas fa-chart-bar",
+  },
+  {
     name: "پیگیری‌ها",
     href: "/followups",
     icon: "fas fa-tasks",

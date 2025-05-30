@@ -94,52 +94,45 @@ export default function Sidebar() {
         />
       )}
 
-      {/* Sidebar - Hidden by default */}
-      <div className={cn(
-        "fixed inset-y-0 right-0 z-50 bg-white shadow-xl border-l border-gray-200 transition-all duration-300 ease-in-out flex flex-col",
-        "w-80 sm:w-72 md:w-64",
-        state.isOpen ? "translate-x-0" : "translate-x-full"
-      )}>
-        {/* Logo/Header */}
-        <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200 flex-shrink-0">
-          <div className="flex items-center space-x-reverse space-x-3">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <i className="fas fa-chart-line text-white text-sm"></i>
+      {/* Dynamic Responsive Sidebar */}
+      <div 
+        className="sidebar-dynamic"
+        data-sidebar-state={state.isOpen ? "open" : "closed"}
+      >
+        {/* Header Section - Fixed */}
+        <div className="sidebar-header">
+          <div className="sidebar-brand">
+            <div className="brand-icon">
+              <i className="fas fa-chart-line"></i>
             </div>
-            <h1 className="text-lg xl:text-xl font-bold text-gray-900 truncate">مارفانت</h1>
+            <h1 className="brand-title">مارفانت</h1>
           </div>
           <button
             onClick={close}
-            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-md transition-colors"
+            className="sidebar-close-btn"
             title="بستن منو"
           >
-            <i className="fas fa-times text-lg"></i>
+            <i className="fas fa-times"></i>
           </button>
         </div>
 
-        {/* Navigation */}
-        <nav className="sidebar-nav-scrollable mt-6 px-3 pb-6">
-          <div className="space-y-2">
+        {/* Navigation Section - Scrollable */}
+        <nav className="sidebar-navigation">
+          <div className="nav-items-container">
             {navigationItems.map((item) => {
               const fullHref = basePath + item.href;
               const isActive = location === fullHref || (item.href === "/dashboard" && (location === basePath || location === basePath + "/"));
               
               return (
-                <Link key={item.href} href={fullHref}>
-                  <span
-                    className={cn(
-                      "group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200",
-                      isActive
-                        ? "bg-primary bg-opacity-10 text-primary"
-                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-                    )}
-                    onClick={() => {}} // Navigation handled by router
-                  >
-                    <i className={cn(item.icon, "ml-3 text-base flex-shrink-0 w-5 flex justify-center", 
-                      isActive ? "text-primary" : "text-gray-400 group-hover:text-gray-500"
-                    )}></i>
-                    <span className="truncate">{item.name}</span>
-                  </span>
+                <Link
+                  key={item.href}
+                  href={fullHref}
+                  className="nav-item"
+                  data-active={isActive}
+                  onClick={close}
+                >
+                  <i className={cn("nav-item-icon", item.icon)}></i>
+                  <span className="nav-item-text">{item.name}</span>
                 </Link>
               );
             })}
@@ -147,16 +140,16 @@ export default function Sidebar() {
         </nav>
 
         {/* Footer */}
-        <div className="absolute bottom-0 w-full p-4 border-t border-gray-200">
-          <div className="flex items-center">
-            <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center ml-3 flex-shrink-0">
-              <i className="fas fa-user text-gray-600 text-sm"></i>
+        <div className="sidebar-footer">
+          <div className="footer-content">
+            <div className="user-avatar">
+              <i className="fas fa-user"></i>
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900 truncate">مدیر سیستم</p>
-              <p className="text-xs text-gray-500 truncate">آنلاین</p>
+            <div className="user-info">
+              <p className="user-name">مدیر سیستم</p>
+              <p className="user-status">آنلاین</p>
             </div>
-            <button className="text-gray-400 hover:text-gray-600 flex-shrink-0">
+            <button className="logout-btn">
               <i className="fas fa-sign-out-alt"></i>
             </button>
           </div>

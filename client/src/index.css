@@ -48,29 +48,234 @@
   width: 0;
 }
 
-/* Sidebar Navigation Scrolling */
-.sidebar-nav-scrollable {
-  height: calc(100vh - 4rem); /* Full height minus header */
-  overflow-y: auto;
-  overflow-x: hidden;
+/* Dynamic Sidebar System */
+.sidebar-dynamic {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 320px;
+  background: white;
+  border-left: 1px solid #e5e7eb;
+  box-shadow: -4px 0 15px rgba(0, 0, 0, 0.1);
+  transform: translateX(100%);
+  transition: transform var(--transition-duration) var(--transition-easing);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
 }
 
-.sidebar-nav-scrollable::-webkit-scrollbar {
+.sidebar-dynamic[data-sidebar-state="open"] {
+  transform: translateX(0);
+}
+
+.sidebar-dynamic[data-sidebar-state="closed"] {
+  transform: translateX(100%);
+}
+
+/* Sidebar Header */
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 4rem;
+  padding: 0 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  flex-shrink: 0;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.brand-icon {
+  width: 2rem;
+  height: 2rem;
+  background: hsl(var(--primary));
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.875rem;
+}
+
+.brand-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.sidebar-close-btn {
+  padding: 0.5rem;
+  color: #9ca3af;
+  border-radius: 0.375rem;
+  transition: all 0.2s;
+}
+
+.sidebar-close-btn:hover {
+  color: #4b5563;
+  background: #f3f4f6;
+}
+
+/* Sidebar Navigation */
+.sidebar-navigation {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 1.5rem 0.75rem 1.5rem;
+}
+
+.nav-items-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Navigation Items */
+.nav-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+  color: #4b5563;
+  text-decoration: none;
+  position: relative;
+}
+
+.nav-item:hover {
+  background: #f9fafb;
+  color: hsl(var(--primary));
+}
+
+.nav-item[data-active="true"] {
+  background: hsla(var(--primary), 0.1);
+  color: hsl(var(--primary));
+  border-right: 4px solid hsl(var(--primary));
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.nav-item-icon {
+  margin-left: 0.75rem;
+  font-size: 1rem;
+  width: 1.25rem;
+  display: flex;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.nav-item-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nav-item-badge {
+  margin-right: auto;
+  background: #ef4444;
+  color: white;
+  font-size: 0.75rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+}
+
+/* Custom Scrollbar */
+.sidebar-navigation::-webkit-scrollbar {
   width: 6px;
 }
 
-.sidebar-nav-scrollable::-webkit-scrollbar-track {
-  background: #f1f1f1;
+.sidebar-navigation::-webkit-scrollbar-track {
+  background: #f1f5f9;
   border-radius: 3px;
 }
 
-.sidebar-nav-scrollable::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
+.sidebar-navigation::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
   border-radius: 3px;
 }
 
-.sidebar-nav-scrollable::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
+.sidebar-navigation::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Sidebar Footer */
+.sidebar-footer {
+  border-top: 1px solid #e5e7eb;
+  padding: 1rem;
+  flex-shrink: 0;
+}
+
+.footer-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.user-avatar {
+  width: 2rem;
+  height: 2rem;
+  background: #d1d5db;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4b5563;
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+
+.user-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.user-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #111827;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-status {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.logout-btn {
+  color: #9ca3af;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  transition: color 0.2s;
+  flex-shrink: 0;
+}
+
+.logout-btn:hover {
+  color: #4b5563;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .sidebar-dynamic {
+    width: 280px;
+  }
+}
+
+@media (max-width: 640px) {
+  .sidebar-dynamic {
+    width: 100vw;
+  }
 }
 
 /* Main Content Container */

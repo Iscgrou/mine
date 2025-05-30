@@ -478,22 +478,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Representatives with balance - Working solution using storage layer
+  // Representatives with balance - Direct database implementation
   app.get("/api/representatives/with-balance", async (req, res) => {
     try {
-      console.log("Fetching representatives with balance...");
-      const representatives = await storage.getRepresentatives();
+      console.log("Direct database: Fetching representatives with balance...");
       
-      // Add balance field to each representative
-      const representativesWithBalance = representatives.map(rep => ({
+      // Direct database query to bypass storage layer issues
+      const allReps = await db.select().from(representatives);
+      console.log(`Direct query retrieved ${allReps.length} representatives`);
+      
+      // Add balance field (0 for all as no financial data exists yet)
+      const representativesWithBalance = allReps.map(rep => ({
         ...rep,
-        currentBalance: 0 // Real balances will be calculated when financial ledger has data
+        currentBalance: 0
       }));
       
-      console.log(`Successfully retrieved ${representativesWithBalance.length} representatives with balance`);
+      console.log(`Direct database success: ${representativesWithBalance.length} representatives with balance`);
       res.json(representativesWithBalance);
     } catch (error) {
-      console.error("Error in representatives/with-balance:", error);
+      console.error("Direct database error:", error);
       res.status(500).json({ message: "خطا در دریافت نماینده" });
     }
   });

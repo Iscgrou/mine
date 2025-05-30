@@ -263,7 +263,7 @@ class NovaAIEngine {
       }
 
     } catch (error) {
-      aegisLogger.logAIError('NovaAIEngine', 'Grok', error, {
+      aegisLogger.logAIError('NovaAIEngine', 'VertexAI', error, {
         duration: Date.now() - startTime,
         promptLength: prompt.length
       });

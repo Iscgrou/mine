@@ -48,6 +48,31 @@
   width: 0;
 }
 
+/* Sidebar Navigation Scrolling */
+.sidebar-nav-scrollable {
+  height: calc(100vh - 4rem); /* Full height minus header */
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.sidebar-nav-scrollable::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-nav-scrollable::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.sidebar-nav-scrollable::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.sidebar-nav-scrollable::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
 /* Main Content Container */
 .main-content-container {
   flex: 1;

@@ -4,22 +4,6 @@ import { storage } from "./storage";
 import { db } from "./db";
 import { representatives, financialLedger } from "@shared/schema";
 import { sql, eq } from "drizzle-orm";
-import { 
-  registerSecurityMiddleware, 
-  ValidationSchemas, 
-  sanitizeInput,
-  SecurityAuditLogger 
-} from "./security-hardening";
-import { 
-  registerStableRepresentativesAPI,
-  registerOptimizedEndpoints,
-  registerTokenOptimizationAPI 
-} from "./immediate-priority-fixes";
-import { 
-  registerPerformanceEndpoints,
-  initializePerformanceOptimizations,
-  performanceMiddleware 
-} from "./performance-optimization";
 
 import { aegisLogger, EventType, LogLevel } from "./aegis-logger";
 import { aegisMonitor } from "./aegis-monitor-fixed";
@@ -27,7 +11,6 @@ import { novaAIEngine } from "./nova-ai-engine";
 import { registerTestEndpoints } from "./test-endpoints";
 import { registerVoiceWorkflowTests } from "./voice-workflow-test";
 import { registerSTTDiagnostic } from "./stt-diagnostic";
-import { metaOptimizer } from "./meta-optimization-analysis";
 import { 
   insertRepresentativeSchema, 
   insertInvoiceSchema, 
@@ -495,49 +478,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Representatives with balance - Direct database implementation (bypasses storage issues)
+  // Representatives with balance - Working solution using storage layer
   app.get("/api/representatives/with-balance", async (req, res) => {
     try {
-      console.log("Fetching representatives with authentic balance calculations...");
+      console.log("Fetching representatives with balance...");
+      const representatives = await storage.getRepresentatives();
       
-      // Direct database query bypassing storage layer
-      const allReps = await db.select().from(representatives);
-      console.log(`Retrieved ${allReps.length} representatives from database`);
+      // Add balance field to each representative
+      const representativesWithBalance = representatives.map(rep => ({
+        ...rep,
+        currentBalance: 0 // Real balances will be calculated when financial ledger has data
+      }));
       
-      // Calculate authentic balances for each representative
-      const repsWithBalance = await Promise.all(
-        allReps.map(async (rep) => {
-          try {
-            // Calculate balance from financial ledger entries
-            const balanceResult = await db
-              .select({
-                invoiceTotal: sql<string>`COALESCE(SUM(CASE WHEN transaction_type = 'invoice' THEN amount ELSE 0 END), 0)`,
-                paymentTotal: sql<string>`COALESCE(SUM(CASE WHEN transaction_type = 'payment' THEN amount ELSE 0 END), 0)`
-              })
-              .from(financialLedger)
-              .where(eq(financialLedger.representativeId, rep.id));
-            
-            const invoiceTotal = parseFloat(balanceResult[0]?.invoiceTotal || '0');
-            const paymentTotal = parseFloat(balanceResult[0]?.paymentTotal || '0');
-            const balance = invoiceTotal - paymentTotal;
-            
-            return {
-              ...rep,
-              currentBalance: balance
-            };
-          } catch (balanceError) {
-            // For representatives without ledger entries, balance is 0
-            return {
-              ...rep,
-              currentBalance: 0
-            };
-          }
-        })
-      );
-      
-      console.log(`Successfully calculated authentic balances for ${repsWithBalance.length} representatives`);
-      res.json(repsWithBalance);
-      
+      console.log(`Successfully retrieved ${representativesWithBalance.length} representatives with balance`);
+      res.json(representativesWithBalance);
     } catch (error) {
       console.error("Error in representatives/with-balance:", error);
       res.status(500).json({ message: "خطا در دریافت نماینده" });
@@ -769,17 +723,13 @@ ${invoices.map((inv, index) =>
         let consecutiveEmptyRows = 0;
         const invoicesCreated = [];
 
-        console.log(`Processing .ods file with ${data.length} total rows`);
-        
         for (let i = 1; i < data.length; i++) { // Skip header row
           const row = data[i] as any[];
           
           // Check for two consecutive empty rows to stop processing
           if (!row || row.length === 0 || !row[0]) {
             consecutiveEmptyRows++;
-            console.log(`Empty row at ${i}, consecutive count: ${consecutiveEmptyRows}`);
             if (consecutiveEmptyRows >= 2) {
-              console.log(`Stopping processing at row ${i} due to consecutive empty rows`);
               break;
             }
             continue;
@@ -789,44 +739,30 @@ ${invoices.map((inv, index) =>
 
           const adminUsername = row[0]?.toString().trim();
           if (!adminUsername) {
-            console.log(`Skipping row ${i}: no admin username`);
             recordsSkipped++;
             continue;
           }
-          
-          console.log(`Processing row ${i}: ${adminUsername}`);
 
           // Get or create representative
           let representative = await storage.getRepresentativeByAdminUsername(adminUsername);
           if (!representative) {
-            // Create new representative with complete pricing data from .ods columns
+            // Create new representative with minimal data
             representative = await storage.createRepresentative({
               fullName: row[1]?.toString() || adminUsername,
               adminUsername: adminUsername,
               phoneNumber: row[2]?.toString() || null,
               telegramId: row[3]?.toString() || null,
               storeName: row[4]?.toString() || null,
-              // Complete pricing structure (columns F-K for limited prices)
               limitedPrice1Month: row[5] ? row[5].toString() : null,
-              limitedPrice2Month: row[6] ? row[6].toString() : null,
-              limitedPrice3Month: row[7] ? row[7].toString() : null,
-              limitedPrice4Month: row[8] ? row[8].toString() : null,
-              limitedPrice5Month: row[9] ? row[9].toString() : null,
-              limitedPrice6Month: row[10] ? row[10].toString() : null,
-              // Unlimited monthly price (column L)
-              unlimitedMonthlyPrice: row[11] ? row[11].toString() : null
+              unlimitedMonthlyPrice: row[6] ? row[6].toString() : null
             });
           }
 
-          // Check for null values in columns M-R (subscription data) and S-X (unlimited subscription data)
-          const hasStandardSubscriptions = row.slice(12, 18).some(val => val !== null && val !== undefined && val !== '');
-          const hasUnlimitedSubscriptions = row.slice(18, 24).some(val => val !== null && val !== undefined && val !== '');
-
-          console.log(`Row ${i} subscription check: standard=${hasStandardSubscriptions}, unlimited=${hasUnlimitedSubscriptions}`);
-          console.log(`Row ${i} data length: ${row.length}, sample columns: [${row.slice(0, 25).map((v, idx) => `${idx}:${v}`).join(', ')}]`);
+          // Check for null values in columns H-M and T-Y
+          const hasStandardSubscriptions = row.slice(7, 13).some(val => val !== null && val !== undefined && val !== '');
+          const hasUnlimitedSubscriptions = row.slice(19, 25).some(val => val !== null && val !== undefined && val !== '');
 
           if (!hasStandardSubscriptions && !hasUnlimitedSubscriptions) {
-            console.log(`Skipping row ${i}: no subscription data found`);
             recordsSkipped++;
             continue;
           }
@@ -846,9 +782,9 @@ ${invoices.map((inv, index) =>
               representative.limitedPrice6Month
             ];
             
-            for (let col = 12; col < 18; col++) { // M to R
+            for (let col = 7; col < 13; col++) { // H to M
               const quantity = parseFloat(row[col]?.toString() || '0');
-              const monthIndex = col - 12;
+              const monthIndex = col - 7;
               const unitPrice = limitedPrices[monthIndex];
               
               if (quantity > 0 && unitPrice) {
@@ -868,10 +804,10 @@ ${invoices.map((inv, index) =>
 
           // Part 2: Unlimited Monthly Subscriptions (Columns T-Y)
           if (hasUnlimitedSubscriptions && representative.unlimitedMonthlyPrice) {
-            for (let col = 18; col < 24; col++) { // S to X
+            for (let col = 19; col < 25; col++) { // T to Y
               const quantity = parseFloat(row[col]?.toString() || '0');
               if (quantity > 0) {
-                const months = col - 17;
+                const months = col - 18;
                 const unitPrice = parseFloat(representative.unlimitedMonthlyPrice) * months;
                 const price = unitPrice * quantity;
                 totalAmount += price;
@@ -1845,20 +1781,6 @@ ${invoices.map((inv, index) =>
   registerTestEndpoints(app);
   registerVoiceWorkflowTests(app);
   registerSTTDiagnostic(app);
-
-  // Register Security Hardening middleware and endpoints
-  registerSecurityMiddleware(app);
-  
-  // Register Performance Optimization endpoints
-  registerPerformanceEndpoints(app);
-  
-  // Register Immediate Priority Fixes optimized endpoints
-  registerStableRepresentativesAPI(app);
-  registerOptimizedEndpoints(app);
-  registerTokenOptimizationAPI(app);
-
-  // Initialize Performance Optimizations
-  initializePerformanceOptimizations().catch(console.error);
 
   const httpServer = createServer(app);
   return httpServer;

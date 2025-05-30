@@ -373,7 +373,7 @@ export class DatabaseStorage implements IStorage {
     .orderBy(desc(invoices.createdAt));
   }
 
-  async getInvoiceById(id: number): Promise<(Invoice & { representative: Representative | null, items: InvoiceItem[], batch: InvoiceBatch | null }) | undefined> {
+  async getInvoiceById(id: number): Promise<(Invoice & { representative: Representative | null, items: InvoiceItem[] }) | undefined> {
     const [invoice] = await db.select({
       id: invoices.id,
       invoiceNumber: invoices.invoiceNumber,
@@ -384,9 +384,6 @@ export class DatabaseStorage implements IStorage {
       paidDate: invoices.paidDate,
       invoiceData: invoices.invoiceData,
       createdAt: invoices.createdAt,
-      batchId: invoices.batchId,
-      telegramSent: invoices.telegramSent,
-      sentToRepresentative: invoices.sentToRepresentative,
       representative: representatives
     })
     .from(invoices)
@@ -396,9 +393,7 @@ export class DatabaseStorage implements IStorage {
     if (!invoice) return undefined;
 
     const items = await this.getInvoiceItems(id);
-    const batch = invoice.batchId ? await this.getInvoiceBatchById(invoice.batchId) || null : null;
-    
-    return { ...invoice, items, batch };
+    return { ...invoice, items };
   }
 
   async createInvoice(invoice: InsertInvoice): Promise<Invoice> {

@@ -98,6 +98,11 @@ export default function Invoices() {
     setIsModalOpen(true);
   };
 
+  const handleDownloadPDF = (invoice: Invoice) => {
+    // Download PDF invoice
+    window.open(`/api/invoices/${invoice.id}/pdf`, '_blank');
+  };
+
   const handleStatusChange = (invoiceId: number, newStatus: string) => {
     updateStatusMutation.mutate({ id: invoiceId, status: newStatus });
   };
@@ -246,6 +251,7 @@ export default function Invoices() {
                         <Button
                           variant="outline"
                           size="sm"
+                          onClick={() => handleDownloadPDF(invoice)}
                           className="text-xs px-2 py-1 h-7"
                           title="دانلود PDF"
                         >

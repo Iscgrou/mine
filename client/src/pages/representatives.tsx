@@ -86,6 +86,11 @@ export default function Representatives() {
     setIsModalOpen(true);
   };
 
+  const handleInvoiceView = (representativeId: number) => {
+    // Navigate to invoices page filtered by representative
+    window.location.href = `/admin/invoices?rep=${representativeId}`;
+  };
+
   const handleDelete = (id: number) => {
     if (confirm("آیا از حذف این نماینده اطمینان دارید؟")) {
       deleteRepMutation.mutate(id);
@@ -235,6 +240,7 @@ export default function Representatives() {
                         <Button
                           variant="outline" 
                           size="sm"
+                          onClick={() => handleInvoiceView(rep.id)}
                           className="text-blue-600 hover:text-blue-900 text-xs px-3 py-1 h-7"
                         >
                           فاکتور

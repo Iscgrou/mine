@@ -241,34 +241,59 @@ export default function Analytics() {
         <p className="text-xs text-blue-600 text-center">تحلیل جامع عملکرد کسب و کار</p>
       </div>
 
-      {/* Overview Metrics */}
-      <div className="grid gap-2 md:gap-4 grid-cols-2 lg:grid-cols-4">
-        <MetricCard
-          title="کل درآمد"
-          value={formatCurrency(analyticsData.overview.totalRevenue)}
-          subtitle="رشد ماهانه ۱۲.۵٪"
-          icon={DollarSign}
-          trend="up"
-        />
-        <MetricCard
-          title="تعداد فاکتور"
-          value={analyticsData.overview.totalInvoices.toLocaleString('fa-IR')}
-          subtitle="در ماه جاری"
-          icon={FileText}
-        />
-        <MetricCard
-          title="نمایندگان فعال"
-          value={analyticsData.overview.activeRepresentatives.toLocaleString('fa-IR')}
-          subtitle="در سراسر کشور"
-          icon={Users}
-        />
-        <MetricCard
-          title="رشد ماهانه"
-          value={`${analyticsData.overview.monthlyGrowth}%`}
-          subtitle="نسبت به ماه قبل"
-          icon={TrendingUp}
-          trend="up"
-        />
+      {/* Dynamic Overview Metrics */}
+      <div className="dynamic-stats-grid">
+        <div className="dynamic-stats-card">
+          <div className="stats-card-header">
+            <div className="stats-card-icon" style={{ background: '#10b981' }}>
+              <DollarSign className="w-5 h-5" />
+            </div>
+          </div>
+          <div className="stats-card-value">{formatCurrency(analyticsData.overview.totalRevenue)}</div>
+          <div className="stats-card-label">کل درآمد</div>
+          <div className="stats-card-change positive">
+            رشد ماهانه ۱۲.۵٪
+          </div>
+        </div>
+
+        <div className="dynamic-stats-card">
+          <div className="stats-card-header">
+            <div className="stats-card-icon" style={{ background: '#3b82f6' }}>
+              <FileText className="w-5 h-5" />
+            </div>
+          </div>
+          <div className="stats-card-value">{analyticsData.overview.totalInvoices.toLocaleString('fa-IR')}</div>
+          <div className="stats-card-label">تعداد فاکتور</div>
+          <div className="stats-card-change positive">
+            در ماه جاری
+          </div>
+        </div>
+
+        <div className="dynamic-stats-card">
+          <div className="stats-card-header">
+            <div className="stats-card-icon" style={{ background: '#8b5cf6' }}>
+              <Users className="w-5 h-5" />
+            </div>
+          </div>
+          <div className="stats-card-value">{analyticsData.overview.activeRepresentatives.toLocaleString('fa-IR')}</div>
+          <div className="stats-card-label">نمایندگان فعال</div>
+          <div className="stats-card-change positive">
+            در سراسر کشور
+          </div>
+        </div>
+
+        <div className="dynamic-stats-card">
+          <div className="stats-card-header">
+            <div className="stats-card-icon" style={{ background: '#f59e0b' }}>
+              <TrendingUp className="w-5 h-5" />
+            </div>
+          </div>
+          <div className="stats-card-value">{analyticsData.overview.monthlyGrowth}%</div>
+          <div className="stats-card-label">رشد ماهانه</div>
+          <div className="stats-card-change positive">
+            نسبت به ماه قبل
+          </div>
+        </div>
       </div>
 
       <Tabs key="mobile-optimized-tabs" defaultValue="overview" className="space-y-2 md:space-y-4">
@@ -281,71 +306,67 @@ export default function Analytics() {
           </TabsList>
         </div>
 
-        <TabsContent value="overview" className="space-y-2">
-          <div className="dynamic-grid">
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm md:text-base">روند درآمد ماهانه</CardTitle>
-                <CardDescription className="text-xs md:text-sm">مقایسه عملکرد سه ماه اخیر</CardDescription>
-              </CardHeader>
-              <CardContent className="pt-2">
-                <ResponsiveContainer width="100%" height={100}>
+        <TabsContent value="overview" className="space-y-4">
+          <div className="dynamic-grid-container">
+            {/* Dynamic Chart Container for Monthly Revenue */}
+            <div className="dynamic-chart-container">
+              <div className="dynamic-chart-wrapper">
+                <h3 className="dynamic-chart-title">روند درآمد ماهانه</h3>
+                <ResponsiveContainer width="100%" height={300}>
                   <AreaChart data={analyticsData.monthlyTrends}>
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="month" fontSize={10} />
-                    <YAxis fontSize={10} />
+                    <XAxis dataKey="month" fontSize={12} />
+                    <YAxis fontSize={12} />
                     <Tooltip 
                       formatter={(value, name) => [
                         name === 'revenue' ? formatCurrency(Number(value)) : value,
                         name === 'revenue' ? 'درآمد' : name === 'invoices' ? 'فاکتور' : 'نمایندگان'
                       ]} 
-                      contentStyle={{ fontSize: '10px' }}
+                      contentStyle={{ fontSize: '12px' }}
                     />
                     <Area type="monotone" dataKey="revenue" stackId="1" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
                   </AreaChart>
                 </ResponsiveContainer>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm md:text-base">بینش‌های کسب و کار</CardTitle>
-                <CardDescription className="text-xs md:text-sm">نکات مهم برای تصمیم‌گیری</CardDescription>
-              </CardHeader>
-              <CardContent className="pt-2 space-y-2">
-                {analyticsData.businessInsights.map((insight, index) => (
-                  <div key={index} className="flex items-start space-x-2 space-x-reverse">
-                    <Badge variant={insight.type === 'success' ? 'default' : insight.type === 'warning' ? 'destructive' : 'secondary'} className="text-xs">
-                      {insight.type === 'success' ? 'موفقیت' : insight.type === 'warning' ? 'هشدار' : insight.type === 'opportunity' ? 'فرصت' : 'اطلاعات'}
-                    </Badge>
-                    <div className="flex-1 space-y-1 min-w-0">
-                      <h4 className="text-xs md:text-sm font-medium truncate">{insight.title}</h4>
-                      <p className="text-xs text-muted-foreground line-clamp-2">{insight.description}</p>
-                      {insight.value && (
-                        <p className="text-xs font-medium text-blue-600">{insight.value}</p>
+            {/* Dynamic Business Insights */}
+            <div className="dynamic-chart-container">
+              <div className="dynamic-chart-wrapper">
+                <h3 className="dynamic-chart-title">بینش‌های کسب و کار</h3>
+                <div className="space-y-3">
+                  {analyticsData.businessInsights.map((insight, index) => (
+                    <div key={index} className="flex items-start gap-3 p-3 rounded-lg border border-gray-200">
+                      <Badge variant={insight.type === 'success' ? 'default' : insight.type === 'warning' ? 'destructive' : 'secondary'}>
+                        {insight.type === 'success' ? 'موفقیت' : insight.type === 'warning' ? 'هشدار' : insight.type === 'opportunity' ? 'فرصت' : 'اطلاعات'}
+                      </Badge>
+                      <div className="flex-1 space-y-1">
+                        <h4 className="font-medium">{insight.title}</h4>
+                        <p className="text-sm text-gray-600">{insight.description}</p>
+                        {insight.value && (
+                          <p className="text-sm font-medium text-blue-600">{insight.value}</p>
+                        )}
+                      </div>
+                      {insight.trend && (
+                        insight.trend === 'up' ? 
+                          <TrendingUp className="h-5 w-5 text-green-600" /> : 
+                          <TrendingDown className="h-5 w-5 text-red-600" />
                       )}
                     </div>
-                    {insight.trend && (
-                      insight.trend === 'up' ? 
-                        <TrendingUp className="h-4 w-4 text-green-600" /> : 
-                        <TrendingDown className="h-4 w-4 text-red-600" />
-                    )}
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         </TabsContent>
 
         <TabsContent value="services" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-2">
-            <Card>
-              <CardHeader>
-                <CardTitle>توزیع خدمات</CardTitle>
-                <CardDescription>درصد استفاده از انواع خدمات</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={125}>
+          <div className="dynamic-grid-container">
+            {/* Service Distribution Chart */}
+            <div className="dynamic-chart-container">
+              <div className="dynamic-chart-wrapper">
+                <h3 className="dynamic-chart-title">توزیع خدمات</h3>
+                <ResponsiveContainer width="100%" height={350}>
                   <PieChart>
                     <Pie
                       data={analyticsData.serviceBreakdown}
@@ -365,14 +386,93 @@ export default function Analytics() {
                     <Tooltip contentStyle={{ fontSize: '10px' }} />
                   </PieChart>
                 </ResponsiveContainer>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>درآمد بر اساس خدمات</CardTitle>
-                <CardDescription>مقایسه درآمد انواع خدمات</CardDescription>
-              </CardHeader>
+            {/* Service Revenue Chart */}
+            <div className="dynamic-chart-container">
+              <div className="dynamic-chart-wrapper">
+                <h3 className="dynamic-chart-title">درآمد بر اساس خدمات</h3>
+                <ResponsiveContainer width="100%" height={350}>
+                  <BarChart data={analyticsData.serviceBreakdown}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" fontSize={12} />
+                    <YAxis fontSize={12} />
+                    <Tooltip 
+                      formatter={(value) => [formatCurrency(Number(value)), 'درآمد']}
+                      contentStyle={{ fontSize: '12px' }}
+                    />
+                    <Bar dataKey="revenue" fill="#82ca9d" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="regions" className="space-y-4">
+          <div className="dynamic-table-container">
+            <div className="dynamic-table-wrapper">
+              <table className="dynamic-table">
+                <thead>
+                  <tr>
+                    <th>منطقه</th>
+                    <th>نمایندگان</th>
+                    <th>درآمد</th>
+                    <th>رشد</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {analyticsData.regionalData.map((region, index) => (
+                    <tr key={index}>
+                      <td>{region.region}</td>
+                      <td>{region.representatives.toLocaleString('fa-IR')}</td>
+                      <td>{formatCurrency(region.revenue)}</td>
+                      <td className={region.growth > 0 ? 'text-green-600' : 'text-red-600'}>
+                        {region.growth > 0 ? '+' : ''}{region.growth}%
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="trends" className="space-y-4">
+          <div className="dynamic-table-container">
+            <div className="dynamic-table-wrapper">
+              <table className="dynamic-table">
+                <thead>
+                  <tr>
+                    <th>نماینده</th>
+                    <th>درآمد</th>
+                    <th>فاکتورها</th>
+                    <th>منطقه</th>
+                    <th>رشد</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {analyticsData.topPerformers.map((performer) => (
+                    <tr key={performer.id}>
+                      <td>{performer.name}</td>
+                      <td>{formatCurrency(performer.revenue)}</td>
+                      <td>{performer.invoices.toLocaleString('fa-IR')}</td>
+                      <td>{performer.region}</td>
+                      <td className={performer.growth > 0 ? 'text-green-600' : 'text-red-600'}>
+                        {performer.growth > 0 ? '+' : ''}{performer.growth}%
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
               <CardContent>
                 <ResponsiveContainer width="100%" height={125}>
                   <BarChart data={analyticsData.serviceBreakdown}>

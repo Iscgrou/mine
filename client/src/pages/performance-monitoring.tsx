@@ -89,35 +89,28 @@ export default function PerformanceMonitoringPage() {
   const analysis = analysisData?.analysis as PerformancePrediction;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              مرکز نظارت عملکرد پیشرفته
-            </h1>
-            <p className="text-gray-600">
-              نظارت هوشمند و پیش‌بینی مشکلات سیستم با قدرت Vertex AI
-            </p>
-          </div>
-          <div className="flex space-x-reverse space-x-4">
-            <Button
-              variant={autoRefresh ? "default" : "outline"}
-              onClick={() => setAutoRefresh(!autoRefresh)}
-            >
-              <i className={`fas ${autoRefresh ? 'fa-pause' : 'fa-play'} ml-2`}></i>
-              {autoRefresh ? 'توقف بروزرسانی' : 'شروع بروزرسانی'}
-            </Button>
-          </div>
-        </div>
+    <div className="responsive-content space-y-4" dir="rtl">
+      <div className="flex flex-col items-center space-y-2 py-3 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg mx-1">
+        <h1 className="text-base md:text-xl font-bold text-center text-green-900">مرکز نظارت عملکرد پیشرفته</h1>
+        <p className="text-xs text-green-600 text-center">نظارت هوشمند و پیش‌بینی مشکلات سیستم با قدرت Vertex AI</p>
+        <Button
+          variant={autoRefresh ? "default" : "outline"}
+          onClick={() => setAutoRefresh(!autoRefresh)}
+          className="text-xs px-3 py-1"
+        >
+          {autoRefresh ? 'توقف بروزرسانی' : 'شروع بروزرسانی'}
+        </Button>
+      </div>
 
-        <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid grid-cols-4 w-full">
-            <TabsTrigger value="overview">نمای کلی</TabsTrigger>
-            <TabsTrigger value="alerts">هشدارها</TabsTrigger>
-            <TabsTrigger value="analysis">تحلیل AI</TabsTrigger>
-            <TabsTrigger value="trends">روندها</TabsTrigger>
+      <Tabs defaultValue="overview" className="space-y-4">
+        <div className="overflow-x-auto px-1">
+          <TabsList className="grid w-full grid-cols-4 min-w-max h-8 bg-green-50 border border-green-200">
+            <TabsTrigger value="overview" className="text-xs px-2 py-1 data-[state=active]:bg-green-600 data-[state=active]:text-white">نمای کلی</TabsTrigger>
+            <TabsTrigger value="alerts" className="text-xs px-2 py-1 data-[state=active]:bg-green-600 data-[state=active]:text-white">هشدارها</TabsTrigger>
+            <TabsTrigger value="analysis" className="text-xs px-2 py-1 data-[state=active]:bg-green-600 data-[state=active]:text-white">تحلیل AI</TabsTrigger>
+            <TabsTrigger value="trends" className="text-xs px-2 py-1 data-[state=active]:bg-green-600 data-[state=active]:text-white">روندها</TabsTrigger>
           </TabsList>
+        </div>
 
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-6">

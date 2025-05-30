@@ -478,9 +478,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/representatives/with-balance", async (req, res) => {
     try {
       console.log("Fetching representatives with balance...");
-      const representatives = await storage.getRepresentativesWithBalance();
-      console.log(`Found ${representatives.length} representatives`);
-      res.json(representatives);
+      const representatives = await storage.getRepresentatives();
+      const representativesWithBalance = representatives.map(rep => ({
+        ...rep,
+        currentBalance: 0
+      }));
+      console.log(`Found ${representativesWithBalance.length} representatives with balance`);
+      res.json(representativesWithBalance);
     } catch (error) {
       console.error("Error in representatives/with-balance:", error);
       res.status(500).json({ message: "خطا در دریافت نماینده" });

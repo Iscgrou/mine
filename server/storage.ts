@@ -1,14 +1,15 @@
 import { 
   users, representatives, invoices, invoiceItems, payments, 
   fileImports, settings, backups, crmInteractions, crmCallPreparations, 
-  crmRepresentativeProfiles, crmTasks,
+  crmRepresentativeProfiles, crmTasks, invoiceBatches,
   type User, type InsertUser, type Representative, type InsertRepresentative,
   type Invoice, type InsertInvoice, type InvoiceItem, type InsertInvoiceItem,
   type Payment, type InsertPayment, type FileImport, type InsertFileImport,
   type Setting, type InsertSetting, type Backup, type InsertBackup,
   type CrmInteraction, type InsertCrmInteraction,
   type CrmCallPreparation, type InsertCrmCallPreparation,
-  type CrmRepresentativeProfile, type InsertCrmRepresentativeProfile
+  type CrmRepresentativeProfile, type InsertCrmRepresentativeProfile,
+  type InvoiceBatch, type InsertInvoiceBatch
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, or, like, isNull, sql } from "drizzle-orm";
@@ -28,11 +29,19 @@ export interface IStorage {
   deleteRepresentative(id: number): Promise<void>;
   searchRepresentatives(query: string): Promise<Representative[]>;
 
+  // Invoice batch methods
+  createInvoiceBatch(batch: InsertInvoiceBatch): Promise<InvoiceBatch>;
+  getInvoiceBatches(): Promise<InvoiceBatch[]>;
+  getInvoiceBatchById(id: number): Promise<InvoiceBatch | undefined>;
+  updateInvoiceBatch(id: number, updates: Partial<InsertInvoiceBatch>): Promise<void>;
+
   // Invoice methods
-  getInvoices(): Promise<(Invoice & { representative: Representative | null })[]>;
-  getInvoiceById(id: number): Promise<(Invoice & { representative: Representative | null, items: InvoiceItem[] }) | undefined>;
+  getInvoices(): Promise<(Invoice & { representative: Representative | null, batch: InvoiceBatch | null })[]>;
+  getInvoiceById(id: number): Promise<(Invoice & { representative: Representative | null, items: InvoiceItem[], batch: InvoiceBatch | null }) | undefined>;
+  getInvoicesByBatch(batchId: number): Promise<(Invoice & { representative: Representative | null })[]>;
   createInvoice(invoice: InsertInvoice): Promise<Invoice>;
   updateInvoiceStatus(id: number, status: string): Promise<void>;
+  updateInvoiceTelegramStatus(id: number, telegramSent: boolean, sentToRepresentative: boolean): Promise<void>;
   getInvoicesByRepresentative(representativeId: number): Promise<Invoice[]>;
 
   // Invoice items methods
@@ -150,21 +159,67 @@ export class DatabaseStorage implements IStorage {
       );
   }
 
-  async getInvoices(): Promise<(Invoice & { representative: Representative | null })[]> {
+  // Invoice batch methods
+  async createInvoiceBatch(batch: InsertInvoiceBatch): Promise<InvoiceBatch> {
+    const [created] = await db.insert(invoiceBatches).values(batch).returning();
+    return created;
+  }
+
+  async getInvoiceBatches(): Promise<InvoiceBatch[]> {
+    return await db.select().from(invoiceBatches).orderBy(desc(invoiceBatches.createdAt));
+  }
+
+  async getInvoiceBatchById(id: number): Promise<InvoiceBatch | undefined> {
+    const [batch] = await db.select().from(invoiceBatches).where(eq(invoiceBatches.id, id));
+    return batch || undefined;
+  }
+
+  async updateInvoiceBatch(id: number, updates: Partial<InsertInvoiceBatch>): Promise<void> {
+    await db.update(invoiceBatches).set(updates).where(eq(invoiceBatches.id, id));
+  }
+
+  async getInvoices(): Promise<(Invoice & { representative: Representative | null, batch: InvoiceBatch | null })[]> {
     return await db.select({
       id: invoices.id,
       invoiceNumber: invoices.invoiceNumber,
       representativeId: invoices.representativeId,
+      batchId: invoices.batchId,
       totalAmount: invoices.totalAmount,
       status: invoices.status,
       dueDate: invoices.dueDate,
       paidDate: invoices.paidDate,
       invoiceData: invoices.invoiceData,
+      telegramSent: invoices.telegramSent,
+      sentToRepresentative: invoices.sentToRepresentative,
+      createdAt: invoices.createdAt,
+      representative: representatives,
+      batch: invoiceBatches
+    })
+    .from(invoices)
+    .leftJoin(representatives, eq(invoices.representativeId, representatives.id))
+    .leftJoin(invoiceBatches, eq(invoices.batchId, invoiceBatches.id))
+    .orderBy(desc(invoices.createdAt));
+  }
+
+  async getInvoicesByBatch(batchId: number): Promise<(Invoice & { representative: Representative | null })[]> {
+    return await db.select({
+      id: invoices.id,
+      invoiceNumber: invoices.invoiceNumber,
+      representativeId: invoices.representativeId,
+      batchId: invoices.batchId,
+      totalAmount: invoices.totalAmount,
+      status: invoices.status,
+      dueDate: invoices.dueDate,
+      paidDate: invoices.paidDate,
+      invoiceData: invoices.invoiceData,
+      telegramSent: invoices.telegramSent,
+      sentToRepresentative: invoices.sentToRepresentative,
       createdAt: invoices.createdAt,
       representative: representatives
     })
     .from(invoices)
     .leftJoin(representatives, eq(invoices.representativeId, representatives.id))
+    .where(eq(invoices.batchId, batchId))
     .orderBy(desc(invoices.createdAt));
   }
 

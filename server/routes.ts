@@ -429,10 +429,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Enhanced representatives with balance information
   app.get("/api/representatives/with-balance", async (req, res) => {
     try {
+      console.log("Fetching representatives with balance...");
       const representatives = await storage.getRepresentativesWithBalance();
+      console.log(`Found ${representatives.length} representatives`);
       res.json(representatives);
     } catch (error) {
-      res.status(500).json({ message: "خطا در دریافت اطلاعات نمایندگان" });
+      console.error("Error in representatives/with-balance:", error);
+      res.status(500).json({ message: "خطا در دریافت نماینده" });
     }
   });
 

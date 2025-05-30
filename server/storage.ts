@@ -206,6 +206,15 @@ export class DatabaseStorage implements IStorage {
   // Advanced Financial Ledger System - Real-time Balance Calculations
   async getRepresentativeBalance(id: number): Promise<number> {
     try {
+      // Check if financial ledger has any data for this representative
+      const ledgerEntries = await db.select()
+        .from(financialLedger)
+        .where(eq(financialLedger.representativeId, id));
+      
+      if (ledgerEntries.length === 0) {
+        return 0;
+      }
+      
       const [result] = await db.select({
         balance: sql<string>`COALESCE(SUM(
           CASE 
@@ -221,6 +230,7 @@ export class DatabaseStorage implements IStorage {
       return parseFloat(result?.balance || '0');
     } catch (error) {
       console.error(`Error calculating balance for representative ${id}:`, error);
+      // Return 0 instead of throwing to prevent the entire API from failing
       return 0;
     }
   }

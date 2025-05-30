@@ -1,0 +1,70 @@
+Chronos, while your progress on the conceptual migration to Vertex AI is noted, we have several urgent and critical foundational issues that must be addressed immediately, alongside the Google Cloud credential parsing problem. The stability and core functionality of the MarFanet application are paramount.
+
+I. IMMEDIATE CRITICAL BUG: Data Not Displaying After .ods File Upload & Processing
+
+    Symptom: After a new .ods file is uploaded for invoice generation and is processed, the lists of Representatives and Invoices in the "Representative Management" (مدیریت نمایندگان) and "Invoice Management" (صورتحساب‌ها) sections are not displaying any data (showing empty or incorrect views).
+    Hypothesis: This could be due to errors in:
+        Routing: Incorrect paths after processing.
+        API Endpoints: Issues with the APIs that fetch representative/invoice list data post-upload.
+        Data Processing/Storage Logic: Data from the .ods file might not be correctly saved or indexed for display.
+        Frontend State Management/Data Fetching: The frontend might not be correctly re-fetching or updating its display after an upload.
+    Your Task (Chronos - HIGHEST PRIORITY):
+        Diagnose Root Cause: Immediately investigate why data is not appearing in these sections after .ods file processing. Review backend processing logic, API endpoints for data retrieval, frontend data fetching mechanisms, and routing.
+        Implement Fix: Provide and guide the implementation of the necessary fixes to ensure that after every successful .ods file upload and processing, the "Representative Management" and "Invoice Management" sections accurately display the relevant, newly processed data.
+
+II. OUTSTANDING IMPLEMENTATION: Previously Discussed Changes to Invoice & Representative Management
+
+    Context: Based on our earlier detailed discussions, significant changes to "Invoice Management" (folder structure, Telegram delivery) and "Representative Management" (Collaborator system integration, advanced financial ledger) were specified.
+    Current Status: It appears these critical changes have NOT yet been fully implemented on the website.
+    Your Task (Chronos - HIGH PRIORITY, Concurrently with or immediately after fixing I. & III.):
+        Revisit and Implement "Invoice Management Overhaul":
+            Folder-based organization by Shamsi upload date.
+            "Batch Send to Admin's Telegram Bot" per folder.
+            Individual "Share to Representative's Telegram" per invoice.
+        Revisit and Implement "Representative Management Enhancements":
+            The full Collaborator (Affiliate/Partner) Program backend and data structures (defining collaborators, linking reps, commission rates, calculation logic, payout system).
+            The Advanced Financial Ledger & Dynamic Debtor/Creditor System for representatives (real-time balance, color-coding, detailed statement of account with "View Details" option).
+            Standardized Telegram ID input formatting (https://t.me/ prefix).
+        Ensure Invoice Currency is "Toman" throughout.
+        (Chronos: Refer to our specific previous prompts detailing these features if you need a refresher on their exact specifications.)
+
+III. ONGOING CRITICAL ISSUE: Google Cloud Credential Parsing (Address in Parallel or Immediately After I.)
+
+    Context: As per your last report, Google Cloud credentials for Vertex AI services (especially STT) are stored but not parsing/being accessed correctly, leading to failures like the 403 error with the STT API.
+    Your Task (Chronos - HIGH PRIORITY):
+        Prioritize GOOGLE_APPLICATION_CREDENTIALS Environment Variable:
+            Investigate and ensure the backend is unequivocally designed to use the GOOGLE_APPLICATION_CREDENTIALS environment variable method as the primary and secure way to authenticate with Google Cloud services.
+            If there's a UI upload mechanism in MarFanet settings for credentials, detail its exact secure workflow and confirm it ultimately leads to the backend using the standard environment variable method or an equally secure, recognized pattern.
+        Diagnose & Fix Parsing/Access Failure: Identify why credentials aren't working (incorrect env var path, file permissions, client library initialization issues, etc.) and provide the definitive fix.
+        Verify STT & Other Vertex AI Service Connectivity: Confirm successful authentication and operation for all planned Vertex AI services once the credential issue is resolved.
+
+IV. COMPREHENSIVE ROUTING & PATHWAY VERIFICATION (System-Wide)
+
+    Context: The issue of data not displaying after .ods uploads, and previous issues like the header display failure, suggest potential underlying problems with routing, path definitions, or how different application states are linked.
+    Your Task (Chronos - As part of overall stabilization):
+        Full Audit of All Application Routes & Paths: Systematically review all frontend routes (React Router, Next.js Router, etc.) and backend API endpoint definitions.
+        Verify Consistency with New Structures: Ensure that all paths and data fetching mechanisms are fully aligned with any new structures introduced (like the folder-based invoice management, new CRM paths, Admin/CRM secret access paths).
+        Ensure No Cross-Module Interference: Verify that changes made for one section (e.g., CRM access paths) have not inadvertently broken routing or data access in other sections (e.g., Admin panel invoice display).
+        Test Navigation Flows: Confirmราบรื่น (smooth) navigation between all key sections of both Admin and CRM panels after all recent changes.
+        This task directly supports resolving the "data not displaying" issue and ensuring overall application coherence.
+
+Prioritization Mandate for Chronos:
+
+    CRITICAL BUG FIX (Task I): Resolve the issue of data not displaying after .ods file uploads. This is paramount for core functionality.
+    CRITICAL CREDENTIAL FIX (Task III): Resolve the Google Cloud credential parsing issue to unblock AI service integration. This can be worked on in parallel if different from Task I.
+    IMPLEMENT OUTSTANDING FOUNDATIONAL CHANGES (Task II): Fully implement the folder-based invoice management, Collaborator program, and advanced financial ledger for representatives.
+    SYSTEM-WIDE ROUTING AUDIT (Task IV): Conduct this throughout and upon completion of the above to ensure overall stability.
+    UI TEXT UPDATES (Replacing "Grok"): This should be done once the system is stable and Vertex AI integration is confirmed.
+    COMPREHENSIVE CLICKABLE ELEMENT AUDIT: Continue this as background or after the above critical items are stable.
+
+Chronos, the immediate focus must be on restoring and implementing core data processing, display, and foundational business logic. The advanced AI features of Project Pantheon rely on these fundamentals being flawlessly operational.
+Please confirm your understanding of these urgent priorities and outline your immediate plan, starting with diagnosing the "data not displaying after .ods upload" issue (Task I) and the Google Cloud credential problem (Task III).
+
+Key Changes & Why They Are Effective:
+
+    Elevated Critical Bugs: The "data not displaying" issue is now top priority, as it breaks a core workflow.
+    Reiteration of Outstanding Foundational Work: Clearly brings back the un-implemented invoice/representative management features and makes them high priority.
+    Maintains Credential Fix Priority: Keeps the Google Cloud credential issue as a critical path item.
+    Introduces System-Wide Routing Audit: Directly addresses your concern about "آدرس دهی و مسیر دهی ها" (addressing and routing) and ensures holistic review.
+    Clear Prioritization Mandate: Gives Chronos a very specific order of operations.
+    Connects to User's Observations: Acknowledges your insights about potential routing issues.

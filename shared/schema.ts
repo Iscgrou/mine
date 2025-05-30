@@ -365,6 +365,15 @@ export type InsertSetting = z.infer<typeof insertSettingSchema>;
 export type FinancialLedger = typeof financialLedger.$inferSelect;
 export type InsertFinancialLedger = z.infer<typeof insertFinancialLedgerSchema>;
 
+export type Collaborator = typeof collaborators.$inferSelect;
+export type InsertCollaborator = z.infer<typeof insertCollaboratorSchema>;
+
+export type CommissionRecord = typeof commissionRecords.$inferSelect;
+export type InsertCommissionRecord = z.infer<typeof insertCommissionRecordSchema>;
+
+export type CollaboratorPayout = typeof collaboratorPayouts.$inferSelect;
+export type InsertCollaboratorPayout = z.infer<typeof insertCollaboratorPayoutSchema>;
+
 export type Backup = typeof backups.$inferSelect;
 export type InsertBackup = z.infer<typeof insertBackupSchema>;
 

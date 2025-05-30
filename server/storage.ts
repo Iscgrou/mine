@@ -257,6 +257,12 @@ export class DatabaseStorage implements IStorage {
       .where(eq(invoices.id, id));
   }
 
+  async updateInvoiceTelegramStatus(id: number, telegramSent: boolean, sentToRepresentative: boolean): Promise<void> {
+    await db.update(invoices)
+      .set({ telegramSent, sentToRepresentative })
+      .where(eq(invoices.id, id));
+  }
+
   async getInvoicesByRepresentative(representativeId: number): Promise<Invoice[]> {
     return await db.select().from(invoices)
       .where(eq(invoices.representativeId, representativeId))

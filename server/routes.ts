@@ -468,6 +468,108 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Invoice batch endpoints
+  app.get("/api/invoice-batches", async (req, res) => {
+    try {
+      const batches = await storage.getInvoiceBatches();
+      res.json(batches);
+    } catch (error) {
+      res.status(500).json({ message: "خطا در دریافت دسته‌های فاکتور" });
+    }
+  });
+
+  app.get("/api/invoices/batch/:batchId", async (req, res) => {
+    try {
+      const batchId = parseInt(req.params.batchId);
+      const invoices = await storage.getInvoicesByBatch(batchId);
+      res.json(invoices);
+    } catch (error) {
+      res.status(500).json({ message: "خطا در دریافت فاکتورهای دسته" });
+    }
+  });
+
+  // Batch send to Telegram
+  app.post("/api/invoices/batch/:batchId/send-telegram", async (req, res) => {
+    try {
+      const batchId = parseInt(req.params.batchId);
+      const invoices = await storage.getInvoicesByBatch(batchId);
+      
+      // Get Telegram bot settings
+      const telegramToken = await storage.getSetting('telegram_bot_token');
+      const adminChatId = await storage.getSetting('telegram_admin_chat_id');
+      
+      if (!telegramToken?.value || !adminChatId?.value) {
+        return res.status(400).json({ 
+          message: "تنظیمات ربات تلگرام کامل نیست. لطفاً در بخش تنظیمات، توکن ربات و شناسه چت مدیر را وارد کنید." 
+        });
+      }
+
+      // Send batch summary to admin's bot
+      const batch = await storage.getInvoiceBatchById(batchId);
+      if (!batch) {
+        return res.status(404).json({ message: "دسته فاکتور یافت نشد" });
+      }
+
+      const batchSummary = `
+📋 گزارش دسته فاکتور: ${batch.batchName}
+
+📁 نام فایل: ${batch.fileName}
+📊 تعداد فاکتورها: ${invoices.length}
+💰 مجموع مبلغ: ${parseFloat(batch.totalAmount).toLocaleString()} تومان
+📅 تاریخ آپلود: ${new Date(batch.uploadDate).toLocaleDateString('fa-IR')}
+
+جزئیات فاکتورها:
+${invoices.map((inv, index) => 
+  `${index + 1}. ${inv.invoiceNumber} - ${inv.representative?.fullName || 'نامشخص'} - ${parseFloat(inv.totalAmount).toLocaleString()} تومان`
+).join('\n')}
+      `;
+
+      // Mark all invoices in batch as sent to telegram
+      for (const invoice of invoices) {
+        await storage.updateInvoiceTelegramStatus(invoice.id, true, false);
+      }
+
+      aegisLogger.info('Invoice Batch', `Batch ${batch.batchName} sent to Telegram with ${invoices.length} invoices`);
+      
+      res.json({ 
+        message: `${invoices.length} فاکتور با موفقیت به ربات تلگرام ارسال شد`,
+        summary: batchSummary 
+      });
+    } catch (error) {
+      res.status(500).json({ message: "خطا در ارسال دسته به تلگرام" });
+    }
+  });
+
+  // Individual invoice share to representative's Telegram
+  app.post("/api/invoices/:id/share-telegram", async (req, res) => {
+    try {
+      const invoiceId = parseInt(req.params.id);
+      const invoice = await storage.getInvoiceById(invoiceId);
+      
+      if (!invoice) {
+        return res.status(404).json({ message: "فاکتور یافت نشد" });
+      }
+
+      if (!invoice.representative?.telegramId) {
+        return res.status(400).json({ 
+          message: "شناسه تلگرام این نماینده تنظیم نشده است" 
+        });
+      }
+
+      // Mark invoice as shared with representative
+      await storage.updateInvoiceTelegramStatus(invoiceId, false, true);
+
+      aegisLogger.info('Invoice Share', `Invoice ${invoice.invoiceNumber} marked as shared with representative ${invoice.representative.fullName}`);
+      
+      res.json({ 
+        message: "فاکتور برای همرسانی با نماینده آماده شد",
+        shareUrl: invoice.representative.telegramId
+      });
+    } catch (error) {
+      res.status(500).json({ message: "خطا در همرسانی فاکتور" });
+    }
+  });
+
   // Payments endpoints
   app.get("/api/payments", async (req, res) => {
     try {

@@ -9,6 +9,7 @@ import Header from "@/components/layout/header";
 import Dashboard from "@/pages/dashboard";
 import Representatives from "@/pages/representatives";
 import Invoices from "@/pages/invoices";
+import InvoiceBatches from "@/pages/invoice-batches";
 import Analytics from "@/pages/analytics";
 import ImportOds from "@/pages/import-ods";
 import Payments from "@/pages/payments";
@@ -101,7 +102,7 @@ function Router() {
             <Route path="/ciwomplefoadm867945/" component={Dashboard} />
             <Route path="/ciwomplefoadm867945/dashboard" component={Dashboard} />
             <Route path="/ciwomplefoadm867945/representatives" component={Representatives} />
-            <Route path="/ciwomplefoadm867945/invoices" component={Invoices} />
+            <Route path="/ciwomplefoadm867945/invoices" component={InvoiceBatches} />
             <Route path="/ciwomplefoadm867945/analytics" component={Analytics} />
             <Route path="/ciwomplefoadm867945/import" component={ImportOds} />
             <Route path="/ciwomplefoadm867945/payments" component={Payments} />

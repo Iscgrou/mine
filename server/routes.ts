@@ -12,6 +12,7 @@ import { performanceCache, cacheMiddleware } from './performance-cache';
 import { registerTestEndpoints } from "./test-endpoints";
 import { registerVoiceWorkflowTests } from "./voice-workflow-test";
 import { registerSTTDiagnostic } from "./stt-diagnostic";
+import { projectPhoenixOrchestrator } from './project-phoenix-orchestrator';
 import { 
   insertRepresentativeSchema, 
   insertInvoiceSchema, 
@@ -1938,6 +1939,50 @@ ${metrics.commonTopics.map(topic => `- ${topic.topic}: ${topic.frequency} مور
     } catch (error) {
       console.error("Error fetching notifications:", error);
       res.status(500).json({ message: "خطا در دریافت اعلان‌ها" });
+    }
+  });
+
+  // Project Phoenix: Foundational Reconstruction Analysis
+  app.post("/api/project-phoenix/execute-phase1", async (req, res) => {
+    try {
+      console.log('🔥 PROJECT PHOENIX: Starting Phase 1 - UI/UX Foundational Analysis');
+      
+      const result = await projectPhoenixOrchestrator.executePhase1_UIFoundationalAnalysis();
+      
+      res.json({
+        success: true,
+        message: "Project Phoenix Phase 1 completed successfully",
+        analysis: result,
+        phase: "UI/UX Foundational Analysis"
+      });
+    } catch (error) {
+      console.error("Project Phoenix Phase 1 error:", error);
+      res.status(500).json({ 
+        success: false, 
+        message: "خطا در اجرای مرحله اول Project Phoenix",
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  app.post("/api/project-phoenix/execute-complete", async (req, res) => {
+    try {
+      console.log('🔥 PROJECT PHOENIX: Starting Complete Foundational Reconstruction');
+      
+      const result = await projectPhoenixOrchestrator.executeCompletePhoenixReconstruction();
+      
+      res.json({
+        success: true,
+        message: "Project Phoenix Complete Reconstruction finished",
+        ...result
+      });
+    } catch (error) {
+      console.error("Project Phoenix Complete Reconstruction error:", error);
+      res.status(500).json({ 
+        success: false, 
+        message: "خطا در اجرای Project Phoenix کامل",
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
     }
   });
 

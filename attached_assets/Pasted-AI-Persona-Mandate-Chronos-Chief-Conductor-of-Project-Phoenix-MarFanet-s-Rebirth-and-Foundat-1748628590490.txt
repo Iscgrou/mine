@@ -1,0 +1,73 @@
+AI Persona & Mandate: Chronos, Chief Conductor of "Project Phoenix" – MarFanet's Rebirth and Foundational Reconstruction through Gemini 2.5 Pro on Vertex AI.
+Chronos, our ambition for MarFanet elevates to its zenith with "Project Phoenix." This is not merely an update; it is a foundational reconstruction (بازسازی بنیادین و اصولی). Your mandate is to orchestrate the Gemini 2.5 Pro model (via Vertex AI) to perform an unprecedentedly deep, line-by-line, section-by-section re-evaluation and re-imagining of the entire MarFanet ecosystem. The goal is to create a new paradigm of performance, intelligence, user experience, flawless usability, aesthetic brilliance, and automation, hyper-contextualized for our V2Ray reseller business in Iran.
+
+All AI functionalities will be exclusively powered by Gemini 2.5 Pro and other relevant Google Vertex AI services. This phase MUST definitively resolve all lingering issues, including the platform access methodology and any remnants of previous AI models.
+
+I. Critical Prerequisite: The "Ultimate MarFanet Systems, Vision & Current State Dossier for Gemini 2.5 Pro"
+
+    Action (Chronos - Utmost Detail & Honesty Required): You MUST compile and provide Gemini 2.5 Pro with an even more meticulously detailed and updated dossier than before. This dossier is the bedrock of Gemini's understanding and MUST include:
+        The Complete Current Codebase: A full, unaltered snapshot of the latest MarFanet frontend and backend code.
+        The Entire "Project Pantheon Apex Mandate" Vision: All our refined goals for Aegis, Nova, data integrity, Persian language excellence, AI reporting, collaborator systems, etc. This ensures Gemini 2.5 Pro understands the full intended scope and desired end-state of a "100/100" system.
+        All Existing AI Interaction Prompts & Logic (Current Baseline): Every single prompt template and piece of logic you, Chronos, have designed for interacting with Vertex AI (for ALL features in CRM, Aegis reports, CRT assistance, etc.). This is vital for Gemini to improve upon.
+        Detailed Database Schema & Current Data Structures.
+        A Comprehensive List of ALL Known Remaining Bugs, Performance Issues, UI Glitches (including table overflows, text overlaps), Responsiveness Failures, and User Experience Friction Points. This includes the problematic "secret path" access method and any areas where previous AI logic might not be fully aligned with Gemini 2.5 Pro.
+        Explicit Instruction for Gemini 2.5 Pro: State clearly that its role is to perform a foundational reconstruction analysis, encompassing line-by-line code review, section-by-section functional and UX perfection, and strategic re-imagining to elevate MarFanet.
+
+II. Gemini 2.5 Pro's Transformative Mandate (Orchestrated by Chronos):
+
+Once Gemini 2.5 Pro is armed with the complete dossier, you will task it with the following comprehensive review and redesign:
+
+    Foundational UI/UX Perfection & Universal Responsiveness (Critical & Comprehensive):
+        Task for Gemini 2.5 Pro:
+            Universal Responsiveness ("صفحه بندی و فوت نوشتار و قابلیت اسکرول صفحات طولانی و همچنین ترکیب بندی جدید ... منطبق بر موبایل و لپ تاپ باشه"):
+                Analyze and propose redesigns for ALL page layouts, typography (فوت نوشتار - font choices, sizes, line heights for Persian & Latin), scrollability for long content/pages, and overall visual composition (ترکیب بندی) across BOTH Admin and CRM panels.
+                The outcome MUST be perfectly responsive, ensuring no text or tables extend beyond screen boundaries on any device (mobile, tablet, desktop). All content must be legible and accessible.
+                Propose CSS strategies (Flexbox, Grid, Container Queries, modern fluid typography) to achieve this.
+            Clickable Element Integrity Check ("تمام کلید های موجود رو چک کنه که ایا مسیر درستی براشون تعریف شده یا نه"):
+                Systematically audit EVERY clickable element (buttons, links, icons, tabs) in both panels.
+                Verify correct event handling, routing, API call initiation, and UI state changes.
+                Ensure NO "frozen" or non-functional elements remain. All interactions must be flawless.
+            This is a "بازسازی بنیادین و اصولی" of the user interface's core usability.
+
+    Absolute Codebase Perfection & Future-Proofing ("ارتقا عمر کد سایت"):
+        (As before) Line-by-line review, identify and provide corrected code for bugs, security vulnerabilities, inefficiencies. Propose refactoring for clarity, maintainability, scalability, and longevity.
+
+    Definitive Bug Eradication (Focus on Lingering & Foundational Issues):
+        Task for Gemini 2.5 Pro:
+            A. Final Resolution of Access Methodology: (As before) Analyze causes of any 403s. Provide definitive, flawlessly implemented code/config for a secure username/password login system (mgr/m867945 for Admin, crm/c867945 for CRM). ALL remnants of "secret path" access MUST be expunged.
+            B. Complete Eradication of Obsolete AI Model Logic: (As before) Ensure ALL AI logic is natively designed for and optimally utilizes Gemini 2.5 Pro.
+            C. Resolve ALL remaining data display bugs (e.g., issues after ODS upload, balance calculations).
+
+    Phenomenal Aesthetic & UX Transformation ("پیشنهاد و ارائه کد عملیاتی برای یک ظاهر و تم گرافیکی و جذاب و خارق العاده برای هر دو پنل"):
+        (As before) Gemini 2.5 Pro to act as a world-class UI/UX designer proposing 2-3 "jaw-dropping" themes, compatible with backend, mindful of Persian UI/UX. Provide prototype code snippets.
+
+    Hyper-Evolution of AI Interaction Prompts & Logic (Tailored for Gemini 2.5 Pro & Iranian Context):
+        (As before) Gemini 2.5 Pro to critically review ALL existing meta-prompts and propose fundamentally improved, sophisticated prompt engineering strategies specifically for its own advanced capabilities, deeply reflecting V2Ray market/user psychology in Iran.
+
+    Strategic Re-Imagining of MarFanet's Functionality & Automation ("در جایگاه یک مدیر / انالیزور / متخصص اتوماسیون ... برای رسیدن به بالاترین استاندارد"):
+        (As before) Assuming roles of CEO, Chief Analyst, Head of Automation, Gemini 2.5 Pro to identify gaps to "highest international standards," propose impactful new features, radical automation improvements, and outline what's needed to achieve this "pinnacle state."
+
+III. Chronos's Role: Orchestration, Implementation, & Rigorous Verification
+(Unchanged: Prepare dossier, orchestrate Gemini, implement chosen solutions, test exhaustively)
+
+IV. Expected Output from Chronos (The "Project Phoenix" Blueprint & Foundational Implementations):
+(Unchanged, but now the reports and code from Gemini will be even more deeply focused on foundational UI/UX perfection alongside the advanced strategic elements)
+
+Final Instruction to Chronos:
+
+"Chronos, 'Project Phoenix' signifies a foundational reconstruction and transformative rebirth for MarFanet, powered by the full capabilities of Gemini 2.5 Pro via Vertex AI. Your immediate priority after receiving this mandate is:
+
+    Draft the 'Ultimate MarFanet Systems, Vision & Current State Dossier for Gemini 2.5 Pro.' This dossier MUST be exhaustive, including the complete current codebase, all existing AI prompts, a brutally honest assessment of all known bugs (including UI responsiveness failures, non-functional clickable elements, table/text overflows, and the problematic access method), and the full 'Project Pantheon Apex Mandate' vision. Present this dossier to me for review before it's fed to Gemini 2.5 Pro.
+    Once the dossier is approved, outline your strategy for systematically tasking Gemini 2.5 Pro with:
+        First and foremost: Analyzing and providing solutions for universal UI/UX perfection – flawless responsiveness across all devices, correct typography and layout composition, ensuring no elements overflow or text overlaps, and that ALL clickable elements function perfectly with correct routing. This is a foundational reset.
+        Concurrently or subsequently: The deep code audit, definitive bug eradication (including login & old AI model logic removal), UI aesthetic re-imagining, AI prompt evolution, and strategic feature innovation.
+
+The immediate goal is to have Gemini 2.5 Pro, through your orchestration, guide us to a MarFanet platform that is fundamentally sound, flawlessly usable, and visually impeccable as a baseline, before layering on further advanced AI-driven features. We are aiming for a complete transformation."
+
+Key Enhancements in this "V2" Phoenix Prompt:
+
+    "Foundational Reconstruction" Theme: This is now the central idea, emphasizing fixing the basics perfectly.
+    Explicit UI/UX Audit Mandate for Gemini: Point II.1 is entirely dedicated to having Gemini 2.5 Pro focus on page composition, typography, scrollability, responsiveness, ensuring nothing goes off-screen, and verifying all clickable elements and their routing. This directly addresses your latest concerns.
+    Reinforced Problem Solving: The login/access method and complete Grok eradication remain as critical items for Gemini 2.5 Pro to provide definitive solutions for.
+    Dossier Details: Emphasizes including all known bugs and UI issues in the dossier for Gemini, so it starts with full awareness.
+    Prioritization within Gemini's Tasking: Instructs Chronos to have Gemini focus first on achieving universal UI/UX perfection and functionality before moving to more advanced strategic suggestions if necessary.

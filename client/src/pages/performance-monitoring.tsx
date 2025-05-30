@@ -1,425 +1,235 @@
-import { useState, useEffect } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { useQuery } from "@tanstack/react-query";
+import React, { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { 
+  Activity, 
+  TrendingUp, 
+  AlertTriangle, 
+  CheckCircle, 
+  Clock,
+  BarChart3,
+  LineChart,
+  PieChart
+} from 'lucide-react';
 
-interface PerformanceMetrics {
-  timestamp: Date;
-  cpuUsage: number;
-  memoryUsage: number;
-  responseTime: number;
-  errorRate: number;
-  throughput: number;
-  activeConnections: number;
-  databaseQueryTime: number;
-  cacheHitRate: number;
-}
+export default function PerformanceMonitoring() {
+  const [selectedTimeRange, setSelectedTimeRange] = useState('24h');
 
-interface SystemAlert {
-  id: string;
-  severity: 'info' | 'warning' | 'critical' | 'emergency';
-  type: 'performance' | 'security' | 'business' | 'infrastructure';
-  title: string;
-  description: string;
-  recommendation: string;
-  predictedImpact: string;
-  timeToResolve: string;
-  timestamp: Date;
-}
-
-interface PerformancePrediction {
-  nextHour: {
-    expectedLoad: number;
-    riskLevel: 'low' | 'medium' | 'high';
-    recommendations: string[];
-  };
-  next24Hours: {
-    peakTimes: Array<{ time: string; expectedLoad: number }>;
-    potentialBottlenecks: string[];
-    optimizationSuggestions: string[];
-  };
-  trends: {
-    performanceDirection: 'improving' | 'stable' | 'degrading';
-    keyMetrics: Array<{ metric: string; trend: string; concern: string }>;
-  };
-}
-
-export default function PerformanceMonitoringPage() {
-  const [autoRefresh, setAutoRefresh] = useState(true);
-
-  // Fetch performance metrics
-  const { data: metricsData, isLoading: metricsLoading } = useQuery({
-    queryKey: ['/api/performance/metrics'],
-    refetchInterval: autoRefresh ? 30000 : false, // Refresh every 30 seconds
-  });
-
-  // Fetch active alerts
-  const { data: alertsData, isLoading: alertsLoading } = useQuery({
-    queryKey: ['/api/performance/alerts'],
-    refetchInterval: autoRefresh ? 60000 : false, // Refresh every minute
-  });
-
-  // Fetch performance analysis
-  const { data: analysisData, isLoading: analysisLoading } = useQuery({
-    queryKey: ['/api/performance/analysis'],
-    refetchInterval: autoRefresh ? 300000 : false, // Refresh every 5 minutes
-  });
-
-  const getSeverityColor = (severity: string) => {
-    switch (severity) {
-      case 'emergency': return 'bg-red-600 text-white';
-      case 'critical': return 'bg-red-500 text-white';
-      case 'warning': return 'bg-yellow-500 text-white';
-      case 'info': return 'bg-blue-500 text-white';
-      default: return 'bg-gray-500 text-white';
+  // Mock data structure for performance monitoring
+  const performanceData = {
+    metrics: {
+      responseTime: { value: 125, trend: '+5%', status: 'good' },
+      throughput: { value: 1250, trend: '-2%', status: 'warning' },
+      errorRate: { value: 0.5, trend: '+0.1%', status: 'good' },
+      uptime: { value: 99.9, trend: '0%', status: 'excellent' }
+    },
+    alerts: [
+      { id: 1, type: 'warning', message: 'بارگذاری بالای سرور', timestamp: '2 دقیقه پیش' },
+      { id: 2, type: 'info', message: 'به‌روزرسانی سیستم انجام شد', timestamp: '15 دقیقه پیش' }
+    ],
+    analysis: {
+      trends: {
+        keyMetrics: [
+          { metric: 'زمان پاسخ میانگین', trend: 'افزایش 5%', concern: 'medium' },
+          { metric: 'تعداد درخواست‌ها', trend: 'کاهش 2%', concern: 'low' },
+          { metric: 'میزان خطا', trend: 'افزایش 0.1%', concern: 'low' }
+        ]
+      }
     }
   };
 
-  const getMetricColor = (value: number, thresholds: {good: number, warning: number}) => {
-    if (value <= thresholds.good) return 'text-green-600';
-    if (value <= thresholds.warning) return 'text-yellow-600';
-    return 'text-red-600';
-  };
+  const { data: metrics = performanceData.metrics } = useQuery({
+    queryKey: ['/api/performance/metrics', selectedTimeRange],
+    queryFn: () => Promise.resolve(performanceData.metrics)
+  });
 
-  const currentMetrics = metricsData?.metrics?.[metricsData.metrics.length - 1] as PerformanceMetrics;
-  const alerts = alertsData?.alerts as SystemAlert[] || [];
-  const analysis = analysisData?.analysis as PerformancePrediction;
+  const { data: alerts = performanceData.alerts } = useQuery({
+    queryKey: ['/api/performance/alerts'],
+    queryFn: () => Promise.resolve(performanceData.alerts)
+  });
+
+  const { data: analysis = performanceData.analysis } = useQuery({
+    queryKey: ['/api/performance/analysis', selectedTimeRange],
+    queryFn: () => Promise.resolve(performanceData.analysis)
+  });
 
   return (
-    <div className="responsive-content space-y-4" dir="rtl">
-      <div className="flex flex-col items-center space-y-2 py-3 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg mx-1">
-        <h1 className="text-base md:text-xl font-bold text-center text-green-900">مرکز نظارت عملکرد پیشرفته</h1>
-        <p className="text-xs text-green-600 text-center">نظارت هوشمند و پیش‌بینی مشکلات سیستم با قدرت Vertex AI</p>
-        <Button
-          variant={autoRefresh ? "default" : "outline"}
-          onClick={() => setAutoRefresh(!autoRefresh)}
-          className="text-xs px-3 py-1"
-        >
-          {autoRefresh ? 'توقف بروزرسانی' : 'شروع بروزرسانی'}
-        </Button>
+    <div className="responsive-content space-y-6" dir="rtl">
+      {/* Dynamic Header */}
+      <div className="flex flex-col items-center space-y-2 py-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg mx-1">
+        <h1 className="text-base md:text-xl font-bold text-center text-blue-900">نظارت عملکرد پیشرفته</h1>
+        <p className="text-xs text-blue-600 text-center">مانیتورینگ لحظه‌ای عملکرد سیستم و تحلیل روندها</p>
       </div>
 
-      <Tabs defaultValue="overview" className="space-y-4">
-        <div className="overflow-x-auto px-1">
-          <TabsList className="grid w-full grid-cols-4 min-w-max h-8 bg-green-50 border border-green-200">
-            <TabsTrigger value="overview" className="text-xs px-2 py-1 data-[state=active]:bg-green-600 data-[state=active]:text-white">نمای کلی</TabsTrigger>
-            <TabsTrigger value="alerts" className="text-xs px-2 py-1 data-[state=active]:bg-green-600 data-[state=active]:text-white">هشدارها</TabsTrigger>
-            <TabsTrigger value="analysis" className="text-xs px-2 py-1 data-[state=active]:bg-green-600 data-[state=active]:text-white">تحلیل AI</TabsTrigger>
-            <TabsTrigger value="trends" className="text-xs px-2 py-1 data-[state=active]:bg-green-600 data-[state=active]:text-white">روندها</TabsTrigger>
-          </TabsList>
-        </div>
+      {/* Time Range Selector */}
+      <div className="flex gap-2 justify-center">
+        {['1h', '6h', '24h', '7d', '30d'].map((range) => (
+          <Button
+            key={range}
+            variant={selectedTimeRange === range ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setSelectedTimeRange(range)}
+          >
+            {range}
+          </Button>
+        ))}
+      </div>
 
-          {/* Overview Tab with Dynamic System */}
-          <TabsContent value="overview" className="space-y-4">
-            {/* Dynamic Performance Metrics */}
-            <div className="dynamic-stats-grid">
-              <div className="dynamic-stats-card">
-                <div className="stats-card-header">
-                  <div className="stats-card-icon" style={{ background: '#ef4444' }}>
-                    <i className="fas fa-microchip text-white"></i>
-                  </div>
-                </div>
-                <div className="stats-card-value">
-                  <span className={getMetricColor(currentMetrics?.cpuUsage || 0, {good: 50, warning: 80})}>
-                    {currentMetrics?.cpuUsage?.toFixed(1) || '0'}%
-                  </span>
-                </div>
-                <div className="stats-card-label">استفاده CPU</div>
-                <div className="stats-card-change">
-                  <Progress value={currentMetrics?.cpuUsage || 0} className="h-2" />
-                </div>
-              </div>
+      {/* Performance Metrics Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
+              <Clock className="w-4 h-4" />
+              زمان پاسخ (ms)
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{metrics.responseTime.value}</div>
+            <Badge variant={metrics.responseTime.status === 'good' ? 'default' : 'destructive'}>
+              {metrics.responseTime.trend}
+            </Badge>
+          </CardContent>
+        </Card>
 
-              <div className="dynamic-stats-card">
-                <div className="stats-card-header">
-                  <div className="stats-card-icon" style={{ background: '#f59e0b' }}>
-                    <i className="fas fa-memory text-white"></i>
-                  </div>
-                </div>
-                <div className="stats-card-value">
-                  <span className={getMetricColor(currentMetrics?.memoryUsage || 0, {good: 60, warning: 85})}>
-                    {currentMetrics?.memoryUsage?.toFixed(1) || '0'}%
-                  </span>
-                </div>
-                <div className="stats-card-label">استفاده حافظه</div>
-                <div className="stats-card-change">
-                  <Progress value={currentMetrics?.memoryUsage || 0} className="h-2" />
-                </div>
-              </div>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
+              <TrendingUp className="w-4 h-4" />
+              تعداد درخواست
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{metrics.throughput.value}</div>
+            <Badge variant={metrics.throughput.status === 'good' ? 'default' : 'secondary'}>
+              {metrics.throughput.trend}
+            </Badge>
+          </CardContent>
+        </Card>
 
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium">زمان پاسخ</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold mb-2">
-                    <span className={getMetricColor(currentMetrics?.responseTime || 0, {good: 500, warning: 1500})}>
-                      {currentMetrics?.responseTime?.toFixed(0) || '0'}ms
-                    </span>
-                  </div>
-                  <div className="text-xs text-gray-600">
-                    پردازش درخواست‌ها
-                  </div>
-                </CardContent>
-              </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4" />
+              میزان خطا (%)
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{metrics.errorRate.value}</div>
+            <Badge variant={metrics.errorRate.status === 'good' ? 'default' : 'destructive'}>
+              {metrics.errorRate.trend}
+            </Badge>
+          </CardContent>
+        </Card>
 
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium">اتصالات فعال</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold mb-2">
-                    {currentMetrics?.activeConnections || '0'}
-                  </div>
-                  <div className="text-xs text-gray-600">
-                    کاربران متصل
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium flex items-center gap-2">
+              <CheckCircle className="w-4 h-4" />
+              دسترسی (%)
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{metrics.uptime.value}</div>
+            <Badge variant="default">{metrics.uptime.trend}</Badge>
+          </CardContent>
+        </Card>
+      </div>
 
-            {/* System Status */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>وضعیت دیتابیس</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <span>زمان اجرای کوئری:</span>
-                      <span className={getMetricColor(currentMetrics?.databaseQueryTime || 0, {good: 100, warning: 500})}>
-                        {currentMetrics?.databaseQueryTime?.toFixed(0) || '0'}ms
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span>نرخ موفقیت Cache:</span>
-                      <span className="text-green-600">
-                        {currentMetrics?.cacheHitRate?.toFixed(1) || '0'}%
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span>نرخ خطا:</span>
-                      <span className={getMetricColor(currentMetrics?.errorRate || 0, {good: 1, warning: 5})}>
-                        {currentMetrics?.errorRate?.toFixed(2) || '0'}%
-                      </span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+      {/* Main Content Tabs */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Alerts Section */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Activity className="w-5 h-5" />
+              هشدارها و اعلان‌ها
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {alerts.map((alert) => (
+              <Alert key={alert.id} className={alert.type === 'warning' ? 'border-orange-200' : 'border-blue-200'}>
+                <AlertDescription className="flex justify-between items-start">
+                  <span>{alert.message}</span>
+                  <span className="text-xs text-gray-500">{alert.timestamp}</span>
+                </AlertDescription>
+              </Alert>
+            ))}
+          </CardContent>
+        </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle>آمار شبکه</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <span>درخواست در ثانیه:</span>
-                      <span className="text-blue-600">
-                        {currentMetrics?.throughput || '0'} req/s
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span>اتصالات همزمان:</span>
-                      <span className="text-blue-600">
-                        {currentMetrics?.activeConnections || '0'}
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span>آخرین بروزرسانی:</span>
-                      <span className="text-gray-600 text-sm">
-                        {currentMetrics?.timestamp ? new Date(currentMetrics.timestamp).toLocaleString('fa-IR') : 'نامشخص'}
-                      </span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-
-          {/* Alerts Tab */}
-          <TabsContent value="alerts" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>هشدارهای فعال سیستم</CardTitle>
-                <CardDescription>
-                  نظارت لحظه‌ای بر وضعیت سیستم و هشدارهای هوشمند
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {alerts.length === 0 ? (
-                  <div className="text-center py-8">
-                    <i className="fas fa-check-circle text-green-500 text-4xl mb-4"></i>
-                    <p className="text-gray-600">هیچ هشدار فعالی وجود ندارد</p>
-                    <p className="text-sm text-gray-500">سیستم در حالت عادی عمل می‌کند</p>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {alerts.map((alert) => (
-                      <div key={alert.id} className="border rounded-lg p-4">
-                        <div className="flex items-start justify-between mb-3">
-                          <div className="flex items-center space-x-reverse space-x-3">
-                            <Badge className={getSeverityColor(alert.severity)}>
-                              {alert.severity}
-                            </Badge>
-                            <h4 className="font-medium">{alert.title}</h4>
-                          </div>
-                          <span className="text-xs text-gray-500">
-                            {new Date(alert.timestamp).toLocaleString('fa-IR')}
-                          </span>
-                        </div>
-                        <p className="text-gray-700 mb-3">{alert.description}</p>
-                        <div className="bg-blue-50 p-3 rounded-md mb-3">
-                          <h5 className="font-medium text-blue-800 mb-1">توصیه راه‌حل:</h5>
-                          <p className="text-blue-700 text-sm">{alert.recommendation}</p>
-                        </div>
-                        <div className="flex justify-between text-sm text-gray-600">
-                          <span>تأثیر پیش‌بینی شده: {alert.predictedImpact}</span>
-                          <span>زمان حل: {alert.timeToResolve}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* AI Analysis Tab */}
-          <TabsContent value="analysis" className="space-y-6">
-            {analysis && (
-              <>
+        {/* Trends Analysis */}
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <BarChart3 className="w-5 h-5" />
+              تحلیل روندها
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Tabs defaultValue="trends" className="w-full">
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="trends">شاخص‌های کلیدی</TabsTrigger>
+                <TabsTrigger value="charts">نمودارها</TabsTrigger>
+                <TabsTrigger value="reports">گزارش‌ها</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="trends" className="space-y-4">
                 <Card>
-                  <CardHeader>
-                    <CardTitle>پیش‌بینی بار سیستم</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <h4 className="font-medium mb-3">ساعت آینده</h4>
-                        <div className="space-y-2">
-                          <div className="flex justify-between">
-                            <span>بار مورد انتظار:</span>
-                            <span className="font-medium">{analysis.nextHour.expectedLoad}%</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span>سطح ریسک:</span>
-                            <Badge variant={analysis.nextHour.riskLevel === 'high' ? 'destructive' : 
-                              analysis.nextHour.riskLevel === 'medium' ? 'secondary' : 'default'}>
-                              {analysis.nextHour.riskLevel}
-                            </Badge>
-                          </div>
-                        </div>
-                        <div className="mt-4">
-                          <h5 className="font-medium mb-2">توصیه‌های فوری:</h5>
-                          <ul className="text-sm text-gray-600 space-y-1">
-                            {analysis.nextHour.recommendations.map((rec, index) => (
-                              <li key={index} className="flex items-start">
-                                <i className="fas fa-arrow-left text-blue-500 mt-1 ml-2 text-xs"></i>
-                                {rec}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-
-                      <div>
-                        <h4 className="font-medium mb-3">24 ساعت آینده</h4>
-                        <div className="space-y-3">
-                          <div>
-                            <h5 className="text-sm font-medium mb-2">زمان‌های پیک:</h5>
-                            {analysis.next24Hours.peakTimes.map((peak, index) => (
-                              <div key={index} className="flex justify-between text-sm">
-                                <span>{peak.time}</span>
-                                <span>{peak.expectedLoad}%</span>
-                              </div>
-                            ))}
-                          </div>
-                          
-                          <div>
-                            <h5 className="text-sm font-medium mb-2">نقاط گلوگاه احتمالی:</h5>
-                            {analysis.next24Hours.potentialBottlenecks.map((bottleneck, index) => (
-                              <Badge key={index} variant="outline" className="ml-1 mb-1">
-                                {bottleneck}
+                  <CardContent className="pt-6">
+                    {analysis.trends.keyMetrics && analysis.trends.keyMetrics.length > 0 ? (
+                      <div className="space-y-3">
+                        {analysis.trends.keyMetrics.map((metric, index) => (
+                          <div key={index} className="flex justify-between items-center p-3 border rounded">
+                            <span className="font-medium">{metric.metric}</span>
+                            <div className="flex items-center space-x-reverse space-x-2">
+                              <Badge variant="outline">{metric.trend}</Badge>
+                              <Badge variant={metric.concern === 'low' ? 'default' : 
+                                metric.concern === 'medium' ? 'secondary' : 'destructive'}>
+                                {metric.concern}
                               </Badge>
-                            ))}
+                            </div>
                           </div>
-                        </div>
+                        ))}
                       </div>
-                    </div>
+                    ) : (
+                      <div className="text-center py-8">
+                        <i className="fas fa-chart-line text-gray-400 text-4xl mb-4"></i>
+                        <p className="text-gray-600">در حال جمع‌آوری داده‌های روند...</p>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
+              </TabsContent>
 
+              <TabsContent value="charts" className="space-y-4">
                 <Card>
-                  <CardHeader>
-                    <CardTitle>تحلیل روند عملکرد</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <div className="flex items-center space-x-reverse space-x-2 mb-4">
-                          <span>جهت کلی عملکرد:</span>
-                          <Badge variant={analysis.trends.performanceDirection === 'improving' ? 'default' :
-                            analysis.trends.performanceDirection === 'stable' ? 'secondary' : 'destructive'}>
-                            {analysis.trends.performanceDirection}
-                          </Badge>
-                        </div>
-                      </div>
-                      
-                      <div>
-                        <h5 className="font-medium mb-3">پیشنهادات بهینه‌سازی:</h5>
-                        <ul className="text-sm text-gray-600 space-y-1">
-                          {analysis.next24Hours.optimizationSuggestions.map((suggestion, index) => (
-                            <li key={index} className="flex items-start">
-                              <i className="fas fa-lightbulb text-yellow-500 mt-1 ml-2 text-xs"></i>
-                              {suggestion}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
+                  <CardContent className="pt-6">
+                    <div className="text-center py-8">
+                      <LineChart className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                      <p className="text-gray-600">نمودارهای تعاملی در حال توسعه</p>
                     </div>
                   </CardContent>
                 </Card>
-              </>
-            )}
-          </TabsContent>
+              </TabsContent>
 
-          {/* Trends Tab */}
-          <TabsContent value="trends" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>تحلیل متریک‌های کلیدی</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {analysis?.trends?.keyMetrics ? (
-                  <div className="space-y-4">
-                    {analysis.trends.keyMetrics.map((metric, index) => (
-                      <div key={index} className="flex justify-between items-center p-3 border rounded">
-                        <span className="font-medium">{metric.metric}</span>
-                        <div className="flex items-center space-x-reverse space-x-2">
-                          <Badge variant="outline">{metric.trend}</Badge>
-                          <Badge variant={metric.concern === 'low' ? 'default' : 
-                            metric.concern === 'medium' ? 'secondary' : 'destructive'}>
-                            {metric.concern}
-                          </Badge>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8">
-                    <i className="fas fa-chart-line text-gray-400 text-4xl mb-4"></i>
-                    <p className="text-gray-600">در حال جمع‌آوری داده‌های روند...</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+              <TabsContent value="reports" className="space-y-4">
+                <Card>
+                  <CardContent className="pt-6">
+                    <div className="text-center py-8">
+                      <PieChart className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                      <p className="text-gray-600">گزارش‌های تفصیلی در حال آماده‌سازی</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

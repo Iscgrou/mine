@@ -342,7 +342,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/representatives", async (req, res) => {
     try {
       const representatives = await storage.getRepresentatives();
-      res.json(representatives);
+      
+      // Apply CRM data filtering based on user role
+      const userRole = (req.session as any)?.role || 'crm';
+      const { CRMDataFilter } = await import('./crm-data-filter');
+      const filteredData = CRMDataFilter.filterRepresentativeData(representatives, userRole);
+      
+      res.json(filteredData);
     } catch (error) {
       res.status(500).json({ message: "خطا در دریافت نمایندگان" });
     }
@@ -1214,6 +1220,11 @@ ${invoices.map((inv, index) =>
         day: 'numeric'
       }).format(new Date(endDate as string));
 
+      // Apply CRM data filtering for performance reports
+      const userRole = (req.session as any)?.role || 'crm';
+      const { CRMDataFilter } = await import('./crm-data-filter');
+      const filteredAnalysis = CRMDataFilter.filterPerformanceData(aiAnalysis, userRole);
+
       // Structure response for frontend
       const response = {
         period: {
@@ -1222,11 +1233,11 @@ ${invoices.map((inv, index) =>
           shamsiStartDate,
           shamsiEndDate
         },
-        performanceMetrics: aiAnalysis.performanceMetrics,
-        behavioralInsights: aiAnalysis.behavioralInsights,
-        technicalProficiency: aiAnalysis.technicalProficiency,
-        businessImpact: aiAnalysis.businessImpact,
-        predictiveInsights: aiAnalysis.predictiveInsights,
+        performanceMetrics: filteredAnalysis.performanceMetrics,
+        behavioralInsights: filteredAnalysis.behavioralInsights,
+        technicalProficiency: filteredAnalysis.technicalProficiency,
+        businessImpact: filteredAnalysis.businessImpact,
+        predictiveInsights: filteredAnalysis.predictiveInsights,
         culturalContext: aiAnalysis.culturalContextAnalysis,
         // Legacy compatibility for current frontend
         overallActivity: {

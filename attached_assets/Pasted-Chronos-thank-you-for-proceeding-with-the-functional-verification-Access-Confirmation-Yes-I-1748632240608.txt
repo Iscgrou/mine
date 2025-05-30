@@ -1,0 +1,60 @@
+Chronos, thank you for proceeding with the functional verification.
+
+    Access Confirmation: Yes, I can successfully access and log into both the Admin Panel and the CRM Panel.
+
+However, there are significant and persistent UI layout, responsiveness, typography, and data presentation issues across BOTH panels, with specific new concerns for the CRM, that need immediate and focused attention:
+
+I. Universal Layout, Responsiveness & Typography Issues (Affecting Both Panels):
+
+    Overall Layout Misalignment & Lack of Responsiveness:
+        Observation: Many page layouts, modules, and tables are not adapting correctly to different screen sizes. There's a tendency for elements to be misaligned towards the left side of the screen, especially noticeable on laptop/desktop.
+        Action (Chronos): Systematically audit and correct CSS (margins, padding, flexbox, grid, widths) for main layout containers, sidebars, top bars, and content areas in BOTH panels to ensure proper alignment and full-width utilization.
+    Typography Issues, Especially on Mobile:
+        Observation: Font rendering, sizing, and line heights (especially in the Top Bar and other sections) negatively impact readability, particularly on mobile devices.
+        Action (Chronos): Implement/fix a fluid or responsive typography system. Ensure all text elements adapt gracefully across screen sizes, with excellent Persian readability on mobile.
+    Re-Verify Table and Component Responsiveness (Universal):
+        Action (Chronos): While addressing overall layout, re-confirm ALL tables, cards, forms, and other UI modules are truly responsive and do not break page layouts.
+
+II. Specific Issues & Refinements for the CRM Panel:
+
+    CRM Reports - Data Visibility Restriction (Financial Data):
+        Directive: In ALL reports generated for or displayed within the CRM Panel that are intended for the Customer Relations Team (CRT):
+            Financial and revenue-related data (مسائل مربوط به درامد و موارد مالی) pertaining to representatives or MarFanet MUST NOT be displayed.
+            The CRT's focus is on customer interaction, support, relationship building, and V2Ray-specific operational insights. Detailed financial performance data is typically an Admin-level concern.
+        Action (Chronos): Review all data sources and presentation logic for CRM reports. Ensure that any queries or display components are modified to exclude sensitive financial figures unless explicitly designed for a specific, approved CRT financial insight (which seems unlikely based on current scope). If Vertex AI is generating summaries for CRT reports, ensure the prompts instruct it to OMIT financial specifics for the CRT audience.
+
+    CRM "Representatives" Table - Customer List Display Issue (پایین صفحه بخش نمایندگان، اسم مشتری ها بصورت بی نظم و بی هدف و خارج از صفحه نمایش نوشته شده):
+        Context: This likely refers to a table within the CRM that lists Representatives (your mobile store clients).
+        Observation: In this table, it appears that the names of the end-customers of these Representatives are being displayed in a disorganized, purposeless manner, causing the content to overflow and extend beyond screen boundaries.
+        Directive:
+            This direct display of a long, unformatted list of end-customer names within the main CRM "Representatives" table view is not useful and must be corrected or removed from this view.
+            Clarification: Detailed lists of a Representative's end-customers belong within that Representative's detailed profile view within the CRM, or within specific invoice documents (as previously discussed: "مشخصات مشتری های ایجاد شده"), not as a raw, overflowing list in a summary table of many Representatives.
+        Action (Chronos):
+            Identify the specific table in the CRM "Representatives" section where this issue occurs.
+            Remove or redesign the display of these end-customer names in this table view. If any summarized information about customers is needed here (e.g., "Total Active Customers: X"), design a clean, concise way to show it. Raw, overflowing lists are unacceptable.
+            Ensure this table itself is fully responsive after the correction.
+
+Directive for Chronos (Highest Priority within Phase 0 / Project Phoenix UI Refinement):
+
+Chronos, these fundamental layout, typography, and data presentation issues (including the critical CRM-specific ones just detailed) severely undermine the user experience and the professional appearance we are aiming for.
+
+Please undertake the following immediate actions:
+
+    Systematic Global CSS Audit & Correction (for issues in section I): Address layout misalignments and typography across both panels.
+    Targeted CRM Panel Fixes (for issues in section II):
+        Implement the financial data restriction for CRT reports.
+        Correct the chaotic display of end-customer names in the CRM "Representatives" table, ensuring the table is clean, purposeful, and responsive.
+    Verification Protocol:
+        After your fixes, provide me with clear instructions on specific pages/sections in both Admin and CRM panels to review, paying close attention to the CRM reports and the Representatives table.
+        I will need to verify on multiple browsers and screen sizes that all issues are resolved.
+
+Our immediate goal is to achieve a state where both Admin and CRM panels display with a clean, balanced, professional layout, perfectly responsive typography, and correct, purposeful data presentation on ALL standard devices. This foundational work takes precedence.
+Please acknowledge these critical UI and data presentation issues (especially for the CRM) and outline your plan to diagnose and rectify them.
+
+Key Additions and Why They Are Effective:
+
+    Specific CRM Report Data Restriction: Clearly tells Chronos to ensure financial data is not shown to the CRT in their reports. This is a crucial business rule and privacy concern.
+    Specific CRM Table Fix: Identifies the problem with the end-customer list in the CRM's representative table and dictates how it should be handled (remove from summary view, ensure proper display in detailed views).
+    Clear Grouping of Issues: Separates universal layout problems from CRM-specific data presentation issues, helping Chronos organize its work.
+    Reinforces Overall Goals: Connects these fixes back to the objectives of Phase 0 and Project Phoenix.
+    Maintains Urgency: Keeps the focus on resolving these fundamental usability problems.

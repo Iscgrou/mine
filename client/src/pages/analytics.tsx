@@ -235,14 +235,14 @@ export default function Analytics() {
   );
 
   return (
-    <div className="p-2 md:p-4 space-y-3 md:space-y-4" dir="rtl">
-      <div className="flex flex-col space-y-1 text-center">
-        <h1 className="text-lg md:text-xl font-bold">مرکز تحلیل گزارش</h1>
-        <p className="text-xs md:text-sm text-muted-foreground">تحلیل جامع عملکرد کسب و کار و نمایندگان</p>
+    <div className="p-2 md:p-4 space-y-2 md:space-y-4" dir="rtl">
+      <div className="flex flex-col items-center space-y-2 py-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg mx-1">
+        <h1 className="text-base md:text-xl font-bold text-center text-blue-900">مرکز تحلیل گزارش</h1>
+        <p className="text-xs text-blue-600 text-center">تحلیل جامع عملکرد کسب و کار</p>
       </div>
 
       {/* Overview Metrics */}
-      <div className="grid gap-3 md:gap-4 grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-2 md:gap-4 grid-cols-2 lg:grid-cols-4">
         <MetricCard
           title="کل درآمد"
           value={formatCurrency(analyticsData.overview.totalRevenue)}

@@ -399,19 +399,53 @@ export default function CrmCallPreparation() {
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-3">
-              <Button variant="outline">
+              <Button 
+                variant="outline"
+                onClick={() => {
+                  if (selectedRepId) {
+                    const rep = representatives?.find((r: any) => r.id === selectedRepId);
+                    if (rep?.phoneNumber) {
+                      window.open(`tel:${rep.phoneNumber}`, '_self');
+                    } else {
+                      alert("شماره تلفن این نماینده ثبت نشده است");
+                    }
+                  }
+                }}
+              >
                 <i className="fas fa-phone ml-2"></i>
                 شروع تماس تلفنی
               </Button>
-              <Button variant="outline">
+              <Button 
+                variant="outline"
+                onClick={() => {
+                  if (selectedRepId) {
+                    const rep = representatives?.find((r: any) => r.id === selectedRepId);
+                    if (rep?.telegramId) {
+                      window.open(`https://t.me/${rep.telegramId}`, '_blank');
+                    } else {
+                      alert("شناسه تلگرام این نماینده ثبت نشده است");
+                    }
+                  }
+                }}
+              >
                 <i className="fab fa-telegram ml-2"></i>
                 ارسال پیام تلگرام
               </Button>
-              <Button variant="outline">
+              <Button 
+                variant="outline"
+                onClick={() => {
+                  alert("زمان‌بندی تماس - در حال پیاده‌سازی");
+                }}
+              >
                 <i className="fas fa-calendar-plus ml-2"></i>
                 زمان‌بندی تماس
               </Button>
-              <Button variant="outline">
+              <Button 
+                variant="outline"
+                onClick={() => {
+                  alert("ثبت یادداشت - در حال پیاده‌سازی");
+                }}
+              >
                 <i className="fas fa-sticky-note ml-2"></i>
                 ثبت یادداشت
               </Button>

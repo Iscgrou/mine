@@ -203,7 +203,13 @@ export default function Analytics() {
                   درآمد کل ۲۱۷ نماینده شما نشان‌دهنده رشد پایدار در بازار است.
                 </p>
               </div>
-              <Button variant="outline" className="w-full">
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => {
+                  alert("تحلیل دقیق‌تر با Grok - در حال پیاده‌سازی");
+                }}
+              >
                 <i className="fas fa-robot ml-2"></i>
                 تحلیل دقیق‌تر با Grok
               </Button>
@@ -227,7 +233,13 @@ export default function Analytics() {
                   تمام ۲۱۷ نماینده شما فعال هستند. پیشنهاد می‌شود برنامه‌های انگیزشی برای نمایندگان برتر در نظر بگیرید.
                 </p>
               </div>
-              <Button variant="outline" className="w-full">
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => {
+                  alert("گزارش کامل عملکرد نمایندگان - در حال پیاده‌سازی");
+                }}
+              >
                 <i className="fas fa-chart-bar ml-2"></i>
                 گزارش کامل عملکرد
               </Button>

@@ -60,6 +60,9 @@ app.use((req, res, next) => {
   
   // Register emergency fix for representatives balance API
   registerRepresentativesBalanceEndpoint(app);
+  
+  // Register AI-powered CRT Performance Monitoring routes
+  registerCRTPerformanceRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;

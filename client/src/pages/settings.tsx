@@ -15,18 +15,16 @@ interface Setting {
 
 interface ApiKeyStatus {
   telegram: boolean;
-  ai: boolean;
-  grok: boolean;
-  telegramSet?: boolean;
-  aiSet?: boolean;
-  grokSet?: boolean;
+  vertexAI: boolean;
+  telegramSet?: string;
+  vertexAISet?: string;
 }
 
 export default function Settings() {
   const [companyName, setCompanyName] = useState("شرکت مارفانت");
   const [currency, setCurrency] = useState("تومان");
   const [invoicePrefix, setInvoicePrefix] = useState("INV");
-  const [grokApiKey, setGrokApiKey] = useState("");
+  const [vertexApiKey, setVertexApiKey] = useState("");
   const [selectedTab, setSelectedTab] = useState("company");
   
   // Invoice template states
@@ -125,16 +123,16 @@ export default function Settings() {
     },
   });
 
-  const handleSaveGrokKey = () => {
-    if (!grokApiKey.trim()) {
+  const handleSaveVertexKey = () => {
+    if (!vertexApiKey.trim()) {
       toast({
         title: "خطا",
-        description: "لطفاً کلید API Grok را وارد کنید", 
+        description: "لطفاً کلید API Vertex AI را وارد کنید", 
         variant: "destructive",
       });
       return;
     }
-    saveApiKeyMutation.mutate({ keyType: 'grok', keyValue: grokApiKey });
+    saveApiKeyMutation.mutate({ keyType: 'google_cloud_credentials', keyValue: vertexApiKey });
   };
 
   const handleSaveCompanySettings = () => {
@@ -493,11 +491,11 @@ export default function Settings() {
             <CardContent>
               <div className="space-y-4">
                 {!apiKeysLoading && apiKeyStatus && (
-                  <div className={`p-3 rounded-lg border ${apiKeyStatus.grok ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
+                  <div className={`p-3 rounded-lg border ${apiKeyStatus.vertexAI ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
                     <div className="flex items-center gap-2">
-                      <i className={`fas ${apiKeyStatus.grok ? 'fa-check-circle text-green-600' : 'fa-exclamation-triangle text-red-600'}`}></i>
-                      <span className={`text-sm font-medium ${apiKeyStatus.grok ? 'text-green-800' : 'text-red-800'}`}>
-                        {apiKeyStatus.grok ? 'کلید Vertex AI تنظیم شده و آماده استفاده' : 'کلید Vertex AI تنظیم نشده - لطفاً کلید API را وارد کنید'}
+                      <i className={`fas ${apiKeyStatus.vertexAI ? 'fa-check-circle text-green-600' : 'fa-exclamation-triangle text-red-600'}`}></i>
+                      <span className={`text-sm font-medium ${apiKeyStatus.vertexAI ? 'text-green-800' : 'text-red-800'}`}>
+                        {apiKeyStatus.vertexAI ? 'کلید Vertex AI تنظیم شده و آماده استفاده' : 'کلید Vertex AI تنظیم نشده - لطفاً کلید API را وارد کنید'}
                       </span>
                     </div>
                   </div>
@@ -515,23 +513,23 @@ export default function Settings() {
                 )}
                 
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">کلید Grok xAI API</label>
+                  <label className="block text-sm font-medium text-foreground mb-2">کلید Vertex AI API</label>
                   <Input
                     type="password"
-                    value={grokApiKey}
-                    onChange={(e) => setGrokApiKey(e.target.value)}
-                    placeholder="کلید API Grok"
+                    value={vertexApiKey}
+                    onChange={(e) => setVertexApiKey(e.target.value)}
+                    placeholder="کلید API Vertex AI"
                     className="bg-input border-border text-foreground"
                   />
                   <p className="text-xs text-muted-foreground mt-1">
-                    کلید API برای استفاده از قابلیت‌های پیشرفته Grok xAI
+                    کلید API برای استفاده از قابلیت‌های پیشرفته Vertex AI
                   </p>
                 </div>
 
                 <div className="mt-6">
-                  <Button onClick={handleSaveGrokKey} disabled={saveApiKeyMutation.isPending}>
+                  <Button onClick={handleSaveVertexKey} disabled={saveApiKeyMutation.isPending}>
                     <i className="fas fa-save ml-2"></i>
-                    ذخیره کلید Grok
+                    ذخیره کلید Vertex AI
                   </Button>
                 </div>
               </div>

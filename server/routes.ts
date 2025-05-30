@@ -707,6 +707,41 @@ ${invoices.map((inv, index) =>
     }
   });
 
+  // Emergency access test route for admin panel debugging
+  app.get('/emergency-admin-test', (req, res) => {
+    res.send(`
+      <!DOCTYPE html>
+      <html lang="fa" dir="rtl">
+      <head>
+        <meta charset="UTF-8">
+        <title>Emergency Admin Access Test</title>
+        <style>
+          body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            padding: 50px; 
+            background: #f0f0f0; 
+          }
+          .success { color: green; font-size: 24px; margin: 20px; }
+          .info { background: white; padding: 20px; border-radius: 8px; margin: 20px; }
+        </style>
+      </head>
+      <body>
+        <div class="success">✅ سرور MarFanet در حال کار است</div>
+        <div class="info">
+          <h3>تست دسترسی اضطراری</h3>
+          <p>زمان: ${new Date().toLocaleString('fa-IR')}</p>
+          <p>IP درخواست: ${req.ip}</p>
+          <p>User-Agent: ${req.get('User-Agent')}</p>
+          <hr>
+          <p><a href="/ciwomplefoadm867945">دسترسی به پنل مدیریت</a></p>
+          <p><a href="/csdfjkjfoascivomrm867945">دسترسی به پنل CRM</a></p>
+        </div>
+      </body>
+      </html>
+    `);
+  });
+
   // Individual invoice share to representative's Telegram
   app.post("/api/invoices/:id/share-telegram", async (req, res) => {
     try {

@@ -1,6 +1,6 @@
 import { Link, useLocation } from "wouter";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useSidebar } from "@/contexts/SidebarContext";
 
 // Helper to get the correct base path based on current location
 const getBasePath = () => {
@@ -71,16 +71,16 @@ const navigationItems = [
 
 export default function Sidebar() {
   const [location] = useLocation();
-  const [isOpen, setIsOpen] = useState(false);
+  const { state } = useSidebar();
   const basePath = getBasePath();
 
   return (
     <>
       {/* Overlay */}
-      {isOpen && (
+      {state.isOpen && (
         <div 
           className="fixed inset-0 bg-black bg-opacity-50 z-40"
-          onClick={() => setIsOpen(false)}
+          onClick={() => {}}
         />
       )}
 
@@ -88,7 +88,7 @@ export default function Sidebar() {
       <div className={cn(
         "fixed inset-y-0 right-0 z-50 bg-white shadow-xl border-l border-gray-200 transition-all duration-300 ease-in-out",
         "w-80 sm:w-72 md:w-64",
-        isOpen ? "translate-x-0" : "translate-x-full"
+        state.isOpen ? "translate-x-0" : "translate-x-full"
       )}>
         {/* Logo/Header */}
         <div className="flex items-center justify-center h-16 px-4 border-b border-gray-200">
@@ -116,7 +116,7 @@ export default function Sidebar() {
                         ? "bg-primary bg-opacity-10 text-primary"
                         : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                     )}
-                    onClick={() => setIsOpen(false)} // Close sidebar on navigation
+                    onClick={() => {}} // Navigation handled by router
                   >
                     <i className={cn(item.icon, "ml-3 text-base flex-shrink-0 w-5 flex justify-center", 
                       isActive ? "text-primary" : "text-gray-400 group-hover:text-gray-500"

@@ -1,6 +1,6 @@
 import { Link, useLocation } from "wouter";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useSidebar } from "@/contexts/SidebarContext";
 
 // Helper to get the correct base path for CRM
 const getCrmBasePath = () => {
@@ -56,16 +56,16 @@ const crmNavigationItems = [
 
 export default function CrmSidebar() {
   const [location] = useLocation();
-  const [isOpen, setIsOpen] = useState(false);
+  const { state } = useSidebar();
   const basePath = getCrmBasePath();
 
   return (
     <>
       {/* Overlay for mobile */}
-      {isOpen && (
+      {state.isOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
-          onClick={() => setIsOpen(false)}
+          onClick={() => {}}
         />
       )}
 
@@ -73,7 +73,7 @@ export default function CrmSidebar() {
       <div className={cn(
         "fixed right-0 top-0 h-full bg-white shadow-lg border-l border-gray-200 z-40 transition-transform duration-300 ease-in-out",
         "w-72 lg:w-72 md:w-64 sm:w-56", // Responsive width for different screen sizes
-        isOpen ? "translate-x-0" : "translate-x-full lg:translate-x-0"
+        state.isOpen ? "translate-x-0" : "translate-x-full lg:translate-x-0"
       )}>
         {/* Header */}
         <div className="p-6 border-b border-gray-200">
@@ -104,7 +104,7 @@ export default function CrmSidebar() {
                         ? "bg-blue-600 bg-opacity-10 text-blue-600"
                         : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                     )}
-                    onClick={() => setIsOpen(false)} // Close sidebar on navigation
+                    onClick={() => {}} // Navigation handled by router
                   >
                     <i className={cn(item.icon, "ml-3 text-base flex-shrink-0 w-5 flex justify-center", 
                       isActive ? "text-blue-600" : "text-gray-400 group-hover:text-gray-500"

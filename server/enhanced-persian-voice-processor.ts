@@ -4,6 +4,7 @@
  */
 
 import { aegisLogger, EventType, LogLevel } from './aegis-logger';
+import { shamsiCalendarEngine, ShamsiDate, TaskSchedulingResult } from './shamsi-calendar-engine';
 
 interface PersianVoiceConfig {
   languageCode: string;
@@ -190,12 +191,21 @@ class EnhancedPersianVoiceProcessor {
   }
 
   private async extractShamsiDatesAndTasks(text: string): Promise<ShamsiDateExtractionResult> {
+    // Use the comprehensive Shamsi calendar engine for accurate date extraction
+    const dateExtractionResult = shamsiCalendarEngine.extractDatesFromText(text);
+    
     const extractedDates: Array<{
       text: string;
       shamsiDate: string;
       gregorianDate: Date;
       type: 'absolute' | 'relative';
-    }> = [];
+    }> = dateExtractionResult.extractedDates.map(date => ({
+      text: date.text,
+      shamsiDate: date.shamsiDate.formatted,
+      gregorianDate: date.gregorianDate,
+      type: date.type
+    }));
+    
     const tasks: Array<{
       description: string;
       dueDate: Date;

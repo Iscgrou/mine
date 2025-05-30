@@ -114,10 +114,86 @@
     overflow-x: hidden;
   }
 
-  /* Table system fixes */
+  /* Table system fixes - Project Phoenix Enhancement */
   .table-wrapper {
     width: 100%;
     overflow-x: auto;
+    border-radius: 0.5rem;
+    border: 1px solid hsl(var(--border));
+    background: hsl(var(--background));
+  }
+
+  /* Project Phoenix: Enhanced table responsiveness */
+  .phoenix-table {
+    width: 100%;
+    min-width: max-content;
+    border-collapse: collapse;
+  }
+
+  .phoenix-table th,
+  .phoenix-table td {
+    white-space: nowrap;
+    padding: clamp(0.5rem, 1.5vw, 1rem);
+    text-align: right;
+    border-bottom: 1px solid hsl(var(--border));
+    font-size: clamp(0.75rem, 1.8vw, 0.875rem);
+  }
+
+  /* Project Phoenix: Button functionality fixes */
+  .phoenix-button {
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    border: none;
+    outline: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .phoenix-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .phoenix-button:active {
+    transform: translateY(0);
+  }
+
+  .phoenix-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    transform: none;
+  }
+
+  /* Project Phoenix: Navigation link fixes */
+  .phoenix-nav-link {
+    display: block;
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+    position: relative;
+  }
+
+  .phoenix-nav-link:hover {
+    background-color: hsl(var(--accent) / 0.1);
+  }
+
+  .phoenix-nav-link.active {
+    background-color: hsl(var(--primary) / 0.1);
+    color: hsl(var(--primary));
+  }
+
+  /* Project Phoenix: Typography system */
+  .phoenix-heading {
+    font-family: 'Vazirmatn', sans-serif;
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+
+  .phoenix-text {
+    font-family: 'Vazirmatn', sans-serif;
+    line-height: 1.6;
+    word-spacing: 0.1em;
+  }
     border-radius: 8px;
     border: 1px solid #e5e7eb;
     background: white;

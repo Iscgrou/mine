@@ -373,7 +373,7 @@ export class DatabaseStorage implements IStorage {
     .orderBy(desc(invoices.createdAt));
   }
 
-  async getInvoiceById(id: number): Promise<(Invoice & { representative: Representative | null, items: InvoiceItem[] }) | undefined> {
+  async getInvoiceById(id: number): Promise<(Invoice & { representative: Representative | null, items: InvoiceItem[], batch: InvoiceBatch | null }) | undefined> {
     const [invoice] = await db.select({
       id: invoices.id,
       invoiceNumber: invoices.invoiceNumber,
@@ -384,6 +384,9 @@ export class DatabaseStorage implements IStorage {
       paidDate: invoices.paidDate,
       invoiceData: invoices.invoiceData,
       createdAt: invoices.createdAt,
+      batchId: invoices.batchId,
+      telegramSent: invoices.telegramSent,
+      sentToRepresentative: invoices.sentToRepresentative,
       representative: representatives
     })
     .from(invoices)
@@ -393,7 +396,15 @@ export class DatabaseStorage implements IStorage {
     if (!invoice) return undefined;
 
     const items = await this.getInvoiceItems(id);
-    return { ...invoice, items };
+    
+    // Get batch information if exists
+    let batch = null;
+    if (invoice.batchId) {
+      const [batchResult] = await db.select().from(invoiceBatches).where(eq(invoiceBatches.id, invoice.batchId));
+      batch = batchResult || null;
+    }
+    
+    return { ...invoice, items, batch };
   }
 
   async createInvoice(invoice: InsertInvoice): Promise<Invoice> {

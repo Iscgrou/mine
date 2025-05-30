@@ -626,8 +626,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
 📁 نام فایل: ${batch.fileName}
 📊 تعداد فاکتورها: ${invoices.length}
-💰 مجموع مبلغ: ${parseFloat(batch.totalAmount).toLocaleString()} تومان
-📅 تاریخ آپلود: ${new Date(batch.uploadDate).toLocaleDateString('fa-IR')}
+💰 مجموع مبلغ: ${parseFloat(batch.totalAmount || '0').toLocaleString()} تومان
+📅 تاریخ آپلود: ${batch.uploadDate ? new Date(batch.uploadDate).toLocaleDateString('fa-IR') : 'نامشخص'}
 
 جزئیات فاکتورها:
 ${invoices.map((inv, index) => 
@@ -955,7 +955,7 @@ ${invoices.map((inv, index) =>
               );
               aegisLogger.info('Commission', `Auto-calculated commission for invoice ${invoice.invoiceNumber}`);
             } catch (commissionError) {
-              aegisLogger.warn('Commission', `Failed to calculate commission for invoice ${invoice.invoiceNumber}:`, commissionError);
+              aegisLogger.warn('Commission', `Failed to calculate commission for invoice ${invoice.invoiceNumber}:`, commissionError as Error);
             }
 
             invoicesCreated.push(invoice);
@@ -1272,22 +1272,22 @@ ${invoices.map((inv, index) =>
       const interactions = await storage.getCrmInteractions();
       const filteredInteractions = interactions.filter(interaction => {
         const interactionDate = new Date(interaction.createdAt);
-        return interactionDate >= new Date(startDate as string) && 
-               interactionDate <= new Date(endDate as string);
+        return interactionDate >= new Date(req.query.startDate as string) && 
+               interactionDate <= new Date(req.query.endDate as string);
       });
 
       const shamsiStartDate = new Intl.DateTimeFormat('fa-IR-u-ca-persian', {
         year: 'numeric', month: 'long', day: 'numeric'
-      }).format(new Date(startDate as string));
+      }).format(new Date(req.query.startDate as string));
       
       const shamsiEndDate = new Intl.DateTimeFormat('fa-IR-u-ca-persian', {
         year: 'numeric', month: 'long', day: 'numeric'
-      }).format(new Date(endDate as string));
+      }).format(new Date(req.query.endDate as string));
 
       const fallbackResponse = {
         period: { 
-          startDate: startDate as string, 
-          endDate: endDate as string, 
+          startDate: req.query.startDate as string, 
+          endDate: req.query.endDate as string, 
           shamsiStartDate, 
           shamsiEndDate 
         },

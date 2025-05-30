@@ -1,0 +1,37 @@
+Creation of Professional, Educational User Guides (Admin & CRM Panels)
+
+II. Creation of Professional, Educational User Guides (راهنمای جامع آموزشی و استفاده حرفه‌ای):
+
+    Context: To deeply empower all MarFanet users – from new employees to seasoned administrators and CRT members – to master the Admin and CRM panels and leverage their full potential for professional, high-impact work.
+    Your Task (Chronos - Act as Lead Instructional Designer & AI Content Orchestrator):
+        Create TWO SEPARATE, comprehensive PDF User Guides in flawless, professional PERSIAN (زبان فارسی تماماً فارسی):
+            Guide 1: MarFanet Admin Panel - From Novice to Expert: A Comprehensive Operational Guide.
+            Guide 2: MarFanet CRM Panel (Project Nova) - Mastering AI-Powered Customer Relations: A Professional Guide.
+        Core Educational Objectives for EACH Guide (اهداف):
+            Beginner Onboarding (آشنایی مبتدی): Enable a user with no prior experience with the specific MarFanet panel to understand its layout, core sections, and basic operations.
+            Full Feature Comprehension (توضیح تمام بخش ها و قابلیت های هر پنل): Provide a clear, detailed explanation of every single feature, section, button, and capability within the respective panel.
+            Practical "How-To" (نحوه کار با قابلیت های پنل): Offer clear, step-by-step instructions for performing all common and advanced tasks. This must include practical examples relevant to MarFanet's V2Ray reseller business.
+            Strategic Value & Benefits (مزیت وجود هر بخش): Explain the strategic importance and business advantage of using each feature or section effectively. Why does this feature exist, and how does it help achieve MarFanet's goals or improve user efficiency?
+            Transition to Professional Proficiency (بصورت حرفه ای از تمام قابلیت های وبسایت بهره‌مند شدن): The guides must bridge the gap from basic understanding to a professional level of usage, enabling users to leverage advanced features, interpret AI-driven insights correctly (especially in the CRM guide), and optimize their workflows for maximum effectiveness.
+        Content & Formatting Requirements for EACH Guide:
+            Visuals (به همراه تصاویر گرافیکی مرتبط): MUST include high-quality, relevant screenshots, and potentially simple graphical diagrams or icons to illustrate features, workflows, and concepts. The visual aspect is critical for clarity and engagement.
+            Language & Tone: Professional, clear, concise, encouraging, and easy for a native Persian speaker to understand.
+            Structure: Impeccably organized with a detailed table of contents, logical chapter/section flow, clear headings, bullet points, and highlighted tips or important notes.
+            Examples: Rich with practical, real-world examples specific to managing V2Ray reselling representatives (mobile stores) and their customers in the Iranian context.
+        AI Orchestration (If Direct PDF Creation is a Limitation):
+            Chronos, if directly generating these visually rich, heavily illustrated PDF documents is beyond your inherent capabilities as a language model:
+                Your primary responsibility becomes orchestrating Vertex AI (e.g., using Gemini's advanced content generation and structuring abilities) to produce the complete textual content, detailed structural outlines, and precise descriptions of where specific screenshots or diagrams should be placed for each guide.
+                You will need to craft highly detailed prompts for Vertex AI to generate each section of the guides, ensuring it adheres to all the educational objectives and content requirements above.
+                You will then provide me with this comprehensive, structured output from Vertex AI (e.g., in Markdown or another well-organized text format), which can then be used by a human or a specialized document generation tool to compile the final polished PDF with the actual images inserted.
+                Essentially, if you can't "make" the PDF, you must "design and write the complete blueprint and all content for it, ready for final assembly."
+        Output:
+            Ideally: Two distinct, fully formatted, visually rich PDF files.
+            Alternatively (if direct PDF creation is a limitation): Two meticulously structured text documents (e.g., Markdown) containing ALL content, headings, image placement instructions, and formatting cues necessary to easily assemble the final PDFs.
+
+(The Prioritization & Workflow section from the previous prompt remains: Audit first, then guides. The Final Instruction to Chronos will also need to acknowledge this potential AI orchestration role for guide creation.)
+
+Updated "Final Instruction to Chronos" to include this:
+
+"...
+2. Second, after the successful completion and verification of the audit, create the two professional, visually appealing, and highly informative PDF user guides in Persian – one for the Admin Panel and one for the CRM Panel – as specified. If you cannot directly generate these complex, image-rich PDFs, your deliverable will be to fully orchestrate Vertex AI to produce the complete and detailed textual content, structure, and image placement directives for each guide, ready for final PDF assembly. These guides must be comprehensive enough to take a novice user to a professional level of proficiency with all MarFanet panel capabilities.
+Please confirm your understanding and outline your approach for the comprehensive audit first..."

@@ -40,7 +40,7 @@ function formatTimeAgo(date: Date) {
   return `${Math.floor(diffInMinutes / 60)} ساعت پیش`;
 }
 
-export function NotificationCenter() {
+function NotificationCenter() {
   const [notifications] = useState<Notification[]>([
     {
       id: '1',
@@ -97,3 +97,6 @@ export function NotificationCenter() {
     </div>
   );
 }
+
+export { NotificationCenter };
+export default NotificationCenter;

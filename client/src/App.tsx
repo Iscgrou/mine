@@ -39,9 +39,9 @@ function Router() {
   if (isCrmSection) {
     return (
       <div className="app-layout min-h-screen bg-gray-50 rtl">
-        <CrmSidebar className="sidebar-element" data-sidebar-element />
+        <CrmSidebar />
         <div className="dynamic-main-content">
-          <Header className="dynamic-header" />
+          <Header />
           <main className="responsive-content">
             <Switch>
               <Route path="/crm" component={CrmDashboard} />
@@ -64,11 +64,11 @@ function Router() {
 
   // Admin Layout (default)
   return (
-    <div className="min-h-screen bg-gray-50 rtl">
+    <div className="app-layout min-h-screen bg-gray-50 rtl">
       <Sidebar />
-      <div className="dynamic-container">
+      <div className="dynamic-main-content">
         <Header />
-        <main className="responsive-content overflow-y-auto">
+        <main className="responsive-content">
           <Switch>
             {/* Admin routes with new clean paths */}
             <Route path="/admin" component={Dashboard} />
@@ -98,12 +98,14 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <NotificationProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-        </TooltipProvider>
-      </NotificationProvider>
+      <SidebarProvider>
+        <NotificationProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Router />
+          </TooltipProvider>
+        </NotificationProvider>
+      </SidebarProvider>
     </QueryClientProvider>
   );
 }

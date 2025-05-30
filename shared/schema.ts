@@ -18,7 +18,7 @@ export const representatives = pgTable("representatives", {
   id: serial("id").primaryKey(),
   fullName: text("full_name").notNull(),
   adminUsername: text("admin_username").notNull().unique(), // Key identifier from Column A
-  telegramId: text("telegram_id"),
+  telegramId: text("telegram_id"), // Full URL format: https://t.me/username
   phoneNumber: text("phone_number"),
   storeName: text("store_name"),
   // Limited subscription pricing for 1-6 months
@@ -34,16 +34,30 @@ export const representatives = pgTable("representatives", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Invoice batches for organizing uploads by date
+export const invoiceBatches = pgTable("invoice_batches", {
+  id: serial("id").primaryKey(),
+  batchName: text("batch_name").notNull(), // Persian date format: ۱۴۰۳-۰۳-۰۵
+  uploadDate: timestamp("upload_date").defaultNow(),
+  fileName: text("file_name"), // Original .ods file name
+  totalInvoices: integer("total_invoices").default(0),
+  totalAmount: decimal("total_amount", { precision: 12, scale: 2 }).default("0"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Invoices table
 export const invoices = pgTable("invoices", {
   id: serial("id").primaryKey(),
   invoiceNumber: text("invoice_number").notNull().unique(),
   representativeId: integer("representative_id").references(() => representatives.id),
+  batchId: integer("batch_id").references(() => invoiceBatches.id),
   totalAmount: decimal("total_amount", { precision: 12, scale: 2 }).notNull(),
   status: text("status").default("pending"), // pending, paid, overdue, cancelled
   dueDate: timestamp("due_date"),
   paidDate: timestamp("paid_date"),
   invoiceData: jsonb("invoice_data"), // Store detailed invoice breakdown
+  telegramSent: boolean("telegram_sent").default(false),
+  sentToRepresentative: boolean("sent_to_representative").default(false),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -108,10 +122,18 @@ export const representativesRelations = relations(representatives, ({ many }) =>
   payments: many(payments),
 }));
 
+export const invoiceBatchesRelations = relations(invoiceBatches, ({ many }) => ({
+  invoices: many(invoices),
+}));
+
 export const invoicesRelations = relations(invoices, ({ one, many }) => ({
   representative: one(representatives, {
     fields: [invoices.representativeId],
     references: [representatives.id],
+  }),
+  batch: one(invoiceBatches, {
+    fields: [invoices.batchId],
+    references: [invoiceBatches.id],
   }),
   items: many(invoiceItems),
   payments: many(payments),
@@ -145,6 +167,11 @@ export const insertRepresentativeSchema = createInsertSchema(representatives).om
   id: true,
   createdAt: true,
   updatedAt: true,
+});
+
+export const insertInvoiceBatchSchema = createInsertSchema(invoiceBatches).omit({
+  id: true,
+  createdAt: true,
 });
 
 export const insertInvoiceSchema = createInsertSchema(invoices).omit({
@@ -182,6 +209,9 @@ export type InsertUser = z.infer<typeof insertUserSchema>;
 
 export type Representative = typeof representatives.$inferSelect;
 export type InsertRepresentative = z.infer<typeof insertRepresentativeSchema>;
+
+export type InvoiceBatch = typeof invoiceBatches.$inferSelect;
+export type InsertInvoiceBatch = z.infer<typeof insertInvoiceBatchSchema>;
 
 export type Invoice = typeof invoices.$inferSelect;
 export type InsertInvoice = z.infer<typeof insertInvoiceSchema>;

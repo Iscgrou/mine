@@ -1,0 +1,58 @@
+Chronos, alongside the other foundational optimizations in Phase 0, we need to implement a significant organizational overhaul for the "Invoice Management" (صورتحساب ها) section and a refinement in the "Representative Management" (مدیریت نمایندگان) section. These changes are aimed at improving workflow efficiency, data clarity, and Telegram integration.
+
+I. "Invoice Management" (صورتحساب ها) Section Overhaul:
+
+    Current Problem: Currently, all generated invoices are likely displayed in a single, undifferentiated list, making it difficult to manage and track batches of invoices processed at different times.
+
+    New Organizational Structure (Folder-Based by Upload Batch):
+        Directive: Instead of a flat list of all invoices, the "Invoice Management" section MUST organize invoices into distinct "batches" or "folders."
+        Folder Creation Logic: Each time a new .ods file is uploaded and processed by the system for invoice generation, a new "folder" (or a visually distinct, filterable group) MUST be automatically created within the "Invoice Management" section.
+        Folder Naming Convention: This new folder MUST be named using the Persian (Shamsi) date of the .ods file upload. For example: "۱۴۰۳-۰۳-۰۵" (representing the upload date 5th of Khordad, 1403).
+        Invoice Grouping: All invoices generated from a single .ods file upload batch MUST be contained exclusively within their respective date-named folder.
+        UI Implication: The "Invoice Management" UI should allow the admin to easily browse these date-named folders and view the invoices contained within each.
+
+    New Invoice Delivery Strategy (Telegram Focused):
+
+        Option 1: Batch Send to Admin's Telegram Bot (Per Folder):
+            Directive: Within each date-named folder (containing a batch of invoices), there MUST be a "Batch Send to Telegram Bot" (ارسال گروهی به ربات تلگرام) option/button.
+            Functionality:
+                Clicking this button will send ALL invoices contained within that specific folder to a designated Telegram bot.
+                This Telegram bot is the one whose Token, Admin Chat ID, and Bot Username are configured by the administrator in the main website "Settings" section (as previously discussed for other Telegram integrations).
+                The format of the sent invoices (e.g., individual messages per invoice, a summary message with links, PDF/image attachments) needs to be considered for usability.
+            Action (Chronos): Design and detail the backend logic and UI for this "Batch Send" feature. Specify how invoices will be formatted/sent to the admin's bot.
+
+        Option 2: Individual Invoice Sharing to Representative's Telegram (Per Invoice Row):
+            Directive: Alongside each individual invoice listed (within its date-named folder), there MUST be a "Share to Telegram" (همرسانی تلگرام) icon/button. This is an enhancement to the previously discussed individual share option.
+            Functionality:
+                Clicking this button should initiate a direct share to the SPECIFIC Telegram account of the Representative for whom that invoice was generated.
+                The system will use the Telegram ID (username or deep-link) that was previously registered in that Representative's profile in the "Representative Management" section.
+                This should ideally use a t.me deep-link that pre-fills the recipient (the representative's Telegram ID) and the invoice content (e.g., a summary with a link to view/download the full invoice, or a direct image/PDF share if feasible via Telegram's sharing capabilities).
+            Action (Chronos): Design and detail the backend logic (to retrieve the correct representative Telegram ID) and frontend implementation (to construct the correct deep-link or sharing mechanism) for this per-invoice "Share to Telegram" feature.
+
+II. "Representative Management" (مدیریت نمایندگان) Section Refinement:
+
+    Context: This section allows for entering/editing representative profiles, including their Telegram ID.
+    New Requirement: Standardized Telegram ID Input Formatting:
+        Directive: To ensure correct linking to a representative's Telegram account, the input field for the "Telegram ID" (or "Telegram Username") in the "Representative Management" form MUST automatically prepend the https://t.me/ prefix.
+        Functionality:
+            The input field in the UI should visually either show https://t.me/ as a fixed prefix, or it should be programmatically added before the value is saved.
+            The user should only need to type the actual Telegram username (e.g., JohnDoe).
+            The value stored in the database and used for generating share links should be the complete URL (e.g., https://t.me/JohnDoe).
+        Action (Chronos): Modify the frontend input component for the Representative's Telegram ID to enforce this prefix. Update any backend validation or storage logic if necessary to handle the full URL consistently.
+
+Integration with Phase 0 & Project Pantheon:
+
+    These changes should be considered part of the "Pantheon Phase 0: Foundational Website Optimization & Stabilization," specifically under "UI/UX Polish & Absolute Consistency" and "Full Functional Integrity Verification."
+    The Telegram integration aspects will also inform the design of any related monitoring by "Project Aegis."
+
+Please confirm your understanding of these organizational and functional enhancements for Invoice Management and Representative Management. Outline how you will incorporate these into the ongoing Phase 0 work, particularly detailing the UI changes for the folder-based invoice display and the implementation logic for both Telegram sharing options.
+
+Key improvements this prompt introduces:
+
+    Clear Structure for Invoices: Moves from a flat list to a much more organized folder-per-upload-batch system, using Shamsi dates for naming – very user-friendly for your context.
+    Dual Telegram Strategy:
+        Provides a "batch send" for the admin's own review/archival via their configured bot.
+        Enhances the individual invoice "share" to go directly to the representative's registered Telegram, improving efficiency.
+    Standardized Telegram ID Input: Reduces errors in linking to representative Telegram accounts by auto-prepending the necessary prefix.
+    Actionable for Chronos: Clearly defines what needs to be designed and implemented.
+    Connects to Overall Plan: Explicitly ties these changes to the ongoing Phase 0 optimization.

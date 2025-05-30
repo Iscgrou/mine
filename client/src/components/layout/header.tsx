@@ -1,7 +1,10 @@
 import { useMemo } from "react";
 import { useLocation } from "wouter";
+import { Button } from "@/components/ui/button";
+import { Menu, X } from "lucide-react";
 import NotificationCenter from "@/components/notification-center";
 import { useNotifications } from "@/hooks/use-notifications";
+import { useSidebar } from "@/contexts/SidebarContext";
 
 const pageNames: Record<string, string> = {
   "dashboard": "داشبورد",
@@ -46,6 +49,7 @@ function getPageFromPath(path: string): string {
 export default function Header() {
   const [location] = useLocation();
   const { notifications, markAsRead, markAllAsRead, dismiss } = useNotifications();
+  const { state, toggle } = useSidebar();
   
   const currentPageTitle = useMemo(() => {
     const pageName = getPageFromPath(location);
@@ -82,11 +86,28 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-white border-b border-gray-200 px-6 py-4">
+    <header className="app-header bg-white border-b border-gray-200 px-6 py-4">
       <div className="flex items-center justify-between">
-        <div className="flex items-center text-sm text-gray-500">
-          <i className="fas fa-calendar-alt ml-1.5 h-4 w-4 text-gray-400"></i>
-          <span className="persian-nums">{currentDate}</span>
+        <div className="flex items-center gap-4">
+          {/* Sidebar Toggle Button */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={toggle}
+            className="p-2 hover:bg-gray-100 rounded-md"
+            aria-label={state.isOpen ? "بستن نوار کناری" : "باز کردن نوار کناری"}
+          >
+            {state.isOpen ? (
+              <X className="h-5 w-5" />
+            ) : (
+              <Menu className="h-5 w-5" />
+            )}
+          </Button>
+          
+          <div className="flex items-center text-sm text-gray-500">
+            <i className="fas fa-calendar-alt ml-1.5 h-4 w-4 text-gray-400"></i>
+            <span className="persian-nums">{currentDate}</span>
+          </div>
         </div>
         
         <div className="absolute left-1/2 transform -translate-x-1/2">

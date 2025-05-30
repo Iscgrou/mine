@@ -61,16 +61,6 @@ export default function CrmSidebar() {
 
   return (
     <>
-      {/* Toggle Button - Always visible */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="fixed top-4 right-4 z-50 lg:hidden bg-white shadow-lg rounded-md p-2 border border-gray-200"
-      >
-        <i className={cn("fas transition-transform duration-200", 
-          isOpen ? "fa-times" : "fa-bars"
-        )}></i>
-      </button>
-
       {/* Overlay for mobile */}
       {isOpen && (
         <div

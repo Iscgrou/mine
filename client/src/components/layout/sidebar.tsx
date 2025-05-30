@@ -76,15 +76,6 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* Toggle Button - Always visible */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="fixed top-4 right-4 z-50 p-3 bg-orange-500 text-white rounded-lg shadow-lg hover:bg-orange-600 transition-colors"
-        title={isOpen ? "إخفاء القائمة" : "إظهار القائمة"}
-      >
-        <i className={`fas ${isOpen ? 'fa-times' : 'fa-bars'} text-lg`}></i>
-      </button>
-
       {/* Overlay */}
       {isOpen && (
         <div 

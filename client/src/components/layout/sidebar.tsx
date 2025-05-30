@@ -118,7 +118,7 @@ export default function Sidebar() {
         </div>
 
         {/* Navigation */}
-        <nav className="mt-6 px-3 pb-20">
+        <nav className="flex-1 overflow-y-auto mt-6 px-3 pb-20">
           <div className="space-y-1">
             {navigationItems.map((item) => {
               const fullHref = basePath + item.href;

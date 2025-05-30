@@ -23,8 +23,7 @@ const CREDENTIALS = {
   }
 };
 
-// Rate limiting storage
-const loginAttempts: Map<string, { count: number; lastAttempt: number }> = new Map();
+// Rate limiting disabled for development
 
 export function setupSimpleAuth(app: Express) {
   // Configure session middleware
@@ -214,32 +213,12 @@ export function setupSimpleAuth(app: Express) {
     `);
   });
 
-  // Reset rate limiting endpoint for administrators
-  app.post('/admin/reset-rate-limit', (req: Request, res: Response) => {
-    loginAttempts.clear();
-    console.log('[SECURITY] Rate limiting reset by administrator');
-    res.json({ success: true, message: 'Rate limiting cleared' });
-  });
+  // Rate limiting completely disabled for development
 
-  // Rate limiting helper function - DISABLED for development
-  const checkRateLimit = (ip: string): boolean => {
-    // Rate limiting disabled - always allow access
-    return true;
-  };
-
-  // Login POST route with enhanced security
+  // Login POST route - rate limiting disabled
   app.post('/login', (req: Request, res: Response) => {
     const { username, password } = req.body;
     const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
-    
-    // Rate limiting check
-    if (!checkRateLimit(clientIP)) {
-      console.log(`[SECURITY] Rate limit exceeded for IP: ${clientIP}`);
-      return res.json({ 
-        success: false, 
-        message: 'تعداد تلاش‌های ورود بیش از حد مجاز. لطفاً 15 دقیقه صبر کنید.' 
-      });
-    }
     
     // Find matching credentials
     const userCredentials = Object.values(CREDENTIALS).find(cred => cred.username === username);
@@ -258,8 +237,7 @@ export function setupSimpleAuth(app: Express) {
       (req.session as any).username = username;
       (req.session as any).role = userCredentials.role;
       
-      // Reset rate limiting for this IP on successful login
-      loginAttempts.delete(clientIP);
+      // Rate limiting disabled
       
       console.log(`[SECURITY] Successful login: ${username} (${userCredentials.role}) from IP: ${clientIP}`);
       

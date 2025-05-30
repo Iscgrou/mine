@@ -74,8 +74,8 @@ class VertexAIPerformanceMonitor {
       }
     });
 
-    // Start performance monitoring
-    this.startMonitoring();
+    // Performance monitoring disabled temporarily
+    console.log('[VERTEX AI] Performance monitoring initialized but disabled for startup');
   }
 
   /**
@@ -209,16 +209,8 @@ class VertexAIPerformanceMonitor {
 
     this.alerts.push(alert);
     
-    // Send to Aegis monitoring system
-    aegisMonitor.logEvent({
-      type: 'PERFORMANCE_ALERT',
-      severity: alert.severity,
-      message: alert.title,
-      details: {
-        description: alert.description,
-        recommendation: alert.recommendation
-      }
-    });
+    // Log to console for monitoring
+    console.log(`[PERFORMANCE ALERT] ${alert.severity.toUpperCase()}: ${alert.title}`);
 
     return alert;
   }

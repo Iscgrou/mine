@@ -123,7 +123,7 @@ class AegisMonitor {
         AND performance_data->>'duration' IS NOT NULL
       `);
       
-      return result.rows[0]?.avg_duration || 0;
+      return parseFloat(result.rows[0]?.avg_duration || '0');
     } catch (error) {
       return 0;
     }

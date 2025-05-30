@@ -1267,8 +1267,8 @@ ${invoices.map((inv, index) =>
   // Analytics data endpoint
   app.get("/api/analytics", async (req, res) => {
     try {
-      const representatives = await storage.getAllRepresentatives();
-      const invoices = await storage.getAllInvoices();
+      const representatives = await storage.getRepresentatives();
+      const invoices = await storage.getInvoices();
       
       // Process analytics data
       const analyticsData = {
@@ -1328,6 +1328,17 @@ ${invoices.map((inv, index) =>
     } catch (error) {
       console.error("Error fetching analytics:", error);
       res.status(500).json({ message: "خطا در دریافت داده‌های تحلیلی" });
+    }
+  });
+
+  // Commission Records endpoint
+  app.get("/api/commission-records", async (req, res) => {
+    try {
+      const commissionRecords = await storage.getCommissionRecords();
+      res.json(commissionRecords);
+    } catch (error) {
+      console.error("Error fetching commission records:", error);
+      res.status(500).json({ message: "خطا در دریافت سوابق کمیسیون" });
     }
   });
 

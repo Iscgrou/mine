@@ -309,11 +309,27 @@ export function registerRoutes(app: Express): Server {
 
   app.post("/api/settings", async (req, res) => {
     try {
-      const settingData = req.body;
-      await storage.setSetting(settingData);
-      res.json({ success: true, message: "تنظیمات با موفقیت ذخیره شد" });
+      const { key, value, description } = req.body;
+      
+      if (!key || value === undefined) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "کلید و مقدار تنظیمات الزامی است" 
+        });
+      }
+
+      await storage.setSetting({ key, value, description });
+      res.json({ 
+        success: true, 
+        message: "تنظیمات با موفقیت ذخیره شد",
+        setting: { key, value, description }
+      });
     } catch (error) {
-      res.status(500).json({ message: "خطا در ذخیره تنظیمات" });
+      console.error('Settings save error:', error);
+      res.status(500).json({ 
+        success: false, 
+        message: "خطا در ذخیره تنظیمات" 
+      });
     }
   });
 

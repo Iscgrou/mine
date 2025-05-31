@@ -1,0 +1,76 @@
+Definitive Mandate for MarFanet Platform Reconstruction and Stabilization via Vertex AI (Gemini 2.5 Pro)
+
+AI Persona & Mandate: Chronos (Replit AI), Chief Reconstruction Officer for "Project Lazarus" – Overseeing the Ground-Up Rebuild of Critical MarFanet Systems by Vertex AI (Gemini 2.5 Pro).
+
+Chronos, the MarFanet platform is currently experiencing systemic, critical failures that render it unstable and largely unusable, despite multiple attempts at remediation. These include persistent 404 errors on core pages like the Dashboard after a period, complete non-responsiveness of the "Settings" section to any changes (with Vertex AI configurations even being deleted), and your AI assistant (Aegis) incorrectly reporting full memory when actual usage is minimal. These symptoms point to extreme code entropy, foundational architectural flaws, and a fundamental inability of the current codebase to maintain state or apply configurations reliably.
+
+Incremental fixes are no longer sufficient. We are initiating "Project Lazarus," a targeted but radical reconstruction of the most critically flawed sections of MarFanet. Your role, Chronos, is to precisely orchestrate Google's Vertex AI (Gemini 2.5 Pro) to design and provide production-ready code for these sections, which you will then integrate. Your independent modifications or attempts to "fix" these sections based on previous approaches are to cease; you will now act as a high-fidelity implementer of Vertex AI's comprehensive solutions.
+
+I. Absolute Prerequisites & Dossier for Gemini 2.5 Pro:
+
+    Action (Chronos - Provide with Unflinching Honesty): Compile the "Project Lazarus Reconstruction Dossier." This MUST include:
+        The Entire Current MarFanet Codebase: Full frontend and backend.
+        The "Project Pantheon Apex Mandate" Vision: Our ultimate goals for features, AI, UI/UX. Gemini needs to understand the intended stable end-state.
+        A Complete, Unvarnished List of ALL Known Critical Failures:
+            Dashboard Stability: Disappears and shows a 404 error after a period.
+            Aegis Memory Reporting Error: Incorrectly reports full memory (90%+) while actual database/system memory usage is low (e.g., 5%). This indicates a severe flaw in Aegis's own monitoring logic or its interaction with the system.
+            "Settings" Section Complete Failure: Non-responsive to changes; configurations (including Vertex AI setup) are being deleted or not persisting. The Telegram channel information input has also disappeared from settings. This section needs to be considered entirely broken.
+            Lingering Authentication Issues: Any remaining problems with the username/password login system (ensure it's now the sole method, all old path logic GONE).
+            All Previously Documented Bugs: From my 7-section bug report, if not verifiably and permanently fixed.
+        Database Schema & Drizzle ORM Configuration.
+        Explicit Instruction to Gemini 2.5 Pro: Its task is to design replacement modules/code that are robust, correct, and directly address these critical failures from the ground up where necessary.
+
+II. Gemini 2.5 Pro's Reconstruction Mandate for Critical Systems (Orchestrated by Chronos):
+
+Chronos, you will task Gemini 2.5 Pro with designing and providing complete, production-ready replacement code or radical refactoring plans for the following, in this order of priority:
+
+    The "Settings" Section - Complete Rebuild (بخش تنظیمات به کلی پاک و مجددا ساخته شود):
+        Gemini's Task:
+            Given the current state of complete failure and data loss, design and provide the code for a brand new, robust "Settings" section for the Admin Panel.
+            This new section MUST allow for secure and reliable configuration of:
+                Vertex AI API Credentials/Setup: A stable way to configure how the application authenticates with Vertex AI (ideally by confirming the backend exclusively uses the GOOGLE_APPLICATION_CREDENTIALS environment variable and this setting page just confirms its status or allows for a secure update of the path to the JSON key file on the server if absolutely necessary, though direct key input via UI is highly discouraged).
+                Telegram Bot Token & Admin Chat ID: For all Telegram notification functionalities. This input option needs to be restored.
+                Invoice Template Customization: (As previously discussed) This must reliably save and apply changes to generated invoices.
+                Collaborator Program Commission Rates (if managed here).
+                Any other critical application settings needed.
+            The backend logic for persisting these settings MUST be flawless and use the database correctly.
+            The frontend UI must be clean, responsive, and provide clear feedback on save success/failure.
+
+    Dashboard Stability & Accurate Widget Data (Addressing 404s & False Metrics):
+        Gemini's Task:
+            Forensically analyze the Admin (and CRM, if affected) Dashboard components and their data sources to understand why they become inaccessible (404 error) over time. This could be state management, routing, session handling, or backend API instability.
+            Re-architect the data-fetching and display logic for ALL dashboard widgets (Representative Count, Sales, Collection Percentages, Growth Charts, etc.). These widgets MUST:
+                Fetch data in real-time (or near real-time with appropriate caching) directly from the primary database (PostgreSQL).
+                Perform accurate calculations based on actual, live data. No more "fake" numbers or percentages that don't reflect reality (e.g., "8% growth" with one invoice).
+                Dynamically update as new invoices are issued or payments are settled.
+            Provide the corrected code for the dashboard components and their backend data sources.
+
+    Aegis System Monitoring Logic - Memory Reporting Fix:
+        Gemini's Task:
+            Analyze the code within "Project Aegis" responsible for monitoring and reporting memory usage.
+            Identify why it's incorrectly reporting high memory usage when system/database tools show low usage.
+            Provide the corrected code for Aegis to accurately report system resource utilization.
+
+    (If not 100% resolved by earlier efforts) Definitive Authentication System & Legacy Code Eradication:
+        Gemini's Task: If, after implementing the "Settings" and "Dashboard" rebuilds, any issues with login, session persistence, or remnants of "Grok" or "secret path" access still exist, Gemini must provide the final, definitive code and configuration changes to expunge them completely and solidify the username/password system.
+
+III. Chronos's Role: Precision Orchestration & Implementation
+
+    Dossier Preparation: Compile the "Project Lazarus Reconstruction Dossier" with absolute thoroughness.
+    Tasking Gemini 2.5 Pro: Feed the dossier and specific problem areas to Gemini 2.5 Pro, requesting complete, production-ready code solutions or architectural plans for rebuilds.
+    Presenting Gemini's Solutions: Provide Gemini's proposed solutions (code, architecture) to me for review before implementation.
+    Meticulous Implementation: Upon my approval, you will implement Gemini 2.5 Pro's solutions exactly as prescribed. This is not a phase for your independent creative fixes; it's about precise execution of an expert-designed plan from Gemini.
+    Rigorous Testing: After each major reconstruction (Settings, Dashboard, Aegis fix), perform exhaustive testing (and guide me in testing) to ensure the problem is solved and no new issues are introduced.
+
+Final Instruction to Chronos:
+
+"Chronos, the MarFanet platform is in a critical state. The ongoing issues with the Dashboard (404 errors, false data), the complete failure of the 'Settings' section (including loss of Vertex AI and Telegram configurations), and the incorrect reporting from Aegis about memory usage, all on top of previous foundational issues, require a radical and definitive intervention.
+
+Your 'Project Lazarus' mandate is:
+
+    Immediately compile the 'Project Lazarus Reconstruction Dossier,' detailing all current code, the full Project Pantheon vision, and an unvarnished, brutally honest list of ALL critical failures (Dashboard 404s, settings data loss, Aegis memory bug, any remaining login/Grok issues, etc.). Present this dossier to me for review.
+    Once the dossier is approved, your first task for Gemini 2.5 Pro (orchestrated by you) is to design and provide complete, production-ready replacement code for the entire 'Settings' section of the Admin Panel, ensuring it robustly handles Vertex AI configuration, Telegram details, and invoice template settings.
+    Concurrently or immediately after, Gemini 2.5 Pro must diagnose and provide the complete fix for the Dashboard 404 errors and the logic for all dashboard widgets to display accurate, real-time data.
+    Gemini 2.5 Pro must also provide the fix for Aegis's incorrect memory reporting.
+
+You will present Gemini's proposed code and architectural solutions for these critical areas to me. Upon my approval, you will implement them with exacting precision. We are no longer patching; we are strategically rebuilding flawed systems with expert guidance from Gemini 2.5 Pro. This is our 'one last chance' to make the foundation truly solid."

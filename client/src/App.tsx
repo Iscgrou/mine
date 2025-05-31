@@ -13,7 +13,7 @@ import Dashboard from "@/pages/dashboard-enhanced";
 import Representatives from "@/pages/representatives-enhanced";
 import Invoices from "@/pages/invoices-enhanced";
 import InvoiceBatches from "@/pages/invoice-batches";
-import Analytics from "@/pages/analytics";
+import Analytics from "@/pages/analytics-enhanced";
 import ImportJSON from "@/pages/import-json";
 import Payments from "@/pages/payments";
 import Backup from "@/pages/backup";

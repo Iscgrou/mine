@@ -42,21 +42,40 @@ export class InvoiceTemplateService {
   async getTemplateCustomizations(): Promise<TemplateCustomization> {
     try {
       const settings = await storage.getSettings();
+      
+      // Look for individual settings first
+      const companyNameSetting = settings.find(s => s.key === 'company_name');
+      const logoUrlSetting = settings.find(s => s.key === 'logo_url');
+      const invoiceNoteSetting = settings.find(s => s.key === 'invoice_note');
       const templateSettings = settings.find(s => s.key === 'invoice_template_settings');
       
+      let templateConfig = {
+        templateStyle: 'modern_clean',
+        includeStoreName: true,
+        includeTelegramId: true,
+        includeNotes: false,
+        outputFormat: 'html'
+      };
+      
       if (templateSettings && templateSettings.value) {
-        const parsed = JSON.parse(templateSettings.value);
-        return {
-          companyName: parsed.companyName || 'MarFanet',
-          logoUrl: parsed.logoUrl || '',
-          invoiceNote: parsed.invoiceNote || '',
-          templateStyle: parsed.templateStyle || 'modern_clean',
-          includeStoreName: parsed.includeStoreName !== false,
-          includeTelegramId: parsed.includeTelegramId !== false,
-          includeNotes: parsed.includeNotes !== false,
-          outputFormat: parsed.outputFormat || 'html'
-        };
+        try {
+          const parsed = JSON.parse(templateSettings.value);
+          templateConfig = { ...templateConfig, ...parsed };
+        } catch (e) {
+          console.error('Error parsing template settings:', e);
+        }
       }
+      
+      return {
+        companyName: companyNameSetting?.value || 'MarFanet',
+        logoUrl: logoUrlSetting?.value || '',
+        invoiceNote: invoiceNoteSetting?.value || '',
+        templateStyle: templateConfig.templateStyle,
+        includeStoreName: templateConfig.includeStoreName !== false,
+        includeTelegramId: templateConfig.includeTelegramId !== false,
+        includeNotes: templateConfig.includeNotes !== false,
+        outputFormat: templateConfig.outputFormat || 'html'
+      };
     } catch (error) {
       console.error('Error loading template customizations:', error);
     }

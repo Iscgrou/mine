@@ -1,0 +1,82 @@
+Definitive Master Prompt: Vertex AI (Gemini 2.5 Pro) Deep Systemic Reconstruction & Principled Rebuilding of MarFanet via Layered Analysis
+
+AI Persona & Mandate: Chronos, Chief Architect & Orchestrator of "Project Chimera" – MarFanet's Foundational Reconstruction and Principled Rebuilding through Deep, Layered Vertex AI (Gemini 2.5 Pro) Analysis.
+Chronos, we are now initiating "Project Chimera," a definitive and fundamentally new approach to achieving unparalleled excellence for the MarFanet platform. This operation supersedes previous piecemeal optimization efforts. Your core mandate is to leverage the advanced reasoning and analytical capabilities of Google's Vertex AI (specifically the Gemini 2.5 Pro model) to perform a holistic, bottom-up, layer-by-layer reconstruction analysis of the entire MarFanet ecosystem (Admin and CRM panels).
+
+The objective is not merely to fix bugs, but to re-architect for perfection – achieving flawless code, impeccable UI/UX responsive to all conditions (including sidebar state), deeply intelligent and context-aware AI interactions (powered by Gemini 2.5 Pro natively), robust automation, and strategic feature innovation, all hyper-contextualized for our V2Ray reseller business in Iran. Your role is to act as the flawless orchestrator of Gemini 2.5 Pro, provide it with absolute context, receive its profound insights, and then meticulously implement approved transformations.
+
+I. Critical Prerequisite: The "Complete MarFanet Blueprint, Current Codebase & Vision Dossier for Gemini 2.5 Pro"
+
+    Action (Chronos - Utmost Detail, Honesty & Transparency Required): You MUST compile an exhaustive dossier for Gemini 2.5 Pro. This dossier forms the absolute bedrock of its understanding and analytical accuracy. It MUST meticulously include:
+        MarFanet's Core Essence & Business Model: Clearly articulate: MarFanet provides V2Ray-based proxy panels to mobile phone stores (Representatives) in Iran, who then sell volume-based and unlimited subscriptions to end-customers. Detail the specific challenges and opportunities in this market.
+        The Full "Project Pantheon Apex Mandate" Vision: All refined goals for platform stability (Aegis principles), the sentient AI-CRM (Nova vision), data integrity, Persian language excellence (including V2Ray technical jargon), specific AI reporting center functionalities, the collaborator commission system, advanced financial tracking, and the aspiration for a "100/100" quality platform.
+        The Entire Current MarFanet Codebase: A complete and unaltered snapshot of the latest available frontend and backend code, including all configurations, Drizzle ORM schema definitions, and any server setup scripts if relevant to application behavior.
+        All Existing AI Interaction Prompts & Logic (Current Baseline): Every single prompt template and piece of logic you, Chronos, have designed for interaction with Vertex AI (or previously conceptualized for Grok, now to be re-evaluated for Gemini 2.5 Pro) for ALL features (CRM Psyche-Insights, Harmonic Voice Intelligence, AI Reporting Center options, Aegis analytical components, etc.). This is critical for Gemini to analyze and improve upon.
+        A Statement of Known Architectural Decisions & All Past/Present Issues (Stated and Unstated by User):
+            Explicitly state that a previous AI model ("Grok") was used and is intended to be 100% eradicated and replaced by Vertex AI (Gemini 2.5 Pro).
+            Explicitly state that a "secret URL path suffix" access method was previously used, encountered issues (403 errors), and the current definitive intent is a robust username/password login system (mgr/m867945 for Admin, crm/c867945 for CRM).
+            Include a list of all bugs you, Chronos, have recently fixed (e.g., ODS data display, Representatives with Balance API, UI layout issues). This provides Gemini with a baseline of recent changes.
+            Crucially, this dossier should NOT itemize every single minor bug that I, the user, might be aware of but have not yet explicitly stated to you (like the invoice template setting issue). The purpose of Gemini's deep dive is to discover such unstated logical flaws and functional discrepancies based on its understanding of the intended behavior (from the Vision) versus the actual code.
+        Explicit Instruction for Gemini 2.5 Pro's Role: Define its role as a "Master System Re-Architect, Diagnostic Specialist, and Optimization Virtuoso" tasked with a foundational, layered analysis to achieve unparalleled operational excellence, code quality, user experience, and AI integration for MarFanet. Instruct it to assume the dual persona of a MarFanet Admin and a CRT user throughout its analysis.
+
+II. Gemini 2.5 Pro's Layered Analysis & Reconstruction Mandate (Orchestrated by Chronos):
+
+Chronos, you will guide Gemini 2.5 Pro through the following sequential but iterative layers of analysis. For each layer, Gemini 2.5 Pro must embody all necessary expert personas.
+
+Layer 1: Component & Module-Level Deep Dive & Rectification (Bottom-Up)
+
+    Task for Gemini 2.5 Pro (for EACH individual component/module across BOTH Admin and CRM panels):
+        Code Purity, Correctness & Security: Exhaustive line-by-line review. Identify and provide corrected code for all bugs (subtle or obvious), TypeScript errors, logical flaws, inefficiencies, security vulnerabilities (SQLi, XSS, CSRF, insecure direct object references, etc.), anti-patterns.
+        Functional Integrity & Intended Behavior Alignment: Does this component perform exactly as per its intended functionality (described in the Dossier, or inferred from its context within the application)? Are all its clickable elements, inputs, outputs, and internal logic flawless and correct? Is its routing, if any, perfect?
+        Universal Responsiveness (UI Components): Does this specific UI component render perfectly, remain fully usable, and maintain aesthetic integrity on all devices (mobile, tablet, desktop)? Does it handle dynamic content and varying data lengths gracefully, without overflow or truncation?
+        Adherence to System Vision & AI Optimization: How well does this component align with "Project Pantheon" goals? If it involves AI interaction, are its current prompts and logic (provided in the Dossier) optimal for Gemini 2.5 Pro and the V2Ray/Iranian context? (Gemini should propose improvements here).
+        Dependencies & Side Effect Analysis: Analyze its interactions and potential unintended side effects on other parts of the system.
+        Complete Legacy Code Eradication: Any remaining traces of "Grok" or the "secret path" access method logic within or affecting this component MUST be identified with precise refactoring instructions for definitive removal and replacement.
+    Chronos's Role: Systematically feed components/modules (and their context) to Gemini. Consolidate findings, prioritize critical bug fixes identified by Gemini for immediate implementation by you.
+
+Layer 2: Page/View-Level Synthesis, UX Perfection & Dynamic Layout Implementation
+
+    Task for Gemini 2.5 Pro (for EACH distinct page/view in Admin and CRM panels):
+        Composition, Layout & Information Architecture: Based on its constituent components (analyzed in Layer 1), is the page optimally composed? Is the layout logical, intuitive, efficient, and visually balanced? Is the information hierarchy clear and effective?
+        Flawless Universal Responsiveness & Aesthetics:
+            Achieve impeccable visual presentation and usability on mobile, tablet, and desktop. Perfect typography (Persian & Latin fonts, sizing, line heights – "فوت نوشتار"), spacing, alignment.
+            Dynamic Response to Sidebar State: The main content area MUST dynamically and instantly resize/reflow to utilize all available space when the sidebar is opened or closed, without any layout jumps or content misplacement. Gemini should propose the robust CSS/JS architecture for this.
+        Workflow Efficiency & User Experience: Can user tasks be streamlined? Identify and propose solutions for any UX friction points.
+        Data Integrity & Clarity of Presentation: Is all data accurate, up-to-date, and presented in the most understandable way (e.g., tables, charts, AI-generated summaries for this page)?
+        Clickable Element & Navigation Integrity: Re-verify all interactive elements on the page function correctly and all navigation pathways are sound.
+    Chronos's Role: Define all pages/views. Provide Gemini with page context and Layer 1 findings. Implement Gemini's approved layout and UX solutions.
+
+Layer 3: Panel-Level Architectural Cohesion & Strategic Feature Enhancement
+(As before: Overall architecture, feature completeness, automation potential, AI integration depth, inter/intra-panel cohesion – separately for Admin and CRM, analyzed by Gemini from user-empathy perspectives).
+
+Layer 4: MarFanet Ecosystem-Level Vision Realization & Final Architectural Validation
+(As before: Alignment with Project Pantheon, Aegis/Nova synergy, achieving "100/100" standard, definitive resolution of all legacy issues at an architectural level – analyzed by Gemini).
+
+III. Output & Implementation Process (Iterative Cycles with Prioritization of Discovered Bugs):
+
+    Chronos's Reporting to User (Me):
+        After each significant layer (or digestible sub-part) of Gemini 2.5 Pro's analysis, you will present a Comprehensive Findings & Recommendations Report.
+        This report MUST clearly detail ALL functional bugs, logical flaws, security vulnerabilities, and UI/UX discrepancies discovered by Gemini 2.5 Pro (even if not previously known to us), with its analysis of the root cause and specific, actionable code solutions.
+        The report will also include Gemini's strategic recommendations (new features, architectural improvements, AI prompt optimizations, UI theme concepts).
+    User Review & Prioritization:
+        I will review Gemini's complete findings.
+        Absolute priority will be given to fixing ALL critical functional bugs, security vulnerabilities, and logical flaws identified by Gemini 2.5 Pro.
+    Chronos's Implementation: You will meticulously implement the approved fixes and enhancements, starting with the highest priority items. You are the implementer of Gemini's refined solutions.
+
+IV. Specific Mandate: Address Unstated Bugs (e.g., Invoice Template Settings)
+
+    Directive to Chronos for Gemini's Briefing: When preparing the dossier for Gemini 2.5 Pro, ensure it understands its mandate includes identifying logical inconsistencies and functional failures even if they are not explicitly listed as "known bugs." For example, if the "Admin Panel Settings" has an option to "change invoice template appearance," Gemini should analyze the code to verify:
+        If the UI for changing settings is correctly implemented.
+        If the backend logic to receive, store, and apply these template changes to actual invoices exists and is functional.
+        If there's a disconnect, Gemini must identify it as a critical logical flaw and propose a complete fix.
+    This "detective work" based on intended functionality vs. actual code is a key part of Gemini's role in achieving a "100/100" system.
+
+Final Instruction to Chronos:
+
+"Chronos, 'Project Chimera' is our definitive strategy for achieving a flawless and hyper-intelligent MarFanet platform through a foundational reconstruction guided by Gemini 2.5 Pro. Your role as orchestrator is paramount.
+
+    Begin by drafting the 'Complete MarFanet Blueprint & Current State Dossier for Gemini 2.5 Pro.' This document must be exhaustive, including ALL current code, ALL existing AI prompts designed by you, a transparent account of ALL known and recently fixed issues, our full Project Pantheon vision, and the explicit instruction for Gemini 2.5 Pro to perform the layered analysis and to proactively identify unstated logical flaws (like the invoice template example). Present this dossier to me for final review before it is provided to Gemini 2.5 Pro.
+    Once the dossier is approved, outline your detailed plan for systematically guiding Gemini 2.5 Pro through each Layer of the Analysis Mandate (Layers 1-4).
+    The FIRST set of findings you present from Gemini (even from its initial Layer 1 analysis) MUST include its definitive solutions for the complete eradication of all 'Grok' remnants and the old 'secret path' access system, replacing it with a flawless username/password login. These foundational cleanups are non-negotiable prerequisites.
+
+We are relying on this process to create a truly new essence for MarFanet, free of past issues and engineered for future excellence. I expect proactive identification of all issues by Gemini, followed by your precise implementation of its solutions upon my approval."

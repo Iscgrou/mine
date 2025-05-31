@@ -33,6 +33,7 @@ import AIIntelligence from "@/pages/ai-intelligence";
 import PerformanceMonitoring from "@/pages/performance-monitoring";
 import NotFound from "@/pages/not-found";
 import SecureAPIUpload from "@/pages/secure-api-upload";
+import SecureCredentialUpload from "@/pages/secure-credential-upload";
 
 function Router() {
   const currentPath = window.location.pathname;
@@ -98,6 +99,7 @@ function Router() {
             <Route path="/admin/ai-intelligence" component={AIIntelligence} />
             <Route path="/admin/performance-monitoring" component={PerformanceMonitoring} />
             <Route path="/secure/api-upload" component={SecureAPIUpload} />
+            <Route path="/secure/credentials" component={SecureCredentialUpload} />
             
             <Route component={NotFound} />
           </Switch>

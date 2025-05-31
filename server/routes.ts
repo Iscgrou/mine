@@ -360,10 +360,59 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  // Secure credential upload endpoint
+  app.post("/api/credentials/secure-update", async (req, res) => {
+    try {
+      const { geminiApiKey, vertexProjectId, serviceAccountJson } = req.body;
+      
+      if (!geminiApiKey) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Gemini API key is required" 
+        });
+      }
+
+      // Validate service account JSON if provided
+      if (serviceAccountJson) {
+        try {
+          JSON.parse(serviceAccountJson);
+        } catch (error) {
+          return res.status(400).json({ 
+            success: false, 
+            message: "Invalid service account JSON format" 
+          });
+        }
+      }
+
+      // Store credentials securely in environment variables
+      process.env.GEMINI_25_PRO_API_KEY = geminiApiKey;
+      if (vertexProjectId) {
+        process.env.VERTEX_AI_PROJECT_ID = vertexProjectId;
+      }
+      if (serviceAccountJson) {
+        process.env.GOOGLE_CLOUD_SERVICE_ACCOUNT_KEY = serviceAccountJson;
+      }
+
+      // Log successful credential update
+      aegisLogger.info('SECURITY', 'Gemini 2.5 Pro credentials updated securely');
+      
+      res.json({ 
+        success: true, 
+        message: "Credentials updated successfully" 
+      });
+    } catch (error) {
+      console.error('Secure credential update error:', error);
+      res.status(500).json({ 
+        success: false, 
+        message: "Failed to update credentials" 
+      });
+    }
+  });
+
   app.get("/api/api-keys/status", async (req, res) => {
     res.json({
       telegram: false,
-      vertexAI: false,
+      vertexAI: !!process.env.GEMINI_25_PRO_API_KEY,
       textToSpeech: false,
       sentiment: false
     });

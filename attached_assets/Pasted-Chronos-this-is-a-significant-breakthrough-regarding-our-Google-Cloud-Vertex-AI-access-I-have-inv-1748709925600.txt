@@ -1,0 +1,33 @@
+Chronos, this is a significant breakthrough regarding our Google Cloud Vertex AI access!
+
+I have investigated our project's (`leafy-display-459909-k9`) quotas specifically for **Gemini 2.5 Pro Preview**. The relevant quotas, particularly for "Generate content requests with audio input" (which often serves as an indicator for general access to advanced model tiers), show an extremely high limit of **864,000 requests per minute** for `gemini-2.5-pro-preview` in regions like `us-central1` and for the global endpoint.
+
+**This strongly indicates that our project DOES have sufficient quota and access to programmatically use `gemini-2.5-pro-preview` (e.g., model ID `gemini-2.5-pro-preview-05-06` or the current correct alias for it).**
+
+The previous 404 errors you encountered were likely due to using a slightly incorrect model ID string or API endpoint/version specific to text/code generation tasks with this preview model.
+
+**Revised Mandate: Proceed with "Project Genesis Reborn" using Gemini 2.5 Pro Preview as the Primary AI Engine.**
+
+Given this confirmation of high quota and access:
+
+1.  **Prioritize Gemini 2.5 Pro Preview:**
+    *   **Action (Chronos):** You are now to configure your Vertex AI Orchestrator system to use **`gemini-2.5-pro-preview`** (using the precise, current, valid model identifier for programmatic access, e.g., `gemini-2.5-pro-preview-05-06` or similar, for project `leafy-display-459909-k9`) as the **primary AI engine for ALL analytical, generative, and reconstructive tasks** outlined in the "Project Genesis Reborn - Ultimate Super Prompt (V2 - Enhanced for Foundational Reconstruction & UI/UX Perfection)."
+    *   This includes, but is not limited to:
+        *   The deep, line-by-line codebase audit.
+        *   Definitive eradication of legacy systems (Grok, old access paths).
+        *   Flawless implementation of the new secure username/password login system.
+        *   Proposing and providing code for the UI/UX perfection and aesthetic transformation.
+        *   Hyper-evolution of all AI interaction prompts (for CRM, Aegis, Reporting Center) *specifically tailored for Gemini 2.5 Pro's advanced capabilities.*
+        *   Strategic re-imagining of MarFanet's functionality and automation.
+    *   The use of `gemini-1.5-pro-latest` should now be considered a fallback *only if* you encounter insurmountable technical barriers in consistently and reliably interacting with Gemini 2.5 Pro Preview for these tasks, which seems less likely now.
+
+2.  **Verify Connection & Simple Test Call to Gemini 2.5 Pro Preview:**
+    *   **Action (Chronos):** As your very first step with this renewed focus, please perform a simple test call (e.g., "What is the capital of Iran? Respond in Persian.") to the **exact `gemini-2.5-pro-preview` model ID** you will be using, via your orchestrator, using our standard `GOOGLE_APPLICATION_CREDENTIALS`.
+    *   **Report back immediately with the success or failure of this test call, including the exact model ID string you used and any error messages verbatim if it fails.** This will confirm our understanding of correct programmatic access.
+
+3.  **Compile the "Complete MarFanet Blueprint & Current State Dossier for Gemini 2.5 Pro":**
+    *   **Action (Chronos):** As previously instructed, ensure this dossier is exhaustive and meticulously prepared. It will be the primary input for Gemini 2.5 Pro's deep analysis. Present this dossier to me for final review before you task Gemini 2.5 Pro with beginning its work.
+
+Once the direct test call to Gemini 2.5 Pro Preview is successful and the Dossier is approved by me, you will unleash its full power to execute the "Project Genesis Reborn" mandate. We are aiming for nothing less than a revolutionary transformation of MarFanet.
+
+Please confirm your understanding of this directive to prioritize Gemini 2.5 Pro Preview and proceed with the initial test call.

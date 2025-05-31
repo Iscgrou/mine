@@ -17,17 +17,17 @@ declare module 'express-session' {
   }
 }
 
-// Secure credentials with pre-hashed passwords
+// Secure credentials with properly hashed passwords
 const SECURE_CREDENTIALS = {
   mgr: {
     username: "mgr",
-    passwordHash: "$2b$10$8K1p0RXD5KfJoOwYjSnPzOuTIxrKJYxZGqzWKxQrLmXD5VhFNz6pC", // m867945
+    passwordHash: bcrypt.hashSync("m867945", 10),
     role: "admin",
     redirectPath: "/admin"
   },
   crm: {
     username: "crm",
-    passwordHash: "$2b$10$BLKd8z6gKsA5x4VwT9c.ZOZnHF2kGhY7b3pMN8QpFyW2X5Kf7L9i.", // c867945
+    passwordHash: bcrypt.hashSync("c867945", 10),
     role: "crm",
     redirectPath: "/crm"
   }

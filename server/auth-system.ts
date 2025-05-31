@@ -217,48 +217,22 @@ export function setupUnifiedAuth(app: Express) {
     }
   });
 
-  // Authentication middleware with role-based access
-  function requireAuth(requiredRole?: string) {
-    return (req: Request, res: Response, next: NextFunction) => {
-      if (!req.session.authenticated || !req.session.username) {
-        console.log(`[SECURITY] Authentication required for ${req.path} - redirecting to login`);
-        return res.redirect('/login');
-      }
-
-      // Check role-based access
-      if (requiredRole && req.session.role !== requiredRole && req.session.role !== 'admin') {
-        console.log(`[SECURITY] Insufficient permissions for ${req.session.username} accessing ${req.path}`);
-        return res.status(403).send(`
-          <!DOCTYPE html>
-          <html lang="fa" dir="rtl">
-          <head>
-            <meta charset="UTF-8">
-            <title>دسترسی محدود</title>
-            <style>
-              body { font-family: 'Vazirmatn', Arial, sans-serif; text-align: center; padding: 50px; }
-              .error { color: #dc2626; font-size: 24px; margin: 20px; }
-              a { color: #4f46e5; text-decoration: none; margin: 10px; }
-            </style>
-          </head>
-          <body>
-            <div class="error">⛔ دسترسی محدود</div>
-            <p>شما مجوز دسترسی به این بخش را ندارید.</p>
-            <a href="/login">ورود مجدد</a>
-            <a href="/${req.session.role === 'admin' ? 'admin' : 'crm'}">بازگشت به داشبورد</a>
-          </body>
-          </html>
-        `);
-      }
-
-      // Update last activity
-      req.session.lastActivity = Date.now();
-      next();
-    };
-  }
-
   // Apply authentication to protected routes
-  app.use('/admin*', requireAuth('admin'));
-  app.use('/crm*', requireAuth());
+  app.use('/admin*', (req: Request, res: Response, next: NextFunction) => {
+    if (!req.session.authenticated || req.session.role !== 'admin') {
+      console.log(`[SECURITY] Authentication required for /admin - redirecting to login`);
+      return res.redirect('/login');
+    }
+    next();
+  });
+
+  app.use('/crm*', (req: Request, res: Response, next: NextFunction) => {
+    if (!req.session.authenticated) {
+      console.log(`[SECURITY] Authentication required for /crm - redirecting to login`);
+      return res.redirect('/login');
+    }
+    next();
+  });
 
   // Global authentication middleware for all routes
   return (req: Request, res: Response, next: NextFunction) => {
@@ -274,12 +248,10 @@ export function setupUnifiedAuth(app: Express) {
     }
 
     // Require authentication for all other routes
-    const session = req.session as any;
-    if (!session?.authenticated) {
+    if (!req.session?.authenticated) {
       return res.redirect('/login');
     }
 
     next();
   };
 }
-

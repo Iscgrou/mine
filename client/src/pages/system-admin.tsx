@@ -22,7 +22,8 @@ export default function SystemAdmin() {
   });
 
   const { data: collaborators, isLoading: collabsLoading } = useQuery({
-    queryKey: ['/api/collaborators']
+    queryKey: ['/api/collaborators'],
+    refetchInterval: 5000 // Refresh every 5 seconds to catch database updates
   });
 
   return (
@@ -79,21 +80,21 @@ export default function SystemAdmin() {
                   {isLoading ? '...' : stats?.totalCustomers || 0}
                 </p>
               </div>
-              <Users className="h-8 w-8 text-purple-500" />
+              <Users className="h-6 w-6 sm:h-8 sm:w-8 text-purple-500" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-4">
+          <CardContent className="p-3 sm:p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">فاکتورهای معلق</p>
-                <p className="text-2xl font-bold">
+                <p className="text-xs sm:text-sm text-gray-600">فاکتورهای معلق</p>
+                <p className="text-lg sm:text-2xl font-bold">
                   {isLoading ? '...' : stats?.pendingInvoices || 0}
                 </p>
               </div>
-              <AlertCircle className="h-8 w-8 text-orange-500" />
+              <AlertCircle className="h-6 w-6 sm:h-8 sm:w-8 text-orange-500" />
             </div>
           </CardContent>
         </Card>
@@ -105,8 +106,8 @@ export default function SystemAdmin() {
       {/* System Status */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Database className="h-5 w-5" />
+          <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+            <Database className="h-4 w-4 sm:h-5 sm:w-5" />
             وضعیت سیستم
           </CardTitle>
           <CardDescription>

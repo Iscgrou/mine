@@ -34,6 +34,7 @@ import PerformanceMonitoring from "@/pages/performance-monitoring";
 import NotFound from "@/pages/not-found";
 import SecureAPIUpload from "@/pages/secure-api-upload";
 import SecureCredentialUpload from "@/pages/secure-credential-upload";
+import AdminBalanceManagement from "@/pages/admin-balance-management";
 
 function Router() {
   const currentPath = window.location.pathname;
@@ -98,6 +99,7 @@ function Router() {
             <Route path="/admin/google-cloud-setup" component={GoogleCloudSetup} />
             <Route path="/admin/ai-intelligence" component={AIIntelligence} />
             <Route path="/admin/performance-monitoring" component={PerformanceMonitoring} />
+            <Route path="/admin/balance-management" component={AdminBalanceManagement} />
             <Route path="/secure/api-upload" component={SecureAPIUpload} />
             <Route path="/secure/credentials" component={SecureCredentialUpload} />
             

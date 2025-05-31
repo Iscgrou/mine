@@ -54,12 +54,20 @@ export function AIInsights() {
         query: query
       };
 
-      const response = await apiRequest('/api/ai/analyze', {
+      const response = await fetch('/api/ai/analyze', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify(businessData)
       });
 
-      setAnalysis(response);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      setAnalysis(result);
     } catch (error) {
       console.error('AI analysis failed:', error);
     } finally {

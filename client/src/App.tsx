@@ -14,7 +14,7 @@ import Representatives from "@/pages/representatives";
 import Invoices from "@/pages/invoices";
 import InvoiceBatches from "@/pages/invoice-batches";
 import Analytics from "@/pages/analytics";
-import ImportOds from "@/pages/import-ods";
+import ImportJSON from "@/pages/import-json";
 import Payments from "@/pages/payments";
 import Backup from "@/pages/backup";
 import Settings from "@/pages/settings";
@@ -87,7 +87,7 @@ function Router() {
             <Route path="/admin/invoice-batches" component={InvoiceBatches} />
             <Route path="/admin/analytics" component={Analytics} />
             <Route path="/admin/crt-performance" component={CRTPerformance} />
-            <Route path="/admin/import" component={ImportOds} />
+            <Route path="/admin/import" component={ImportJSON} />
             <Route path="/admin/payments" component={Payments} />
             <Route path="/admin/backup" component={Backup} />
             <Route path="/admin/settings" component={Settings} />

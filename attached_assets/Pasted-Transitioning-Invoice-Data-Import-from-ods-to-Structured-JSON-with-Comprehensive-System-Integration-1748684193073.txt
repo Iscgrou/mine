@@ -1,0 +1,143 @@
+Transitioning Invoice Data Import from .ods to Structured JSON with Comprehensive System Integration, Validation, and Authoritative JSON Specification
+
+Chronos, we are undertaking a fundamental and critical re-architecture of MarFanet's core invoice data import system. We will be completely replacing the current .ods file import mechanism with a new system based on structured JSON input. This change aims to improve data integrity, simplify parsing, and align with modern data exchange practices.
+
+This transition must be executed with meticulous planning, rigorous testing, and a deep understanding of its impact on all interconnected modules to prevent any disruption or data integrity issues. Your role is to implement this change flawlessly.
+
+I. Mandate & Objectives:
+
+    Complete Decommissioning of .ods System: Safely remove all code and UI related to .ods file uploads and processing for invoice generation.
+    Implementation of JSON Import System: Develop a robust system for uploading, validating, and processing the new JSON data format for invoice generation.
+    Integration with Existing Logic: Ensure the extracted JSON data correctly feeds into:
+        Invoice calculation (using per-representative pricing from their profiles).
+        Creation of date-named folders (Shamsi date of upload) for invoice batches.
+        The "Debtor/Creditor" financial ledger for representatives.
+        The collaborator commission calculation system.
+    Data Integrity & Accuracy: Maintain absolute accuracy in data extraction and subsequent financial calculations based on the provided JSON structure.
+    No Regressions: Ensure this change does not negatively impact any other existing, stable functionalities of the MarFanet platform.
+
+II. Authoritative JSON Input Data Structure & Key Metric Definitions (For Chronos's Reference & Strict Implementation):
+
+    (Chronos: The following is the EXACT and AUTHORITATIVE JSON data structure and key metric definitions you MUST implement parsing and validation for. This specification is paramount.)
+
+    "Okay, AI Assistant, I will provide you with a JSON data structure. Your task is to process this data to extract specific metrics for each admin, which I will then use for billing calculations.
+
+    Here's the structure of the JSON data you will receive, followed by instructions on how to identify the relevant billing information:
+
+    The data is an array (a list) of JSON objects. Each object in this array represents a summary of activity for a single VPN panel administrator (agent).
+
+    You will need to iterate through this array to process each administrator's data individually.
+
+    For each JSON object (representing an individual admin_username), identify the following key metrics:
+
+        Admin's Username:
+            JSON Key: admin_username
+            Description: This is the unique identifier for the administrator whose activities are being summarized.
+            Example Value: "almasmb"
+
+        Limited Subscriptions (Volume in GiB) by Duration:
+            These fields represent the total allocated data volume in GiB for limited subscriptions, categorized by their calculated duration (1 to 6 months). The values will be strings that need to be parsed as floating-point numbers.
+            For 1-Month Limited Volume:
+                JSON Key: limited_1_month_volume
+                Description: Total Gigabytes allocated to limited subscriptions calculated as 1 month.
+                Example Value: "239.0000" (meaning 239 GiB)
+            For 2-Month Limited Volume:
+                JSON Key: limited_2_month_volume
+                Description: Total Gigabytes allocated to limited subscriptions calculated as 2 months.
+                Example Value: "0.0000" (meaning 0 GiB in this example)
+            For 3-Month Limited Volume:
+                JSON Key: limited_3_month_volume
+                Example Value: "0.0000"
+            For 4-Month Limited Volume:
+                JSON Key: limited_4_month_volume
+                Example Value: "0.0000"
+            For 5-Month Limited Volume:
+                JSON Key: limited_5_month_volume
+                Example Value: "0.0000"
+            For 6-Month Limited Volume:
+                JSON Key: limited_6_month_volume
+                Example Value: "0.0000"
+
+        Unlimited Subscriptions (Count) by Duration:
+            These fields represent the total count of unique unlimited subscriptions, categorized by their calculated duration (1 to 6 months). The values will be strings that need to be parsed as integers.
+            For 1-Month Unlimited Count:
+                JSON Key: unlimited_1_month
+                Description: Number of unlimited subscriptions calculated as 1 month.
+                Example Value: "0"
+            For 2-Month Unlimited Count:
+                JSON Key: unlimited_2_month
+                Example Value: "0"
+            For 3-Month Unlimited Count:
+                JSON Key: unlimited_3_month
+                Example Value: "0"
+            For 4-Month Unlimited Count:
+                JSON Key: unlimited_4_month
+                Example Value: "0"
+            For 5-Month Unlimited Count:
+                JSON Key: unlimited_5_month
+                Example Value: "0"
+            For 6-Month Unlimited Count:
+                JSON Key: unlimited_6_month
+                Example Value: "0"
+    Important Note for Billing:
+    Once you have extracted these values for each admin, I (the MarFanet Admin, via the system) will utilize the specific pricing rules already defined in each Representative's profile (e.g., price per GiB for 1-month limited, price per count for 2-month unlimited) to perform the final billing calculation. Your primary task in this module is accurate data extraction from this JSON based on the keys provided above."
+
+    (Chronos: End of authoritative JSON specification. Your implementation for parsing, validation, and data extraction must strictly adhere to this structure. Ensure robust error handling for any deviations from this format in an uploaded file.)
+
+III. Implementation Roadmap & Detailed Tasks (Chronos to Execute):
+
+Phase 1: Preparation & Decommissioning Strategy
+
+    Impact Analysis & Dependency Mapping (Chronos to perform):
+        Action: Before removing any .ods code, thoroughly analyze all MarFanet application parts dependent on the .ods import or its data.
+        Deliverable: Brief report on identified dependencies.
+    Develop JSON Processing Module Stubs:
+        Action: Create initial backend modules for JSON upload, basic validation (is it valid JSON? Array of objects?), secure file handling.
+    Plan for .ods Code Removal:
+        Action: Identify all specific code, UI, API endpoints, and DB interactions related only to .ods. Plan their clean removal.
+
+Phase 2: Implementing the JSON Import & Processing System
+
+    Develop JSON Validation & Parsing Logic (Adhering to Section II):
+        Action: Implement robust validation for the uploaded JSON:
+            Valid JSON structure (array of objects).
+            Presence and correct data type (or strict parseability to float for _volume fields, integer for _month count fields) for all required keys per object.
+            Clear error handling and admin feedback for malformed/missing JSON data.
+        Action: Implement logic to iterate and accurately extract all specified metrics for each admin_username.
+    Integrate with Invoice Calculation Engine (Using Representative Profile Pricing):
+        Action: Modify the calculation engine to use data from parsed JSON.
+        CRITICALLY IMPORTANT: It MUST continue to use the existing per-representative pricing structures (price per GiB for limited plans, price per count for unlimited plans, differentiated by month duration) that are defined in each Representative's profile to calculate the final invoice amount. The JSON provides the quantities; the profile provides the rates.
+        The logic for creating Shamsi date-named folders for invoice batches remains.
+    Integrate with Downstream Systems:
+        Action: Ensure generated invoice data correctly updates Representative ledgers and triggers collaborator commissions.
+    UI for JSON File Upload:
+        Action: Update file upload UI to accept .json files. Provide clear instructions/sample link.
+
+Phase 3: Safe Decommissioning of .ods System & Final Integration
+
+    Remove .ods Functionality:
+        Action: After JSON system is stable (dev/staging), carefully remove all .ods-related code and UI.
+    Update Aegis Monitoring:
+        Action: Adjust Aegis to monitor the new JSON import process.
+
+IV. Testing & Debugging Strategy (Chronos to Implement & Report On):
+
+    Unit Tests: For JSON parsing, validation, calculation components.
+    Integration Tests: Full flow: JSON upload -> parsing -> validation -> invoice calculation (using profile pricing) -> ledger update -> commission. Test with varied valid JSONs, malformed JSONs, JSONs with missing keys/incorrect types.
+    End-to-End Tests: Admin uploads JSON -> verify correct invoices in date-folders, rep balances updated, collaborator earnings (if any) calculated. UI reflects new batch.
+    Regression Testing: After removing .ods, quick check of unrelated features.
+    Cross-Browser Testing: For new JSON upload UI.
+
+V. Documentation (Internal):
+* Action (Chronos): Document the new JSON data structure (referencing Section II) and the JSON processing module logic.
+
+Final Instruction to Chronos:
+
+"Chronos, this transition from .ods to a structured JSON input for invoice data is a critical architectural upgrade for MarFanet, directly impacting data integrity and processing efficiency. The JSON specification detailed in Section II of this prompt is authoritative and must be strictly adhered to.
+
+    Begin with Phase 1: Impact Analysis & JSON Processing Module Stubs. Provide your report on dependencies before any .ods code is touched.
+    Proceed systematically through Phase 2: Implementing the JSON Import & Processing System. Pay extreme attention to integrating the parsed JSON data with the existing per-representative pricing structures stored in their profiles for accurate invoice calculation.
+    Detail your Testing & Debugging Strategy (Phase IV) and execute it rigorously. I expect full confidence in this new system.
+    Only then, proceed with Phase 3: Safe Decommissioning of the .ods System.
+
+This is a foundational change. Ensure all existing downstream processes (Representative ledger, Collaborator commissions) are correctly and accurately fed by this new JSON-based data pipeline. I expect a flawless transition."

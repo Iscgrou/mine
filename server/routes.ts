@@ -401,10 +401,10 @@ ${revenueData.summary.topPerformingReps.map((rep: any) => `${rep.name} (${rep.re
 const upload = multer({ 
   storage: multer.memoryStorage(),
   fileFilter: (req, file, cb) => {
-    if (file.originalname.endsWith('.ods')) {
+    if (file.originalname.endsWith('.ods') || file.originalname.endsWith('.json')) {
       cb(null, true);
     } else {
-      cb(new Error('Only .ods files are allowed'));
+      cb(new Error('Only .ods and .json files are allowed'));
     }
   }
 });
@@ -949,7 +949,229 @@ ${invoices.map((inv, index) =>
     }
   });
 
-  // File upload and processing endpoint
+  // JSON file import endpoint
+  app.post("/api/import-json", upload.single('jsonFile'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "فایل JSON آپلود نشده است" });
+      }
+
+      // Create file import record
+      const fileImport = await storage.createFileImport({
+        fileName: req.file.originalname,
+        status: 'processing'
+      });
+
+      try {
+        // Parse JSON file
+        const jsonData = JSON.parse(req.file.buffer.toString('utf8'));
+
+        // Validate JSON structure
+        if (!Array.isArray(jsonData)) {
+          throw new Error('فایل JSON باید آرایه‌ای از اشیاء باشد');
+        }
+
+        if (jsonData.length === 0) {
+          throw new Error('فایل JSON نمی‌تواند خالی باشد');
+        }
+
+        let recordsProcessed = 0;
+        let recordsSkipped = 0;
+        const invoicesCreated = [];
+
+        for (let i = 0; i < jsonData.length; i++) {
+          const adminData = jsonData[i];
+          
+          // Validate required fields
+          const requiredFields = [
+            'admin_username',
+            'limited_1_month_volume', 'limited_2_month_volume', 'limited_3_month_volume',
+            'limited_4_month_volume', 'limited_5_month_volume', 'limited_6_month_volume',
+            'unlimited_1_month', 'unlimited_2_month', 'unlimited_3_month',
+            'unlimited_4_month', 'unlimited_5_month', 'unlimited_6_month'
+          ];
+
+          const missingFields = requiredFields.filter(field => !(field in adminData));
+          if (missingFields.length > 0) {
+            recordsSkipped++;
+            continue;
+          }
+
+          const adminUsername = adminData.admin_username?.toString().trim();
+          if (!adminUsername) {
+            recordsSkipped++;
+            continue;
+          }
+
+          // Get or create representative
+          let representative = await storage.getRepresentativeByAdminUsername(adminUsername);
+          if (!representative) {
+            representative = await storage.createRepresentative({
+              fullName: adminUsername,
+              adminUsername: adminUsername,
+              phoneNumber: null,
+              telegramId: null,
+              storeName: null,
+              limitedPrice1Month: "150000",
+              unlimitedMonthlyPrice: "250000"
+            });
+          }
+
+          // Extract and validate volumes and counts
+          const limitedVolumes = [
+            parseFloat(adminData.limited_1_month_volume) || 0,
+            parseFloat(adminData.limited_2_month_volume) || 0,
+            parseFloat(adminData.limited_3_month_volume) || 0,
+            parseFloat(adminData.limited_4_month_volume) || 0,
+            parseFloat(adminData.limited_5_month_volume) || 0,
+            parseFloat(adminData.limited_6_month_volume) || 0
+          ];
+
+          const unlimitedCounts = [
+            parseInt(adminData.unlimited_1_month) || 0,
+            parseInt(adminData.unlimited_2_month) || 0,
+            parseInt(adminData.unlimited_3_month) || 0,
+            parseInt(adminData.unlimited_4_month) || 0,
+            parseInt(adminData.unlimited_5_month) || 0,
+            parseInt(adminData.unlimited_6_month) || 0
+          ];
+
+          // Check if admin has any activity
+          const hasLimitedActivity = limitedVolumes.some(vol => vol > 0);
+          const hasUnlimitedActivity = unlimitedCounts.some(count => count > 0);
+
+          if (!hasLimitedActivity && !hasUnlimitedActivity) {
+            recordsSkipped++;
+            continue;
+          }
+
+          // Calculate invoice amount using representative pricing
+          let totalAmount = 0;
+          const invoiceItems = [];
+
+          // Calculate limited subscription costs (volume-based in GiB)
+          const limitedPrices = [
+            representative.limitedPrice1Month,
+            representative.limitedPrice2Month, 
+            representative.limitedPrice3Month,
+            representative.limitedPrice4Month,
+            representative.limitedPrice5Month,
+            representative.limitedPrice6Month
+          ];
+          
+          for (let monthIndex = 0; monthIndex < 6; monthIndex++) {
+            const volume = limitedVolumes[monthIndex];
+            const unitPrice = limitedPrices[monthIndex];
+            
+            if (volume > 0 && unitPrice) {
+              const price = parseFloat(unitPrice) * volume;
+              totalAmount += price;
+              invoiceItems.push({
+                description: `اشتراک ${monthIndex + 1} ماهه حجمی (${volume} گیگابایت)`,
+                quantity: volume.toString(),
+                unitPrice: unitPrice,
+                totalPrice: price.toString(),
+                subscriptionType: 'limited',
+                durationMonths: monthIndex + 1
+              });
+            }
+          }
+
+          // Calculate unlimited subscription costs (count-based)
+          if (representative.unlimitedMonthlyPrice) {
+            for (let monthIndex = 0; monthIndex < 6; monthIndex++) {
+              const count = unlimitedCounts[monthIndex];
+              if (count > 0) {
+                const months = monthIndex + 1;
+                const unitPrice = parseFloat(representative.unlimitedMonthlyPrice) * months;
+                const price = unitPrice * count;
+                totalAmount += price;
+                invoiceItems.push({
+                  description: `اشتراک ${months} ماهه نامحدود`,
+                  quantity: count.toString(),
+                  unitPrice: unitPrice.toString(),
+                  totalPrice: price.toString(),
+                  subscriptionType: 'unlimited',
+                  durationMonths: months
+                });
+              }
+            }
+          }
+
+          if (totalAmount > 0) {
+            // Generate invoice number
+            const invoiceNumber = `INV-${new Date().getFullYear()}-${String(Date.now()).slice(-6)}`;
+            
+            // Create invoice
+            const invoice = await storage.createInvoice({
+              invoiceNumber,
+              representativeId: representative.id,
+              totalAmount: totalAmount.toString(),
+              status: 'pending',
+              dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+              invoiceData: { items: invoiceItems }
+            });
+
+            // Create invoice items
+            for (const item of invoiceItems) {
+              await storage.createInvoiceItem({
+                invoiceId: invoice.id,
+                ...item
+              });
+            }
+
+            // Calculate commission if representative is collaborator-introduced
+            try {
+              await storage.calculateAndRecordCommission(representative.id, totalAmount);
+            } catch (commissionError) {
+              console.log('Commission calculation warning:', commissionError);
+            }
+
+            invoicesCreated.push(invoice);
+            recordsProcessed++;
+          } else {
+            recordsSkipped++;
+          }
+        }
+
+        // Update file import status
+        await storage.updateFileImport(fileImport.id, {
+          status: 'completed',
+          recordsProcessed,
+          recordsSkipped
+        });
+
+        aegisLogger.info('JSON Import', `Successfully processed ${recordsProcessed} records from ${req.file.originalname}`);
+
+        res.json({
+          message: "فایل JSON با موفقیت پردازش شد",
+          recordsProcessed,
+          recordsSkipped,
+          invoicesCreated: invoicesCreated.length
+        });
+
+      } catch (processingError) {
+        // Update file import status to failed
+        await storage.updateFileImport(fileImport.id, {
+          status: 'failed',
+          errorDetails: processingError instanceof Error ? processingError.message : 'خطای نامشخص',
+          recordsProcessed: 0,
+          recordsSkipped: 0
+        });
+
+        console.error('JSON processing error:', processingError);
+        res.status(400).json({ 
+          message: processingError instanceof Error ? processingError.message : 'خطا در پردازش فایل JSON' 
+        });
+      }
+
+    } catch (error) {
+      console.error('JSON import error:', error);
+      res.status(500).json({ message: "خطا در آپلود فایل JSON" });
+    }
+  });
+
+  // Legacy ODS file upload and processing endpoint (maintained for compatibility)
   app.post("/api/import-ods", upload.single('odsFile'), async (req, res) => {
     try {
       if (!req.file) {

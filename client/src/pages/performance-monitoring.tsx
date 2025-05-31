@@ -31,12 +31,12 @@ export default function PerformanceMonitoring() {
   const [systemConfigOpen, setSystemConfigOpen] = useState(false);
   const { toast } = useToast();
 
-  // Initialize with default data structure to prevent white screen
+  // Initialize with proper structure that matches your API
   const [metrics, setMetrics] = useState({
-    responseTime: { value: 125, trend: '+5%', status: 'good' },
-    throughput: { value: 1250, trend: '-2%', status: 'warning' },
-    errorRate: { value: 0.5, trend: '+0.1%', status: 'good' },
-    uptime: { value: 99.9, trend: '0%', status: 'excellent' }
+    responseTime: { value: 0, trend: 'N/A', status: 'unknown' },
+    throughput: { value: 0, trend: 'N/A', status: 'unknown' },
+    errorRate: { value: 0, trend: 'N/A', status: 'unknown' },
+    uptime: { value: 0, trend: 'N/A', status: 'unknown' }
   });
 
   const [alerts, setAlerts] = useState([
@@ -74,17 +74,55 @@ export default function PerformanceMonitoring() {
       
       if (metricsRes.ok) {
         const metricsData = await metricsRes.json();
-        setMetrics(metricsData);
+        console.log('Metrics API response:', metricsData);
+        
+        // Handle actual API response structure
+        if (metricsData && metricsData.success) {
+          // Your API returns {success: true, metrics: [], count: 0}
+          // Display actual data or indicate no data available
+          const hasData = metricsData.metrics && metricsData.metrics.length > 0;
+          
+          if (hasData) {
+            // Process actual metrics data from API
+            const latestMetric = metricsData.metrics[0];
+            setMetrics({
+              responseTime: { value: latestMetric.responseTime || 0, trend: 'N/A', status: 'unknown' },
+              throughput: { value: latestMetric.throughput || 0, trend: 'N/A', status: 'unknown' },
+              errorRate: { value: latestMetric.errorRate || 0, trend: 'N/A', status: 'unknown' },
+              uptime: { value: latestMetric.uptime || 0, trend: 'N/A', status: 'unknown' }
+            });
+          } else {
+            // Show that no performance data is available from API
+            setMetrics({
+              responseTime: { value: 0, trend: 'No Data', status: 'unknown' },
+              throughput: { value: 0, trend: 'No Data', status: 'unknown' },
+              errorRate: { value: 0, trend: 'No Data', status: 'unknown' },
+              uptime: { value: 0, trend: 'No Data', status: 'unknown' }
+            });
+          }
+        }
       }
       
       if (alertsRes.ok) {
         const alertsData = await alertsRes.json();
-        setAlerts(alertsData);
+        // Handle the actual API response structure
+        if (alertsData && alertsData.alerts && Array.isArray(alertsData.alerts)) {
+          setAlerts(alertsData.alerts);
+        } else if (Array.isArray(alertsData)) {
+          setAlerts(alertsData);
+        } else {
+          console.log('API returned unexpected alerts structure, keeping current data');
+        }
       }
       
       if (analysisRes.ok) {
         const analysisData = await analysisRes.json();
-        setAnalysis(analysisData);
+        // Ensure the analysis data has the expected structure
+        if (analysisData && analysisData.trends) {
+          setAnalysis(analysisData);
+        } else {
+          console.log('API returned unexpected analysis structure, keeping current data');
+        }
       }
       
       toast({
@@ -228,7 +266,9 @@ export default function PerformanceMonitoring() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{metrics.responseTime.value}</div>
+            <div className="text-2xl font-bold">
+              {typeof metrics.responseTime.value === 'number' ? metrics.responseTime.value : 'داده موجود نیست'}
+            </div>
             <Badge variant={metrics.responseTime.status === 'good' ? 'default' : 'destructive'}>
               {metrics.responseTime.trend}
             </Badge>
@@ -243,7 +283,9 @@ export default function PerformanceMonitoring() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{metrics.throughput.value}</div>
+            <div className="text-2xl font-bold">
+              {typeof metrics.throughput.value === 'number' ? metrics.throughput.value : 'داده موجود نیست'}
+            </div>
             <Badge variant={metrics.throughput.status === 'good' ? 'default' : 'secondary'}>
               {metrics.throughput.trend}
             </Badge>
@@ -258,7 +300,9 @@ export default function PerformanceMonitoring() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{metrics.errorRate.value}</div>
+            <div className="text-2xl font-bold">
+              {typeof metrics.errorRate.value === 'number' ? metrics.errorRate.value : 'داده موجود نیست'}
+            </div>
             <Badge variant={metrics.errorRate.status === 'good' ? 'default' : 'destructive'}>
               {metrics.errorRate.trend}
             </Badge>
@@ -273,7 +317,9 @@ export default function PerformanceMonitoring() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{metrics.uptime.value}</div>
+            <div className="text-2xl font-bold">
+              {typeof metrics.uptime.value === 'number' ? metrics.uptime.value : 'داده موجود نیست'}
+            </div>
             <Badge variant="default">{metrics.uptime.trend}</Badge>
           </CardContent>
         </Card>

@@ -408,8 +408,8 @@ export function registerRoutes(app: Express): Server {
       let collaboratorIssues = [];
       let errors = [];
 
-      // Check if collaborator "سعید قراری" exists
-      const collaboratorExists = await storage.getCollaboratorByName("سعید قراری");
+      // Collaborator system will be implemented later - setting all as Direct for now
+      const collaboratorExists = false;
       
       for (const repData of batch2Data) {
         try {
@@ -465,7 +465,7 @@ export function registerRoutes(app: Express): Server {
 
         } catch (error) {
           console.error(`Error processing representative ${repData.admin_username}:`, error);
-          errors.push(`Error updating ${repData.admin_username}: ${error.message}`);
+          errors.push(`Error updating ${repData.admin_username}: ${error instanceof Error ? error.message : 'Unknown error'}`);
         }
       }
 

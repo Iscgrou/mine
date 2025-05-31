@@ -18,7 +18,7 @@ import ImportJSON from "@/pages/import-json";
 import Payments from "@/pages/payments";
 import Backup from "@/pages/backup";
 import Settings from "@/pages/settings-complete";
-import CrmDashboard from "@/pages/crm-dashboard";
+import CrmDashboard from "@/pages/crm-dashboard-enhanced";
 import CrmCustomers from "@/pages/crm-customers";
 import CrmTickets from "@/pages/crm-tickets";
 import CrmCallPreparation from "@/pages/crm-call-preparation";

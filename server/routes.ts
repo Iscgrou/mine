@@ -25,6 +25,17 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  // Get collaborators endpoint
+  app.get("/api/collaborators", async (req, res) => {
+    try {
+      const collaborators = await storage.getCollaborators();
+      res.json(collaborators || []);
+    } catch (error) {
+      console.error('Error fetching collaborators:', error);
+      res.status(500).json({ message: "خطا در دریافت همکاران" });
+    }
+  });
+
   // Initialize system collaborators
   app.post("/api/collaborators/initialize", async (req, res) => {
     try {

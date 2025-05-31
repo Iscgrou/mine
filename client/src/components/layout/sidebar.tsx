@@ -87,6 +87,11 @@ const navigationItems = [
     href: "/balance-management",
     icon: "fas fa-balance-scale",
   },
+  {
+    name: "مدیریت سیستم",
+    href: "/system",
+    icon: "fas fa-cogs",
+  },
 ];
 
 export default function Sidebar() {

@@ -44,6 +44,14 @@ export function registerRoutes(app: Express): Server {
           telegramId: "https://t.me/saeed_gharari",
           email: "saeed@marfanet.ir",
           status: "active"
+        },
+        {
+          collaboratorName: "اونر",
+          uniqueCollaboratorId: "owner_001",
+          phoneNumber: "+98 991 000 0002",
+          telegramId: "https://t.me/owner_marfanet",
+          email: "owner@marfanet.ir",
+          status: "active"
         }
       ];
 
@@ -77,7 +85,7 @@ export function registerRoutes(app: Express): Server {
       const invoices = await storage.getInvoices();
       
       const actualCount = representatives.length;
-      const activeCount = representatives.filter(rep => rep.isActive).length;
+      const activeCount = representatives.filter(rep => rep.status === 'active' || rep.status === null).length;
       const collabCount = collaborators.length;
       
       res.json({

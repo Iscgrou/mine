@@ -214,9 +214,9 @@ export default function PerformanceMonitoring() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{metrics.responseTime.value}</div>
-            <Badge variant={metrics.responseTime.status === 'good' ? 'default' : 'destructive'}>
-              {metrics.responseTime.trend}
+            <div className="text-2xl font-bold">{metrics?.responseTime?.value || 0}</div>
+            <Badge variant={metrics?.responseTime?.status === 'good' ? 'default' : 'destructive'}>
+              {metrics?.responseTime?.trend || 'N/A'}
             </Badge>
           </CardContent>
         </Card>
@@ -229,9 +229,9 @@ export default function PerformanceMonitoring() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{metrics.throughput.value}</div>
-            <Badge variant={metrics.throughput.status === 'good' ? 'default' : 'secondary'}>
-              {metrics.throughput.trend}
+            <div className="text-2xl font-bold">{metrics?.throughput?.value || 0}</div>
+            <Badge variant={metrics?.throughput?.status === 'good' ? 'default' : 'secondary'}>
+              {metrics?.throughput?.trend || 'N/A'}
             </Badge>
           </CardContent>
         </Card>
@@ -244,9 +244,9 @@ export default function PerformanceMonitoring() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{metrics.errorRate.value}</div>
-            <Badge variant={metrics.errorRate.status === 'good' ? 'default' : 'destructive'}>
-              {metrics.errorRate.trend}
+            <div className="text-2xl font-bold">{metrics?.errorRate?.value || 0}</div>
+            <Badge variant={metrics?.errorRate?.status === 'good' ? 'default' : 'destructive'}>
+              {metrics?.errorRate?.trend || 'N/A'}
             </Badge>
           </CardContent>
         </Card>
@@ -259,8 +259,8 @@ export default function PerformanceMonitoring() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{metrics.uptime.value}</div>
-            <Badge variant="default">{metrics.uptime.trend}</Badge>
+            <div className="text-2xl font-bold">{metrics?.uptime?.value || 0}</div>
+            <Badge variant="default">{metrics?.uptime?.trend || 'N/A'}</Badge>
           </CardContent>
         </Card>
       </div>

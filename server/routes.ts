@@ -381,6 +381,182 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  // Bulk representative update endpoint
+  app.post("/api/representatives/bulk-update", async (req, res) => {
+    try {
+      const representativeData = [
+        { admin_username: "aghaimb", commision_type: "اونر آقایی", admin_store_name: "moonparts1", admin_phone_number: "+98 911 748 8752", admin_telegram_id: "aghaimb" },
+        { admin_username: "almasmb", commision_type: "اونر", admin_store_name: "الماس موبایل (اکانت مرفانت)", admin_phone_number: "+98 939 039 5598", admin_telegram_id: "Mmmr20" },
+        { admin_username: "amireza", commision_type: "اونر", admin_store_name: "امپراتور موبایل امیر رضا", admin_phone_number: "+98 938 829 5798", admin_telegram_id: "Amireezz" },
+        { admin_username: "amirmob", commision_type: "اونر", admin_store_name: "امیر ام", admin_phone_number: "+98 935 832 1003", admin_telegram_id: "amirmobileguilan" },
+        { admin_username: "amirsht", commision_type: "اونر", admin_store_name: "امیر رشتی", admin_phone_number: "9113895374", admin_telegram_id: "AmirRashti" },
+        { admin_username: "armatl", commision_type: "اونر", admin_store_name: "آرماتل", admin_phone_number: "+98 935 237 4362", admin_telegram_id: "arman2rj" },
+        { admin_username: "asiamb", commision_type: "اونر", admin_store_name: "آسیا", admin_phone_number: "+98 911 748 3226", admin_telegram_id: "saeedasia1" },
+        { admin_username: "badiz", commision_type: "اونر", admin_store_name: "", admin_phone_number: "", admin_telegram_id: "" },
+        { admin_username: "baranmob", commision_type: "معرفی سام", admin_store_name: "باران", admin_phone_number: "", admin_telegram_id: "Mobile_Baran" },
+        { admin_username: "caflmb", commision_type: "معرفی پویا سیلور", admin_store_name: "", admin_phone_number: "", admin_telegram_id: "" },
+        { admin_username: "callmb", commision_type: "اونر", admin_store_name: "کال موبایل", admin_phone_number: "+98 936 487 3991", admin_telegram_id: "" },
+        { admin_username: "clascmb", commision_type: "اونر", admin_store_name: "موبایل کلاسیک", admin_phone_number: "+98 911 131 8386", admin_telegram_id: "tahatp7" },
+        { admin_username: "danmb", commision_type: "اونر", admin_store_name: "دانیال موبایل", admin_phone_number: "+98 912 379 2675", admin_telegram_id: "Danielo_is_here" },
+        { admin_username: "darkmb", commision_type: "اونر", admin_store_name: "دارک", admin_phone_number: "+98 937 550 4520", admin_telegram_id: "Mr_DarkLight" },
+        { admin_username: "digimb46", commision_type: "اونر", admin_store_name: "دیجی موبایل", admin_phone_number: "", admin_telegram_id: "digimobile_46" },
+        { admin_username: "digitl", commision_type: "اونر", admin_store_name: "دیجی تل(صیانت، شایان)", admin_phone_number: "+98 936 843 2880", admin_telegram_id: "shayanbozorg" },
+        { admin_username: "digitlakn", commision_type: "اونر", admin_store_name: "دیجی تل لاکانی", admin_phone_number: "98363462416", admin_telegram_id: "MRZ1366" },
+        { admin_username: "drszesf", commision_type: "معرفی آقای نقدی (مرفانت)", admin_store_name: "درسز", admin_phone_number: "+98 938 604 1931", admin_telegram_id: "qdoomdh" },
+        { admin_username: "edalat", commision_type: "اونر", admin_store_name: "عدالت عطارزاده", admin_phone_number: "+98 939 498 9545", admin_telegram_id: "Emad_Edalat" },
+        { admin_username: "ehsanmb", commision_type: "اونر", admin_store_name: "احسان موبایل", admin_phone_number: "+98 911 943 0800", admin_telegram_id: "ehsan0800" },
+        { admin_username: "emdadrayn", commision_type: "اونر", admin_store_name: "امداد رایان", admin_phone_number: "+98 911 880 9004", admin_telegram_id: "Hadika2" },
+        { admin_username: "emojimb", commision_type: "اونر", admin_store_name: "ایموجی موبایل", admin_phone_number: "+98 902 223 9186", admin_telegram_id: "emoji_mobile" },
+        { admin_username: "ferdowsimb", commision_type: "اونر", admin_store_name: "فردوسی ارسال فاکتور واتس اپ", admin_phone_number: "+98 911 828 8003", admin_telegram_id: "shahinziyae" },
+        { admin_username: "gardmb", commision_type: "اونر", admin_store_name: "موبایل گاردن", admin_phone_number: "+98 903 576 8211", admin_telegram_id: "MIR7476" },
+        { admin_username: "ghadirmob", commision_type: "اونر", admin_store_name: "موبایل قدیر", admin_phone_number: "+98 935 245 6952", admin_telegram_id: "ghadir_mobilee" },
+        { admin_username: "ghasrmb", commision_type: "اونر", admin_store_name: "قصر موبایل", admin_phone_number: "+98 911 139 9795", admin_telegram_id: "" },
+        { admin_username: "gitmob", commision_type: "اونر", admin_store_name: "گیت اونر", admin_phone_number: "+98 911 382 1232", admin_telegram_id: "farid_shabanzadeh" },
+        { admin_username: "hadimb", commision_type: "اونر", admin_store_name: "Hadi", admin_phone_number: "+98 911 384 8575", admin_telegram_id: "hadi2913" },
+        { admin_username: "hezaremb", commision_type: "اونر", admin_store_name: "هزاره کالا و دی", admin_phone_number: "+98 936 720 4634", admin_telegram_id: "alihezare3evvom" },
+        { admin_username: "hsmus", commision_type: "اونر", admin_store_name: "حسام", admin_phone_number: "+98 915 200 4737", admin_telegram_id: "aiyob2020" },
+        { admin_username: "idehmb", commision_type: "اونر", admin_store_name: "ایده موبایل", admin_phone_number: "+98 919 376 6627", admin_telegram_id: "" },
+        { admin_username: "imanmsd", commision_type: "اونر", admin_store_name: "Iman", admin_phone_number: "", admin_telegram_id: "V2Box_iman" },
+        { admin_username: "iranstore", commision_type: "اونر", admin_store_name: "ایران استور", admin_phone_number: "+98 902 131 6177", admin_telegram_id: "" },
+        { admin_username: "isanmb", commision_type: "اونر", admin_store_name: "آیسان تجارت", admin_phone_number: "+98 915 421 2153", admin_telegram_id: "mamadsunny" },
+        { admin_username: "istmb", commision_type: "معرفی کامبیز ذولفقاری", admin_store_name: "استمب", admin_phone_number: "+98 936 480 5349", admin_telegram_id: "Nachir_kurdi" },
+        { admin_username: "khalilzade", commision_type: "اونر", admin_store_name: "خلیل زاده", admin_phone_number: "+98 939 166 4946", admin_telegram_id: "Akhm1991" },
+        { admin_username: "khanemob", commision_type: "اونر", admin_store_name: "خانه موبایل", admin_phone_number: "+98 935 260 0354", admin_telegram_id: "Atarasa" },
+        { admin_username: "loutoosmb", commision_type: "اونر", admin_store_name: "لوتوس", admin_phone_number: "+98 933 745 2519", admin_telegram_id: "Abed_2519" },
+        { admin_username: "mahdimb", commision_type: "اونر", admin_store_name: "مهدی", admin_phone_number: "", admin_telegram_id: "siawnat" },
+        { admin_username: "martinmb", commision_type: "اونر", admin_store_name: "مارتین", admin_phone_number: "+98 936 555 4997", admin_telegram_id: "" },
+        { admin_username: "mashreghi", commision_type: "اونر", admin_store_name: "مشرقی", admin_phone_number: "+98 915 665 6693", admin_telegram_id: "Arman_mashreghi" },
+        { admin_username: "mehrcall", commision_type: "اونر", admin_store_name: "مهرکال", admin_phone_number: "+98 936 693 5982", admin_telegram_id: "Omid_khalili" },
+        { admin_username: "mehrnmob", commision_type: "اونر", admin_store_name: "مهران", admin_phone_number: "+98 933 762 2024", admin_telegram_id: "nimadani" },
+        { admin_username: "mhmaddbr", commision_type: "اونر", admin_store_name: "آقای پورتقی", admin_phone_number: "+98 911 720 6587", admin_telegram_id: "ronecance" },
+        { admin_username: "miladatp", commision_type: "اونر", admin_store_name: "عطاپور", admin_phone_number: "+98 911 845 6877", admin_telegram_id: "Milad_atapour1993" },
+        { admin_username: "miladbgh", commision_type: "اونر", admin_store_name: "میلاد باقری", admin_phone_number: "+98 938 819 6664", admin_telegram_id: "imiladbi" },
+        { admin_username: "mildtmb", commision_type: "اونر", admin_store_name: "عطاپور عدالت", admin_phone_number: "", admin_telegram_id: "عدالت" },
+        { admin_username: "minaiemob", commision_type: "اونر", admin_store_name: "مینایی", admin_phone_number: "+98 911 185 3432", admin_telegram_id: "Mikaeil55" },
+        { admin_username: "misaghmb", commision_type: "اونر", admin_store_name: "میثاق رامتین", admin_phone_number: "+98 919 359 9553", admin_telegram_id: "Misaq_alizadeh" },
+        { admin_username: "mjtbsabet", commision_type: "اونر", admin_store_name: "مجتبی ثابت", admin_phone_number: "", admin_telegram_id: "sabet_ss" },
+        { admin_username: "mobogap", commision_type: "اونر", admin_store_name: "گپ", admin_phone_number: "+98 912 545 3417", admin_telegram_id: "vahid_sn" },
+        { admin_username: "mobshahr", commision_type: "اونر", admin_store_name: "موبایل شهر", admin_phone_number: "+98 911 132 9302", admin_telegram_id: "davood_khodajouy" },
+        { admin_username: "mobzen", commision_type: "اونر", admin_store_name: "موبایل 09", admin_phone_number: "+98 903 601 8061", admin_telegram_id: "" },
+        { admin_username: "mohamadshr", commision_type: "اونر", admin_store_name: "mohamadshr", admin_phone_number: "", admin_telegram_id: "mohamadshryfy" },
+        { admin_username: "mrmobmb", commision_type: "اونر", admin_store_name: "آقای موبایل", admin_phone_number: "+98 937 667 1112", admin_telegram_id: "mr_mobile1_m" },
+        { admin_username: "naeinimb", commision_type: "معرفی خلیل‌ زاده", admin_store_name: "نائینی", admin_phone_number: "", admin_telegram_id: "ali_naeini" },
+        { admin_username: "nimachtg", commision_type: "اونر", admin_store_name: "نیما چیتگر", admin_phone_number: "", admin_telegram_id: "Nimachitgar" },
+        { admin_username: "novinmob", commision_type: "اونر", admin_store_name: "نوین موبایل", admin_phone_number: "+98 911 140 5576", admin_telegram_id: "Sajjadsaadatt" },
+        { admin_username: "omidagt", commision_type: "اونر", admin_store_name: "امید", admin_phone_number: "+98 917 200 0562", admin_telegram_id: "parsehmb" },
+        { admin_username: "onlinmb", commision_type: "اونر", admin_store_name: "آنلاین", admin_phone_number: "+98 911 137 3827", admin_telegram_id: "" },
+        { admin_username: "pacmobi", commision_type: "اونر", admin_store_name: "پکس موبی", admin_phone_number: "+98 911 466 4390", admin_telegram_id: "MamadVampire" },
+        { admin_username: "pourmmd", commision_type: "اونر", admin_store_name: "پورمحمد", admin_phone_number: "+98 935 919 2525", admin_telegram_id: "MPourmohammad" },
+        { admin_username: "pouyamb", commision_type: "اونر", admin_store_name: "سیلور استار", admin_phone_number: "+98 930 405 8175", admin_telegram_id: "" },
+        { admin_username: "powrmb", commision_type: "اونر", admin_store_name: "پاور", admin_phone_number: "+98 935 119 4197", admin_telegram_id: "PediFazeli" },
+        { admin_username: "rashamob", commision_type: "اونر", admin_store_name: "راشا", admin_phone_number: "+98 911 809 3629", admin_telegram_id: "YeAshenast2" },
+        { admin_username: "rastgarmb", commision_type: "اونر", admin_store_name: "رستگار", admin_phone_number: "+98 902 932 6918", admin_telegram_id: "" },
+        { admin_username: "sabzianmb", commision_type: "اونر", admin_store_name: "سبزیان", admin_phone_number: "+98 915 821 0133", admin_telegram_id: "Hsbebeh" },
+        { admin_username: "saedsalehi", commision_type: "اونر", admin_store_name: "saeed salehi", admin_phone_number: "", admin_telegram_id: "sepehr_1369" },
+        { admin_username: "sajadhsm", commision_type: "اونر", admin_store_name: "سجاد حسامی", admin_phone_number: "+98 901 596 9922", admin_telegram_id: "Ssajad1365" },
+        { admin_username: "sammob", commision_type: "اونر", admin_store_name: "سام", admin_phone_number: "+98 919 839 0840", admin_telegram_id: "nimajeto" },
+        { admin_username: "senator", commision_type: "اونر", admin_store_name: "سناتور", admin_phone_number: "+98 999 120 2696", admin_telegram_id: "" },
+        { admin_username: "shahinmb", commision_type: "اونر", admin_store_name: "شاهین", admin_phone_number: "", admin_telegram_id: "Shahin2750" },
+        { admin_username: "sianatmb", commision_type: "اونر", admin_store_name: "دی جی تل شایان صیانت", admin_phone_number: "+98 936 843 2880", admin_telegram_id: "shayanbozorg" },
+        { admin_username: "sinasizmob", commision_type: "اونر", admin_store_name: "سینا ۱۳۰۰", admin_phone_number: "+98 930 139 8172", admin_telegram_id: "sina_61615" },
+        { admin_username: "sorena", commision_type: "اونر", admin_store_name: "سورنا", admin_phone_number: "+98 911 706 0409", admin_telegram_id: "nimaazarnia" },
+        { admin_username: "tahammd", commision_type: "اونر", admin_store_name: "طاها مددخواه ۲", admin_phone_number: "+98 994 464 5828", admin_telegram_id: "PA_PA69" },
+        { admin_username: "tahamobteh", commision_type: "اونر", admin_store_name: "طاها", admin_phone_number: "+98 991 102 0510", admin_telegram_id: "mamadzall" },
+        { admin_username: "takmob", commision_type: "اونر", admin_store_name: "موبایل تک", admin_phone_number: "+98 912 430 0125", admin_telegram_id: "hesamnight" },
+        { admin_username: "viratl", commision_type: "اونر", admin_store_name: "ویراتل", admin_phone_number: "+98 911 750 4643", admin_telegram_id: "Mohamad4643" },
+        { admin_username: "zabihimb", commision_type: "اونر", admin_store_name: "زبیحی", admin_phone_number: "+98 915 230 0024", admin_telegram_id: "Amir_zabihi8659" },
+        { admin_username: "xmomb", commision_type: "اونر", admin_store_name: "موبایل ایکس", admin_phone_number: "+98 901 578 4741", admin_telegram_id: "homayoon_mp" }
+      ];
+
+      let updatedCount = 0;
+      let createdCount = 0;
+      let collaboratorIssues = [];
+
+      for (const repData of representativeData) {
+        try {
+          // Check if representative exists
+          let representative = await storage.getRepresentativeByAdminUsername(repData.admin_username);
+          
+          // Determine commission type
+          let commissionType = "Direct";
+          let commissionLimited = "0";
+          let commissionUnlimited = "0";
+          
+          if (repData.commision_type !== "اونر") {
+            // Handle collaborator references
+            if (repData.commision_type.includes("معرفی") || repData.commision_type.includes("آقایی")) {
+              // For now, set as Direct and log the collaborator reference
+              commissionType = "Direct";
+              collaboratorIssues.push({
+                admin_username: repData.admin_username,
+                intended_collaborator: repData.commision_type,
+                action: "Set as Direct temporarily - collaborator system pending"
+              });
+            }
+          }
+
+          // Prepare representative data with new structure and default pricing
+          const representativeUpdate = {
+            fullName: repData.admin_store_name || repData.admin_username,
+            adminUsername: repData.admin_username,
+            storeName: repData.admin_store_name || "",
+            phoneNumber: repData.admin_phone_number || "",
+            telegramId: repData.admin_telegram_id || "",
+            commissionType: commissionType,
+            commissionLimitedPercent: commissionLimited,
+            commissionUnlimitedPercent: commissionUnlimited,
+            // Default pricing structure as specified
+            limitedPrice1Month: "900",
+            limitedPrice2Month: "900",
+            limitedPrice3Month: "900",
+            limitedPrice4Month: "1200",
+            limitedPrice5Month: "1400",
+            limitedPrice6Month: "1600",
+            unlimitedPrice1Month: "40000",
+            unlimitedPrice2Month: "80000",
+            unlimitedPrice3Month: "120000",
+            unlimitedPrice4Month: "160000",
+            unlimitedPrice5Month: "200000",
+            unlimitedPrice6Month: "240000"
+          };
+
+          if (representative) {
+            // Update existing representative
+            await storage.updateRepresentative(representative.id, representativeUpdate);
+            updatedCount++;
+          } else {
+            // Create new representative
+            await storage.createRepresentative(representativeUpdate);
+            createdCount++;
+          }
+        } catch (error) {
+          console.error(`Error processing representative ${repData.admin_username}:`, error);
+        }
+      }
+
+      res.json({
+        success: true,
+        message: "بروزرسانی انبوه نمایندگان با موفقیت انجام شد",
+        summary: {
+          totalProcessed: representativeData.length,
+          updated: updatedCount,
+          created: createdCount,
+          collaboratorIssues: collaboratorIssues.length
+        },
+        collaboratorIssues: collaboratorIssues,
+        pricing: {
+          applied: "ساختار قیمت‌گذاری پیش‌فرض برای همه نمایندگان اعمال شد",
+          limited_prices: "900, 900, 900, 1200, 1400, 1600 تومان",
+          unlimited_prices: "40000, 80000, 120000, 160000, 200000, 240000 تومان"
+        }
+      });
+
+    } catch (error) {
+      console.error('Bulk update error:', error);
+      res.status(500).json({ message: "خطا در بروزرسانی انبوه نمایندگان" });
+    }
+  });
+
   // Real-time admin data sync endpoint
   app.get("/api/admin/balance-sync", async (req, res) => {
     try {

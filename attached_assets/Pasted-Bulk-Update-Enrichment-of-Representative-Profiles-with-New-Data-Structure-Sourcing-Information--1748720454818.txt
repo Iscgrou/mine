@@ -1,0 +1,153 @@
+Bulk Update & Enrichment of Representative Profiles with New Data Structure & Sourcing Information
+
+Chronos, we need to perform a bulk update and enrichment of our existing Representative profiles. Many representatives are currently in the system with only an admin_username. We will now update their information based on a new, more comprehensive data structure and establish their sourcing type (Direct or via Collaborator).
+
+I. The Target Data Structure for Each Representative:
+
+The target JSON format for each representative's profile will be as follows. You will use this structure to either create new entries or update existing ones.
+
+{
+  "admin_username": "STRING_UNIQUE_KEY", // Unique admin username (from your list)
+  "commision_type": "ENUM('Direct', 'COLLABORATOR_NAME_REFERENCE')", // 'Direct' or the NAME/ID of the Collaborator
+  "commision_limited_subscription_percent": "STRING_PERCENTAGE", // e.g., "5%" or "0%" - commission for collaborator
+  "commision_unlimited_subscription_percent": "STRING_PERCENTAGE", // e.g., "10%" or "0%" - commission for collaborator
+  "admin_store_name": "STRING_OPTIONAL", // Store name
+  "admin_telegram_id": "STRING_OPTIONAL_WITH_PREFIX", // Telegram ID (ensure https://t.me/ prefix is applied)
+  "admin_phone_number": "STRING_OPTIONAL", // Phone number
+  "limited_1_month_price_per_1GB": "900", // Default pricing
+  "limited_2_month_price_per_1GB": "900", // Default pricing
+  "limited_3_month_price_per_1GB": "900", // Default pricing
+  "limited_4_month_price_per_1GB": "1200", // Default pricing
+  "limited_5_month_price_per_1GB": "1400", // Default pricing
+  "limited_6_month_price_per_1GB": "1600", // Default pricing
+  "unlimited_1_month": "40000", // Default pricing
+  "unlimited_2_month": "80000", // Default pricing
+  "unlimited_3_month": "120000", // Default pricing
+  "unlimited_4_month": "160000", // Default pricing
+  "unlimited_5_month": "200000", // Default pricing
+  "unlimited_6_month": "240000"  // Default pricing
+}
+
+II. Explanation of Key Fields & Implementation Logic:
+
+    admin_username: This is the primary unique identifier for each representative. You will use this field to match and update the information for representatives already existing in our database. For any admin_username in the list below that doesn't exist, a new representative profile should be created.
+    commision_type (نوع معرف / همکار فروش):
+        This field determines the representative's sourcing and if commissions apply.
+        If the representative is a direct client of MarFanet: This field should be set to "Direct".
+        If the representative was introduced by a Collaborator (همکار فروش): This field should contain the unique name or ID of the Collaborator (e.g., "اونر آقایی" if "اونر آقایی" is defined as a Collaborator in our system).
+        Prerequisite: For this to work, the "Collaborators" (همکاران فروش) must be defined in the system FIRST (as per our previous discussions on the "Manage Collaborators" section). If a commision_type in the data below refers to a Collaborator not yet in the system, flag it or set to "Direct" temporarily with a note.
+    commision_limited_subscription_percent & commision_unlimited_subscription_percent:
+        These fields define the percentage commission the linked Collaborator earns from this representative's sales.
+        If commision_type is "Direct", BOTH these fields MUST be set to "0%".
+        If commision_type refers to a Collaborator, these fields should be populated with the agreed-upon commission rates for this specific representative under that collaborator. For any initial bulk update where these specific rates are not yet defined per rep in the provided data, you can default them to "0%" and they can be updated manually later by the Admin. The critical part is linking them to the correct commision_type.
+    admin_store_name, admin_telegram_id, admin_phone_number: Populate these from the provided data list. Ensure admin_telegram_id has the https://t.me/ prefix applied if not already present (or just store the username and apply prefix on display/use).
+    Pricing Fields (limited_X_month_price_per_1GB, unlimited_X_month):
+        All representatives being updated/created with the data below should receive the default pricing structure as specified in the JSON template above (e.g., limited_1_month_price_per_1GB: "900", unlimited_1_month: "40000", etc.). These are MarFanet's standard selling prices to the representative.
+
+III. Data for Representative Profile Updates:
+
+Chronos, please use the following data to update the representative profiles. You will need to parse this information and map it to the JSON structure above. The admin_username is the first column after the example data. The commision_type column in the data below indicates if they are "اونر" (Owner/Direct) or refers to a specific introducing Collaborator name.
+
+   admin_username | commision_type                  | admin_store_name             | admin_phone_number | admin_telegram_id
+   ----------------|---------------------------------|------------------------------|--------------------|--------------------
+   aghaimb         | اونر آقایی                       | moonparts1                   | +98 911 748 8752   | [Assume aghaimb or similar if not listed as separate id]
+   almasmb         | اونر                            | الماس موبایل (اکانت مرفانت) | +98 939 039 5598   | Mmmr20
+   amireza         | اونر                            | امپراتور موبایل امیر رضا      | +98 938 829 5798   | Amireezz
+   amirmob         | اونر                            | امیر ام                      | +98 935 832 1003   | amirmobileguilan
+   amirsht         | اونر                            | امیر رشتی                   | 9113895374         | AmirRashti
+   armatl          | اونر                            | آرماتل                      | +98 935 237 4362   | arman2rj
+   asiamb          | اونر                            | آسیا                         | +98 911 748 3226   | saeedasia1
+   badiz           | اونر                            | [Assume 'تلگرامشون رو پاک کردند' means no valid store name/empty] | [Empty]            |  [Empty, or note 'تلگرامشون رو پاک کردند']
+   baranmob        | معرفی سام                        | باران                        | [Empty, 'ندارد']   | Mobile_Baran
+   caflmb          | معرفی پویا سیلور                 | [Empty, 'ندارد']              | [Empty, 'ندارد']   | [Empty, 'ندارد']
+   callmb          | اونر                            | کال موبایل                   | +98 936 487 3991   | [Empty, 'ندارد']
+   clascmb         | اونر                            | موبایل کلاسیک                | +98 911 131 8386   | tahatp7
+   danmb           | اونر                            | دانیال موبایل                | +98 912 379 2675   | Danielo_is_here
+   darkmb          | اونر                            | دارک                         | +98 937 550 4520   | Mr_DarkLight
+   digimb46        | اونر                            | دیجی موبایل                  | [Empty, 'خالی ندارد'] | digimobile_46
+   digitl          | اونر                            | دیجی تل(صیانت، شایان)       | +98 936 843 2880   | shayanbozorg
+   digitlakn       | اونر                            | دیجی تل لاکانی               | 98363462416        | MRZ1366
+   drszesf         | معرفی آقای نقدی (مرفانت)         | [Assume store name from rep name if none] | +98 938 604 1931   | qdoomdh
+   edalat          | اونر                            | عدالت عطارزاده               | +98 939 498 9545   | Emad_Edalat
+   ehsanmb         | اونر                            | احسان موبایل                 | +98 911 943 0800   | ehsan0800
+   emdadrayn       | اونر                            | امداد رایان                  | +98 911 880 9004   | Hadika2
+   emojimb         | اونر                            | ایموجی موبایل                | +98 902 223 9186   | emoji_mobile
+   ferdowsimb      | اونر                            | فردوسی ارسال فاکتور واتس اپ  | +98 911 828 8003   | shahinziyae
+   gardmb          | اونر                            | موبایل گاردن                 | +98 903 576 8211   | MIR7476
+   ghadirmob       | اونر                            | موبایل قدیر                  | +98 935 245 6952   | ghadir_mobilee
+   ghasrmb         | اونر                            | قصر موبایل                   | +98 911 139 9795   | [Empty, 'ندارد']
+   gitmob          | اونر                            | گیت اونر                     | +98 911 382 1232   | farid_shabanzadeh
+   hadimb          | اونر                            | Hadi                         | +98 911 384 8575   | hadi2913
+   hezaremb        | اونر                            | هزاره کالا و دی             | +98 936 720 4634   | alihezare3evvom
+   hsmus           | اونر                            | حسام                         | +98 915 200 4737   | aiyob2020
+   idehmb          | اونر                            | ایده موبایل                  | +98 919 376 6627   | [Empty, 'ندارد']
+   imanmsd         | اونر                            | Iman                         | [Empty, 'ندارد']   | V2Box_iman
+   iranstore       | اونر                            | ایران استور                  | +98 902 131 6177   | [Empty, 'ندارد']
+   isanmb          | اونر                            | آیسان تجارت                 | +98 915 421 2153   | mamadsunny
+   istmb           | معرفی کامبیز ذولفقاری          | [Assume store name from rep name if none] | +98 936 480 5349   | Nachir_kurdi
+   khalilzade      | اونر                            | خلیل زاده                    | +98 939 166 4946   | Akhm1991
+   khanemob        | اونر                            | خانه موبایل                  | +98 935 260 0354   | Atarasa
+   loutoosmb       | اونر                            | لوتوس                       | +98 933 745 2519   | Abed_2519
+   mahdimb         | اونر                            | مهدی                         | [Empty, 'ندارد']   | siawnat
+   martinmb        | اونر                            | مارتین                       | +98 936 555 4997   | [Empty, 'ندارد']
+   mashreghi       | اونر                            | مشرقی                       | +98 915 665 6693   | Arman_mashreghi
+   mehrcall        | اونر                            | مهرکال                      | +98 936 693 5982   | Omid_khalili
+   mehrnmob        | اونر                            | مهران                       | +98 933 762 2024   | nimadani
+   mhmaddbr        | اونر                            | [Assume 'تسویه با آقای پورتقی' means store name can be 'آقای پورتقی'] | +98 911 720 6587 | ronecance
+   miladatp        | اونر                            | عطاپور                       | +98 911 845 6877   | Milad_atapour1993
+   miladbgh        | اونر                            | میلاد باقری                   | +98 938 819 6664   | imiladbi
+   mildtmb         | اونر                            | عطاپور عدالت                 | [Assume phone from other 'عطاپور' or leave empty] | عدالت [Assume this is Telegram ID]
+   minaiemob       | اونر                            | مینایی                      | +98 911 185 3432   | Mikaeil55
+   misaghmb        | اونر                            | میثاق رامتین                 | +98 919 359 9553   | Misaq_alizadeh
+   mjtbsabet       | اونر                            | مجتبی ثابت                   | [Empty, 'ندارد']   | sabet_ss
+   mobogap         | اونر                            | گپ                           | +98 912 545 3417   | vahid_sn
+   mobshahr        | اونر                            | موبایل شهر                   | +98 911 132 9302   | davood_khodajouy
+   mobzen          | اونر                            | موبایل 09                    | +98 903 601 8061   | [Empty, 'ندارد']
+   mohamadshr      | اونر                            | mohamadshr                   | [Empty, 'ندارد']   | mohamadshryfy
+   mrmobmb         | اونر                            | آقای موبایل                  | +98 937 667 1112   | mr_mobile1_m
+   naeinimb        | معرفی خلیل‌ زاده                | نائینی                      | [Empty, 'ندارد']   | ali_naeini
+   nimachtg        | اونر                            | نیما چیتگر                   | [Empty, 'ندارد']   | Nimachitgar
+   novinmob        | اونر                            | نوین موبایل                  | +98 911 140 5576   | Sajjadsaadatt
+   omidagt         | اونر                            | امید                         | +98 917 200 0562   | parsehmb
+   onlinmb         | اونر                            | آنلاین                      | +98 911 137 3827   | [Empty, 'ندارد']
+   pacmobi         | اونر                            | پکس موبی                    | +98 911 466 4390   | MamadVampire
+   pourmmd         | اونر                            | پورمحمد                     | +98 935 919 2525   | MPourmohammad
+   pouyamb         | اونر                            | سیلور استار                  | +98 930 405 8175   | [Empty, 'ندارد']
+   powrmb          | اونر                            | پاور                         | +98 935 119 4197   | PediFazeli
+   rashamob        | اونر                            | راشا                        | +98 911 809 3629   | YeAshenast2
+   rastgarmb       | اونر                            | رستگار                      | +98 902 932 6918   | [Empty, 'ندارد']
+   sabzianmb       | اونر                            | سبزیان                      | +98 915 821 0133   | Hsbebeh
+   saedsalehi      | اونر                            | saeed salehi                 | [Empty, 'ندارد']   | sepehr_1369
+   sajadhsm        | اونر                            | سجاد حسامی                   | +98 901 596 9922   | Ssajad1365
+   sammob          | اونر                            | سام                          | +98 919 839 0840   | nimajeto
+   senator         | اونر                            | سناتور                       | +98 999 120 2696   | [Empty, 'ندارد']
+   shahinmb        | اونر                            | شاهین                       | [Empty, 'ندارد']   | Shahin2750
+   sianatmb        | اونر                            | دی جی تل شایان صیانت        | +98 936 843 2880   | shayanbozorg
+   sinasizmob      | اونر                            | سینا ۱۳۰۰                    | +98 930 139 8172   | sina_61615
+   sorena          | اونر                            | سورنا                       | +98 911 706 0409   | nimaazarnia
+   tahammd         | اونر                            | طاها مددخواه ۲               | +98 994 464 5828   | PA_PA69
+   tahamobteh      | اونر                            | طاها                         | +98 991 102 0510   | mamadzall
+   takmob          | اونر                            | موبایل تک                    | +98 912 430 0125   | hesamnight
+   viratl          | اونر                            | ویراتل                      | +98 911 750 4643   | Mohamad4643
+   zabihimb        | اونر                            | زبیحی                       | +98 915 230 0024   | Amir_zabihi8659
+   xmomb           | اونر                            | موبایل ایکس                   | +98 901 578 4741   | homayoon_mp
+
+Self-Correction/Assumption Note for Chronos during parsing: [Empty, 'ندارد'] or empty cells should be treated as null or empty strings for optional fields. For commision_type items like "معرفی سام" or "معرفی پویا سیلور", these refer to Collaborator names. If these Collaborators do not yet exist, either flag these representatives for manual review or temporarily set commision_type to "Direct" and make a note. For commission percentages for these Collaborator-introduced reps, if not explicitly provided yet, default to "0%" and these can be set by an admin later. The key is to establish the link if the Collaborator exists.
+
+IV. Your Task (Chronos):
+
+    Parse the Data: Process the provided list of representatives.
+    Collaborator Check (Prerequisite):
+        For each representative listed with a commision_type that indicates a Collaborator (e.g., "معرفی سام", "اونر آقایی" if "اونر آقایی" is a Collaborator and not just a note about ownership for direct reps), check if this Collaborator already exists in the "Manage Collaborators" section of the Admin Panel.
+        If a Collaborator does not exist, MarFanet Admin will need to create them first. You should log/report these instances. For now, you can mark such representatives as commision_type: "Direct" with a note indicating the intended collaborator, or hold these updates until the collaborator is created if your system design requires strict referential integrity.
+    Update/Create Representative Profiles:
+        For each representative, use their admin_username to find their existing profile.
+        Update their profile with all the new information (sourcing type based on commision_type, store name, phone, Telegram ID) and apply the default pricing structure.
+        If an admin_username from the list does not exist, create a new representative profile with the provided information and the default pricing structure.
+        Set commision_limited_subscription_percent and commision_unlimited_subscription_percent to "0%" if commision_type is "Direct" or if the specific commission rates for a Collaborator-linked representative are not yet defined.
+    Confirmation & Logging:
+        Provide a summary of actions taken (e.g., "Updated X representatives, Created Y new representatives").
+        List any representatives whose commision_type referred to a non-existent Collaborator and how you handled them.
+        Confirm that the default pricing structure has been applied to all processed representatives.
+
+This bulk update is critical for aligning our representative data with the new Collaborator system and ensuring consistent pricing. Please proceed with parsing and applying these updates to the "Representative Information" section.

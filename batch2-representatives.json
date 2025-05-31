@@ -1,0 +1,310 @@
+[
+  {
+    "admin_username": "batch2_rep_001",
+    "admin_store_name": "فروشگاه موبایل آریا",
+    "admin_phone_number": "+98 991 320 0001",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "premium"
+  },
+  {
+    "admin_username": "batch2_rep_002",
+    "admin_store_name": "تلکام پردیس",
+    "admin_phone_number": "+98 991 320 0002",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "premium"
+  },
+  {
+    "admin_username": "batch2_rep_003",
+    "admin_store_name": "دیجیتال شاپ کیان",
+    "admin_phone_number": "+98 991 320 0003",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "premium"
+  },
+  {
+    "admin_username": "batch2_rep_004",
+    "admin_store_name": "موبایل سنتر رضا",
+    "admin_phone_number": "+98 991 320 0004",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "standard"
+  },
+  {
+    "admin_username": "batch2_rep_005",
+    "admin_store_name": "فناوری پیشرو سینا",
+    "admin_phone_number": "+98 991 320 0005",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "premium"
+  },
+  {
+    "admin_username": "batch2_rep_006",
+    "admin_store_name": "تک شاپ مدرن",
+    "admin_phone_number": "+98 991 320 0006",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "standard"
+  },
+  {
+    "admin_username": "batch2_rep_007",
+    "admin_store_name": "دیجیتال استور علی",
+    "admin_phone_number": "+98 991 320 0007",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "premium"
+  },
+  {
+    "admin_username": "batch2_rep_008",
+    "admin_store_name": "موبایل گالری نوین",
+    "admin_phone_number": "+98 991 320 0008",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "standard"
+  },
+  {
+    "admin_username": "batch2_rep_009",
+    "admin_store_name": "تکنولوژی پیشرو",
+    "admin_phone_number": "+98 991 320 0009",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "premium"
+  },
+  {
+    "admin_username": "batch2_rep_010",
+    "admin_store_name": "دیجیتال سرویس محمد",
+    "admin_phone_number": "+98 991 320 0010",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "standard"
+  },
+  {
+    "admin_username": "batch2_rep_011",
+    "admin_store_name": "موبایل تک حسین",
+    "admin_phone_number": "+98 991 320 0011",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "premium"
+  },
+  {
+    "admin_username": "batch2_rep_012",
+    "admin_store_name": "فناوری نوین احمد",
+    "admin_phone_number": "+98 991 320 0012",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "standard"
+  },
+  {
+    "admin_username": "batch2_rep_013",
+    "admin_store_name": "دیجیتال پلاس مرتضی",
+    "admin_phone_number": "+98 991 320 0013",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "premium"
+  },
+  {
+    "admin_username": "batch2_rep_014",
+    "admin_store_name": "تک استور سعید",
+    "admin_phone_number": "+98 991 320 0014",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "standard"
+  },
+  {
+    "admin_username": "batch2_rep_015",
+    "admin_store_name": "موبایل سرویس جواد",
+    "admin_phone_number": "+98 991 320 0015",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "premium"
+  },
+  {
+    "admin_username": "batch2_rep_016",
+    "admin_store_name": "دیجیتال شاپ امیر",
+    "admin_phone_number": "+98 991 320 0016",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "standard"
+  },
+  {
+    "admin_username": "batch2_rep_017",
+    "admin_store_name": "فناوری پیشرو داود",
+    "admin_phone_number": "+98 991 320 0017",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "premium"
+  },
+  {
+    "admin_username": "batch2_rep_018",
+    "admin_store_name": "تک سنتر مهدی",
+    "admin_phone_number": "+98 991 320 0018",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "standard"
+  },
+  {
+    "admin_username": "batch2_rep_019",
+    "admin_store_name": "موبایل استور کامران",
+    "admin_phone_number": "+98 991 320 0019",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "premium"
+  },
+  {
+    "admin_username": "batch2_rep_020",
+    "admin_store_name": "دیجیتال پلاس فرهاد",
+    "admin_phone_number": "+98 991 320 0020",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "standard"
+  },
+  {
+    "admin_username": "batch2_rep_021",
+    "admin_store_name": "فناوری نوین بهرام",
+    "admin_phone_number": "+98 991 320 0021",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "premium"
+  },
+  {
+    "admin_username": "batch2_rep_022",
+    "admin_store_name": "تک شاپ پویا",
+    "admin_phone_number": "+98 991 320 0022",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "standard"
+  },
+  {
+    "admin_username": "batch2_rep_023",
+    "admin_store_name": "موبایل سرویس آرش",
+    "admin_phone_number": "+98 991 320 0023",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "premium"
+  },
+  {
+    "admin_username": "batch2_rep_024",
+    "admin_store_name": "دیجیتال استور نیما",
+    "admin_phone_number": "+98 991 320 0024",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "standard"
+  },
+  {
+    "admin_username": "batch2_rep_025",
+    "admin_store_name": "فناوری پیشرو شهرام",
+    "admin_phone_number": "+98 991 320 0025",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "premium"
+  },
+  {
+    "admin_username": "batch2_rep_026",
+    "admin_store_name": "تک سنتر رامین",
+    "admin_phone_number": "+98 991 320 0026",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "standard"
+  },
+  {
+    "admin_username": "batch2_rep_027",
+    "admin_store_name": "موبایل استور کیوان",
+    "admin_phone_number": "+98 991 320 0027",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "premium"
+  },
+  {
+    "admin_username": "batch2_rep_028",
+    "admin_store_name": "دیجیتال پلاس سروش",
+    "admin_phone_number": "+98 991 320 0028",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "standard"
+  },
+  {
+    "admin_username": "batch2_rep_029",
+    "admin_store_name": "فناوری نوین پیمان",
+    "admin_phone_number": "+98 991 320 0029",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "premium"
+  },
+  {
+    "admin_username": "batch2_rep_030",
+    "admin_store_name": "تک شاپ فرزاد",
+    "admin_phone_number": "+98 991 320 0030",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "standard"
+  },
+  {
+    "admin_username": "batch2_rep_031",
+    "admin_store_name": "موبایل سرویس بابک",
+    "admin_phone_number": "+98 991 320 0031",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "premium"
+  },
+  {
+    "admin_username": "batch2_rep_032",
+    "admin_store_name": "دیجیتال استور میلاد",
+    "admin_phone_number": "+98 991 320 0032",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "standard"
+  },
+  {
+    "admin_username": "batch2_rep_033",
+    "admin_store_name": "فناوری پیشرو ایمان",
+    "admin_phone_number": "+98 991 320 0033",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "premium"
+  },
+  {
+    "admin_username": "batch2_rep_034",
+    "admin_store_name": "تک سنتر آرمین",
+    "admin_phone_number": "+98 991 320 0034",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "standard"
+  },
+  {
+    "admin_username": "batch2_rep_035",
+    "admin_store_name": "موبایل استور دانیال",
+    "admin_phone_number": "+98 991 320 0035",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "premium"
+  },
+  {
+    "admin_username": "batch2_rep_036",
+    "admin_store_name": "دیجیتال پلاس هادی",
+    "admin_phone_number": "+98 991 320 0036",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "standard"
+  },
+  {
+    "admin_username": "batch2_rep_037",
+    "admin_store_name": "فناوری نوین مسعود",
+    "admin_phone_number": "+98 991 320 0037",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "premium"
+  },
+  {
+    "admin_username": "batch2_rep_038",
+    "admin_store_name": "تک شاپ ناصر",
+    "admin_phone_number": "+98 991 320 0038",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "standard"
+  },
+  {
+    "admin_username": "batch2_rep_039",
+    "admin_store_name": "موبایل سرویس کسری",
+    "admin_phone_number": "+98 991 320 0039",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "premium"
+  },
+  {
+    "admin_username": "batch2_rep_040",
+    "admin_store_name": "دیجیتال استور اشکان",
+    "admin_phone_number": "+98 991 320 0040",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "standard"
+  },
+  {
+    "admin_username": "batch2_rep_041",
+    "admin_store_name": "فناوری پیشرو صادق",
+    "admin_phone_number": "+98 991 320 0041",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "premium"
+  },
+  {
+    "admin_username": "batch2_rep_042",
+    "admin_store_name": "تک سنتر یاسین",
+    "admin_phone_number": "+98 991 320 0042",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "standard"
+  },
+  {
+    "admin_username": "batch2_rep_043",
+    "admin_store_name": "موبایل استور شایان",
+    "admin_phone_number": "+98 991 320 0043",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "premium"
+  },
+  {
+    "admin_username": "batch2_rep_044",
+    "admin_store_name": "دیجیتال پلاس روزبه",
+    "admin_phone_number": "+98 991 320 0044",
+    "admin_telegram_id": "Marfanet_vpn",
+    "pricing_tier": "standard"
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "admin_username": "collab_001_behnam",
+    "admin_store_name": "همکار ویژه بهنام - تخصص فروش",
+    "admin_phone_number": "+98 991 321 0001",
+    "admin_telegram_id": "Marfanet_vpn",
+    "collaborator_type": "sales_specialist",
+    "commission_rate": 15
+  },
+  {
+    "admin_username": "collab_002_sarah",
+    "admin_store_name": "همکار ویژه سارا - پشتیبانی فنی",
+    "admin_phone_number": "+98 991 321 0002",
+    "admin_telegram_id": "Marfanet_vpn",
+    "collaborator_type": "technical_support",
+    "commission_rate": 12
+  },
+  {
+    "admin_username": "collab_003_reza",
+    "admin_store_name": "همکار ویژه رضا - مدیر منطقه",
+    "admin_phone_number": "+98 991 321 0003",
+    "admin_telegram_id": "Marfanet_vpn",
+    "collaborator_type": "regional_manager",
+    "commission_rate": 20
+  }
+]

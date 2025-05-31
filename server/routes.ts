@@ -3,6 +3,8 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { aegisLogger } from "./aegis-logger";
 import multer from "multer";
+import fs from "fs-extra";
+import path from "path";
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -1520,12 +1522,32 @@ export function registerRoutes(app: Express): Server {
 
   app.post('/api/representatives/recreate-batch-2', async (req, res) => {
     try {
-      console.log('[DB RECONSTRUCTION] Starting Batch 2 recreation...');
+      console.log('[DB RECONSTRUCTION] Starting Batch 2 recreation with JSON file...');
+      
+      // Read the JSON file with actual representative data
+      const batch2FilePath = path.join(process.cwd(), 'batch2-representatives.json');
+      const batch2Data = await fs.readJson(batch2FilePath);
+      
+      console.log(`[DB RECONSTRUCTION] Found ${batch2Data.length} representatives in batch2 file`);
+      
+      // Insert each representative using storage
+      let insertedCount = 0;
+      for (const repData of batch2Data) {
+        try {
+          await storage.createRepresentative(repData);
+          insertedCount++;
+        } catch (insertError) {
+          console.error(`[DB RECONSTRUCTION] Error inserting representative ${repData.admin_username}:`, insertError);
+        }
+      }
+      
+      console.log(`[DB RECONSTRUCTION] Successfully inserted ${insertedCount} representatives from Batch 2`);
       
       res.json({ 
         success: true, 
-        message: 'دسته ۲ آماده بازسازی است',
-        count: 44
+        message: `دسته ۲ با موفقیت بازسازی شد: ${insertedCount} نماینده اضافه شد`,
+        count: insertedCount,
+        totalProcessed: batch2Data.length
       });
     } catch (error) {
       console.error('[DB RECONSTRUCTION] Error recreating Batch 2:', error);
@@ -1538,12 +1560,32 @@ export function registerRoutes(app: Express): Server {
 
   app.post('/api/representatives/recreate-batch-3', async (req, res) => {
     try {
-      console.log('[DB RECONSTRUCTION] Starting Batch 3 recreation...');
+      console.log('[DB RECONSTRUCTION] Starting Batch 3 recreation with collaborators...');
+      
+      // Read the collaborators JSON file
+      const batch3FilePath = path.join(process.cwd(), 'batch3-collaborators.json');
+      const batch3Data = await fs.readJson(batch3FilePath);
+      
+      console.log(`[DB RECONSTRUCTION] Found ${batch3Data.length} collaborators in batch3 file`);
+      
+      // Insert each collaborator using storage
+      let insertedCount = 0;
+      for (const collabData of batch3Data) {
+        try {
+          await storage.createRepresentative(collabData);
+          insertedCount++;
+        } catch (insertError) {
+          console.error(`[DB RECONSTRUCTION] Error inserting collaborator ${collabData.admin_username}:`, insertError);
+        }
+      }
+      
+      console.log(`[DB RECONSTRUCTION] Successfully inserted ${insertedCount} collaborators from Batch 3`);
       
       res.json({ 
         success: true, 
-        message: 'دسته ۳ آماده بازسازی است',
-        count: 103
+        message: `دسته ۳ همکاران با موفقیت بازسازی شد: ${insertedCount} همکار اضافه شد`,
+        count: insertedCount,
+        totalProcessed: batch3Data.length
       });
     } catch (error) {
       console.error('[DB RECONSTRUCTION] Error recreating Batch 3:', error);

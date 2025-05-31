@@ -963,8 +963,21 @@ ${invoices.map((inv, index) =>
       });
 
       try {
-        // Parse JSON file
-        const jsonData = JSON.parse(req.file.buffer.toString('utf8'));
+        // Parse JSON file with size check
+        let jsonData;
+        try {
+          console.log('File size:', req.file.buffer.length, 'bytes');
+          const fileContent = req.file.buffer.toString('utf8');
+          console.log('File content length:', fileContent.length);
+          console.log('File starts with:', fileContent.substring(0, 100));
+          console.log('File ends with:', fileContent.substring(fileContent.length - 100));
+          
+          jsonData = JSON.parse(fileContent);
+        } catch (parseError) {
+          console.error('JSON parse error:', parseError);
+          console.error('Error position:', parseError.message);
+          throw new Error(`خطا در تجزیه فایل JSON: ${parseError.message}`);
+        }
         
         // Debug logging
         console.log('JSON file structure:', JSON.stringify(jsonData, null, 2).substring(0, 500));

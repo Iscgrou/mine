@@ -1197,17 +1197,25 @@ ${invoices.map((inv, index) =>
             const invoice = await storage.createInvoice({
               invoiceNumber,
               representativeId: representative.id,
+              batchId: batchId,
               totalAmount: totalAmount.toString(),
-              status: 'pending',
-              dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-              invoiceData: { items: invoiceItems }
+              invoiceData: {
+                items: invoiceItems,
+                totalAmount,
+                representative: representative.adminUsername
+              }
             });
 
             // Create invoice items
             for (const item of invoiceItems) {
               await storage.createInvoiceItem({
                 invoiceId: invoice.id,
-                ...item
+                description: item.description,
+                quantity: item.quantity,
+                unitPrice: item.unitPrice,
+                totalPrice: item.totalPrice,
+                subscriptionType: item.subscriptionType,
+                durationMonths: item.durationMonths
               });
             }
 

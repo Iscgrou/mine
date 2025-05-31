@@ -82,6 +82,11 @@ const navigationItems = [
     href: "/performance-monitoring",
     icon: "fas fa-tachometer-alt",
   },
+  {
+    name: "مدیریت مانده ادمین‌ها",
+    href: "/balance-management",
+    icon: "fas fa-balance-scale",
+  },
 ];
 
 export default function Sidebar() {

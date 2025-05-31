@@ -2,10 +2,12 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { RefreshCw, Users, UserCheck, Building2, FileText } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { RefreshCw, Users, UserCheck, Building2, FileText, Database, Zap, Activity, CheckCircle, AlertTriangle, XCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface SystemCounts {
   totalRepresentatives: number;
@@ -14,24 +16,43 @@ interface SystemCounts {
   totalInvoices: number;
 }
 
+interface OperationProgress {
+  operation: string;
+  progress: number;
+  status: 'idle' | 'running' | 'success' | 'error';
+  message: string;
+}
+
 interface SyncResponse {
   success: boolean;
   message: string;
   counts?: SystemCounts;
   created?: number;
   collaborators?: any[];
+  operations?: OperationProgress[];
 }
 
 export function SystemDataSync() {
-  const [isInitializing, setIsInitializing] = useState(false);
-  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [operations, setOperations] = useState<OperationProgress[]>([]);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [lastSync, setLastSync] = useState<Date | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Query for current system stats
-  const { data: currentStats, isLoading } = useQuery<SystemCounts>({
-    queryKey: ['/api/system/refresh-counts'],
-    enabled: false
+  // Real-time data queries
+  const { data: representatives } = useQuery({
+    queryKey: ['/api/representatives'],
+    refetchInterval: 5000
+  });
+
+  const { data: collaborators } = useQuery({
+    queryKey: ['/api/collaborators'],
+    refetchInterval: 5000
+  });
+
+  const { data: stats } = useQuery({
+    queryKey: ['/api/stats'],
+    refetchInterval: 5000
   });
 
   const initializeCollaborators = async () => {

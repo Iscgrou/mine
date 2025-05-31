@@ -1,4 +1,4 @@
-import { SystemDataSync } from "@/components/system-data-sync";
+import { SuperSystemManager } from "@/components/super-system-manager";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -99,8 +99,8 @@ export default function SystemAdmin() {
         </Card>
       </div>
 
-      {/* Data Synchronization */}
-      <SystemDataSync />
+      {/* Advanced System Management */}
+      <SuperSystemManager />
 
       {/* System Status */}
       <Card>

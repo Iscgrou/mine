@@ -1151,6 +1151,8 @@ export class DatabaseStorage implements IStorage {
       await db.delete(invoiceItems);
       await db.delete(payments);
       await db.delete(invoices);
+      await db.delete(invoiceBatches);
+      await db.delete(financialLedger);
       await db.delete(crmTasks);
       await db.delete(crmCallPreparations);
       await db.delete(crmInteractions);
@@ -1160,6 +1162,7 @@ export class DatabaseStorage implements IStorage {
       
       // Then delete main records
       await db.delete(representatives);
+      await db.delete(collaborators);
       await db.delete(users);
       
       // Reset settings to defaults

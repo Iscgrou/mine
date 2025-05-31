@@ -377,9 +377,9 @@ export default function Settings() {
                         <i className="fas fa-save ml-2"></i>
                         ذخیره کلید AI
                       </Button>
-                      <Button onClick={handleSaveGrokKey} disabled={saveApiKeyMutation.isPending}>
+                      <Button onClick={handleSaveVertexKey} disabled={saveApiKeyMutation.isPending}>
                         <i className="fas fa-save ml-2"></i>
-                        ذخیره کلید Grok
+                        ذخیره کلید Vertex AI
                       </Button>
                     </div>
                   </div>

@@ -1159,10 +1159,6 @@ export class DatabaseStorage implements IStorage {
       await db.delete(crmCallPreparations);
       await db.delete(crmInteractions);
       await db.delete(crmRepresentativeProfiles);
-      await db.delete(crmUsers);
-      await db.delete(crmKnowledgeBase);
-      await db.delete(crmAiProcessingQueue);
-      await db.delete(crmInteractionTypes);
       
       await db.delete(fileImports);
       await db.delete(backups);

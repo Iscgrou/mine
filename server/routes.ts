@@ -1080,8 +1080,18 @@ ${invoices.map((inv, index) =>
               phoneNumber: null,
               telegramId: null,
               storeName: null,
-              limitedPrice1Month: "150000",
-              unlimitedMonthlyPrice: "250000"
+              limitedPrice1Month: "900",
+              limitedPrice2Month: "900",
+              limitedPrice3Month: "900",
+              limitedPrice4Month: "1400",
+              limitedPrice5Month: "1500",
+              limitedPrice6Month: "1600",
+              unlimitedPrice1Month: "40000",
+              unlimitedPrice2Month: "80000",
+              unlimitedPrice3Month: "120000",
+              unlimitedPrice4Month: "160000",
+              unlimitedPrice5Month: "200000",
+              unlimitedPrice6Month: "240000"
             });
           }
 
@@ -1151,18 +1161,26 @@ ${invoices.map((inv, index) =>
           }
 
           // Calculate unlimited subscription costs (count-based)
-          if (representative.unlimitedMonthlyPrice) {
-            for (let monthIndex = 0; monthIndex < 6; monthIndex++) {
-              const count = unlimitedCounts[monthIndex];
-              if (count > 0) {
-                const months = monthIndex + 1;
-                const unitPrice = parseFloat(representative.unlimitedMonthlyPrice) * months;
-                const price = unitPrice * count;
-                totalAmount += price;
-                invoiceItems.push({
-                  description: `اشتراک ${months} ماهه نامحدود`,
-                  quantity: count.toString(),
-                  unitPrice: unitPrice.toString(),
+          const unlimitedPrices = [
+            representative.unlimitedPrice1Month,
+            representative.unlimitedPrice2Month,
+            representative.unlimitedPrice3Month,
+            representative.unlimitedPrice4Month,
+            representative.unlimitedPrice5Month,
+            representative.unlimitedPrice6Month
+          ];
+          
+          for (let monthIndex = 0; monthIndex < 6; monthIndex++) {
+            const count = unlimitedCounts[monthIndex];
+            const unitPrice = unlimitedPrices[monthIndex];
+            if (count > 0 && unitPrice) {
+              const months = monthIndex + 1;
+              const price = parseFloat(unitPrice) * count;
+              totalAmount += price;
+              invoiceItems.push({
+                description: `اشتراک ${months} ماهه نامحدود`,
+                quantity: count.toString(),
+                unitPrice: unitPrice,
                   totalPrice: price.toString(),
                   subscriptionType: 'unlimited',
                   durationMonths: months
@@ -1298,8 +1316,18 @@ ${invoices.map((inv, index) =>
               phoneNumber: row[2]?.toString() || null,
               telegramId: row[3]?.toString() || null,
               storeName: row[4]?.toString() || null,
-              limitedPrice1Month: row[5] ? row[5].toString() : null,
-              unlimitedMonthlyPrice: row[6] ? row[6].toString() : null
+              limitedPrice1Month: "900",
+              limitedPrice2Month: "900",
+              limitedPrice3Month: "900",
+              limitedPrice4Month: "1400",
+              limitedPrice5Month: "1500",
+              limitedPrice6Month: "1600",
+              unlimitedPrice1Month: "40000",
+              unlimitedPrice2Month: "80000",
+              unlimitedPrice3Month: "120000",
+              unlimitedPrice4Month: "160000",
+              unlimitedPrice5Month: "200000",
+              unlimitedPrice6Month: "240000"
             });
           }
 

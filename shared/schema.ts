@@ -21,14 +21,20 @@ export const representatives = pgTable("representatives", {
   telegramId: text("telegram_id"), // Full URL format: https://t.me/username
   phoneNumber: text("phone_number"),
   storeName: text("store_name"),
-  // Limited subscription pricing for 1-6 months
-  limitedPrice1Month: decimal("limited_price_1_month", { precision: 10, scale: 2 }),
-  limitedPrice2Month: decimal("limited_price_2_month", { precision: 10, scale: 2 }),
-  limitedPrice3Month: decimal("limited_price_3_month", { precision: 10, scale: 2 }),
-  limitedPrice4Month: decimal("limited_price_4_month", { precision: 10, scale: 2 }),
-  limitedPrice5Month: decimal("limited_price_5_month", { precision: 10, scale: 2 }),
-  limitedPrice6Month: decimal("limited_price_6_month", { precision: 10, scale: 2 }),
-  unlimitedMonthlyPrice: decimal("unlimited_monthly_price", { precision: 10, scale: 2 }), // For unlimited monthly
+  // Limited subscription pricing for 1-6 months (per GB in Toman)
+  limitedPrice1Month: decimal("limited_price_1_month", { precision: 10, scale: 2 }).default("900"),
+  limitedPrice2Month: decimal("limited_price_2_month", { precision: 10, scale: 2 }).default("900"),
+  limitedPrice3Month: decimal("limited_price_3_month", { precision: 10, scale: 2 }).default("900"),
+  limitedPrice4Month: decimal("limited_price_4_month", { precision: 10, scale: 2 }).default("1400"),
+  limitedPrice5Month: decimal("limited_price_5_month", { precision: 10, scale: 2 }).default("1500"),
+  limitedPrice6Month: decimal("limited_price_6_month", { precision: 10, scale: 2 }).default("1600"),
+  // Unlimited subscription pricing by month duration (in Toman)
+  unlimitedPrice1Month: decimal("unlimited_price_1_month", { precision: 10, scale: 2 }).default("40000"),
+  unlimitedPrice2Month: decimal("unlimited_price_2_month", { precision: 10, scale: 2 }).default("80000"),
+  unlimitedPrice3Month: decimal("unlimited_price_3_month", { precision: 10, scale: 2 }).default("120000"),
+  unlimitedPrice4Month: decimal("unlimited_price_4_month", { precision: 10, scale: 2 }).default("160000"),
+  unlimitedPrice5Month: decimal("unlimited_price_5_month", { precision: 10, scale: 2 }).default("200000"),
+  unlimitedPrice6Month: decimal("unlimited_price_6_month", { precision: 10, scale: 2 }).default("240000"),
   status: text("status").default("active"), // active, inactive, suspended
   // Collaborator Program Fields
   sourcingType: text("sourcing_type").default("direct"), // 'direct', 'collaborator_introduced'

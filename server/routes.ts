@@ -1036,17 +1036,29 @@ ${invoices.map((inv, index) =>
         for (let i = 0; i < representativeData.length; i++) {
           const adminData = representativeData[i];
           
-          // Validate required fields
-          const requiredFields = [
-            'admin_username',
+          // Validate required fields - only admin_username is truly required
+          if (!adminData.admin_username) {
+            console.log(`Skipping record ${i} - missing admin_username`);
+            recordsSkipped++;
+            continue;
+          }
+
+          // Check for required volume and count fields (they should exist but can be "0" or "0.0000")
+          const volumeFields = [
             'limited_1_month_volume', 'limited_2_month_volume', 'limited_3_month_volume',
-            'limited_4_month_volume', 'limited_5_month_volume', 'limited_6_month_volume',
+            'limited_4_month_volume', 'limited_5_month_volume', 'limited_6_month_volume'
+          ];
+          const countFields = [
             'unlimited_1_month', 'unlimited_2_month', 'unlimited_3_month',
             'unlimited_4_month', 'unlimited_5_month', 'unlimited_6_month'
           ];
 
-          const missingFields = requiredFields.filter(field => !(field in adminData));
-          if (missingFields.length > 0) {
+          const missingVolumeFields = volumeFields.filter(field => !(field in adminData));
+          const missingCountFields = countFields.filter(field => !(field in adminData));
+          
+          if (missingVolumeFields.length > 0 || missingCountFields.length > 0) {
+            console.log(`Skipping record ${i} (${adminData.admin_username}) - missing fields:`, 
+                       [...missingVolumeFields, ...missingCountFields]);
             recordsSkipped++;
             continue;
           }

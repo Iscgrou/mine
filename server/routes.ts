@@ -333,13 +333,19 @@ export function registerRoutes(app: Express): Server {
       
       // Load saved settings
       const allSettings = await storage.getSettings();
-      const templateSettings = allSettings.find(s => s.key === 'invoice_template') || { value: 'modern_clean' };
-      const logoSettings = allSettings.find(s => s.key === 'company_logo') || { value: '' };
-      const noteSettings = allSettings.find(s => s.key === 'invoice_note') || { value: '' };
-      const companySettings = allSettings.find(s => s.key === 'company_name') || { value: 'MarFanet' };
+      const invoiceSettings = allSettings.find(s => s.key === 'invoice_template_settings');
+      
+      let templateConfig = { templateStyle: 'modern_clean' };
+      if (invoiceSettings && invoiceSettings.value) {
+        try {
+          templateConfig = JSON.parse(invoiceSettings.value);
+        } catch (e) {
+          console.error('Error parsing template settings:', e);
+        }
+      }
       
       // Use the requested template or fall back to saved setting
-      const activeTemplate = templateId || templateSettings.value;
+      const activeTemplate = templateId || templateConfig.templateStyle;
       
       // Sample invoice data for preview with settings applied
       const sampleInvoice = {
@@ -373,9 +379,9 @@ export function registerRoutes(app: Express): Server {
         createdAt: new Date(),
         settings: {
           template: activeTemplate,
-          logo: logoSettings.value,
-          note: noteSettings.value,
-          companyName: companySettings.value
+          logo: templateConfig.logoUrl || '',
+          note: templateConfig.invoiceNote || '',
+          companyName: templateConfig.companyName || 'MarFanet'
         }
       };
 

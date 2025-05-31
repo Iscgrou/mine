@@ -1523,76 +1523,48 @@ export function registerRoutes(app: Express): Server {
 
   app.post('/api/representatives/recreate-batch-2', async (req, res) => {
     try {
-      console.log('[DB RECONSTRUCTION] Starting Batch 2 recreation with JSON file...');
+      console.log('[DB RECONSTRUCTION] Starting Batch 2 recreation with Advanced Processor...');
       
-      // Read the JSON file with actual representative data
-      const batch2FilePath = path.join(process.cwd(), 'batch2-representatives-complete.json');
-      const batch2Data = await fs.readJson(batch2FilePath);
+      const result = await BatchProcessor.processBatch2Representatives();
       
-      console.log(`[DB RECONSTRUCTION] Found ${batch2Data.length} representatives in batch2 file`);
-      
-      // Insert each representative using storage
-      let insertedCount = 0;
-      for (const repData of batch2Data) {
-        try {
-          await storage.createRepresentative(repData);
-          insertedCount++;
-        } catch (insertError) {
-          console.error(`[DB RECONSTRUCTION] Error inserting representative ${repData.admin_username}:`, insertError);
-        }
-      }
-      
-      console.log(`[DB RECONSTRUCTION] Successfully inserted ${insertedCount} representatives from Batch 2`);
-      
-      res.json({ 
-        success: true, 
-        message: `دسته ۲ با موفقیت بازسازی شد: ${insertedCount} نماینده اضافه شد`,
-        count: insertedCount,
-        totalProcessed: batch2Data.length
+      res.json({
+        success: result.success,
+        message: result.message,
+        count: result.successfulInserts,
+        totalProcessed: result.totalProcessed,
+        errors: result.errors
       });
+      
     } catch (error) {
-      console.error('[DB RECONSTRUCTION] Error recreating Batch 2:', error);
-      res.status(500).json({ 
-        success: false, 
-        error: 'خطا در بازسازی دسته ۲' 
+      console.error('[DB RECONSTRUCTION] Error in batch2 recreation:', error);
+      res.status(500).json({
+        success: false,
+        message: 'خطا در بازسازی دسته ۲',
+        error: error.message
       });
     }
   });
 
   app.post('/api/representatives/recreate-batch-3', async (req, res) => {
     try {
-      console.log('[DB RECONSTRUCTION] Starting Batch 3 recreation with collaborators...');
+      console.log('[DB RECONSTRUCTION] Starting Batch 3 recreation with Advanced Processor...');
       
-      // Read the collaborators JSON file
-      const batch3FilePath = path.join(process.cwd(), 'batch3-collaborators.json');
-      const batch3Data = await fs.readJson(batch3FilePath);
+      const result = await BatchProcessor.processBatch3Collaborators();
       
-      console.log(`[DB RECONSTRUCTION] Found ${batch3Data.length} collaborators in batch3 file`);
-      
-      // Insert each collaborator using storage
-      let insertedCount = 0;
-      for (const collabData of batch3Data) {
-        try {
-          await storage.createRepresentative(collabData);
-          insertedCount++;
-        } catch (insertError) {
-          console.error(`[DB RECONSTRUCTION] Error inserting collaborator ${collabData.admin_username}:`, insertError);
-        }
-      }
-      
-      console.log(`[DB RECONSTRUCTION] Successfully inserted ${insertedCount} collaborators from Batch 3`);
-      
-      res.json({ 
-        success: true, 
-        message: `دسته ۳ همکاران با موفقیت بازسازی شد: ${insertedCount} همکار اضافه شد`,
-        count: insertedCount,
-        totalProcessed: batch3Data.length
+      res.json({
+        success: result.success,
+        message: result.message,
+        count: result.successfulInserts,
+        totalProcessed: result.totalProcessed,
+        errors: result.errors
       });
+      
     } catch (error) {
-      console.error('[DB RECONSTRUCTION] Error recreating Batch 3:', error);
-      res.status(500).json({ 
-        success: false, 
-        error: 'خطا در بازسازی دسته ۳' 
+      console.error('[DB RECONSTRUCTION] Error in batch3 recreation:', error);
+      res.status(500).json({
+        success: false,
+        message: 'خطا در بازسازی دسته ۳',
+        error: error.message
       });
     }
   });

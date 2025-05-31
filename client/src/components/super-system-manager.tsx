@@ -82,8 +82,8 @@ export function SuperSystemManager() {
 
   const executeCollaboratorCreation = async () => {
     const opId = addOperation({
-      name: "ایجاد همکاران سیستم",
-      description: "ایجاد همکاران: بهنام، سعید قراری، اونر",
+      name: "بررسی و ایجاد همکاران",
+      description: "تأیید وجود همکاران: بهنام، سعید قراری، اونر",
       status: 'running',
       progress: 0
     });
@@ -91,22 +91,28 @@ export function SuperSystemManager() {
     try {
       updateOperation(opId, { progress: 25 });
       
-      const response = await apiRequest('/api/collaborators/initialize', {
-        method: 'POST'
+      // Call the working collaborators initialize endpoint
+      const response = await fetch('/api/collaborators/initialize', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
       });
 
       updateOperation(opId, { progress: 75 });
 
-      if (response.success) {
+      if (response.ok) {
+        const data = await response.json();
+        
         updateOperation(opId, { 
           status: 'success', 
           progress: 100,
-          result: response
+          result: data
         });
         
         toast({
-          title: "همکاران ایجاد شدند",
-          description: `${response.created || 3} همکار با موفقیت ایجاد شد`
+          title: "همکاران تأیید شدند",
+          description: `${data.total || 3} همکار در سیستم موجود است`
         });
 
         // Force refresh all related queries
@@ -115,7 +121,7 @@ export function SuperSystemManager() {
         
         return true;
       } else {
-        throw new Error(response.message || 'خطا در ایجاد همکاران');
+        throw new Error('خطا در تأیید همکاران');
       }
     } catch (error) {
       updateOperation(opId, { 
@@ -125,7 +131,7 @@ export function SuperSystemManager() {
       });
       
       toast({
-        title: "خطا در ایجاد همکاران",
+        title: "خطا در بررسی همکاران",
         description: error instanceof Error ? error.message : 'خطای ناشناخته',
         variant: "destructive"
       });
@@ -145,9 +151,12 @@ export function SuperSystemManager() {
     try {
       updateOperation(opId, { progress: 20 });
 
-      // Step 1: Refresh counts
-      const countsResponse = await apiRequest('/api/system/refresh-counts', {
-        method: 'POST'
+      // Step 1: Refresh counts using working endpoint
+      const countsResponse = await fetch('/api/system/refresh-counts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
       });
 
       updateOperation(opId, { progress: 50 });
@@ -167,11 +176,13 @@ export function SuperSystemManager() {
 
       updateOperation(opId, { progress: 90 });
 
-      if (countsResponse.success) {
+      if (countsResponse.ok) {
+        const data = await countsResponse.json();
+        
         updateOperation(opId, { 
           status: 'success', 
           progress: 100,
-          result: countsResponse.counts
+          result: data.counts
         });
 
         setLastFullSync(new Date());
@@ -183,7 +194,7 @@ export function SuperSystemManager() {
 
         return true;
       } else {
-        throw new Error(countsResponse.message || 'خطا در همگام‌سازی');
+        throw new Error('خطا در همگام‌سازی');
       }
     } catch (error) {
       updateOperation(opId, { 
@@ -204,8 +215,8 @@ export function SuperSystemManager() {
 
   const executeFullSystemReboot = async () => {
     const opId = addOperation({
-      name: "راه‌اندازی مجدد سیستم",
-      description: "پاکسازی کامل حافظه و بازسازی داده‌ها",
+      name: "بازسازی کامل سیستم",
+      description: "اجرای دسته‌های 2 و 3 نمایندگان + تعمیر همکاران",
       status: 'running',
       progress: 0
     });
@@ -213,41 +224,61 @@ export function SuperSystemManager() {
     try {
       updateOperation(opId, { progress: 10 });
 
-      // Create collaborators first
-      const collabSuccess = await executeCollaboratorCreation();
+      // Step 1: Execute missing representative batches
+      console.log('Executing missing representative batches...');
+      
+      updateOperation(opId, { progress: 20 });
+      
+      // Execute Batch 2 (سعید قراری)
+      const batch2Response = await fetch('/api/representatives/bulk-update-batch2', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
       
       updateOperation(opId, { progress: 40 });
-
-      if (!collabSuccess) {
-        throw new Error('خطا در ایجاد همکاران');
-      }
-
-      // Wait a moment for database to settle
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Execute Batch 3 (بهنام)
+      const batch3Response = await fetch('/api/representatives/bulk-update-batch3', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
       
       updateOperation(opId, { progress: 60 });
 
-      // Synchronize all data
+      // Step 2: Verify collaborators
+      const collabSuccess = await executeCollaboratorCreation();
+      
+      updateOperation(opId, { progress: 80 });
+
+      // Step 3: Synchronize all data
       const syncSuccess = await executeDataSynchronization();
       
-      updateOperation(opId, { progress: 90 });
+      updateOperation(opId, { progress: 95 });
 
-      if (!syncSuccess) {
-        throw new Error('خطا در همگام‌سازی');
+      if (batch2Response.ok && batch3Response.ok && collabSuccess && syncSuccess) {
+        const batch2Data = await batch2Response.json();
+        const batch3Data = await batch3Response.json();
+        
+        updateOperation(opId, { 
+          status: 'success', 
+          progress: 100,
+          result: { 
+            message: 'بازسازی کامل انجام شد',
+            batch2: batch2Data.summary?.totalProcessed || 0,
+            batch3: batch3Data.summary?.totalProcessed || 0,
+            totalAdded: (batch2Data.summary?.totalProcessed || 0) + (batch3Data.summary?.totalProcessed || 0)
+          }
+        });
+
+        toast({
+          title: "بازسازی سیستم تکمیل شد",
+          description: `${(batch2Data.summary?.totalProcessed || 0) + (batch3Data.summary?.totalProcessed || 0)} نماینده جدید اضافه شد`
+        });
+
+        return true;
+      } else {
+        throw new Error('خطا در یکی از مراحل بازسازی');
       }
-
-      updateOperation(opId, { 
-        status: 'success', 
-        progress: 100,
-        result: { message: 'سیستم با موفقیت راه‌اندازی شد' }
-      });
-
-      toast({
-        title: "راه‌اندازی مجدد تکمیل شد",
-        description: "سیستم با موفقیت بازسازی شد"
-      });
-
-      return true;
     } catch (error) {
       updateOperation(opId, { 
         status: 'error', 
@@ -256,7 +287,7 @@ export function SuperSystemManager() {
       });
       
       toast({
-        title: "خطا در راه‌اندازی مجدد",
+        title: "خطا در بازسازی سیستم",
         description: error instanceof Error ? error.message : 'خطای ناشناخته',
         variant: "destructive"
       });

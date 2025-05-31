@@ -48,7 +48,7 @@ const navigationItems = [
     icon: "fas fa-analytics",
   },
   {
-    name: "آپلود فایل ODS",
+    name: "واردات داده JSON",
     href: "/import",
     icon: "fas fa-upload",
   },

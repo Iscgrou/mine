@@ -32,7 +32,7 @@ export default function Settings() {
   const [invoiceNotifications, setInvoiceNotifications] = useState(true);
   const [paymentNotifications, setPaymentNotifications] = useState(true);
   const [systemAlerts, setSystemAlerts] = useState(true);
-  const [repUpdates, setRepUpdates] = useState(false);
+  const [repUpdates, setRepUpdates] = useState(true);
 
   const { toast } = useToast();
   const queryClient = useQueryClient();

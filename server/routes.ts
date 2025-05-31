@@ -1025,7 +1025,9 @@ ${invoices.map((inv, index) =>
           }
 
           const adminUsername = adminData.admin_username?.toString().trim();
+          console.log(`Processing record ${i}: admin_username = "${adminUsername}"`);
           if (!adminUsername) {
+            console.log(`Skipping record ${i} - no admin username`);
             recordsSkipped++;
             continue;
           }
@@ -1067,7 +1069,12 @@ ${invoices.map((inv, index) =>
           const hasLimitedActivity = limitedVolumes.some(vol => vol > 0);
           const hasUnlimitedActivity = unlimitedCounts.some(count => count > 0);
 
+          console.log(`Admin ${adminUsername}: hasLimited=${hasLimitedActivity}, hasUnlimited=${hasUnlimitedActivity}`);
+          console.log(`Limited volumes:`, limitedVolumes);
+          console.log(`Unlimited counts:`, unlimitedCounts);
+
           if (!hasLimitedActivity && !hasUnlimitedActivity) {
+            console.log(`Skipping ${adminUsername} - no activity`);
             recordsSkipped++;
             continue;
           }

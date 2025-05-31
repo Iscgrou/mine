@@ -7,7 +7,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { formatPersianNumber, formatPersianDate } from '@/lib/persian-utils';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line, AreaChart, Area, ScatterChart, Scatter } from 'recharts';
-import { TrendingUp, TrendingDown, Users, DollarSign, FileText, Calendar, MapPin, Target, Activity, AlertTriangle, Download, Filter, RefreshCw } from 'lucide-react';
+import { TrendingUp, TrendingDown, Users, DollarSign, FileText, Calendar, MapPin, Target, Activity, AlertTriangle, Download, Filter, RefreshCw, Brain } from 'lucide-react';
+import { AIInsights } from '@/components/ai-insights';
 
 interface AnalyticsData {
   overview: {
@@ -398,12 +399,16 @@ export default function AnalyticsEnhanced() {
 
       {/* Advanced Analytics Tabs */}
       <Tabs defaultValue="trends" className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="trends">روندها</TabsTrigger>
           <TabsTrigger value="services">سرویس‌ها</TabsTrigger>
           <TabsTrigger value="regions">مناطق</TabsTrigger>
           <TabsTrigger value="performance">عملکرد</TabsTrigger>
           <TabsTrigger value="insights">بینش‌ها</TabsTrigger>
+          <TabsTrigger value="ai-analysis" className="flex items-center gap-1">
+            <Brain className="w-4 h-4" />
+            هوش مصنوعی
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="trends" className="space-y-6">
@@ -656,6 +661,10 @@ export default function AnalyticsEnhanced() {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="ai-analysis" className="space-y-6">
+          <AIInsights />
         </TabsContent>
       </Tabs>
     </div>

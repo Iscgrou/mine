@@ -39,11 +39,19 @@ export default function SettingsComplete() {
   });
 
   const settingsMutation = useMutation({
-    mutationFn: (data: { key: string; value: string; description?: string }) =>
-      apiRequest("/api/settings", {
+    mutationFn: async (data: { key: string; value: string; description?: string }) => {
+      const response = await fetch("/api/settings", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(data),
-      }),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to save setting');
+      }
+      return response.json();
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/settings'] });
       toast({ title: "موفق", description: "تنظیمات با موفقیت ذخیره شد" });
@@ -171,9 +179,17 @@ export default function SettingsComplete() {
                 />
               </div>
 
-              <Button onClick={saveCompanySettings} className="w-full">
-                <i className="fas fa-save ml-2"></i>
-                ذخیره تنظیمات شرکت
+              <Button 
+                onClick={saveCompanySettings} 
+                className="w-full"
+                disabled={settingsMutation.isPending}
+              >
+                {settingsMutation.isPending ? (
+                  <i className="fas fa-spinner fa-spin ml-2"></i>
+                ) : (
+                  <i className="fas fa-save ml-2"></i>
+                )}
+                {settingsMutation.isPending ? "در حال ذخیره..." : "ذخیره تنظیمات شرکت"}
               </Button>
             </CardContent>
           </Card>
@@ -211,9 +227,17 @@ export default function SettingsComplete() {
                 />
               </div>
 
-              <Button onClick={saveTelegramSettings} className="w-full">
-                <i className="fas fa-save ml-2"></i>
-                ذخیره تنظیمات تلگرام
+              <Button 
+                onClick={saveTelegramSettings} 
+                className="w-full"
+                disabled={settingsMutation.isPending}
+              >
+                {settingsMutation.isPending ? (
+                  <i className="fas fa-spinner fa-spin ml-2"></i>
+                ) : (
+                  <i className="fas fa-save ml-2"></i>
+                )}
+                {settingsMutation.isPending ? "در حال ذخیره..." : "ذخیره تنظیمات تلگرام"}
               </Button>
             </CardContent>
           </Card>
@@ -306,9 +330,17 @@ export default function SettingsComplete() {
                     </p>
                   </div>
 
-                  <Button onClick={saveNotificationSettings} className="w-full">
-                    <i className="fas fa-save ml-2"></i>
-                    ذخیره تنظیمات اعلان‌ها
+                  <Button 
+                    onClick={saveNotificationSettings} 
+                    className="w-full"
+                    disabled={settingsMutation.isPending}
+                  >
+                    {settingsMutation.isPending ? (
+                      <i className="fas fa-spinner fa-spin ml-2"></i>
+                    ) : (
+                      <i className="fas fa-save ml-2"></i>
+                    )}
+                    {settingsMutation.isPending ? "در حال ذخیره..." : "ذخیره تنظیمات اعلان‌ها"}
                   </Button>
                 </div>
               </div>
@@ -335,12 +367,20 @@ export default function SettingsComplete() {
                       <option value="print">چاپ</option>
                     </select>
                     
-                    <Button variant="outline" size="sm">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => window.print()}
+                    >
                       <i className="fas fa-print ml-2"></i>
                       چاپ
                     </Button>
 
-                    <Button variant="outline" size="sm">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => toast({ title: "PDF", description: "قابلیت دانلود PDF به زودی اضافه خواهد شد" })}
+                    >
                       <i className="fas fa-download ml-2"></i>
                       PDF
                     </Button>
@@ -454,9 +494,17 @@ export default function SettingsComplete() {
                 />
               </div>
 
-              <Button onClick={saveAISettings} className="w-full">
-                <i className="fas fa-save ml-2"></i>
-                ذخیره تنظیمات هوش مصنوعی
+              <Button 
+                onClick={saveAISettings} 
+                className="w-full"
+                disabled={settingsMutation.isPending}
+              >
+                {settingsMutation.isPending ? (
+                  <i className="fas fa-spinner fa-spin ml-2"></i>
+                ) : (
+                  <i className="fas fa-save ml-2"></i>
+                )}
+                {settingsMutation.isPending ? "در حال ذخیره..." : "ذخیره تنظیمات هوش مصنوعی"}
               </Button>
             </CardContent>
           </Card>
@@ -477,7 +525,18 @@ export default function SettingsComplete() {
                 <p className="text-sm text-red-700 mb-4">
                   این عمل تمام اطلاعات سیستم را پاک می‌کند و قابل بازگشت نیست.
                 </p>
-                <Button variant="destructive">
+                <Button 
+                  variant="destructive"
+                  onClick={() => {
+                    if (confirm('آیا از پاک کردن تمام داده‌ها اطمینان دارید؟ این عمل قابل بازگشت نیست!')) {
+                      toast({ 
+                        title: "هشدار", 
+                        description: "این عملکرد در نسخه تولید فعال خواهد شد",
+                        variant: "destructive"
+                      });
+                    }
+                  }}
+                >
                   <i className="fas fa-trash ml-2"></i>
                   پاک کردن تمام داده‌ها
                 </Button>
@@ -488,7 +547,28 @@ export default function SettingsComplete() {
                 <p className="text-sm text-yellow-700 mb-4">
                   پشتیبان کاملی از اطلاعات سیستم ایجاد کنید.
                 </p>
-                <Button variant="outline">
+                <Button 
+                  variant="outline"
+                  onClick={async () => {
+                    try {
+                      const response = await fetch('/api/backup', { method: 'GET' });
+                      if (response.ok) {
+                        const blob = await response.blob();
+                        const url = window.URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = `marfanet-backup-${new Date().toISOString().split('T')[0]}.json`;
+                        link.click();
+                        window.URL.revokeObjectURL(url);
+                        toast({ title: "موفق", description: "پشتیبان با موفقیت ایجاد شد" });
+                      } else {
+                        toast({ title: "خطا", description: "خطا در ایجاد پشتیبان", variant: "destructive" });
+                      }
+                    } catch (error) {
+                      toast({ title: "خطا", description: "خطا در ایجاد پشتیبان", variant: "destructive" });
+                    }
+                  }}
+                >
                   <i className="fas fa-download ml-2"></i>
                   ایجاد پشتیبان
                 </Button>

@@ -26,56 +26,56 @@ export default function SystemAdmin() {
   });
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="container mx-auto p-3 sm:p-6 space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
         <div>
-          <h1 className="text-3xl font-bold">مدیریت سیستم</h1>
-          <p className="text-gray-600 mt-2">
+          <h1 className="text-2xl sm:text-3xl font-bold">مدیریت سیستم</h1>
+          <p className="text-sm sm:text-base text-gray-600 mt-1 sm:mt-2">
             مدیریت داده‌ها، همکاران و تنظیمات سیستم
           </p>
         </div>
-        <Badge variant="secondary" className="text-sm">
-          <Settings className="w-4 h-4 mr-2" />
+        <Badge variant="secondary" className="text-xs sm:text-sm">
+          <Settings className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
           پنل مدیریت
         </Badge>
       </div>
 
       {/* System Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
         <Card>
-          <CardContent className="p-4">
+          <CardContent className="p-3 sm:p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">نمایندگان</p>
-                <p className="text-2xl font-bold">
+                <p className="text-xs sm:text-sm text-gray-600">نمایندگان</p>
+                <p className="text-lg sm:text-2xl font-bold">
                   {repsLoading ? '...' : Array.isArray(representatives) ? representatives.length : 0}
                 </p>
               </div>
-              <Users className="h-8 w-8 text-blue-500" />
+              <Users className="h-6 w-6 sm:h-8 sm:w-8 text-blue-500" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-4">
+          <CardContent className="p-3 sm:p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">همکاران</p>
-                <p className="text-2xl font-bold">
+                <p className="text-xs sm:text-sm text-gray-600">همکاران</p>
+                <p className="text-lg sm:text-2xl font-bold">
                   {collabsLoading ? '...' : Array.isArray(collaborators) ? collaborators.length : 0}
                 </p>
               </div>
-              <Database className="h-8 w-8 text-green-500" />
+              <Database className="h-6 w-6 sm:h-8 sm:w-8 text-green-500" />
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-4">
+          <CardContent className="p-3 sm:p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600">مشتریان</p>
-                <p className="text-2xl font-bold">
+                <p className="text-xs sm:text-sm text-gray-600">مشتریان</p>
+                <p className="text-lg sm:text-2xl font-bold">
                   {isLoading ? '...' : stats?.totalCustomers || 0}
                 </p>
               </div>

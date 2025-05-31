@@ -171,17 +171,17 @@ GEMINI 2.5 PRO - PHASE 3: DEFINITIVE AUTHENTICATION RECONSTRUCTION
 
 CONTEXT: ${this.dossierContent}
 
-CRITICAL MISSION: Complete eradication of secret path access and implementation of flawless username/password authentication.
+CRITICAL MISSION: Complete eradication of legacy access methods and implementation of flawless username/password authentication.
 
 CURRENT AUTHENTICATION ISSUES:
-1. Secret path remnants (/ciwomplefoadm867945) still exist in codebase
+1. Remnants of legacy access methods still exist in the codebase
 2. Username/password system needs refinement (mgr/m867945 for Admin, crm/c867945 for CRM)
 3. Session management inconsistencies
 4. Role-based access control incomplete
 5. 403 errors and authentication failures
 
 REQUIREMENTS FOR SOLUTION:
-1. COMPLETE removal of ALL secret path references
+1. COMPLETE removal of ALL references to legacy access methods
 2. Robust username/password authentication with bcrypt
 3. Secure session management with proper persistence
 4. Clear role separation (Admin vs CRM permissions)

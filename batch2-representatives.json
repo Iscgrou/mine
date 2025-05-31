@@ -1,10 +1,10 @@
 [
   {
-    "admin_username": "batch2_rep_001",
-    "admin_store_name": "فروشگاه موبایل آریا",
-    "admin_phone_number": "+98 991 320 0001",
-    "admin_telegram_id": "Marfanet_vpn",
-    "pricing_tier": "premium"
+    "fullName": "علی رضایی",
+    "adminUsername": "batch2_rep_001", 
+    "storeName": "فروشگاه موبایل آریا",
+    "phoneNumber": "+98 991 320 0001",
+    "telegramId": "Marfanet_vpn"
   },
   {
     "admin_username": "batch2_rep_002",

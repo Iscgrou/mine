@@ -5,6 +5,7 @@ import { aegisLogger } from "./aegis-logger";
 import multer from "multer";
 import fs from "fs-extra";
 import path from "path";
+import { BatchProcessor } from "./batch-processor";
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -1525,7 +1526,7 @@ export function registerRoutes(app: Express): Server {
       console.log('[DB RECONSTRUCTION] Starting Batch 2 recreation with JSON file...');
       
       // Read the JSON file with actual representative data
-      const batch2FilePath = path.join(process.cwd(), 'batch2-representatives.json');
+      const batch2FilePath = path.join(process.cwd(), 'batch2-representatives-complete.json');
       const batch2Data = await fs.readJson(batch2FilePath);
       
       console.log(`[DB RECONSTRUCTION] Found ${batch2Data.length} representatives in batch2 file`);

@@ -35,8 +35,8 @@ export function AdminBalanceSync() {
   };
 
   const getBalanceStatus = (balance: number) => {
-    if (balance > 0) return { label: 'بدهکار', color: 'destructive' };
-    if (balance < 0) return { label: 'طلبکار', color: 'default' };
+    if (balance > 0) return { label: 'طلبکار', color: 'default' };
+    if (balance < 0) return { label: 'بدهکار', color: 'destructive' };
     return { label: 'تسویه', color: 'secondary' };
   };
 

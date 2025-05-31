@@ -81,8 +81,8 @@ export default function AdminBalanceManagement() {
                 <h4 className="font-medium mb-2">محاسبه مانده:</h4>
                 <ul className="text-sm text-muted-foreground space-y-1">
                   <li>• مانده = کل پرداختی - کل بدهی</li>
-                  <li>• مانده مثبت: طلبکار (ادمین بدهکار است)</li>
-                  <li>• مانده منفی: بدهکار (ادمین طلبکار است)</li>
+                  <li>• مانده مثبت: طلبکار (سیستم بدهکار است)</li>
+                  <li>• مانده منفی: بدهکار (ادمین بدهکار است)</li>
                   <li>• مانده صفر: تسویه حساب</li>
                 </ul>
               </div>

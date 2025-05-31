@@ -17,7 +17,7 @@ import Analytics from "@/pages/analytics";
 import ImportJSON from "@/pages/import-json";
 import Payments from "@/pages/payments";
 import Backup from "@/pages/backup";
-import Settings from "@/pages/settings-vertex-final";
+import Settings from "@/pages/settings-complete";
 import CrmDashboard from "@/pages/crm-dashboard";
 import CrmCustomers from "@/pages/crm-customers";
 import CrmTickets from "@/pages/crm-tickets";

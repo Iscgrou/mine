@@ -103,6 +103,7 @@ function Router() {
             <Route path="/admin/bulk-representative-update" component={BulkRepresentativeUpdate} />
             <Route path="/admin/bulk-update-batches" component={BulkRepresentativeUpdateBatch3} />
             <Route path="/admin/system-admin" component={SystemAdmin} />
+            <Route path="/admin/system" component={SystemAdmin} />
             <Route path="/admin/database-reconstruction" component={DatabaseReconstruction} />
             
             {/* Default admin routes for backward compatibility */}
@@ -117,6 +118,7 @@ function Router() {
             <Route path="/backup" component={Backup} />
             <Route path="/settings" component={Settings} />
             <Route path="/system-admin" component={SystemAdmin} />
+            <Route path="/system" component={SystemAdmin} />
             <Route path="/secure/api-upload" component={SecureAPIUpload} />
             <Route path="/secure/credentials" component={SecureCredentialUpload} />
             

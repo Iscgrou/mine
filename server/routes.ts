@@ -464,5 +464,127 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  // AI Analysis endpoint using Vertex AI
+  app.post("/api/ai/analyze", async (req, res) => {
+    try {
+      const { invoices, representatives, stats, query } = req.body;
+      
+      if (!query) {
+        return res.status(400).json({ 
+          error: "Query is required for AI analysis" 
+        });
+      }
+
+      // Check if Google AI Studio API key is available
+      const apiKey = process.env.GOOGLE_AI_STUDIO_API_KEY;
+      if (!apiKey) {
+        return res.status(503).json({
+          error: "AI analysis service not configured. Please contact administrator to set up API credentials."
+        });
+      }
+
+      // Prepare business context for AI analysis
+      const businessContext = {
+        totalInvoices: invoices?.length || 0,
+        totalRepresentatives: representatives?.length || 0,
+        pendingInvoices: invoices?.filter(inv => inv.status === 'pending')?.length || 0,
+        paidInvoices: invoices?.filter(inv => inv.status === 'paid')?.length || 0,
+        overdueInvoices: invoices?.filter(inv => inv.status === 'overdue')?.length || 0,
+        totalRevenue: invoices?.reduce((sum, inv) => sum + parseFloat(inv.totalAmount || '0'), 0) || 0,
+        averageInvoiceValue: invoices?.length > 0 ? 
+          (invoices.reduce((sum, inv) => sum + parseFloat(inv.totalAmount || '0'), 0) / invoices.length) : 0,
+        activeReps: stats?.activeReps || 0,
+        monthlyInvoices: stats?.monthlyInvoices || 0
+      };
+
+      const analysisPrompt = `
+        شما یک تحلیلگر هوشمند کسب‌وکار هستید که به زبان فارسی پاسخ می‌دهید.
+        
+        اطلاعات کسب‌وکار:
+        - تعداد کل فاکتورها: ${businessContext.totalInvoices}
+        - تعداد نمایندگان: ${businessContext.totalRepresentatives}
+        - فاکتورهای در انتظار: ${businessContext.pendingInvoices}
+        - فاکتورهای پرداخت شده: ${businessContext.paidInvoices}
+        - فاکتورهای معوق: ${businessContext.overdueInvoices}
+        - کل درآمد: ${businessContext.totalRevenue} تومان
+        - میانگین ارزش فاکتور: ${businessContext.averageInvoiceValue} تومان
+        
+        سوال کاربر: ${query}
+        
+        لطفاً یک تحلیل جامع ارائه دهید که شامل:
+        1. خلاصه‌ای از وضعیت فعلی
+        2. 2-3 بینش کلیدی
+        3. پیشنهادات عملی
+        
+        پاسخ را به صورت JSON با ساختار زیر ارائه دهید:
+        {
+          "summary": "خلاصه تحلیل",
+          "insights": [
+            {
+              "type": "trend|recommendation|alert|success",
+              "title": "عنوان بینش",
+              "description": "توضیح تفصیلی",
+              "priority": "high|medium|low",
+              "category": "دسته‌بندی"
+            }
+          ],
+          "confidence": 0.8
+        }
+      `;
+
+      try {
+        // Use Google AI Studio API for analysis
+        const { GoogleGenerativeAI } = await import('@google/generative-ai');
+        const genAI = new GoogleGenerativeAI(apiKey);
+        const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
+
+        const result = await model.generateContent(analysisPrompt);
+        const response = await result.response;
+        const text = response.text();
+        
+        // Try to parse JSON response
+        let analysisResult;
+        try {
+          // Extract JSON from response if it's wrapped in markdown
+          const jsonMatch = text.match(/```json\n([\s\S]*?)\n```/) || text.match(/\{[\s\S]*\}/);
+          const jsonText = jsonMatch ? (jsonMatch[1] || jsonMatch[0]) : text;
+          analysisResult = JSON.parse(jsonText);
+        } catch (parseError) {
+          // Fallback if JSON parsing fails
+          analysisResult = {
+            summary: text,
+            insights: [
+              {
+                type: "recommendation",
+                title: "تحلیل هوش مصنوعی",
+                description: text,
+                priority: "medium",
+                category: "کلی"
+              }
+            ],
+            confidence: 0.7
+          };
+        }
+
+        res.json(analysisResult);
+        
+        // Log AI analysis request
+        aegisLogger.info('AI_ANALYSIS', `AI analysis performed for query: ${query.substring(0, 50)}...`);
+        
+      } catch (aiError) {
+        console.error('AI API Error:', aiError);
+        res.status(503).json({
+          error: "AI analysis service temporarily unavailable. Please try again later."
+        });
+      }
+
+    } catch (error) {
+      console.error('AI analysis error:', error);
+      res.status(500).json({ 
+        error: "خطا در تحلیل هوش مصنوعی" 
+      });
+    }
+  });
+
   return server;
 }

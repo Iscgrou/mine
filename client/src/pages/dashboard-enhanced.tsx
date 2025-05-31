@@ -112,32 +112,34 @@ export default function DashboardEnhanced() {
     return weeklyData;
   }, [allInvoices]);
 
-  // Process payment status data from invoices
+  // Process payment status data from actual invoices
   const paymentStatusData = React.useMemo(() => {
     if (!allInvoices || allInvoices.length === 0) return [];
     
+    // Count actual invoice statuses from real data
     const statusCounts = allInvoices.reduce((acc, invoice) => {
-      acc[invoice.status] = (acc[invoice.status] || 0) + 1;
+      const status = invoice.status || 'pending'; // Default to pending if no status
+      acc[status] = (acc[status] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
     
-    // If we have real data, use it; otherwise create meaningful distribution from pending invoices
-    const totalInvoices = allInvoices.length;
-    if (totalInvoices > 0) {
-      // Simulate realistic distribution based on total invoices
-      const pendingCount = statusCounts.pending || 0;
-      const paidEstimate = Math.floor(pendingCount * 0.65); // 65% typically paid
-      const overdueEstimate = Math.floor(pendingCount * 0.15); // 15% overdue
-      const remainingPending = pendingCount - (paidEstimate + overdueEstimate);
-      
-      return [
-        { name: 'پرداخت شده', value: statusCounts.paid || paidEstimate, color: '#10b981' },
-        { name: 'در انتظار', value: statusCounts.pending && remainingPending > 0 ? remainingPending : statusCounts.pending || 0, color: '#f59e0b' },
-        { name: 'معوق', value: statusCounts.overdue || overdueEstimate, color: '#ef4444' }
-      ].filter(item => item.value > 0);
+    // Create chart data from actual counts
+    const chartData = [];
+    
+    if (statusCounts.paid > 0) {
+      chartData.push({ name: 'پرداخت شده', value: statusCounts.paid, color: '#10b981' });
+    }
+    if (statusCounts.pending > 0) {
+      chartData.push({ name: 'در انتظار', value: statusCounts.pending, color: '#f59e0b' });
+    }
+    if (statusCounts.overdue > 0) {
+      chartData.push({ name: 'معوق', value: statusCounts.overdue, color: '#ef4444' });
+    }
+    if (statusCounts.cancelled > 0) {
+      chartData.push({ name: 'لغو شده', value: statusCounts.cancelled, color: '#6b7280' });
     }
     
-    return [];
+    return chartData;
   }, [allInvoices]);
 
   if (statsLoading) {

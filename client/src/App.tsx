@@ -36,6 +36,7 @@ import SecureAPIUpload from "@/pages/secure-api-upload";
 import SecureCredentialUpload from "@/pages/secure-credential-upload";
 import AdminBalanceManagement from "@/pages/admin-balance-management";
 import BulkRepresentativeUpdate from "@/pages/bulk-representative-update";
+import BulkRepresentativeUpdateBatch3 from "@/pages/bulk-representative-update-batch3";
 
 function Router() {
   const currentPath = window.location.pathname;
@@ -102,6 +103,7 @@ function Router() {
             <Route path="/admin/performance-monitoring" component={PerformanceMonitoring} />
             <Route path="/admin/balance-management" component={AdminBalanceManagement} />
         <Route path="/admin/bulk-representative-update" component={BulkRepresentativeUpdate} />
+        <Route path="/admin/bulk-update-batches" component={BulkRepresentativeUpdateBatch3} />
             <Route path="/secure/api-upload" component={SecureAPIUpload} />
             <Route path="/secure/credentials" component={SecureCredentialUpload} />
             

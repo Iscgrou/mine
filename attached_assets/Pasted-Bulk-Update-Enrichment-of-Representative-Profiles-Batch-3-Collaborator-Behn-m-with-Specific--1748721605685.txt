@@ -1,0 +1,200 @@
+Bulk Update & Enrichment of Representative Profiles (Batch 3 - Collaborator "Behnām") with Specific Pricing & Commission Structure
+
+Chronos, we have a third batch of Representative profiles requiring updates. These representatives are all introduced by the Collaborator "بهنام" (Behnām) and will have a specific default commission structure and a new pricing tier applied.
+
+I. The Target Data Structure for Each Representative (Note NEW default pricing & commission):
+
+The target JSON format for each representative's profile will be as follows:
+
+{
+  "admin_username": "STRING_UNIQUE_KEY",
+  "commision_type": "COLLABORATOR_NAME_REFERENCE", // Will be "بهنام" for this batch
+  "commision_limited_subscription_percent": "25%", // NEW Default for this batch
+  "commision_unlimited_subscription_percent": "25%", // NEW Default for this batch
+  "admin_store_name": "STRING_OPTIONAL",
+  "admin_telegram_id": "STRING_PROVIDED_IN_DATA", // Ensure https://t.me/ prefix logic is applied
+  "admin_phone_number": "STRING_OPTIONAL",
+  "limited_1_month_price_per_1GB": "1200", // NEW Default pricing
+  "limited_2_month_price_per_1GB": "1200", // NEW Default pricing
+  "limited_3_month_price_per_1GB": "1200", // NEW Default pricing
+  "limited_4_month_price_per_1GB": "1500", // NEW Default pricing
+  "limited_5_month_price_per_1GB": "1700", // NEW Default pricing
+  "limited_6_month_price_per_1GB": "2000", // NEW Default pricing
+  "unlimited_1_month": "40000",  // Default pricing (same as template)
+  "unlimited_2_month": "80000",  // Default pricing (same as template)
+  "unlimited_3_month": "120000", // Default pricing (same as template)
+  "unlimited_4_month": "160000", // Default pricing (same as template)
+  "unlimited_5_month": "200000", // Default pricing (same as template)
+  "unlimited_6_month": "240000"  // Default pricing (same as template)
+}
+
+II. Explanation of Key Fields & Implementation Logic:
+
+    admin_username: Primary unique identifier for matching and updating existing representatives. If not found, log as an error (this batch is for updates).
+    commision_type (همکار فروش / نوع معرف):
+        For ALL representatives in this batch, this field MUST be set to reference the Collaborator named "بهنام" (Behnām).
+        Prerequisite: The Collaborator "بهنام" MUST already exist in the "Manage Collaborators" section. If "بهنام" does not exist, ALL updates for this batch will fail or need to be held. Please verify this prerequisite first. If "بهنام" is missing, halt this update process and report back immediately.
+    commision_limited_subscription_percent & commision_unlimited_subscription_percent:
+        For ALL representatives in this batch, set BOTH these fields to "25%" as per the JSON template. This is the default commission for Representatives introduced by "بهنام" from this batch.
+    admin_store_name: Populate from the admin_store_name column in the provided data. If "——" or an empty value, treat as null or empty string.
+    admin_telegram_id: Populate from the admin_telegram_id column. Ensure the logic to prepend https://t.me/ (if only the username is provided) is applied consistently.
+    admin_phone_number: Populate from the provided data list.
+    Pricing Fields (NEW DEFAULT PRICES for limited, standard for unlimited):
+        All representatives in this batch should have their pricing structure updated to reflect the NEW default pricing for limited subscriptions (e.g., limited_1_month_price_per_1GB: "1200") and the standard unlimited prices as specified in the JSON template in Section I.
+
+III. Data for Representative Profile Updates (Batch 3 - Collaborator "Behnām"):
+
+Chronos, please use the following data for this update. All are linked to Collaborator "بهنام".
+admin_username	admin_store_name	commision_type	admin_phone_number	admin_telegram_id
+adakmb	آداک	بهنام	+98 991 319 2150	Marfanet_vpn
+aladesf	علاالدین	بهنام	+98 991 319 2151	Marfanet_vpn
+almasmsb	الماس موبایل	بهنام	+98 991 319 2152	Marfanet_vpn
+amikamsb	آمیکا	بهنام	+98 991 319 2153	Marfanet_vpn
+amitsesf	آمیتیس موبایل	بهنام	+98 991 319 2154	Marfanet_vpn
+amrzvesf	امیر رضوانی	بهنام	+98 991 319 2155	Marfanet_vpn
+ansresf	انصاری موبایل	بهنام	+98 991 319 2156	Marfanet_vpn
+aphmeesf	——	بهنام	+98 991 319 2157	Marfanet_vpn
+aramesf	آرام موبایل	بهنام	+98 991 319 2158	Marfanet_vpn
+aryaesf	آریا موبایل	بهنام	+98 991 319 2159	Marfanet_vpn
+atimesf	آتیماه موبایل	بهنام	+98 991 319 2160	Marfanet_vpn
+avatkmsb	آواتک	بهنام	+98 991 319 2161	Marfanet_vpn
+baranmsb	باران اصفهان	بهنام	+98 991 319 2162	Marfanet_vpn
+bdhesf	بدیهی	بهنام	+98 991 319 2163	Marfanet_vpn
+bgiesf	بیگی اصفهان	بهنام	+98 991 319 2164	Marfanet_vpn
+bhrzesf	بهروز موبایل	بهنام	+98 991 319 2165	Marfanet_vpn
+bkrnesf	بکرانی	بهنام	+98 991 319 2166	Marfanet_vpn
+bnfshmsb	بفش موبایل	بهنام	+98 991 319 2167	Marfanet_vpn
+brndesf	برند شاپ	بهنام	+98 991 319 2168	Marfanet_vpn
+brtesf	برتر موبایل	بهنام	+98 991 319 2169	Marfanet_vpn
+carbiesf	کاربیست	بهنام	+98 991 319 2170	Marfanet_vpn
+dgtesf	دیجی تل جزینی	بهنام	+98 991 319 2171	Marfanet_vpn
+dprsesf	دی پارسه	بهنام	+98 991 319 2172	Marfanet_vpn
+drmbesf	دکتر موبایل	بهنام	+98 991 319 2173	Marfanet_vpn
+dryesf	داریوش موبایل	بهنام	+98 991 319 2174	Marfanet_vpn
+dtaesf	دیتا	بهنام	+98 991 319 2175	Marfanet_vpn
+ehsanmsb	احسان موبایل	بهنام	+98 991 319 2176	Marfanet_vpn
+emthesf	امتحانی	بهنام	+98 991 319 2177	Marfanet_vpn
+erfnesf	عرفان موبایل	بهنام	+98 991 319 2178	Marfanet_vpn
+eshesf	اصفهان همراه	بهنام	+98 991 319 2179	Marfanet_vpn
+espdesf	اسپادانا	بهنام	+98 991 319 2180	Marfanet_vpn
+fanousesf	فانوس موبایل	بهنام	+98 991 319 2181	Marfanet_vpn
+fardadesf	فرداد +98 990 809 4995	بهنام	+98 991 319 2182	Marfanet_vpn
+farddesf	فرداد	بهنام	+98 991 319 2183	Marfanet_vpn
+frbdesf	فربود	بهنام	+98 991 319 2184	Marfanet_vpn
+frmzesf	فرامرز	بهنام	+98 991 319 2185	Marfanet_vpn
+ghmtesf	غنیمت	بهنام	+98 991 319 2186	Marfanet_vpn
+haminesf	حمید موبایل	بهنام	+98 991 319 2187	Marfanet_vpn
+hmdsesf	حمید شکری	بهنام	+98 991 319 2188	Marfanet_vpn
+hsnpuresf	حسین پور	بهنام	+98 991 319 2189	Marfanet_vpn
+idalesf	ایده آل	بهنام	+98 991 319 2190	Marfanet_vpn
+ifncesf	آیفون سیتی	بهنام	+98 991 319 2191	Marfanet_vpn
+ilandesf	آیلند	بهنام	+98 991 319 2192	Marfanet_vpn
+imnhmesf	ایمان همراه	بهنام	+98 991 319 2193	Marfanet_vpn
+irsaesf	ایرسا	بهنام	+98 991 319 2194	Marfanet_vpn
+itlesf	ایتالیا	بهنام	+98 991 319 2195	Marfanet_vpn
+jntsesf	رسا (جابه‌جا شده با جفت شیش)	بهنام	+98 991 319 2196	Marfanet_vpn
+khsresf	خسروی	بهنام	+98 991 319 2197	Marfanet_vpn
+khymesf	خیام	بهنام	+98 991 319 2198	Marfanet_vpn
+kianesf	کیان	بهنام	+98 991 319 2199	Marfanet_vpn
+korshesf	کوروش	بهنام	+98 991 319 2200	Marfanet_vpn
+mahaesf	مها	بهنام	+98 991 319 2201	Marfanet_vpn
+mahuresf	ماهور	بهنام	+98 991 319 2202	Marfanet_vpn
+mbentesf	انتخاب	بهنام	+98 991 319 2203	Marfanet_vpn
+mbhmesf	موبایل باران (علی)	بهنام	+98 991 319 2204	Marfanet_vpn
+mbicmesf	موبیکام	بهنام	+98 991 319 2205	Marfanet_vpn
+misclesf	میس کال	بهنام	+98 991 319 2206	Marfanet_vpn
+mjidesf	مجید	بهنام	+98 991 319 2207	Marfanet_vpn
+mntzresf	منتظری	بهنام	+98 991 319 2208	Marfanet_vpn
+mrjnbesf	مستر جانبی	بهنام	+98 991 319 2209	Marfanet_vpn
+mtinesf	متین	بهنام	+98 991 319 2210	Marfanet_vpn
+mzbgf941	[Store name from username if needed]	بهنام	+98 991 319 2211	Marfanet_vpn
+mzbmil945	[Store name from username if needed]	بهنام	+98 991 319 2212	Marfanet_vpn
+mzbnim946	[Store name from username if needed]	بهنام	+98 991 319 2213	Marfanet_vpn
+mzbsf940	[Store name from username if needed]	بهنام	+98 991 319 2214	Marfanet_vpn
+mzbsff943	[Store name from username if needed]	بهنام	+98 991 319 2215	Marfanet_vpn
+mzbsfu942	[Store name from username if needed]	بهنام	+98 991 319 2216	Marfanet_vpn
+mzbssf944	[Store name from username if needed]	بهنام	+98 991 319 2217	Marfanet_vpn
+neginesf	نگین	بهنام	+98 991 319 2218	Marfanet_vpn
+nourbesf	نورباران	بهنام	+98 991 319 2219	Marfanet_vpn
+ordbesf	اردیبهشت	بهنام	+98 991 319 2220	Marfanet_vpn
+owndesf	آوند	بهنام	+98 991 319 2221	Marfanet_vpn
+ownsesf	اونس	بهنام	+98 991 319 2222	Marfanet_vpn
+phmiesf	پارسا هاشمی	بهنام	+98 991 319 2223	Marfanet_vpn
+pmhdesf	پارسا حدادی	بهنام	+98 991 319 2224	Marfanet_vpn
+prnesf	پارسیان	بهنام	+98 991 319 2225	Marfanet_vpn
+prsemsb	پارسه	بهنام	+98 991 319 2226	Marfanet_vpn
+prsnhesf	پارسیان همراه	بهنام	+98 991 319 2227	Marfanet_vpn
+pryaesf	پوریا	بهنام	+98 991 319 2228	Marfanet_vpn
+pshiesf	پارسا شفیعی	بهنام	+98 991 319 2229	Marfanet_vpn
+pstdesf	پرساتل دهقانی	بهنام	+98 991 319 2230	Marfanet_vpn
+rdnesf	رادین	بهنام	+98 991 319 2231	Marfanet_vpn
+retesf	رئیسی تقوی	بهنام	+98 991 319 2232	Marfanet_vpn
+rezaiesf	رضایی	بهنام	+98 991 319 2233	Marfanet_vpn
+rsaesf	رسا	بهنام	+98 991 319 2234	Marfanet_vpn
+rslesf	راسل	بهنام	+98 991 319 2235	Marfanet_vpn
+rylesf	رویال	بهنام	+98 991 319 2236	Marfanet_vpn
+saedmaesf	سعید ملک محمدی	بهنام	+98 991 319 2237	Marfanet_vpn
+salesf	سال	بهنام	+98 991 319 2238	Marfanet_vpn
+sbaesf	صبا	بهنام	+98 991 319 2239	Marfanet_vpn
+scit2200	[Store name from username if needed]	بهنام	+98 991 319 2240	Marfanet_vpn
+scwom2201	[Store name from username if needed]	بهنام	+98 991 319 2241	Marfanet_vpn
+sdfesf	صدف	بهنام	+98 991 319 2242	Marfanet_vpn
+sfrykesf	صفر یک	بهنام	+98 991 319 2243	Marfanet_vpn
+shahresf	شهر موبایل	بهنام	+98 991 319 2244	Marfanet_vpn
+shlesf	سهیل	بهنام	+98 991 319 2245	Marfanet_vpn
+siblndesf	سیب لند	بهنام	+98 991 319 2246	Marfanet_vpn
+sltesf	سلاطین	بهنام	+98 991 319 2247	Marfanet_vpn
+sobhnesf	سبحان	بهنام	+98 991 319 2248	Marfanet_vpn
+soleiesf	سلیمانی	بهنام	+98 991 319 2249	Marfanet_vpn
+stresf	ساترا	بهنام	+98 991 319 2250	Marfanet_vpn
+svbesf	سون بیت	بهنام	+98 991 319 2251	Marfanet_vpn
+tapshesf	تپش	بهنام	+98 991 319 2252	Marfanet_vpn
+tknesf	تکنو	بهنام	+98 991 319 2253	Marfanet_vpn
+tkoesf	تیکو	بهنام	+98 991 319 2254	Marfanet_vpn
+tkslmni	تیک سلیمانی	بهنام	+98 991 319 2255	Marfanet_vpn
+tokesf	توکا	بهنام	+98 991 319 2256	Marfanet_vpn
+trnmesf	ترنم	بهنام	+98 991 319 2257	Marfanet_vpn
+wxot2204	[Store name from username if needed]	بهنام	+98 991 319 2258	Marfanet_vpn
+xmomb	[Store name from username if needed, 'موبایل ایکس' was used before]	بهنام	+98 991 319 2259	Marfanet_vpn
+khnmb	کیهان	بهنام	+98 991 319 2260	Marfanet_vpn
+grnmb	گرین	بهنام	+98 991 319 2261	Marfanet_vpn
+glrmb	گلوری	بهنام	+98 991 319 2262	Marfanet_vpn
+lfsmb	لایف استور	بهنام	+98 991 319 2263	Marfanet_vpn
+limb	لیمو	بهنام	+98 991 319 2264	Marfanet_vpn
+mtkmb	مای تک	بهنام	+98 991 319 2265	Marfanet_vpn
+mhmrmb	محمد رضایی	بهنام	+98 991 319 2266	Marfanet_vpn
+mhbmb	محمد بخشایی	بهنام	+98 991 319 2267	Marfanet_vpn
+maplmb	مستر اپل	بهنام	+98 991 319 2268	Marfanet_vpn
+mhbdmb	محمد بدیعی	بهنام	+98 991 319 2269	Marfanet_vpn
+mbjmb	موبوجوان	بهنام	+98 991 319 2270	Marfanet_vpn
+mhjmb	مهاجر	بهنام	+98 991 319 2271	Marfanet_vpn
+mhtmb	مهارت همراه	بهنام	+98 991 319 2272	Marfanet_vpn
+mhrdmb	مهرداد	بهنام	+98 991 319 2273	Marfanet_vpn
+htfmb	هاتف	بهنام	+98 991 319 2274	Marfanet_vpn
+hftmb	هفت	بهنام	+98 991 319 2275	Marfanet_vpn
+hmrdmb	همراد	بهنام	+98 991 319 2276	Marfanet_vpn
+hnamb	هونا	بهنام	+98 991 319 2277	Marfanet_vpn
+ykmb	یک	بهنام	+98 991 319 2278	Marfanet_vpn
+
+Self-Correction/Assumption Note for Chronos during parsing: For admin_store_name fields that are —— or appear as part of the username (e.g., mzbgf941), if a more descriptive store name isn't available, use the admin_username itself as a placeholder or leave it as null/empty if your system handles that gracefully. The key is to process the record. For "fardadesf" with the extra phone number, prioritize the admin_phone_number column.
+
+IV. Your Task (Chronos):
+
+    Verify Collaborator "بهنام" (Behnām) Existence:
+        CRITICAL FIRST STEP: Confirm that a Collaborator profile for "بهنام" exists in the "Manage Collaborators" section of the Admin Panel.
+        If "بهنام" does NOT exist, HALT this update process and report back immediately. These records cannot be correctly processed without the introducing Collaborator being defined.
+    Parse the Data: Process the provided list of representatives.
+    Update Representative Profiles:
+        For each representative, use their admin_username to find and update their existing profile with:
+            Set commision_type to reference the existing Collaborator "بهنام".
+            Set commision_limited_subscription_percent to "25%".
+            Set commision_unlimited_subscription_percent to "25%".
+            Update admin_store_name, admin_telegram_id, and admin_phone_number from the provided data.
+            Apply the NEW default pricing structure as specified in the JSON template in Section I (e.g., limited_1_month_price_per_1GB: "1200").
+        If any admin_username from this list is not found in your database, log it as an error and report it (as this batch is primarily for updates).
+    Confirmation & Logging:
+        Provide a summary of actions (e.g., "Updated X representatives, all linked to Collaborator 'بهنام' with 25% commission rates and new pricing structure applied.").
+        List any errors encountered (e.g., admin_username not found).
+        Confirm that the NEW default pricing structure has been applied to all successfully processed representatives.
+
+This bulk update will correctly associate these Representatives with their Collaborator "بهنام," apply their default commission rates, and update their pricing tier. Please ensure the prerequisite check for Collaborator "بهنام" is performed before processing the data.

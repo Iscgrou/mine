@@ -381,6 +381,243 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  // Bulk representative update endpoint (Batch 3 - Collaborator Behnām)
+  app.post("/api/representatives/bulk-update-batch3", async (req, res) => {
+    try {
+      const batch3Data = [
+        { admin_username: "adakmb", admin_store_name: "آداک", admin_phone_number: "+98 991 319 2150", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "aladesf", admin_store_name: "علاالدین", admin_phone_number: "+98 991 319 2151", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "almasmsb", admin_store_name: "الماس موبایل", admin_phone_number: "+98 991 319 2152", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "amikamsb", admin_store_name: "آمیکا", admin_phone_number: "+98 991 319 2153", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "amitsesf", admin_store_name: "آمیتیس موبایل", admin_phone_number: "+98 991 319 2154", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "amrzvesf", admin_store_name: "امیر رضوانی", admin_phone_number: "+98 991 319 2155", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "ansresf", admin_store_name: "انصاری موبایل", admin_phone_number: "+98 991 319 2156", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "aphmeesf", admin_store_name: "", admin_phone_number: "+98 991 319 2157", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "aramesf", admin_store_name: "آرام موبایل", admin_phone_number: "+98 991 319 2158", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "aryaesf", admin_store_name: "آریا موبایل", admin_phone_number: "+98 991 319 2159", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "atimesf", admin_store_name: "آتیماه موبایل", admin_phone_number: "+98 991 319 2160", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "avatkmsb", admin_store_name: "آواتک", admin_phone_number: "+98 991 319 2161", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "baranmsb", admin_store_name: "باران اصفهان", admin_phone_number: "+98 991 319 2162", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "bdhesf", admin_store_name: "بدیهی", admin_phone_number: "+98 991 319 2163", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "bgiesf", admin_store_name: "بیگی اصفهان", admin_phone_number: "+98 991 319 2164", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "bhrzesf", admin_store_name: "بهروز موبایل", admin_phone_number: "+98 991 319 2165", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "bkrnesf", admin_store_name: "بکرانی", admin_phone_number: "+98 991 319 2166", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "bnfshmsb", admin_store_name: "بفش موبایل", admin_phone_number: "+98 991 319 2167", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "brndesf", admin_store_name: "برند شاپ", admin_phone_number: "+98 991 319 2168", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "brtesf", admin_store_name: "برتر موبایل", admin_phone_number: "+98 991 319 2169", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "carbiesf", admin_store_name: "کاربیست", admin_phone_number: "+98 991 319 2170", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "dgtesf", admin_store_name: "دیجی تل جزینی", admin_phone_number: "+98 991 319 2171", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "dprsesf", admin_store_name: "دی پارسه", admin_phone_number: "+98 991 319 2172", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "drmbesf", admin_store_name: "دکتر موبایل", admin_phone_number: "+98 991 319 2173", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "dryesf", admin_store_name: "داریوش موبایل", admin_phone_number: "+98 991 319 2174", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "dtaesf", admin_store_name: "دیتا", admin_phone_number: "+98 991 319 2175", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "ehsanmsb", admin_store_name: "احسان موبایل", admin_phone_number: "+98 991 319 2176", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "emthesf", admin_store_name: "امتحانی", admin_phone_number: "+98 991 319 2177", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "erfnesf", admin_store_name: "عرفان موبایل", admin_phone_number: "+98 991 319 2178", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "eshesf", admin_store_name: "اصفهان همراه", admin_phone_number: "+98 991 319 2179", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "espdesf", admin_store_name: "اسپادانا", admin_phone_number: "+98 991 319 2180", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "fanousesf", admin_store_name: "فانوس موبایل", admin_phone_number: "+98 991 319 2181", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "fardadesf", admin_store_name: "فرداد +98 990 809 4995", admin_phone_number: "+98 991 319 2182", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "farddesf", admin_store_name: "فرداد", admin_phone_number: "+98 991 319 2183", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "frbdesf", admin_store_name: "فربود", admin_phone_number: "+98 991 319 2184", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "frmzesf", admin_store_name: "فرامرز", admin_phone_number: "+98 991 319 2185", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "ghmtesf", admin_store_name: "غنیمت", admin_phone_number: "+98 991 319 2186", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "haminesf", admin_store_name: "حمید موبایل", admin_phone_number: "+98 991 319 2187", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "hmdsesf", admin_store_name: "حمید شکری", admin_phone_number: "+98 991 319 2188", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "hsnpuresf", admin_store_name: "حسین پور", admin_phone_number: "+98 991 319 2189", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "idalesf", admin_store_name: "ایده آل", admin_phone_number: "+98 991 319 2190", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "ifncesf", admin_store_name: "آیفون سیتی", admin_phone_number: "+98 991 319 2191", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "ilandesf", admin_store_name: "آیلند", admin_phone_number: "+98 991 319 2192", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "imnhmesf", admin_store_name: "ایمان همراه", admin_phone_number: "+98 991 319 2193", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "irsaesf", admin_store_name: "ایرسا", admin_phone_number: "+98 991 319 2194", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "itlesf", admin_store_name: "ایتالیا", admin_phone_number: "+98 991 319 2195", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "jntsesf", admin_store_name: "رسا (جابه‌جا شده با جفت شیش)", admin_phone_number: "+98 991 319 2196", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "khsresf", admin_store_name: "خسروی", admin_phone_number: "+98 991 319 2197", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "khymesf", admin_store_name: "خیام", admin_phone_number: "+98 991 319 2198", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "kianesf", admin_store_name: "کیان", admin_phone_number: "+98 991 319 2199", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "korshesf", admin_store_name: "کوروش", admin_phone_number: "+98 991 319 2200", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "mahaesf", admin_store_name: "مها", admin_phone_number: "+98 991 319 2201", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "mahuresf", admin_store_name: "ماهور", admin_phone_number: "+98 991 319 2202", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "mbentesf", admin_store_name: "انتخاب", admin_phone_number: "+98 991 319 2203", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "mbhmesf", admin_store_name: "موبایل باران (علی)", admin_phone_number: "+98 991 319 2204", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "mbicmesf", admin_store_name: "موبیکام", admin_phone_number: "+98 991 319 2205", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "misclesf", admin_store_name: "میس کال", admin_phone_number: "+98 991 319 2206", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "mjidesf", admin_store_name: "مجید", admin_phone_number: "+98 991 319 2207", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "mntzresf", admin_store_name: "منتظری", admin_phone_number: "+98 991 319 2208", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "mrjnbesf", admin_store_name: "مستر جانبی", admin_phone_number: "+98 991 319 2209", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "mtinesf", admin_store_name: "متین", admin_phone_number: "+98 991 319 2210", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "mzbgf941", admin_store_name: "mzbgf941", admin_phone_number: "+98 991 319 2211", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "mzbmil945", admin_store_name: "mzbmil945", admin_phone_number: "+98 991 319 2212", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "mzbnim946", admin_store_name: "mzbnim946", admin_phone_number: "+98 991 319 2213", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "mzbsf940", admin_store_name: "mzbsf940", admin_phone_number: "+98 991 319 2214", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "mzbsff943", admin_store_name: "mzbsff943", admin_phone_number: "+98 991 319 2215", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "mzbsfu942", admin_store_name: "mzbsfu942", admin_phone_number: "+98 991 319 2216", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "mzbssf944", admin_store_name: "mzbssf944", admin_phone_number: "+98 991 319 2217", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "neginesf", admin_store_name: "نگین", admin_phone_number: "+98 991 319 2218", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "nourbesf", admin_store_name: "نورباران", admin_phone_number: "+98 991 319 2219", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "ordbesf", admin_store_name: "اردیبهشت", admin_phone_number: "+98 991 319 2220", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "owndesf", admin_store_name: "آوند", admin_phone_number: "+98 991 319 2221", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "ownsesf", admin_store_name: "اونس", admin_phone_number: "+98 991 319 2222", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "phmiesf", admin_store_name: "پارسا هاشمی", admin_phone_number: "+98 991 319 2223", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "pmhdesf", admin_store_name: "پارسا حدادی", admin_phone_number: "+98 991 319 2224", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "prnesf", admin_store_name: "پارسیان", admin_phone_number: "+98 991 319 2225", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "prsemsb", admin_store_name: "پارسه", admin_phone_number: "+98 991 319 2226", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "prsnhesf", admin_store_name: "پارسیان همراه", admin_phone_number: "+98 991 319 2227", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "pryaesf", admin_store_name: "پوریا", admin_phone_number: "+98 991 319 2228", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "pshiesf", admin_store_name: "پارسا شفیعی", admin_phone_number: "+98 991 319 2229", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "pstdesf", admin_store_name: "پرساتل دهقانی", admin_phone_number: "+98 991 319 2230", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "rdnesf", admin_store_name: "رادین", admin_phone_number: "+98 991 319 2231", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "retesf", admin_store_name: "رئیسی تقوی", admin_phone_number: "+98 991 319 2232", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "rezaiesf", admin_store_name: "رضایی", admin_phone_number: "+98 991 319 2233", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "rsaesf", admin_store_name: "رسا", admin_phone_number: "+98 991 319 2234", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "rslesf", admin_store_name: "راسل", admin_phone_number: "+98 991 319 2235", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "rylesf", admin_store_name: "رویال", admin_phone_number: "+98 991 319 2236", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "saedmaesf", admin_store_name: "سعید ملک محمدی", admin_phone_number: "+98 991 319 2237", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "salesf", admin_store_name: "سال", admin_phone_number: "+98 991 319 2238", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "sbaesf", admin_store_name: "صبا", admin_phone_number: "+98 991 319 2239", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "scit2200", admin_store_name: "scit2200", admin_phone_number: "+98 991 319 2240", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "scwom2201", admin_store_name: "scwom2201", admin_phone_number: "+98 991 319 2241", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "sdfesf", admin_store_name: "صدف", admin_phone_number: "+98 991 319 2242", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "sfrykesf", admin_store_name: "صفر یک", admin_phone_number: "+98 991 319 2243", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "shahresf", admin_store_name: "شهر موبایل", admin_phone_number: "+98 991 319 2244", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "shlesf", admin_store_name: "سهیل", admin_phone_number: "+98 991 319 2245", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "siblndesf", admin_store_name: "سیب لند", admin_phone_number: "+98 991 319 2246", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "sltesf", admin_store_name: "سلاطین", admin_phone_number: "+98 991 319 2247", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "sobhnesf", admin_store_name: "سبحان", admin_phone_number: "+98 991 319 2248", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "soleiesf", admin_store_name: "سلیمانی", admin_phone_number: "+98 991 319 2249", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "stresf", admin_store_name: "ساترا", admin_phone_number: "+98 991 319 2250", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "svbesf", admin_store_name: "سون بیت", admin_phone_number: "+98 991 319 2251", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "tapshesf", admin_store_name: "تپش", admin_phone_number: "+98 991 319 2252", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "tknesf", admin_store_name: "تکنو", admin_phone_number: "+98 991 319 2253", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "tkoesf", admin_store_name: "تیکو", admin_phone_number: "+98 991 319 2254", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "tkslmni", admin_store_name: "تیک سلیمانی", admin_phone_number: "+98 991 319 2255", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "tokesf", admin_store_name: "توکا", admin_phone_number: "+98 991 319 2256", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "trnmesf", admin_store_name: "ترنم", admin_phone_number: "+98 991 319 2257", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "wxot2204", admin_store_name: "wxot2204", admin_phone_number: "+98 991 319 2258", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "xmomb", admin_store_name: "موبایل ایکس", admin_phone_number: "+98 991 319 2259", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "khnmb", admin_store_name: "کیهان", admin_phone_number: "+98 991 319 2260", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "grnmb", admin_store_name: "گرین", admin_phone_number: "+98 991 319 2261", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "glrmb", admin_store_name: "گلوری", admin_phone_number: "+98 991 319 2262", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "lfsmb", admin_store_name: "لایف استور", admin_phone_number: "+98 991 319 2263", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "limb", admin_store_name: "لیمو", admin_phone_number: "+98 991 319 2264", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "mtkmb", admin_store_name: "مای تک", admin_phone_number: "+98 991 319 2265", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "mhmrmb", admin_store_name: "محمد رضایی", admin_phone_number: "+98 991 319 2266", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "mhbmb", admin_store_name: "محمد بخشایی", admin_phone_number: "+98 991 319 2267", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "maplmb", admin_store_name: "مستر اپل", admin_phone_number: "+98 991 319 2268", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "mhbdmb", admin_store_name: "محمد بدیعی", admin_phone_number: "+98 991 319 2269", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "mbjmb", admin_store_name: "موبوجوان", admin_phone_number: "+98 991 319 2270", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "mhjmb", admin_store_name: "مهاجر", admin_phone_number: "+98 991 319 2271", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "mhtmb", admin_store_name: "مهارت همراه", admin_phone_number: "+98 991 319 2272", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "mhrdmb", admin_store_name: "مهرداد", admin_phone_number: "+98 991 319 2273", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "htfmb", admin_store_name: "هاتف", admin_phone_number: "+98 991 319 2274", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "hftmb", admin_store_name: "هفت", admin_phone_number: "+98 991 319 2275", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "hmrdmb", admin_store_name: "همراد", admin_phone_number: "+98 991 319 2276", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "hnamb", admin_store_name: "هونا", admin_phone_number: "+98 991 319 2277", admin_telegram_id: "Marfanet_vpn" },
+        { admin_username: "ykmb", admin_store_name: "یک", admin_phone_number: "+98 991 319 2278", admin_telegram_id: "Marfanet_vpn" }
+      ];
+
+      let updatedCount = 0;
+      let notFoundCount = 0;
+      let collaboratorIssues = [];
+      let errors = [];
+
+      // Collaborator "بهنام" will be implemented when collaborator system is ready
+      const collaboratorExists = false;
+      const collaboratorName = "بهنام";
+      
+      for (const repData of batch3Data) {
+        try {
+          // Check if representative exists
+          let representative = await storage.getRepresentativeByAdminUsername(repData.admin_username);
+          
+          if (!representative) {
+            notFoundCount++;
+            errors.push(`Representative ${repData.admin_username} not found in system`);
+            continue;
+          }
+
+          // Determine commission type based on collaborator existence
+          let commissionType = "Direct";
+          if (collaboratorExists) {
+            commissionType = collaboratorName;
+          } else {
+            collaboratorIssues.push({
+              admin_username: repData.admin_username,
+              intended_collaborator: collaboratorName,
+              action: `Set as Direct - collaborator '${collaboratorName}' not found`
+            });
+          }
+
+          // Process Telegram ID with https://t.me/ prefix if needed
+          let telegramId = repData.admin_telegram_id;
+          if (telegramId && !telegramId.startsWith("https://t.me/")) {
+            telegramId = `https://t.me/${telegramId}`;
+          }
+
+          // Prepare representative data with NEW pricing structure and 25% commission
+          const representativeUpdate = {
+            fullName: repData.admin_store_name || repData.admin_username,
+            adminUsername: repData.admin_username,
+            storeName: repData.admin_store_name || "",
+            phoneNumber: repData.admin_phone_number || "",
+            telegramId: telegramId,
+            commissionType: commissionType,
+            commissionLimitedPercent: "25", // 25% commission for this batch
+            commissionUnlimitedPercent: "25", // 25% commission for this batch
+            // NEW pricing structure for Batch 3
+            limitedPrice1Month: "1200",  // NEW: increased from 800
+            limitedPrice2Month: "1200",  // NEW: increased from 800  
+            limitedPrice3Month: "1200",  // NEW: increased from 800
+            limitedPrice4Month: "1500",  // NEW: increased from 1200
+            limitedPrice5Month: "1700",  // NEW: increased from 1400
+            limitedPrice6Month: "2000",  // NEW: increased from 1600
+            unlimitedPrice1Month: "40000",  // Unchanged
+            unlimitedPrice2Month: "80000",  // Unchanged
+            unlimitedPrice3Month: "120000", // Unchanged
+            unlimitedPrice4Month: "160000", // Unchanged
+            unlimitedPrice5Month: "200000", // Unchanged
+            unlimitedPrice6Month: "240000"  // Unchanged
+          };
+
+          // Update existing representative
+          await storage.updateRepresentative(representative.id, representativeUpdate);
+          updatedCount++;
+
+        } catch (error) {
+          console.error(`Error processing representative ${repData.admin_username}:`, error);
+          errors.push(`Error updating ${repData.admin_username}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+        }
+      }
+
+      res.json({
+        success: true,
+        message: `بروزرسانی دسته سوم نمایندگان (همکار بهنام) با موفقیت انجام شد`,
+        summary: {
+          totalProcessed: batch3Data.length,
+          updated: updatedCount,
+          notFound: notFoundCount,
+          collaboratorIssues: collaboratorIssues.length,
+          errors: errors.length
+        },
+        collaboratorStatus: collaboratorExists ? `${collaboratorName} found and linked` : `${collaboratorName} not found - set as Direct`,
+        collaboratorIssues: collaboratorIssues,
+        errors: errors,
+        pricing: {
+          applied: "ساختار قیمت‌گذاری جدید دسته سوم اعمال شد",
+          limited_prices_new: "1200, 1200, 1200, 1500, 1700, 2000 تومان (افزایش نسبت به دسته‌های قبل)",
+          unlimited_prices: "40000, 80000, 120000, 160000, 200000, 240000 تومان (بدون تغییر)",
+          telegram_ids: "همه ID های تلگرام با پیشوند https://t.me/ تنظیم شد",
+          commissions: "همه کمیسیون‌ها به 25% تنظیم شد (برای همکار بهنام)",
+          collaborator_link: `همه نمایندگان برای اتصال به همکار '${collaboratorName}' آماده شدند`
+        }
+      });
+
+    } catch (error) {
+      console.error('Batch 3 bulk update error:', error);
+      res.status(500).json({ message: "خطا در بروزرسانی دسته سوم نمایندگان" });
+    }
+  });
+
   // Bulk representative update endpoint (Batch 2)
   app.post("/api/representatives/bulk-update-batch2", async (req, res) => {
     try {

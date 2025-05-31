@@ -979,12 +979,26 @@ ${invoices.map((inv, index) =>
         
         if (Array.isArray(jsonData)) {
           // Check if it's a PHPMyAdmin export format
-          const tableObject = jsonData.find(item => item.type === 'table' && item.data);
+          const tableObject = jsonData.find(item => 
+            item && 
+            typeof item === 'object' && 
+            item.type === 'table' && 
+            item.data &&
+            Array.isArray(item.data)
+          );
           
-          if (tableObject && Array.isArray(tableObject.data)) {
+          if (tableObject) {
             console.log('Found PHPMyAdmin table structure with', tableObject.data.length, 'records');
+            console.log('Table name:', tableObject.name);
             representativeData = tableObject.data;
           } else {
+            // Check if any object has type=table for debugging
+            const tableObjects = jsonData.filter(item => item && item.type === 'table');
+            console.log('Table objects found:', tableObjects.length);
+            if (tableObjects.length > 0) {
+              console.log('Table objects:', tableObjects);
+            }
+            
             // Assume it's a simple array of representatives
             console.log('Using simple array structure with', jsonData.length, 'records');
             representativeData = jsonData;

@@ -966,21 +966,33 @@ ${invoices.map((inv, index) =>
         // Parse JSON file
         const jsonData = JSON.parse(req.file.buffer.toString('utf8'));
 
-        // Validate JSON structure
-        if (!Array.isArray(jsonData)) {
-          throw new Error('فایل JSON باید آرایه‌ای از اشیاء باشد');
+        // Handle nested PHPMyAdmin export structure
+        let representativeData;
+        
+        if (Array.isArray(jsonData)) {
+          // Check if it's a PHPMyAdmin export format
+          const tableObject = jsonData.find(item => item.type === 'table' && item.data);
+          
+          if (tableObject && Array.isArray(tableObject.data)) {
+            representativeData = tableObject.data;
+          } else {
+            // Assume it's a simple array of representatives
+            representativeData = jsonData;
+          }
+        } else {
+          throw new Error('فایل JSON باید آرایه معتبر باشد');
         }
 
-        if (jsonData.length === 0) {
-          throw new Error('فایل JSON نمی‌تواند خالی باشد');
+        if (!representativeData || representativeData.length === 0) {
+          throw new Error('داده‌های نماینده در فایل JSON یافت نشد');
         }
 
         let recordsProcessed = 0;
         let recordsSkipped = 0;
         const invoicesCreated = [];
 
-        for (let i = 0; i < jsonData.length; i++) {
-          const adminData = jsonData[i];
+        for (let i = 0; i < representativeData.length; i++) {
+          const adminData = representativeData[i];
           
           // Validate required fields
           const requiredFields = [

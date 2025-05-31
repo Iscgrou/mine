@@ -333,6 +333,33 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  app.post("/api/secure/vertex-credentials", async (req, res) => {
+    try {
+      const { vertexAIApiKey, googleCloudProjectId, serviceAccountJson } = req.body;
+      
+      if (!vertexAIApiKey) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Vertex AI API key is required" 
+        });
+      }
+
+      const { secureAPI } = await import('./secure-api-vault.js');
+      await secureAPI.saveVertexAICredentials(vertexAIApiKey, googleCloudProjectId, serviceAccountJson);
+      
+      res.json({ 
+        success: true, 
+        message: "Vertex AI credentials secured successfully" 
+      });
+    } catch (error) {
+      console.error('Secure credentials save error:', error);
+      res.status(500).json({ 
+        success: false, 
+        message: "Failed to secure credentials" 
+      });
+    }
+  });
+
   app.get("/api/api-keys/status", async (req, res) => {
     res.json({
       telegram: false,

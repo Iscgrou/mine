@@ -51,6 +51,15 @@ const SESSION_CONFIG = {
 };
 
 export function setupUnifiedAuth(app: Express) {
+  // Apply security middleware
+  app.use(helmet({
+    contentSecurityPolicy: false, // Disable for development
+    crossOriginEmbedderPolicy: false
+  }));
+
+  // Apply general API rate limiting
+  app.use('/api', apiRateLimiter);
+
   // Configure session middleware
   app.use(session(SESSION_CONFIG));
 
@@ -151,8 +160,8 @@ export function setupUnifiedAuth(app: Express) {
     `);
   });
 
-  // Login POST route
-  app.post('/login', async (req: Request, res: Response) => {
+  // Login POST route with rate limiting
+  app.post('/login', loginRateLimiter, async (req: Request, res: Response) => {
     try {
       const { username, password } = req.body;
       const clientIP = req.ip || req.connection.remoteAddress || 'unknown';

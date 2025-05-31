@@ -25,6 +25,77 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  // Initialize system collaborators
+  app.post("/api/collaborators/initialize", async (req, res) => {
+    try {
+      const systemCollaborators = [
+        {
+          collaboratorName: "بهنام",
+          uniqueCollaboratorId: "behnam_001",
+          phoneNumber: "+98 991 000 0000",
+          telegramId: "https://t.me/behnam_marfanet",
+          email: "behnam@marfanet.ir",
+          status: "active"
+        },
+        {
+          collaboratorName: "سعید قراری",
+          uniqueCollaboratorId: "saeed_001", 
+          phoneNumber: "+98 991 000 0001",
+          telegramId: "https://t.me/saeed_gharari",
+          email: "saeed@marfanet.ir",
+          status: "active"
+        }
+      ];
+
+      const created = [];
+      for (const collabData of systemCollaborators) {
+        try {
+          const collaborator = await storage.createCollaborator(collabData);
+          created.push(collaborator);
+        } catch (error) {
+          console.log(`Collaborator ${collabData.collaboratorName} may already exist`);
+        }
+      }
+      
+      res.json({
+        success: true,
+        message: "همکاران سیستم ایجاد شدند",
+        created: created.length,
+        collaborators: created
+      });
+    } catch (error) {
+      console.error('Error initializing collaborators:', error);
+      res.status(500).json({ message: "خطا در ایجاد همکاران" });
+    }
+  });
+
+  // Refresh data counts
+  app.post("/api/system/refresh-counts", async (req, res) => {
+    try {
+      const representatives = await storage.getRepresentatives();
+      const collaborators = await storage.getCollaborators();
+      const invoices = await storage.getInvoices();
+      
+      const actualCount = representatives.length;
+      const activeCount = representatives.filter(rep => rep.isActive).length;
+      const collabCount = collaborators.length;
+      
+      res.json({
+        success: true,
+        message: "شمارش داده‌ها بروزرسانی شد",
+        counts: {
+          totalRepresentatives: actualCount,
+          activeRepresentatives: activeCount,
+          totalCollaborators: collabCount,
+          totalInvoices: invoices.length
+        }
+      });
+    } catch (error) {
+      console.error('Error refreshing counts:', error);
+      res.status(500).json({ message: "خطا در بروزرسانی شمارش‌ها" });
+    }
+  });
+
   // Representatives endpoints
   app.get("/api/representatives", async (req, res) => {
     try {

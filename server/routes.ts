@@ -299,7 +299,22 @@ export function registerRoutes(app: Express): Server {
 
   // Settings endpoints
   app.get("/api/settings", async (req, res) => {
-    res.json([]);
+    try {
+      const settings = await storage.getSettings();
+      res.json(settings);
+    } catch (error) {
+      res.status(500).json({ message: "خطا در دریافت تنظیمات" });
+    }
+  });
+
+  app.post("/api/settings", async (req, res) => {
+    try {
+      const settingData = req.body;
+      await storage.setSetting(settingData);
+      res.json({ success: true, message: "تنظیمات با موفقیت ذخیره شد" });
+    } catch (error) {
+      res.status(500).json({ message: "خطا در ذخیره تنظیمات" });
+    }
   });
 
   app.get("/api/api-keys/status", async (req, res) => {
@@ -316,7 +331,17 @@ export function registerRoutes(app: Express): Server {
     try {
       const { templateId } = req.params;
       
-      // Sample invoice data for preview
+      // Load saved settings
+      const allSettings = await storage.getSettings();
+      const templateSettings = allSettings.find(s => s.key === 'invoice_template') || { value: 'modern_clean' };
+      const logoSettings = allSettings.find(s => s.key === 'company_logo') || { value: '' };
+      const noteSettings = allSettings.find(s => s.key === 'invoice_note') || { value: '' };
+      const companySettings = allSettings.find(s => s.key === 'company_name') || { value: 'MarFanet' };
+      
+      // Use the requested template or fall back to saved setting
+      const activeTemplate = templateId || templateSettings.value;
+      
+      // Sample invoice data for preview with settings applied
       const sampleInvoice = {
         invoiceNumber: "INV-2025-123456",
         representative: {
@@ -345,12 +370,18 @@ export function registerRoutes(app: Express): Server {
         ],
         totalAmount: "445000",
         dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-        createdAt: new Date()
+        createdAt: new Date(),
+        settings: {
+          template: activeTemplate,
+          logo: logoSettings.value,
+          note: noteSettings.value,
+          companyName: companySettings.value
+        }
       };
 
       let previewHtml = "";
       
-      switch (templateId) {
+      switch (activeTemplate) {
         case "modern_clean":
           previewHtml = generateModernCleanTemplate(sampleInvoice);
           break;
@@ -409,7 +440,8 @@ function generateModernCleanTemplate(invoice: any): string {
     <body>
       <div class="invoice-container">
         <div class="header">
-          <h1>MarFanet</h1>
+          ${invoice.settings.logo ? `<img src="${invoice.settings.logo}" alt="لوگو" style="height: 60px; margin-bottom: 15px;">` : ''}
+          <h1>${invoice.settings.companyName}</h1>
           <p>سیستم مدیریت نمایندگان V2Ray</p>
         </div>
         <div class="content">
@@ -474,7 +506,8 @@ function generateModernCleanTemplate(invoice: any): string {
           </div>
         </div>
         <div class="footer">
-          <p>این فاکتور به صورت خودکار تولید شده است - MarFanet CRM System</p>
+          <p>این فاکتور به صورت خودکار تولید شده است - ${invoice.settings.companyName} CRM System</p>
+          ${invoice.settings.note ? `<p style="margin-top: 10px; font-style: italic; color: #6b7280;">${invoice.settings.note}</p>` : ''}
         </div>
       </div>
     </body>
@@ -517,7 +550,8 @@ function generateClassicFormalTemplate(invoice: any): string {
     <body>
       <div class="invoice-container">
         <div class="header">
-          <h1>MarFanet</h1>
+          ${invoice.settings.logo ? `<img src="${invoice.settings.logo}" alt="لوگو" style="height: 50px; margin-bottom: 10px;">` : ''}
+          <h1>${invoice.settings.companyName}</h1>
           <p>سیستم مدیریت نمایندگان V2Ray - فاکتور رسمی</p>
         </div>
         <div class="content">
@@ -588,7 +622,8 @@ function generateClassicFormalTemplate(invoice: any): string {
           </div>
         </div>
         <div class="footer">
-          <p>فاکتور الکترونیکی MarFanet - تاریخ تولید: ${new Date().toLocaleString('fa-IR')}</p>
+          <p>فاکتور الکترونیکی ${invoice.settings.companyName} - تاریخ تولید: ${new Date().toLocaleString('fa-IR')}</p>
+          ${invoice.settings.note ? `<p style="margin-top: 8px; font-style: italic; color: #6b7280; font-size: 11px;">${invoice.settings.note}</p>` : ''}
         </div>
       </div>
     </body>
@@ -636,7 +671,8 @@ function generatePersianOptimizedTemplate(invoice: any): string {
     <body>
       <div class="invoice-container">
         <div class="header">
-          <h1>مارفانت</h1>
+          ${invoice.settings.logo ? `<img src="${invoice.settings.logo}" alt="لوگو" style="height: 70px; margin-bottom: 15px; position: relative; z-index: 2;">` : ''}
+          <h1>${invoice.settings.companyName}</h1>
           <p>سیستم هوشمند مدیریت نمایندگان شبکه خصوصی مجازی</p>
         </div>
         <div class="content">
@@ -706,8 +742,9 @@ function generatePersianOptimizedTemplate(invoice: any): string {
           <div class="decorative-line"></div>
         </div>
         <div class="footer">
-          <p>این صورتحساب به صورت خودکار از سیستم مارفانت تولید گردیده است</p>
+          <p>این صورتحساب به صورت خودکار از سیستم ${invoice.settings.companyName} تولید گردیده است</p>
           <p>تاریخ و زمان تولید: ${new Date().toLocaleString('fa-IR')}</p>
+          ${invoice.settings.note ? `<p style="margin-top: 12px; font-weight: 600; color: #047857; border-top: 1px dotted #a7f3d0; padding-top: 12px;">${invoice.settings.note}</p>` : ''}
         </div>
       </div>
     </body>

@@ -381,6 +381,122 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  // Bulk representative update endpoint (Batch 2)
+  app.post("/api/representatives/bulk-update-batch2", async (req, res) => {
+    try {
+      const batch2Data = [
+        { admin_username: "abolfzlmb", admin_store_name2: "ابولفضل موبایل", commision_type: "سعید قراری", admin_phone_number: "+98 911 833 8898" },
+        { admin_username: "alpha", admin_store_name2: "آلفا", commision_type: "سعید قراری", admin_phone_number: "+98 911 833 8898" },
+        { admin_username: "daryamb", admin_store_name2: "دریا موبایل", commision_type: "سعید قراری", admin_phone_number: "+98 911 833 8898" },
+        { admin_username: "drmbmb", admin_store_name2: "دکتر موبایل", commision_type: "سعید قراری", admin_phone_number: "+98 911 833 8898" },
+        { admin_username: "ghoqmb", admin_store_name2: "ققنوس", commision_type: "سعید قراری", admin_phone_number: "+98 911 833 8898" },
+        { admin_username: "hesamb", admin_store_name2: "حسام موبایل", commision_type: "سعید قراری", admin_phone_number: "+98 911 833 8898" },
+        { admin_username: "javadmb", admin_store_name2: "جواد موبایل", commision_type: "سعید قراری", admin_phone_number: "+98 911 833 8898" },
+        { admin_username: "mohamadrzmb", admin_store_name2: "محمد رضا", commision_type: "سعید قراری", admin_phone_number: "+98 911 833 8898" },
+        { admin_username: "ninamc", admin_store_name2: "سینا", commision_type: "سعید قراری", admin_phone_number: "+98 911 833 8898" },
+        { admin_username: "orgmb", admin_store_name2: "اورژانس", commision_type: "سعید قراری", admin_phone_number: "+98 911 833 8898" },
+        { admin_username: "pulsmb", admin_store_name2: "پلاس موبایل", commision_type: "سعید قراری", admin_phone_number: "+98 911 833 8898" },
+        { admin_username: "reisimb", admin_store_name2: "رئیسی", commision_type: "سعید قراری", admin_phone_number: "+98 911 833 8898" },
+        { admin_username: "rezanmb", admin_store_name2: "رضا", commision_type: "سعید قراری", admin_phone_number: "+98 911 833 8898" },
+        { admin_username: "sinamb", admin_store_name2: "سینا", commision_type: "سعید قراری", admin_phone_number: "+98 911 833 8898" },
+        { admin_username: "vahidmb", admin_store_name2: "وحید", commision_type: "سعید قراری", admin_phone_number: "+98 911 833 8898" },
+        { admin_username: "mahdmb", admin_store_name2: "مهدی", commision_type: "سعید قراری", admin_phone_number: "+98 911 833 8898" }
+      ];
+
+      let updatedCount = 0;
+      let notFoundCount = 0;
+      let collaboratorIssues = [];
+      let errors = [];
+
+      // Check if collaborator "سعید قراری" exists
+      const collaboratorExists = await storage.getCollaboratorByName("سعید قراری");
+      
+      for (const repData of batch2Data) {
+        try {
+          // Check if representative exists
+          let representative = await storage.getRepresentativeByAdminUsername(repData.admin_username);
+          
+          if (!representative) {
+            notFoundCount++;
+            errors.push(`Representative ${repData.admin_username} not found in system`);
+            continue;
+          }
+
+          // Determine commission type based on collaborator existence
+          let commissionType = "Direct";
+          if (collaboratorExists) {
+            commissionType = "سعید قراری";
+          } else {
+            collaboratorIssues.push({
+              admin_username: repData.admin_username,
+              intended_collaborator: repData.commision_type,
+              action: "Set as Direct - collaborator 'سعید قراری' not found"
+            });
+          }
+
+          // Prepare representative data with NEW pricing structure
+          const representativeUpdate = {
+            fullName: repData.admin_store_name2 || repData.admin_username,
+            adminUsername: repData.admin_username,
+            storeName: repData.admin_store_name2 || "",
+            phoneNumber: repData.admin_phone_number || "",
+            telegramId: null, // Set to null as specified
+            commissionType: commissionType,
+            commissionLimitedPercent: "0", // To be set by admin later
+            commissionUnlimitedPercent: "0", // To be set by admin later
+            // NEW default pricing structure
+            limitedPrice1Month: "800",  // NEW: reduced from 900
+            limitedPrice2Month: "800",  // NEW: reduced from 900  
+            limitedPrice3Month: "800",  // NEW: reduced from 900
+            limitedPrice4Month: "1200", // Unchanged
+            limitedPrice5Month: "1400", // Unchanged
+            limitedPrice6Month: "1600", // Unchanged
+            unlimitedPrice1Month: "40000",  // Unchanged
+            unlimitedPrice2Month: "80000",  // Unchanged
+            unlimitedPrice3Month: "120000", // Unchanged
+            unlimitedPrice4Month: "160000", // Unchanged
+            unlimitedPrice5Month: "200000", // Unchanged
+            unlimitedPrice6Month: "240000"  // Unchanged
+          };
+
+          // Update existing representative
+          await storage.updateRepresentative(representative.id, representativeUpdate);
+          updatedCount++;
+
+        } catch (error) {
+          console.error(`Error processing representative ${repData.admin_username}:`, error);
+          errors.push(`Error updating ${repData.admin_username}: ${error.message}`);
+        }
+      }
+
+      res.json({
+        success: true,
+        message: `بروزرسانی دسته دوم نمایندگان با موفقیت انجام شد`,
+        summary: {
+          totalProcessed: batch2Data.length,
+          updated: updatedCount,
+          notFound: notFoundCount,
+          collaboratorIssues: collaboratorIssues.length,
+          errors: errors.length
+        },
+        collaboratorStatus: collaboratorExists ? "سعید قراری found and linked" : "سعید قراری not found - set as Direct",
+        collaboratorIssues: collaboratorIssues,
+        errors: errors,
+        pricing: {
+          applied: "ساختار قیمت‌گذاری جدید اعمال شد",
+          limited_prices_new: "800, 800, 800, 1200, 1400, 1600 تومان (کاهش در 3 ماه اول)",
+          unlimited_prices: "40000, 80000, 120000, 160000, 200000, 240000 تومان (بدون تغییر)",
+          telegram_ids: "همه ID های تلگرام به null تنظیم شد",
+          commissions: "همه کمیسیون‌ها به 0% تنظیم شد (برای تنظیم بعدی توسط ادمین)"
+        }
+      });
+
+    } catch (error) {
+      console.error('Batch 2 bulk update error:', error);
+      res.status(500).json({ message: "خطا در بروزرسانی دسته دوم نمایندگان" });
+    }
+  });
+
   // Bulk representative update endpoint
   app.post("/api/representatives/bulk-update", async (req, res) => {
     try {

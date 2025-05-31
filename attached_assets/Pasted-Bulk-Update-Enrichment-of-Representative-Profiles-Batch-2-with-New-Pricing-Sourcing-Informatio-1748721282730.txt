@@ -1,0 +1,87 @@
+Bulk Update & Enrichment of Representative Profiles (Batch 2) with New Pricing & Sourcing Information
+
+Chronos, we have another batch of Representative profiles that require updating and enrichment. Many of these representatives currently exist in the system with only an admin_username. We will now update their information based on the specified data structure, link them to their introducing Collaborator, and apply a new default pricing structure.
+
+I. The Target Data Structure for Each Representative (Note NEW default pricing):
+
+The target JSON format for each representative's profile will be as follows. You will use this structure to update existing entries.
+
+{
+  "admin_username": "STRING_UNIQUE_KEY",
+  "commision_type": "ENUM('Direct', 'COLLABORATOR_NAME_REFERENCE')",
+  "commision_limited_subscription_percent": "0%",
+  "commision_unlimited_subscription_percent": "0%",
+  "admin_store_name": "STRING_OPTIONAL",
+  "admin_telegram_id": null, // Default to null if not provided in this batch
+  "admin_phone_number": "STRING_OPTIONAL",
+  "limited_1_month_price_per_1GB": "800", // NEW Default pricing
+  "limited_2_month_price_per_1GB": "800", // NEW Default pricing
+  "limited_3_month_price_per_1GB": "800", // NEW Default pricing
+  "limited_4_month_price_per_1GB": "1200",// Default pricing
+  "limited_5_month_price_per_1GB": "1400",// Default pricing
+  "limited_6_month_price_per_1GB": "1600",// Default pricing
+  "unlimited_1_month": "40000", // Default pricing
+  "unlimited_2_month": "80000", // Default pricing
+  "unlimited_3_month": "120000",// Default pricing
+  "unlimited_4_month": "160000",// Default pricing
+  "unlimited_5_month": "200000",// Default pricing
+  "unlimited_6_month": "240000" // Default pricing
+}
+
+(Self-correction in my provided JSON template: Removed trailing comma after the last pricing field to ensure valid JSON)
+
+II. Explanation of Key Fields & Implementation Logic (Largely Unchanged, Emphasize New Defaults):
+
+    admin_username: This remains the primary unique identifier. Use this to find and update existing representatives. If any admin_username from the list below is not found, log this as an error, as this batch is primarily for updating existing records that only have an admin username.
+    commision_type (همکار فروش / نوع معرف):
+        This field links the representative to their introducing Collaborator.
+        The value provided in the data list below (e.g., "سعید قراری") is the name of the Collaborator.
+        Prerequisite: The Collaborator named (e.g., "سعید قراری") MUST already exist in the "Manage Collaborators" section of the Admin Panel. If the specified Collaborator does not exist, log an error for that representative and either skip the commision_type update for them or temporarily set it to "Direct" with a clear note for manual admin review. The link to a non-existent collaborator cannot be made.
+    commision_limited_subscription_percent & commision_unlimited_subscription_percent:
+        These define the commission for the linked Collaborator.
+        For this bulk update, set BOTH these fields to "0%" for all representatives in this batch. The Admin will manually update these specific commission percentages for "سعید قراری" (and other collaborators) for each of their introduced representatives later via the UI. The key is to establish the link via commision_type.
+    admin_store_name: Populate this from the admin_store_name2 column in the provided data.
+    admin_telegram_id: Since this information is NOT provided in the new data batch below, this field MUST be set to null or an empty string for all these representatives to maintain the JSON format. Existing Telegram IDs (if any) should be preserved unless explicitly told to overwrite. For this specific update, assume we are potentially overwriting with null if the field in the JSON represents the complete desired state. Clarification: If the intent is to only update provided fields and leave others untouched, then only update admin_telegram_id if it were present in the new data; since it's not, leave existing admin_telegram_id values untouched if any. For simplicity in this bulk update, let's assume we want to set it to null as per the template if not provided in the input data.
+    admin_phone_number: Populate from the provided data list.
+    Pricing Fields (NEW DEFAULT PRICES):
+        All representatives being updated with the data below should have their pricing structure updated to reflect the NEW default pricing as specified in the JSON template above (e.g., limited_1_month_price_per_1GB: "800", etc.).
+
+III. Data for Representative Profile Updates (Batch 2):
+
+Chronos, please use the following data to update the representative profiles. The admin_username is the first column. The commision_type column contains the name of the introducing Collaborator.
+admin_username	admin_store_name2	commision_type	admin_phone_number	admin_telegram_id (Set to null)
+abolfzlmb	ابولفضل موبایل	سعید قراری	+98 911 833 8898	null
+alpha	آلفا	سعید قراری	+98 911 833 8898	null
+daryamb	دریا موبایل	سعید قراری	+98 911 833 8898	null
+drmbmb	دکتر موبایل	سعید قراری	+98 911 833 8898	null
+ghoqmb	ققنوس	سعید قراری	+98 911 833 8898	null
+hesamb	حسام موبایل	سعید قراری	+98 911 833 8898	null
+javadmb	جواد موبایل	سعید قراری	+98 911 833 8898	null
+mohamadrzmb	محمد رضا	سعید قراری	+98 911 833 8898	null
+ninamc	سینا	سعید قراری	+98 911 833 8898	null
+orgmb	اورژانس	سعید قراری	+98 911 833 8898	null
+pulsmb	پلاس موبایل	سعید قراری	+98 911 833 8898	null
+reisimb	رئیسی	سعید قراری	+98 911 833 8898	null
+rezanmb	رضا	سعید قراری	+98 911 833 8898	null
+sinamb	سینا	سعید قراری	+98 911 833 8898	null
+vahidmb	وحید	سعید قراری	+98 911 833 8898	null
+mahdmb	مهدی	سعید قراری	+98 911 833 8898	null
+
+IV. Your Task (Chronos):
+
+    Parse the Data: Process the provided list of 16 representatives.
+    Verify Collaborator Existence: For each representative, confirm that the Collaborator named in the commision_type field (e.g., "سعید قراری") exists in your system. If not, log this as an error for that representative and report it. For processing, if the collaborator doesn't exist, you may need to temporarily set commision_type to "Direct" for that record and flag it for manual admin intervention.
+    Update Representative Profiles:
+        For each representative, use their admin_username to find and update their existing profile with:
+            The correct commision_type (linking to the existing Collaborator "سعید قراری").
+            The admin_store_name and admin_phone_number.
+            Set admin_telegram_id to null.
+            Set commision_limited_subscription_percent and commision_unlimited_subscription_percent to "0%" (to be updated later by admin).
+            Apply the NEW default pricing structure as specified in the JSON template in Section I.
+        If any admin_username is not found, log it as an error (this batch is for updates).
+    Confirmation & Logging:
+        Provide a summary of actions (e.g., "Updated 16 representatives linked to Collaborator 'سعید قراری' with new pricing and details. Set Telegram ID to null for all.").
+        List any errors encountered (e.g., non-existent admin_username, non-existent Collaborator "سعید قراری").
+        Confirm that the NEW default pricing structure has been applied to all processed representatives.
+
+This update is essential for correctly categorizing our representatives under their introducing Collaborators and applying a standardized (new) pricing tier. Please proceed with care, ensuring the Collaborator "سعید قراری" exists before attempting to link these representatives.

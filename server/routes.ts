@@ -965,6 +965,14 @@ ${invoices.map((inv, index) =>
       try {
         // Parse JSON file
         const jsonData = JSON.parse(req.file.buffer.toString('utf8'));
+        
+        // Debug logging
+        console.log('JSON file structure:', JSON.stringify(jsonData, null, 2).substring(0, 500));
+        console.log('Is array:', Array.isArray(jsonData));
+        if (Array.isArray(jsonData)) {
+          console.log('Array length:', jsonData.length);
+          console.log('First few items:', jsonData.slice(0, 3));
+        }
 
         // Handle nested PHPMyAdmin export structure
         let representativeData;
@@ -974,13 +982,20 @@ ${invoices.map((inv, index) =>
           const tableObject = jsonData.find(item => item.type === 'table' && item.data);
           
           if (tableObject && Array.isArray(tableObject.data)) {
+            console.log('Found PHPMyAdmin table structure with', tableObject.data.length, 'records');
             representativeData = tableObject.data;
           } else {
             // Assume it's a simple array of representatives
+            console.log('Using simple array structure with', jsonData.length, 'records');
             representativeData = jsonData;
           }
         } else {
           throw new Error('فایل JSON باید آرایه معتبر باشد');
+        }
+
+        console.log('Representative data length:', representativeData?.length || 0);
+        if (representativeData && representativeData.length > 0) {
+          console.log('First representative sample:', JSON.stringify(representativeData[0], null, 2));
         }
 
         if (!representativeData || representativeData.length === 0) {

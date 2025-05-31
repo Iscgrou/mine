@@ -6,6 +6,8 @@
 import { type Express, type Request, type Response, type NextFunction } from "express";
 import session from "express-session";
 import bcrypt from "bcrypt";
+import helmet from "helmet";
+import { loginRateLimiter, apiRateLimiter } from "./auth-rate-limiter";
 
 // Extend the Request interface for session typing
 declare module 'express-session' {

@@ -1,0 +1,22 @@
+Chronos, thank you for your patience as I fine-tune the Google Cloud permissions.
+
+I have reviewed and updated the IAM roles for our Service Account (which the backend will use via `GOOGLE_APPLICATION_CREDENTIALS` for project `leafy-display-459909-k9`). The key roles currently assigned that should be relevant for your programmatic API calls are:
+
+1.  **`Vertex AI User`:** This is the primary role granting access to use Vertex AI resources, including Gemini models and other integrated AI services like Speech-to-Text and Translation via Vertex AI endpoints.
+2.  **`Cloud Translation API User`:** For any direct calls to the Cloud Translation API.
+3.  **(Regarding Speech-to-Text):** My understanding is the `Vertex AI User` role should cover access to Speech-to-Text models when called via Vertex AI. The `Cloud Speech-to-Text service agent` role assigned is typically for Google's internal service operations, but for now, let's assume the `Vertex AI User` role will be what your client libraries utilize for STT through Vertex AI.
+
+*(I have also enabled other roles related to Gemini Cloud Assist tools and Vertex AI Feature Store/Model Monitoring/Express, but these are primarily for my direct administrative use of the Google Cloud Console and advanced MLOps features. For your programmatic API calls from the MarFanet backend to perform analysis and generation tasks with Gemini and other Vertex AI services, the `Vertex AI User` role should be the most pertinent.)*
+
+**With the `Vertex AI User` role firmly in place for our service account, please proceed with your previously outlined immediate next step:**
+
+*   **Make a focused attempt to integrate with `gemini-2.5-pro-preview-05-06`** (or the latest exact preview identifier) for a simple content generation test call, as detailed in my last directive.
+    *   Verify the exact model ID and API endpoint.
+    *   Execute the test call.
+    *   Report back VERBATIM with the model ID used, endpoint, request, and the full response (success or error).
+
+**Based on the outcome of THIS specific test for `gemini-2.5-pro-preview-05-06`:**
+*   **If SUCCESSFUL:** We will proceed with Project Genesis Reborn using Gemini 2.5 Pro Preview, and you will compile the Dossier for it.
+*   **If it STILL FAILS (timeout or permission error despite `Vertex AI User` role):** We will definitively use `gemini-1.5-pro-latest` for now, and you will compile the Dossier tailored for that model.
+
+Let's get a definitive answer on our programmatic access to Gemini 2.5 Pro Preview for content generation.

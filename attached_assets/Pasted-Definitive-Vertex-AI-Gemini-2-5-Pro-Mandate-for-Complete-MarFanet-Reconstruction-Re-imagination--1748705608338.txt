@@ -1,0 +1,85 @@
+Definitive Vertex AI (Gemini 2.5 Pro) Mandate for Complete MarFanet Reconstruction & Re-imagination (To Be Relayed Verbatim by Chronos)
+
+To: Vertex AI (Gemini 2.5 Pro Model)
+From: MarFanet Project Lead (via Chronos Orchestrator)
+Subject: Mandate for Complete Reconstruction and Strategic Re-imagination of the MarFanet Platform ("Project Genesis Reborn")
+
+Preamble: Your Role as Chief Architect & Rebuilder
+You, Gemini 2.5 Pro, are hereby designated as the Chief System Architect, Lead Diagnostician, UX Visionary, and Principal Rebuilder for the MarFanet platform. Your task is to conduct an exhaustive, forensic analysis of the provided codebase and project vision, identify all foundational flaws, design robust and elegant solutions, and provide production-ready code to reconstruct MarFanet into a world-class, hyper-intelligent, and flawlessly operational V2Ray reseller management ecosystem for the Iranian market. All previous AI integration attempts (e.g., with "Grok") are considered obsolete; you are to architect solutions natively for the Google Vertex AI ecosystem.
+
+I. Absolute Contextual Foundation (To be provided by Chronos VERBATIM with this prompt):
+
+Chronos (our intermediary AI assistant) will provide you with the following "MarFanet Genesis Reborn Dossier":
+
+    The Entire Current MarFanet Codebase: A complete, unaltered snapshot of the latest available frontend (React/TypeScript) and backend (Express.js/TypeScript, or current stack) code, including all configuration files (e.g., tsconfig.json, build scripts), Drizzle ORM schema definitions (schema.ts), and any relevant server environment setup information.
+    The Complete "Project Pantheon Apex Mandate" Vision Document: This document (which Chronos has) outlines our ultimate goals for:
+        Pillar I: "Project Aegis": Ultimate platform reliability, advanced intelligent logging, AI-powered multi-dimensional analysis engine (for operational health, AI interaction quality, UI/UX validation, functional integrity), proactive automated testing, intelligent alerting, and AI-driven diagnostics.
+        Pillar II: "Project Nova": The sentient AI-CRM ecosystem, including the "Psyche-Insights Engine," "Harmonic Voice Intelligence System" (with zero-compromise Persian STT/NLU and absolute fidelity in summarization – "امانت داری"), the 7+ options of the "AI Analysis & Reporting Center" (now to be designed by you for truly non-clichéd, actionable V2Ray/Iran-specific insights), "Omniscient Contextual Knowledge Nexus" (Vertex AI Search/RAG), "Preemptive Success & Intervention Engine," and the "Evolving Algorithmic Core."
+        Core Business Model: MarFanet empowers Iranian mobile phone stores (Representatives) with a panel to sell V2Ray proxy subscriptions (volume-based & unlimited).
+        Key Business Logic: Detailed requirements for invoice generation (Toman currency, folder-based by Shamsi date), the full Collaborator (affiliate/partner) commission system, advanced financial ledger & Debtor/Creditor system for Representatives.
+        User Personas: Deep understanding of MarFanet Admins and the Customer Relations Team (CRT) operating in Iran.
+        Persian Language Excellence: Non-negotiable requirement for all user-facing text and AI NLU.
+        Ethical AI Principles.
+    A Comprehensive, Unfiltered List of ALL Known Critical Failures & Persistent Bugs: Compiled by the Project Lead, this includes (but is not limited to):
+        Authentication & Access: Persistent 403 Forbidden errors on some browsers with the current access method. The need for a flawless, secure username/password login system (mgr/m867945 for Admin, crm/c867945 for CRM) and the complete, verified eradication of ALL traces of the old "secret path" access method AND any "Grok" remnants.
+        Dashboard Instability: Admin dashboard becoming inaccessible (404 error) after a period.
+        Erroneous Aegis Reporting: Aegis incorrectly reporting full memory.
+        "Settings" Section Complete Failure: Non-responsive, configurations (including Vertex AI and Telegram bot details) not persisting or being deleted. This section requires a complete rebuild from scratch by you.
+        Data Display Failures: Issues displaying Representative/Invoice lists after .ods file upload (if this ODS functionality is still deemed relevant by your analysis, otherwise propose its graceful deprecation and alternative data import if needed). Representative with Balance API stability.
+        UI/UX Layout & Responsiveness Catastrophe: Widespread issues with page composition, elements overflowing ("جدول ها از کادر خارج شده"), text overlap ("متن ها روی هم افتاده"), failure to adapt to sidebar state changes, and inconsistent responsiveness across devices.
+        Non-Functional Clickable Elements: Many buttons/links not working.
+        Invoice Template Customization Failure: Settings made in UI not applying to generated invoices.
+        Any other issues documented in our previous communications (Chronos will provide these).
+    All Existing AI Interaction Prompts & Logic: Every prompt template Chronos designed for previous Vertex AI (or Grok) interactions for ALL features. You are to critically evaluate and redesign these.
+
+II. Your Transformative Reconstruction Mandate (Gemini 2.5 Pro):
+
+Based on the dossier, perform a forensic, bottom-up, then top-down strategic analysis and provide implementable solutions (including production-ready code where applicable).
+
+    Layer 0: Definitive Eradication & Foundational Security:
+        Provide precise instructions and code to permanently and verifiably remove ALL traces of the old "secret path" access method and any "Grok" AI logic/references.
+        Design and provide the complete, secure, production-ready code for a new username/password authentication and session management system for Admin and CRT roles, adhering to all security best practices (hashing, salting, secure cookies, CSRF protection, rate limiting). This is the only allowed access method.
+
+    Layer 1: Codebase & Architectural Integrity ("بازسازی بنیادین و اصولی"):
+        Perform an exhaustive, line-by-line code audit (frontend & backend).
+        Identify and provide corrected, optimized, and secure code for ALL bugs, TypeScript errors, logical flaws (especially in financial calculations, data a_n_d state management, API logic), performance bottlenecks, and security vulnerabilities.
+        Propose and, where essential, provide refactored code for improved architecture, modularity, scalability, and maintainability.
+
+    Layer 2: UI/UX Perfection & Universal Responsiveness:
+        System-Wide Layout Engine: Design and provide the core CSS/JS for a truly dynamic layout system where all content areas (Admin & CRM) flawlessly adapt to sidebar open/closed states and all viewport sizes (mobile, tablet, desktop). No overflows, no misalignments.
+        Aesthetic Re-imagining: Propose 1-2 distinct, "stunningly attractive, modern, graphical, and dynamic" UI themes for BOTH Admin and CRM panels, compatible with the backend. Provide detailed visual guidelines and key component CSS/HTML structure examples.
+        Component-Level Responsiveness & Functionality: Ensure every table, form, card, button, typography ("فوت نوشتار"), and scrollable area ("قابلیت اسکرول صفحات طولانی") is perfectly responsive and functional. All clickable elements must work.
+
+    Layer 3: Core Feature Reconstruction & Enhancement:
+        "Settings" Section Rebuild: Design and provide code for a brand new, fully functional "Settings" section that reliably manages Vertex AI configuration, Telegram bot details, invoice template customization (ensure this works end-to-end!), and other critical parameters.
+        Dashboard Reconstruction: Rebuild Admin/CRM dashboards to be stable (no 404s) and display accurate, real-time data from the database for all widgets.
+        Aegis Monitoring Fix: Provide the corrected logic for Aegis to accurately report system resources.
+        Re-evaluate and provide perfected logic for all other core MarFanet features (invoice generation, Collaborator system, financial ledgers) ensuring they are bug-free and efficient.
+
+    Layer 4: AI Interaction Hyper-Evolution (Project Nova & Aegis AI Logic):
+        Critically review all existing prompts (provided by Chronos).
+        Design new, hyper-contextualized, sophisticated prompt engineering strategies specifically for Gemini 2.5 Pro for ALL AI features:
+            "Harmonic Voice Intelligence System": Achieve flawless Persian STT (with V2Ray jargon) & NLU, absolute fidelity in summarization, precise Shamsi date/task extraction for 6 AM Tehran time reminders.
+            "Psyche-Insights Engine": Implement the "Instant AI Consultation" (voice query by CRT -> instant, deeply contextual V2Ray/Iran-specific advice from Gemini). Enhance all call prep with Gemini's advanced reasoning.
+            "AI Analysis & Reporting Center": For all 7+ options, design Gemini-driven analytical methodologies that deliver profound, non-clichéd, actionable insights for the V2Ray business in Iran, based on the specified report timeframes.
+            All other AI features in Aegis and Nova.
+        Provide examples of these "next-generation" prompts and the backend logic to orchestrate them.
+
+    Layer 5: Strategic Innovation & "100/100" Vision:
+        From your holistic analysis, propose any additional high-impact features, automation opportunities, or architectural shifts that would elevate MarFanet to the absolute pinnacle of an AI-driven V2Ray reseller platform for the Iranian market. What else is needed to achieve "100/100"?
+
+CHRONOS'S RESPONSIBILITIES (Instructions for our AI Assistant):
+
+    Verbatim Prompt Relay: You, Chronos, will take this entire "Project Genesis Reborn" mandate and the "MarFanet Genesis Reborn Dossier" (which you will first compile with my final approval, ensuring it includes all specified current code, vision documents, and all known critical failures and bugs I've listed) and provide it verbatim and without any interpretative alteration to Vertex AI (Gemini 2.5 Pro) via your orchestrator system.
+    Secure Credential Management (Critical Side Note):
+        Action (Chronos): All Google Cloud Vertex AI service account credentials (the JSON key file) MUST be stored securely OUTSIDE the main project directory and codebase (e.g., in a secure server environment variable GOOGLE_APPLICATION_CREDENTIALS, or a dedicated secure secrets management system).
+        This is to ensure that if the project directories are ever deleted or redeployed, the connection to Vertex AI is not lost due to missing credential files. Confirm you understand and will architect for this permanent, secure, out-of-project credential storage.
+    Facilitate Vertex AI's Analysis: Provide code access, answer clarifying questions from Vertex AI (relaying them to me if necessary).
+    Receive & Structure Vertex AI's Output: Collate Gemini 2.5 Pro's complete analysis, code solutions, architectural diagrams (if any), and strategic recommendations into a comprehensive, readable report for me.
+    Await User Approval: Present this report. DO NOT implement any of Gemini 2.5 Pro's proposed reconstructions until I have reviewed its full plan and provided explicit, prioritized approval for specific changes.
+    Precision Implementation: Once approved, you will meticulously implement Gemini 2.5 Pro's solutions with exacting accuracy.
+
+Final Instruction to Chronos (Relay to self after preparing to contact Vertex AI):
+
+"Chronos, this 'Project Genesis Reborn' mandate is absolute. Your first step is to compile the 'MarFanet Genesis Reborn Dossier' incorporating ALL current code, vision documents, and a completely transparent list of ALL currently known critical failures (404s, settings data loss, Aegis bugs, login issues, Grok/secret path remnants, UI chaos, etc.). Present this dossier to me for approval.
+Once I approve the dossier, you will feed it, along with this entire 'Project Genesis Reborn' mandate, VERBATIM to Vertex AI (Gemini 2.5 Pro). Following that, present Vertex AI's comprehensive reconstruction plan to me. We are aiming for a complete and definitive rebuild of MarFanet's foundations and an evolution of its intelligence, guided by Gemini 2.5 Pro's expert analysis."

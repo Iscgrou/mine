@@ -7,7 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import InvoiceTemplatePreview from "@/components/invoice-template-preview";
+// import InvoiceTemplatePreview from "@/components/invoice-template-preview";
 
 interface Setting {
   id: number;
@@ -550,7 +550,46 @@ export default function Settings() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <InvoiceTemplatePreview />
+                <div className="space-y-6">
+                  <div className="text-center py-8">
+                    <i className="fas fa-file-invoice text-4xl text-primary mb-4"></i>
+                    <h3 className="text-lg font-semibold mb-2">پیش‌نمایش قالب فاکتور</h3>
+                    <p className="text-gray-600 mb-4">اینجا می‌توانید قالب فاکتور خود را پیش‌نمایش کنید</p>
+                    
+                    <div className="max-w-2xl mx-auto bg-white border rounded-lg p-6 shadow-sm">
+                      <div className="text-center border-b pb-4 mb-4">
+                        <h1 className="text-2xl font-bold text-blue-600">شرکت مارفانت</h1>
+                        <p className="text-gray-600">ارائه‌دهنده خدمات V2Ray</p>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-4 text-sm mb-4">
+                        <div>
+                          <span className="font-semibold">شماره فاکتور:</span>
+                          <span className="font-mono">INV-2025-SAMPLE</span>
+                        </div>
+                        <div>
+                          <span className="font-semibold">تاریخ:</span>
+                          <span>1403/12/10</span>
+                        </div>
+                      </div>
+                      
+                      <div className="border-t pt-4">
+                        <p className="text-center text-gray-500 text-sm">نمونه پیش‌نمایش فاکتور</p>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-6 flex justify-center gap-3">
+                      <Button variant="outline">
+                        <i className="fas fa-print ml-2"></i>
+                        چاپ
+                      </Button>
+                      <Button variant="outline">
+                        <i className="fas fa-download ml-2"></i>
+                        دانلود PDF
+                      </Button>
+                    </div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           );

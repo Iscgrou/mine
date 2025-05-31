@@ -56,7 +56,7 @@ export const invoices = pgTable("invoices", {
   invoiceNumber: text("invoice_number").notNull().unique(),
   representativeId: integer("representative_id").references(() => representatives.id),
   batchId: integer("batch_id").references(() => invoiceBatches.id),
-  totalAmount: decimal("total_amount", { precision: 12, scale: 2 }).notNull(),
+  totalAmount: decimal("total_amount", { precision: 15, scale: 2 }).notNull(),
   status: text("status").default("pending"), // pending, paid, overdue, cancelled
   dueDate: timestamp("due_date"),
   paidDate: timestamp("paid_date"),
@@ -72,8 +72,8 @@ export const invoiceItems = pgTable("invoice_items", {
   invoiceId: integer("invoice_id").references(() => invoices.id),
   description: text("description").notNull(),
   quantity: decimal("quantity", { precision: 10, scale: 3 }),
-  unitPrice: decimal("unit_price", { precision: 10, scale: 2 }),
-  totalPrice: decimal("total_price", { precision: 10, scale: 2 }),
+  unitPrice: decimal("unit_price", { precision: 15, scale: 2 }),
+  totalPrice: decimal("total_price", { precision: 15, scale: 2 }),
   subscriptionType: text("subscription_type"), // standard, unlimited
   durationMonths: integer("duration_months"),
 });

@@ -17,7 +17,7 @@ export default function Settings() {
   const [companyName, setCompanyName] = useState("شرکت مارفانت");
   const [currency, setCurrency] = useState("تومان");
   const [invoicePrefix, setInvoicePrefix] = useState("INV");
-  const [grokApiKey, setGrokApiKey] = useState("");
+
   const [selectedTab, setSelectedTab] = useState("company");
 
   const { toast } = useToast();
@@ -107,17 +107,7 @@ export default function Settings() {
     },
   });
 
-  const handleSaveGrokKey = () => {
-    if (!grokApiKey.trim()) {
-      toast({
-        title: "خطا",
-        description: "لطفاً کلید API Grok را وارد کنید", 
-        variant: "destructive",
-      });
-      return;
-    }
-    saveApiKeyMutation.mutate({ keyType: 'grok', keyValue: grokApiKey });
-  };
+
 
   const handleSaveCompanySettings = () => {
     saveSettingMutation.mutate({ key: 'companyName', value: companyName });
@@ -183,52 +173,7 @@ export default function Settings() {
           </Card>
         );
 
-      case "grok":
-        return (
-          <Card className="bg-card border-border">
-            <CardHeader>
-              <CardTitle className="text-primary flex items-center gap-2">
-                <i className="fas fa-robot"></i>
-                Grok xAI
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {apiKeyStatus && (
-                  <div className={`p-3 rounded-lg border ${apiKeyStatus.grok ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
-                    <div className="flex items-center gap-2">
-                      <i className={`fas ${apiKeyStatus.grok ? 'fa-check-circle text-green-600' : 'fa-exclamation-triangle text-red-600'}`}></i>
-                      <span className={`text-sm font-medium ${apiKeyStatus.grok ? 'text-green-800' : 'text-red-800'}`}>
-                        {apiKeyStatus.grok ? 'کلید Grok تنظیم شده' : 'کلید Grok تنظیم نشده'}
-                      </span>
-                    </div>
-                  </div>
-                )}
-                
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">کلید Grok xAI API</label>
-                  <Input
-                    type="password"
-                    value={grokApiKey}
-                    onChange={(e) => setGrokApiKey(e.target.value)}
-                    placeholder="کلید API Grok"
-                    className="bg-input border-border text-foreground"
-                  />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    کلید API برای استفاده از قابلیت‌های پیشرفته Vertex AI
-                  </p>
-                </div>
 
-                <div className="mt-6">
-                  <Button onClick={handleSaveGrokKey} disabled={saveApiKeyMutation.isPending}>
-                    <i className="fas fa-save ml-2"></i>
-                    ذخیره کلید Grok
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        );
 
       case "danger":
         return (
@@ -316,7 +261,7 @@ export default function Settings() {
             <nav className="flex space-x-8 px-6" dir="rtl">
               {[
                 { id: 'company', label: 'شرکت', icon: 'fa-building' },
-                { id: 'grok', label: 'Grok xAI', icon: 'fa-robot' },
+
                 { id: 'danger', label: 'منطقه خطر', icon: 'fa-exclamation-triangle' }
               ].map((tab) => (
                 <button

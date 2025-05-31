@@ -38,6 +38,7 @@ import AdminBalanceManagement from "@/pages/admin-balance-management";
 import BulkRepresentativeUpdate from "@/pages/bulk-representative-update";
 import BulkRepresentativeUpdateBatch3 from "@/pages/bulk-representative-update-batch3";
 import SystemAdmin from "@/pages/system-admin";
+import DatabaseReconstruction from "@/pages/database-reconstruction";
 
 function Router() {
   const currentPath = window.location.pathname;
@@ -47,13 +48,11 @@ function Router() {
   // CRM Layout
   if (isCrmSection) {
     return (
-      <div className="app-layout bg-gray-50 rtl">
-        <div className="sidebar-container">
-          <CrmSidebar />
-        </div>
-        <div className="main-content-container">
+      <div className="flex h-screen bg-gray-50 rtl">
+        <CrmSidebar />
+        <div className="flex-1 flex flex-col overflow-hidden">
           <Header />
-          <main className="page-content">
+          <main className="flex-1 overflow-y-auto p-4 md:p-6">
             <Switch>
               <Route path="/crm" component={CrmDashboard} />
               <Route path="/crm/" component={CrmDashboard} />
@@ -75,13 +74,11 @@ function Router() {
 
   // Admin Layout (default)
   return (
-    <div className="app-layout bg-gray-50 rtl">
-      <div className="sidebar-container">
-        <Sidebar />
-      </div>
-      <div className="main-content-container">
+    <div className="flex h-screen bg-gray-50 rtl">
+      <Sidebar />
+      <div className="flex-1 flex flex-col overflow-hidden">
         <Header />
-        <main className="page-content">
+        <main className="flex-1 overflow-y-auto p-4 md:p-6">
           <Switch>
             {/* Admin routes with new clean paths */}
             <Route path="/admin" component={Dashboard} />
@@ -99,13 +96,27 @@ function Router() {
             <Route path="/admin/settings" component={Settings} />
             <Route path="/admin/aegis" component={AegisDashboard} />
             <Route path="/admin/aegis-test" component={AegisTest} />
-            <Route path="/admin/google-cloud-setup" component={GoogleCloudSetup} />
+            <Route path="/admin/google-cloud" component={GoogleCloudSetup} />
             <Route path="/admin/ai-intelligence" component={AIIntelligence} />
-            <Route path="/admin/performance-monitoring" component={PerformanceMonitoring} />
+            <Route path="/admin/performance" component={PerformanceMonitoring} />
             <Route path="/admin/balance-management" component={AdminBalanceManagement} />
-            <Route path="/admin/system" component={SystemAdmin} />
-        <Route path="/admin/bulk-representative-update" component={BulkRepresentativeUpdate} />
-        <Route path="/admin/bulk-update-batches" component={BulkRepresentativeUpdateBatch3} />
+            <Route path="/admin/bulk-representative-update" component={BulkRepresentativeUpdate} />
+            <Route path="/admin/bulk-update-batches" component={BulkRepresentativeUpdateBatch3} />
+            <Route path="/admin/system-admin" component={SystemAdmin} />
+            <Route path="/admin/database-reconstruction" component={DatabaseReconstruction} />
+            
+            {/* Default admin routes for backward compatibility */}
+            <Route path="/" component={Dashboard} />
+            <Route path="/dashboard" component={Dashboard} />
+            <Route path="/representatives" component={Representatives} />
+            <Route path="/invoices" component={Invoices} />
+            <Route path="/invoice-batches" component={InvoiceBatches} />
+            <Route path="/analytics" component={Analytics} />
+            <Route path="/import" component={ImportJSON} />
+            <Route path="/payments" component={Payments} />
+            <Route path="/backup" component={Backup} />
+            <Route path="/settings" component={Settings} />
+            <Route path="/system-admin" component={SystemAdmin} />
             <Route path="/secure/api-upload" component={SecureAPIUpload} />
             <Route path="/secure/credentials" component={SecureCredentialUpload} />
             

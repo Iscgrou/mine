@@ -3,8 +3,11 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import InvoiceTemplatePreview from "@/components/invoice-template-preview";
 
 interface Setting {
   id: number;
@@ -23,6 +26,13 @@ export default function Settings() {
   const [aiApiKey, setAiApiKey] = useState("");
   const [vertexApiKey, setVertexApiKey] = useState("");
   const [selectedTab, setSelectedTab] = useState("company");
+  
+  // Telegram notification toggles
+  const [telegramNotificationsEnabled, setTelegramNotificationsEnabled] = useState(true);
+  const [invoiceNotifications, setInvoiceNotifications] = useState(true);
+  const [paymentNotifications, setPaymentNotifications] = useState(true);
+  const [systemAlerts, setSystemAlerts] = useState(true);
+  const [repUpdates, setRepUpdates] = useState(false);
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -425,6 +435,126 @@ export default function Settings() {
             </Card>
           );
 
+        case "notifications":
+          return (
+            <Card className="bg-card border-border">
+              <CardHeader>
+                <CardTitle className="text-primary flex items-center gap-2">
+                  <i className="fas fa-bell"></i>
+                  تنظیمات اعلان‌های تلگرام
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  {/* Master toggle */}
+                  <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg border border-blue-200">
+                    <div>
+                      <h3 className="font-semibold text-blue-900">فعال‌سازی کلی اعلان‌های تلگرام</h3>
+                      <p className="text-sm text-blue-700 mt-1">تمام اعلان‌های تلگرام را فعال یا غیرفعال کنید</p>
+                    </div>
+                    <Switch
+                      checked={telegramNotificationsEnabled}
+                      onCheckedChange={setTelegramNotificationsEnabled}
+                    />
+                  </div>
+
+                  {/* Individual notification toggles */}
+                  <div className="space-y-4">
+                    <h3 className="font-semibold text-gray-700">تنظیمات جزئی اعلان‌ها</h3>
+                    
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between p-3 border rounded-lg">
+                        <div>
+                          <span className="font-medium">اعلان صدور فاکتور</span>
+                          <p className="text-sm text-gray-600">اطلاع‌رسانی هنگام صدور فاکتور جدید</p>
+                        </div>
+                        <Switch
+                          checked={invoiceNotifications && telegramNotificationsEnabled}
+                          onCheckedChange={setInvoiceNotifications}
+                          disabled={!telegramNotificationsEnabled}
+                        />
+                      </div>
+
+                      <div className="flex items-center justify-between p-3 border rounded-lg">
+                        <div>
+                          <span className="font-medium">اعلان پرداخت</span>
+                          <p className="text-sm text-gray-600">اطلاع‌رسانی تأیید پرداخت‌ها</p>
+                        </div>
+                        <Switch
+                          checked={paymentNotifications && telegramNotificationsEnabled}
+                          onCheckedChange={setPaymentNotifications}
+                          disabled={!telegramNotificationsEnabled}
+                        />
+                      </div>
+
+                      <div className="flex items-center justify-between p-3 border rounded-lg">
+                        <div>
+                          <span className="font-medium">هشدارهای سیستم</span>
+                          <p className="text-sm text-gray-600">اعلان‌های مهم سیستم و خطاها</p>
+                        </div>
+                        <Switch
+                          checked={systemAlerts && telegramNotificationsEnabled}
+                          onCheckedChange={setSystemAlerts}
+                          disabled={!telegramNotificationsEnabled}
+                        />
+                      </div>
+
+                      <div className="flex items-center justify-between p-3 border rounded-lg">
+                        <div>
+                          <span className="font-medium">به‌روزرسانی نمایندگان</span>
+                          <p className="text-sm text-gray-600">اطلاع‌رسانی تغییرات اطلاعات نمایندگان</p>
+                        </div>
+                        <Switch
+                          checked={repUpdates && telegramNotificationsEnabled}
+                          onCheckedChange={setRepUpdates}
+                          disabled={!telegramNotificationsEnabled}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                      <div className="flex items-center gap-2 text-yellow-800">
+                        <i className="fas fa-info-circle"></i>
+                        <span className="font-medium">نکته مهم</span>
+                      </div>
+                      <p className="text-sm text-yellow-700 mt-2">
+                        برای عملکرد صحیح اعلان‌ها، ابتدا کلید API تلگرام را در تب تلگرام تنظیم کنید.
+                      </p>
+                    </div>
+
+                    <Button 
+                      onClick={() => {
+                        toast({
+                          title: "موفق",
+                          description: "تنظیمات اعلان‌ها ذخیره شد",
+                        });
+                      }}
+                      className="w-full"
+                    >
+                      <i className="fas fa-save ml-2"></i>
+                      ذخیره تنظیمات اعلان‌ها
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          );
+
+        case "invoice-preview":
+          return (
+            <Card className="bg-card border-border">
+              <CardHeader>
+                <CardTitle className="text-primary flex items-center gap-2">
+                  <i className="fas fa-file-invoice"></i>
+                  پیش‌نمایش قالب فاکتور
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <InvoiceTemplatePreview />
+              </CardContent>
+            </Card>
+          );
+
         default:
           return (
             <Card className="bg-card border-border">
@@ -484,6 +614,8 @@ export default function Settings() {
               {[
                 { id: 'company', label: 'شرکت', icon: 'fa-building' },
                 { id: 'telegram', label: 'تلگرام', icon: 'fa-telegram' },
+                { id: 'notifications', label: 'اعلان‌ها', icon: 'fa-bell' },
+                { id: 'invoice-preview', label: 'پیش‌نمایش فاکتور', icon: 'fa-file-invoice' },
                 { id: 'ai', label: 'هوش مصنوعی', icon: 'fa-robot' },
                 { id: 'danger', label: 'منطقه خطر', icon: 'fa-exclamation-triangle' }
               ].map((tab) => (

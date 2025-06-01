@@ -423,8 +423,19 @@ export function registerRoutes(app: Express): Server {
             let baseAmount = limitedBilling + unlimitedBilling;
 
             if (baseAmount > 0) {
+              // Create content-based invoice number to prevent duplicates
+              const contentHash = Buffer.from(JSON.stringify(invoiceData)).toString('base64').slice(0, 8);
+              const invoiceNumber = `${invoiceData.admin_username}-${contentHash}`;
+              
+              // Check if invoice already exists
+              const existingInvoice = await storage.getInvoiceByNumber(invoiceNumber);
+              if (existingInvoice) {
+                console.log(`Skipping duplicate invoice: ${invoiceNumber}`);
+                continue;
+              }
+              
               const invoice = await storage.createInvoice({
-                invoiceNumber: `${invoiceData.admin_username}-${Date.now()}`,
+                invoiceNumber,
                 representativeId: representative.id,
                 batchId: batch.id,
                 totalAmount: baseAmount.toString(),

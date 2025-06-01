@@ -42,6 +42,7 @@ export interface IStorage {
   // Invoice System v2.0 Methods
   getInvoices(): Promise<(Invoice & { representative: Representative | null, batch: InvoiceBatch | null })[]>;
   getInvoiceById(id: number): Promise<(Invoice & { representative: Representative | null, items: InvoiceItem[], batch: InvoiceBatch | null }) | undefined>;
+  getInvoiceByNumber(invoiceNumber: string): Promise<Invoice | undefined>;
   createInvoiceBatch(batch: InsertInvoiceBatch): Promise<InvoiceBatch>;
   createInvoice(invoice: InsertInvoice): Promise<Invoice>;
   createInvoiceItem(item: InsertInvoiceItem): Promise<InvoiceItem>;
@@ -236,6 +237,11 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Invoice System v2.0 Implementation
+  async getInvoiceByNumber(invoiceNumber: string): Promise<Invoice | undefined> {
+    const [invoice] = await db.select().from(invoices).where(eq(invoices.invoiceNumber, invoiceNumber));
+    return invoice || undefined;
+  }
+
   async getInvoices(): Promise<(Invoice & { representative: Representative | null, batch: InvoiceBatch | null })[]> {
     const results = await db.select().from(invoices)
       .leftJoin(representatives, eq(invoices.representativeId, representatives.id))

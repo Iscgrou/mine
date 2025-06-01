@@ -33,12 +33,14 @@ interface Representative {
   nationalId: string | null;
   status: string | null;
   createdAt: Date | null;
-  commissionRates?: {
-    limited1Month: string | null;
-    limited3Month: string | null;
-    limited6Month: string | null;
-    unlimited: string | null;
-  };
+  collaboratorId: number | null;
+  limitedPrice1Month: string | null;
+  limitedPrice2Month: string | null;
+  limitedPrice3Month: string | null;
+  limitedPrice4Month: string | null;
+  limitedPrice5Month: string | null;
+  limitedPrice6Month: string | null;
+  unlimitedMonthlyPrice: string | null;
   salesMetrics?: {
     totalSales: number;
     monthlyRevenue: number;
@@ -49,13 +51,28 @@ interface Representative {
   verificationStatus: 'pending' | 'verified' | 'rejected';
 }
 
+interface Collaborator {
+  id: number;
+  collaboratorName: string;
+  uniqueCollaboratorId: string;
+  status: string;
+}
+
 interface NewRepresentativeForm {
   fullName: string;
   adminUsername: string;
+  collaboratorId: string;
   phoneNumber: string;
   telegramId: string;
   storeName: string;
   storeAddress: string;
+  limitedPrice1Month: string;
+  limitedPrice2Month: string;
+  limitedPrice3Month: string;
+  limitedPrice4Month: string;
+  limitedPrice5Month: string;
+  limitedPrice6Month: string;
+  unlimitedMonthlyPrice: string;
   nationalId: string;
   collaborationLevel: 'basic' | 'advanced' | 'premium';
   introducerType: 'direct' | 'collaborator';
@@ -88,20 +105,22 @@ export default function RepresentativeManagement() {
   const [newRepForm, setNewRepForm] = useState<NewRepresentativeForm>({
     fullName: '',
     adminUsername: '',
+    collaboratorId: '',
     phoneNumber: '',
     telegramId: '',
     storeName: '',
     storeAddress: '',
+    limitedPrice1Month: '50000',
+    limitedPrice2Month: '90000',
+    limitedPrice3Month: '120000',
+    limitedPrice4Month: '150000',
+    limitedPrice5Month: '180000',
+    limitedPrice6Month: '200000',
+    unlimitedMonthlyPrice: '80000',
     nationalId: '',
     collaborationLevel: 'basic',
     introducerType: 'direct',
     introducerCollaboratorId: null,
-    commissionRates: {
-      limited1Month: '15',
-      limited3Month: '18',
-      limited6Month: '20',
-      unlimited: '25'
-    },
     initialPassword: '',
     notes: ''
   });

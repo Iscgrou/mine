@@ -381,7 +381,7 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(collaborators).orderBy(desc(collaborators.createdAt));
   }
 
-  async getCollaboratorById(id: number): Promise<Collaborator | undefined> {
+  async getCollaborator(id: number): Promise<Collaborator | undefined> {
     const [collaborator] = await db.select().from(collaborators).where(eq(collaborators.id, id));
     return collaborator || undefined;
   }

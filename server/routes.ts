@@ -573,7 +573,7 @@ export function registerRoutes(app: Express): Server {
 
           if (existingCommission.length === 0) {
             const baseAmount = parseFloat(invoice.baseAmount);
-            const collaborator = await storage.getCollaboratorById(representative.collaboratorId);
+            const collaborator = await storage.getCollaborator(representative.collaboratorId);
             const commissionRate = parseFloat(collaborator?.commissionPercentage || "10.00");
             const commissionAmount = baseAmount * (commissionRate / 100);
 

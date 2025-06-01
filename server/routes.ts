@@ -303,6 +303,138 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  // JSON Invoice Upload Endpoint
+  app.post("/api/invoices/upload", upload.single('file'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: "فایل انتخاب نشده است" });
+      }
+
+      const jsonData = JSON.parse(req.file.buffer.toString());
+      const processor = new BatchProcessor();
+      
+      // Create invoice batch
+      const batch = await storage.createInvoiceBatch({
+        batchName: `JSON_${new Date().toISOString().split('T')[0]}`,
+        fileName: req.file.originalname,
+        totalInvoices: jsonData.length || 0,
+        totalAmount: "0"
+      });
+
+      let processedCount = 0;
+      let totalAmount = 0;
+
+      // Process each invoice in the JSON file
+      for (const invoiceData of jsonData) {
+        try {
+          // Find representative by admin username
+          const representative = await storage.getRepresentativeByAdminUsername(
+            invoiceData.adminUsername || invoiceData.representative
+          );
+
+          if (representative) {
+            // Calculate pricing based on representative rates
+            const baseAmount = parseFloat(invoiceData.amount || invoiceData.baseAmount || "0");
+            const calculatedAmount = processor.calculateInvoiceAmount(baseAmount, representative);
+
+            const invoice = await storage.createInvoice({
+              invoiceNumber: invoiceData.invoiceNumber || `INV-${Date.now()}-${processedCount}`,
+              representativeId: representative.id,
+              batchId: batch.id,
+              totalAmount: calculatedAmount.toString(),
+              baseAmount: baseAmount.toString(),
+              status: "pending",
+              invoiceData: invoiceData,
+              autoCalculated: true,
+              priceSource: "representative_rate"
+            });
+
+            // Create commission record
+            if (representative.collaboratorId) {
+              await storage.createCommissionRecord({
+                collaboratorId: representative.collaboratorId,
+                representativeId: representative.id,
+                invoiceId: invoice.id,
+                batchId: batch.id,
+                revenueType: invoiceData.serviceType || "unlimited",
+                baseRevenueAmount: baseAmount.toString(),
+                commissionRate: "10.00", // Default 10%
+                commissionAmount: (baseAmount * 0.1).toString(),
+                calculationMethod: "automatic"
+              });
+            }
+
+            processedCount++;
+            totalAmount += calculatedAmount;
+          }
+        } catch (itemError) {
+          console.error('Error processing invoice item:', itemError);
+        }
+      }
+
+      // Update batch totals
+      await storage.createInvoiceBatch({
+        ...batch,
+        totalInvoices: processedCount,
+        totalAmount: totalAmount.toString(),
+        processingStatus: "completed"
+      });
+
+      res.json({
+        message: "فایل JSON با موفقیت پردازش شد",
+        processed: processedCount,
+        totalAmount: totalAmount,
+        batchId: batch.id
+      });
+
+    } catch (error) {
+      console.error('Error processing JSON file:', error);
+      res.status(500).json({ message: "خطا در پردازش فایل JSON" });
+    }
+  });
+
+  // Commission Calculation Endpoint
+  app.post("/api/invoices/:id/calculate-commission", async (req, res) => {
+    try {
+      const invoiceId = parseInt(req.params.id);
+      const invoice = await storage.getInvoiceById(invoiceId);
+      
+      if (!invoice || !invoice.representative) {
+        return res.status(404).json({ message: "فاکتور یا نماینده یافت نشد" });
+      }
+
+      const representative = invoice.representative;
+      if (representative.collaboratorId) {
+        const baseAmount = parseFloat(invoice.baseAmount);
+        const commissionRate = 10.00; // Default 10%
+        const commissionAmount = baseAmount * (commissionRate / 100);
+
+        await storage.createCommissionRecord({
+          collaboratorId: representative.collaboratorId,
+          representativeId: representative.id,
+          invoiceId: invoice.id,
+          batchId: invoice.batch?.id || null,
+          revenueType: "invoice_based",
+          baseRevenueAmount: invoice.baseAmount,
+          commissionRate: commissionRate.toString(),
+          commissionAmount: commissionAmount.toString(),
+          calculationMethod: "manual"
+        });
+
+        res.json({ 
+          message: "کمیسیون محاسبه شد",
+          commissionAmount: commissionAmount,
+          commissionRate: commissionRate
+        });
+      } else {
+        res.status(400).json({ message: "نماینده همکار ندارد" });
+      }
+    } catch (error) {
+      console.error('Error calculating commission:', error);
+      res.status(500).json({ message: "خطا در محاسبه کمیسیون" });
+    }
+  });
+
   // Health check endpoint
   app.get("/api/health", (req, res) => {
     res.json({ 

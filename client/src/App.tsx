@@ -25,6 +25,7 @@ import CrmVoiceNotes from "@/pages/crm-voice-notes";
 import CRTPerformance from "@/pages/crt-performance";
 import RepresentativeManagement from "@/pages/representative-management";
 import CollaboratorManagement from "@/pages/collaborator-management";
+import InvoicesPage from "@/pages/invoices";
 import AegisDashboard from "@/pages/aegis-dashboard";
 import AegisTest from "@/pages/aegis-test";
 import GoogleCloudSetup from "@/pages/google-cloud-setup";
@@ -85,7 +86,7 @@ function Router() {
             <Route path="/admin/dashboard" component={Dashboard} />
             <Route path="/admin/representatives" component={RepresentativeManagement} />
             <Route path="/admin/collaborators" component={CollaboratorManagement} />
-
+            <Route path="/admin/invoices" component={InvoicesPage} />
             <Route path="/admin/analytics" component={Analytics} />
             <Route path="/admin/crt-performance" component={CRTPerformance} />
             <Route path="/admin/import" component={ImportJSON} />

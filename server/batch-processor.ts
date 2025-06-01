@@ -13,6 +13,21 @@ export interface BatchProcessorResult {
 
 export class BatchProcessor {
   
+  // Invoice calculation method for JSON processing
+  calculateInvoiceAmount(baseAmount: number, representative: any): number {
+    // Apply representative-specific pricing based on service type
+    let calculatedAmount = baseAmount;
+    
+    // Apply discount if representative has special rates
+    if (representative.limitedPrice1Month && parseFloat(representative.limitedPrice1Month) > 0) {
+      calculatedAmount = parseFloat(representative.limitedPrice1Month);
+    } else if (representative.unlimitedPrice1Month && parseFloat(representative.unlimitedPrice1Month) > 0) {
+      calculatedAmount = parseFloat(representative.unlimitedPrice1Month);
+    }
+    
+    return calculatedAmount;
+  }
+  
   static async processBatch2Representatives(): Promise<BatchProcessorResult> {
     try {
       console.log('[BATCH PROCESSOR] Starting Batch 2 representative processing...');

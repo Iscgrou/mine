@@ -34,6 +34,7 @@ interface Representative {
   status: string | null;
   createdAt: Date | null;
   collaboratorId: number | null;
+  collaboratorName: string | null;
   limitedPrice1Month: string | null;
   limitedPrice2Month: string | null;
   limitedPrice3Month: string | null;
@@ -646,9 +647,7 @@ export default function RepresentativeManagement() {
                       <Users className="w-4 h-4 text-blue-600" />
                       <span className="font-medium text-blue-800">معرف:</span>
                       <span className="text-blue-700">
-                        {rep.collaboratorId === 4 ? 'اونر' : 
-                         rep.collaboratorId === 2 ? 'بهنام' : 
-                         rep.collaboratorId === 3 ? 'سعید قراری' : 'نامشخص'}
+                        {rep.collaboratorName || 'نامشخص'}
                       </span>
                     </div>
                     

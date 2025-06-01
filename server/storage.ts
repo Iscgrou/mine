@@ -120,7 +120,15 @@ export class DatabaseStorage implements IStorage {
 
   // Representative methods
   async getRepresentatives(): Promise<Representative[]> {
-    return await db.select().from(representatives).orderBy(desc(representatives.createdAt));
+    return await db
+      .select()
+      .from(representatives)
+      .leftJoin(collaborators, eq(representatives.collaboratorId, collaborators.id))
+      .orderBy(desc(representatives.createdAt))
+      .then(results => results.map(result => ({
+        ...result.representatives,
+        collaboratorName: result.collaborators?.collaboratorName || null
+      })));
   }
 
   async getRepresentativeById(id: number): Promise<Representative | undefined> {

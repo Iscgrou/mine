@@ -450,6 +450,10 @@ export class DatabaseStorage implements IStorage {
     return collaborator || undefined;
   }
 
+  async getCollaboratorById(id: number): Promise<Collaborator | undefined> {
+    return this.getCollaborator(id);
+  }
+
   async createCollaborator(collaborator: InsertCollaborator): Promise<Collaborator> {
     const [created] = await db
       .insert(collaborators)

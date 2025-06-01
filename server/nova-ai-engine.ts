@@ -204,8 +204,8 @@ class NovaAIEngine {
       // Use Text generation with available models
       const projectId = this.aiConfig.googleCloudCredentials.project_id;
       
-      // Use Google AI Studio API for text generation
-      const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent', {
+      // Use Google AI Studio API for text generation with correct model endpoint
+      const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -507,6 +507,50 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  // Delete All Invoices - MUST come before the single invoice delete route
+  app.delete("/api/invoices/delete-all", async (req, res) => {
+    try {
+      // Get all invoice IDs first to properly cascade deletes
+      const allInvoices = await db.select({ id: invoices.id }).from(invoices);
+      
+      if (allInvoices.length === 0) {
+        return res.json({ 
+          message: "هیچ فاکتوری برای حذف یافت نشد",
+          deletedCount: 0
+        });
+      }
+
+      const invoiceIds = allInvoices.map(inv => inv.id);
+      
+      // Delete commission records for these specific invoices
+      if (invoiceIds.length > 0) {
+        for (const invoiceId of invoiceIds) {
+          await db.delete(commissionRecords)
+            .where(eq(commissionRecords.invoiceId, invoiceId));
+        }
+        
+        // Delete invoice items for these specific invoices
+        for (const invoiceId of invoiceIds) {
+          await db.delete(invoiceItems)
+            .where(eq(invoiceItems.invoiceId, invoiceId));
+        }
+      }
+      
+      // Delete all invoices
+      const result = await db.delete(invoices);
+
+      console.log(`Successfully deleted ${allInvoices.length} invoices with all related records`);
+
+      res.json({ 
+        message: "همه فاکتورها حذف شدند",
+        deletedCount: allInvoices.length
+      });
+    } catch (error) {
+      console.error('Error deleting all invoices:', error);
+      res.status(500).json({ message: "خطا در حذف فاکتورها" });
+    }
+  });
+
   // Delete Invoice
   app.delete("/api/invoices/:id", async (req, res) => {
     try {
@@ -669,49 +713,7 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
-  // Delete All Invoices
-  app.delete("/api/invoices/delete-all", async (req, res) => {
-    try {
-      // Get all invoice IDs first to properly cascade deletes
-      const allInvoices = await db.select({ id: invoices.id }).from(invoices);
-      
-      if (allInvoices.length === 0) {
-        return res.json({ 
-          message: "هیچ فاکتوری برای حذف یافت نشد",
-          deletedCount: 0
-        });
-      }
 
-      const invoiceIds = allInvoices.map(inv => inv.id);
-      
-      // Delete commission records for these specific invoices
-      if (invoiceIds.length > 0) {
-        for (const invoiceId of invoiceIds) {
-          await db.delete(commissionRecords)
-            .where(eq(commissionRecords.invoiceId, invoiceId));
-        }
-        
-        // Delete invoice items for these specific invoices
-        for (const invoiceId of invoiceIds) {
-          await db.delete(invoiceItems)
-            .where(eq(invoiceItems.invoiceId, invoiceId));
-        }
-      }
-      
-      // Delete all invoices
-      const result = await db.delete(invoices);
-
-      console.log(`Successfully deleted ${allInvoices.length} invoices with all related records`);
-
-      res.json({ 
-        message: "همه فاکتورها حذف شدند",
-        deletedCount: allInvoices.length
-      });
-    } catch (error) {
-      console.error('Error deleting all invoices:', error);
-      res.status(500).json({ message: "خطا در حذف فاکتورها" });
-    }
-  });
 
   // Health check endpoint
   app.get("/api/health", (req, res) => {

@@ -99,8 +99,8 @@ export default function Invoices() {
   };
 
   const handleDownloadPDF = (invoice: Invoice) => {
-    // Download PDF invoice
-    window.open(`/api/invoices/${invoice.id}/pdf`, '_blank');
+    // Download PDF invoice with enhanced template
+    window.open(`/api/invoices/${invoice.id}/pdf?templateStyle=modern_clean`, '_blank');
   };
 
   const handleStatusChange = (invoiceId: number, newStatus: string) => {

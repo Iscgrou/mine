@@ -5,8 +5,8 @@
 
 import { storage } from './storage';
 import { InvoiceTemplateService } from './invoice-template-service';
-import { EnhancedInvoiceTemplates } from './enhanced-invoice-templates';
-import { AdvancedInvoiceTemplating } from './advanced-invoice-templating';
+import { enhancedInvoiceTemplates } from './enhanced-invoice-templates';
+import { advancedInvoiceTemplating } from './advanced-invoice-templating';
 
 export interface TelegramConfig {
   botToken: string;

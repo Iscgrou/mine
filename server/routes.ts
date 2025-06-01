@@ -1592,5 +1592,151 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  // Enhanced Telegram invoice sending with PDF/Image support
+  app.post("/api/invoices/:id/share-telegram", async (req, res) => {
+    try {
+      const { EnhancedTelegramService } = await import('./enhanced-telegram-service');
+      const telegramService = new EnhancedTelegramService();
+      
+      const invoiceId = parseInt(req.params.id);
+      const { format = 'pdf', templateStyle = 'modern_clean', sendToBot = true, sendDirect = true } = req.body;
+      
+      const options = {
+        format,
+        templateStyle,
+        includeAttachment: format !== 'text',
+        sendToBot,
+        sendDirect
+      };
+      
+      const result = await telegramService.sendInvoiceToTelegram(invoiceId, options);
+      
+      if (result.success) {
+        res.json({
+          success: true,
+          message: result.message,
+          details: {
+            botSent: result.botSent,
+            directSent: result.directSent,
+            format: format
+          }
+        });
+      } else {
+        res.status(400).json({
+          success: false,
+          message: result.message
+        });
+      }
+    } catch (error) {
+      console.error('Enhanced telegram share error:', error);
+      res.status(500).json({ 
+        success: false, 
+        message: "خطا در ارسال فاکتور به تلگرام" 
+      });
+    }
+  });
+
+  // Batch telegram sending with template support
+  app.post("/api/invoices/batch/:batchId/send-telegram", async (req, res) => {
+    try {
+      const { EnhancedTelegramService } = await import('./enhanced-telegram-service');
+      const telegramService = new EnhancedTelegramService();
+      
+      const batchId = parseInt(req.params.batchId);
+      const { format = 'pdf', templateStyle = 'modern_clean', sendToBot = true, sendDirect = true } = req.body;
+      
+      const options = {
+        format,
+        templateStyle,
+        includeAttachment: format !== 'text',
+        sendToBot,
+        sendDirect
+      };
+      
+      const result = await telegramService.sendBatchInvoices(batchId, options);
+      
+      res.json({
+        success: result.success,
+        message: `ارسال دسته‌ای انجام شد: ${result.sent} موفق، ${result.failed} ناموفق`,
+        details: {
+          total: result.total,
+          sent: result.sent,
+          failed: result.failed,
+          format: format,
+          templateStyle: templateStyle
+        },
+        results: result.results
+      });
+    } catch (error) {
+      console.error('Enhanced batch telegram send error:', error);
+      res.status(500).json({ 
+        success: false, 
+        message: "خطا در ارسال دسته‌ای فاکتورها به تلگرام" 
+      });
+    }
+  });
+
+  // Generate invoice PDF endpoint
+  app.get("/api/invoices/:id/pdf", async (req, res) => {
+    try {
+      const { EnhancedTelegramService } = await import('./enhanced-telegram-service');
+      const telegramService = new EnhancedTelegramService();
+      
+      const invoiceId = parseInt(req.params.id);
+      const { templateStyle = 'modern_clean' } = req.query;
+      
+      const options = {
+        format: 'pdf' as const,
+        templateStyle: templateStyle as string,
+        includeAttachment: true,
+        sendToBot: false,
+        sendDirect: false
+      };
+      
+      const result = await telegramService.generateInvoiceContent(invoiceId, options);
+      
+      res.setHeader('Content-Type', result.mimeType || 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename="${result.filename}"`);
+      res.send(result.attachment);
+    } catch (error) {
+      console.error('PDF generation error:', error);
+      res.status(500).json({ 
+        success: false, 
+        message: "خطا در تولید PDF فاکتور" 
+      });
+    }
+  });
+
+  // Generate invoice image endpoint
+  app.get("/api/invoices/:id/image", async (req, res) => {
+    try {
+      const { EnhancedTelegramService } = await import('./enhanced-telegram-service');
+      const telegramService = new EnhancedTelegramService();
+      
+      const invoiceId = parseInt(req.params.id);
+      const { templateStyle = 'modern_clean' } = req.query;
+      
+      const options = {
+        format: 'image' as const,
+        templateStyle: templateStyle as string,
+        includeAttachment: true,
+        sendToBot: false,
+        sendDirect: false
+      };
+      
+      const result = await telegramService.generateInvoiceContent(invoiceId, options);
+      
+      res.setHeader('Content-Type', result.mimeType || 'image/png');
+      res.setHeader('Content-Disposition', `attachment; filename="${result.filename}"`);
+      res.send(result.attachment);
+    } catch (error) {
+      console.error('Image generation error:', error);
+      res.status(500).json({ 
+        success: false, 
+        message: "خطا در تولید تصویر فاکتور" 
+      });
+    }
+  });
+
   return server;
 }

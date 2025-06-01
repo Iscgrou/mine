@@ -1,0 +1,45 @@
+[
+{
+    "type": "header",
+    "version": "5.2.2",
+    "comment": "Export to JSON plugin for PHPMyAdmin"
+},
+{
+    "type": "database",
+    "name": "marzban"
+},
+{
+    "type": "table",
+    "name": "a",
+    "database": "marzban",
+    "data": [
+{
+    "admin_username": "sobhnesf",
+    "user_usernames": "Alikarimi,Mobile_sobhan,Raoulparishani",
+    "total_reset_events_for_admin": "0",
+    "total_data_limit_gib": "50.0000",
+    "total_subscriptions": "3",
+    "limited_subscriptions": "1",
+    "unlimited_subscriptions": "2",
+    "limited_1_month": "0",
+    "limited_2_month": "0",
+    "limited_3_month": "0",
+    "limited_4_month": "1",
+    "limited_5_month": "0",
+    "limited_6_month": "0",
+    "limited_1_month_volume": "0.0000",
+    "limited_2_month_volume": "0.0000",
+    "limited_3_month_volume": "0.0000",
+    "limited_4_month_volume": "50.0000",
+    "limited_5_month_volume": "0.0000",
+    "limited_6_month_volume": "0.0000",
+    "unlimited_1_month": "0",
+    "unlimited_2_month": "1",
+    "unlimited_3_month": "0",
+    "unlimited_4_month": "1",
+    "unlimited_5_month": "0",
+    "unlimited_6_month": "0"
+}
+]
+}
+]

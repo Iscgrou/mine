@@ -417,6 +417,7 @@ export function registerRoutes(app: Express): Server {
                   representativeId: representative.id,
                   invoiceId: invoice.id,
                   batchId: batch.id,
+                  transactionDate: new Date(),
                   revenueType: limitedSubs > 0 ? "limited" : "unlimited",
                   baseRevenueAmount: baseAmount.toString(),
                   commissionRate: commissionRate.toString(),
@@ -469,16 +470,11 @@ export function registerRoutes(app: Express): Server {
 
       // Update telegram_sent status
       await db.update(invoices)
-        .set({ telegramSent: true })
+        .set({ telegram_sent: true })
         .where(eq(invoices.id, invoiceId));
 
       // Log the telegram send event
-      aegisLogger.logEvent('telegram_send', {
-        invoiceId: invoiceId,
-        representativeId: invoice.representative?.id,
-        amount: invoice.totalAmount,
-        timestamp: new Date().toISOString()
-      });
+      console.log(`Telegram sent for invoice ${invoiceId} to representative ${invoice.representative?.id}`);
 
       res.json({ 
         message: "فاکتور به تلگرام ارسال شد",
@@ -508,10 +504,7 @@ export function registerRoutes(app: Express): Server {
         .where(eq(invoices.id, invoiceId));
 
       // Log the deletion event
-      aegisLogger.logEvent('invoice_delete', {
-        invoiceId: invoiceId,
-        timestamp: new Date().toISOString()
-      });
+      console.log(`Invoice ${invoiceId} deleted successfully`);
 
       res.json({ message: "فاکتور با موفقیت حذف شد" });
     } catch (error) {

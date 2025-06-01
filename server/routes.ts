@@ -661,13 +661,21 @@ export function registerRoutes(app: Express): Server {
   // Delete All Invoices
   app.delete("/api/invoices/delete-all", async (req, res) => {
     try {
-      // Delete commission records first
-      await db.delete(commissionRecords).where(sql`invoice_id IS NOT NULL`);
+      // Get all invoice IDs first to properly cascade deletes
+      const allInvoices = await db.select({ id: invoices.id }).from(invoices);
+      const invoiceIds = allInvoices.map(inv => inv.id);
       
-      // Delete invoice items
-      await db.delete(invoiceItems);
+      if (invoiceIds.length > 0) {
+        // Delete commission records for these specific invoices
+        await db.delete(commissionRecords)
+          .where(sql`invoice_id = ANY(${invoiceIds})`);
+        
+        // Delete invoice items for these specific invoices
+        await db.delete(invoiceItems)
+          .where(sql`invoice_id = ANY(${invoiceIds})`);
+      }
       
-      // Delete invoices
+      // Delete all invoices
       const result = await db.delete(invoices);
 
       res.json({ 

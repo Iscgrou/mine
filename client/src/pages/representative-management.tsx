@@ -777,7 +777,7 @@ export default function RepresentativeManagement() {
                 <TabsList className="grid w-full grid-cols-3">
                   <TabsTrigger value="personal">اطلاعات شخصی</TabsTrigger>
                   <TabsTrigger value="business">اطلاعات کسب‌وکار</TabsTrigger>
-                  <TabsTrigger value="commission">کمیسیون و تنظیمات</TabsTrigger>
+                  <TabsTrigger value="pricing">قیمت‌گذاری</TabsTrigger>
                 </TabsList>
                 
                 <TabsContent value="personal" className="space-y-4">
@@ -857,25 +857,62 @@ export default function RepresentativeManagement() {
                   </div>
                 </TabsContent>
                 
-                <TabsContent value="commission" className="space-y-4">
+                <TabsContent value="pricing" className="space-y-4">
                   <div>
-                    <Label>نرخ کمیسیون (درصد)</Label>
-                    <div className="grid grid-cols-2 gap-4 mt-2">
+                    <Label>قیمت‌گذاری اشتراک محدود (تومان)</Label>
+                    <div className="grid grid-cols-3 gap-4 mt-2">
                       <div>
-                        <Label className="text-sm">یک ماه محدود</Label>
-                        <Input defaultValue={selectedRepresentative.commissionRates?.limited1Month || '15'} />
+                        <Label className="text-sm">1 ماه</Label>
+                        <Input defaultValue={selectedRepresentative.limitedPrice1Month || '900'} />
                       </div>
                       <div>
-                        <Label className="text-sm">سه ماه محدود</Label>
-                        <Input defaultValue={selectedRepresentative.commissionRates?.limited3Month || '18'} />
+                        <Label className="text-sm">2 ماه</Label>
+                        <Input defaultValue={selectedRepresentative.limitedPrice2Month || '900'} />
                       </div>
                       <div>
-                        <Label className="text-sm">شش ماه محدود</Label>
-                        <Input defaultValue={selectedRepresentative.commissionRates?.limited6Month || '20'} />
+                        <Label className="text-sm">3 ماه</Label>
+                        <Input defaultValue={selectedRepresentative.limitedPrice3Month || '900'} />
                       </div>
                       <div>
-                        <Label className="text-sm">نامحدود</Label>
-                        <Input defaultValue={selectedRepresentative.commissionRates?.unlimited || '25'} />
+                        <Label className="text-sm">4 ماه</Label>
+                        <Input defaultValue={selectedRepresentative.limitedPrice4Month || '1400'} />
+                      </div>
+                      <div>
+                        <Label className="text-sm">5 ماه</Label>
+                        <Input defaultValue={selectedRepresentative.limitedPrice5Month || '1500'} />
+                      </div>
+                      <div>
+                        <Label className="text-sm">6 ماه</Label>
+                        <Input defaultValue={selectedRepresentative.limitedPrice6Month || '1600'} />
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <Label>قیمت اشتراک نامحدود (تومان)</Label>
+                    <div className="grid grid-cols-3 gap-4 mt-2">
+                      <div>
+                        <Label className="text-sm">1 ماه</Label>
+                        <Input defaultValue={selectedRepresentative.unlimitedPrice1Month || '40000'} />
+                      </div>
+                      <div>
+                        <Label className="text-sm">2 ماه</Label>
+                        <Input defaultValue={selectedRepresentative.unlimitedPrice2Month || '80000'} />
+                      </div>
+                      <div>
+                        <Label className="text-sm">3 ماه</Label>
+                        <Input defaultValue={selectedRepresentative.unlimitedPrice3Month || '120000'} />
+                      </div>
+                      <div>
+                        <Label className="text-sm">4 ماه</Label>
+                        <Input defaultValue={selectedRepresentative.unlimitedPrice4Month || '160000'} />
+                      </div>
+                      <div>
+                        <Label className="text-sm">5 ماه</Label>
+                        <Input defaultValue={selectedRepresentative.unlimitedPrice5Month || '200000'} />
+                      </div>
+                      <div>
+                        <Label className="text-sm">6 ماه</Label>
+                        <Input defaultValue={selectedRepresentative.unlimitedPrice6Month || '240000'} />
                       </div>
                     </div>
                   </div>

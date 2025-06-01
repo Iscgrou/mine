@@ -5,6 +5,7 @@ import { aegisLogger } from "./aegis-logger";
 import { db } from "./db";
 import { invoices, invoiceBatches, invoiceItems, commissionRecords, collaborators } from "@shared/schema";
 import { eq, sql } from "drizzle-orm";
+import { inArray } from "drizzle-orm";
 import multer from "multer";
 import path from "path";
 import { BatchProcessor } from "./batch-processor";
@@ -512,6 +513,17 @@ export function registerRoutes(app: Express): Server {
     try {
       const invoiceId = parseInt(req.params.id);
       
+      // Validate the invoice ID
+      if (isNaN(invoiceId) || invoiceId <= 0) {
+        return res.status(400).json({ message: "شناسه فاکتور نامعتبر است" });
+      }
+      
+      // Check if invoice exists first
+      const existingInvoice = await db.select().from(invoices).where(eq(invoices.id, invoiceId)).limit(1);
+      if (existingInvoice.length === 0) {
+        return res.status(404).json({ message: "فاکتور یافت نشد" });
+      }
+      
       // First delete related commission records
       await db.delete(commissionRecords)
         .where(eq(commissionRecords.invoiceId, invoiceId));
@@ -663,24 +675,34 @@ export function registerRoutes(app: Express): Server {
     try {
       // Get all invoice IDs first to properly cascade deletes
       const allInvoices = await db.select({ id: invoices.id }).from(invoices);
+      
+      if (allInvoices.length === 0) {
+        return res.json({ 
+          message: "هیچ فاکتوری برای حذف یافت نشد",
+          deletedCount: 0
+        });
+      }
+
       const invoiceIds = allInvoices.map(inv => inv.id);
       
+      // Delete commission records for these specific invoices (using inArray)
       if (invoiceIds.length > 0) {
-        // Delete commission records for these specific invoices
         await db.delete(commissionRecords)
-          .where(sql`invoice_id = ANY(${invoiceIds})`);
+          .where(inArray(commissionRecords.invoiceId, invoiceIds));
         
-        // Delete invoice items for these specific invoices
+        // Delete invoice items for these specific invoices (using inArray)
         await db.delete(invoiceItems)
-          .where(sql`invoice_id = ANY(${invoiceIds})`);
+          .where(inArray(invoiceItems.invoiceId, invoiceIds));
       }
       
       // Delete all invoices
       const result = await db.delete(invoices);
 
+      console.log(`Successfully deleted ${allInvoices.length} invoices with all related records`);
+
       res.json({ 
         message: "همه فاکتورها حذف شدند",
-        deletedCount: result.rowCount || 0
+        deletedCount: allInvoices.length
       });
     } catch (error) {
       console.error('Error deleting all invoices:', error);

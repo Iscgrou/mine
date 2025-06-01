@@ -314,6 +314,280 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  // Alpha 35 Invoice Preview Endpoint
+  app.get("/api/invoice/preview", async (req, res) => {
+    try {
+      const config = req.query.config;
+      let invoiceConfig = {};
+      
+      if (config) {
+        try {
+          invoiceConfig = JSON.parse(Buffer.from(config as string, 'base64').toString());
+        } catch (e) {
+          console.warn('Failed to parse invoice config');
+        }
+      }
+
+      // Generate sample invoice HTML with Alpha 35 configuration
+      const sampleInvoiceHTML = `
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پیش‌نمایش فاکتور Alpha 35</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Tahoma', 'Arial', sans-serif; 
+            direction: rtl; 
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        .invoice-container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background: white; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            color: white; 
+            padding: 30px; 
+            text-align: center; 
+        }
+        .header h1 { font-size: 28px; margin-bottom: 10px; }
+        .header p { opacity: 0.9; font-size: 16px; }
+        .content { padding: 30px; }
+        .invoice-info { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 30px; 
+            margin-bottom: 30px; 
+        }
+        .info-section h3 { 
+            color: #333; 
+            margin-bottom: 15px; 
+            font-size: 18px; 
+            border-bottom: 2px solid #667eea; 
+            padding-bottom: 5px; 
+        }
+        .info-row { 
+            display: flex; 
+            justify-content: space-between; 
+            margin-bottom: 8px; 
+            padding: 5px 0; 
+        }
+        .info-label { color: #666; }
+        .info-value { font-weight: bold; color: #333; }
+        .items-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin: 20px 0; 
+            border-radius: 8px; 
+            overflow: hidden; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+        }
+        .items-table th { 
+            background: #667eea; 
+            color: white; 
+            padding: 15px; 
+            text-align: center; 
+            font-size: 14px; 
+        }
+        .items-table td { 
+            padding: 12px 15px; 
+            text-align: center; 
+            border-bottom: 1px solid #eee; 
+        }
+        .items-table tbody tr:hover { background: #f8f9ff; }
+        .total-section { 
+            background: #f8f9ff; 
+            padding: 20px; 
+            border-radius: 8px; 
+            margin-top: 20px; 
+        }
+        .total-row { 
+            display: flex; 
+            justify-content: space-between; 
+            padding: 8px 0; 
+            border-bottom: 1px solid #ddd; 
+        }
+        .total-row.final { 
+            font-size: 18px; 
+            font-weight: bold; 
+            color: #667eea; 
+            border-bottom: none; 
+            margin-top: 10px; 
+        }
+        .footer { 
+            background: #f8f9ff; 
+            padding: 20px; 
+            text-align: center; 
+            color: #666; 
+            border-top: 1px solid #eee; 
+        }
+        .config-preview {
+            background: #e8f4fd;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .config-preview h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        .config-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            font-size: 12px;
+        }
+        .config-item {
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-container">
+        <div class="config-preview">
+            <h4>پیکربندی Alpha 35 فعال</h4>
+            <div class="config-grid">
+                <div class="config-item">
+                    <span>قالب:</span>
+                    <span>${invoiceConfig.template || 'professional'}</span>
+                </div>
+                <div class="config-item">
+                    <span>سبک هدر:</span>
+                    <span>${invoiceConfig.headerStyle || 'centered'}</span>
+                </div>
+                <div class="config-item">
+                    <span>طرح رنگی:</span>
+                    <span>${invoiceConfig.colorScheme || 'blue-professional'}</span>
+                </div>
+                <div class="config-item">
+                    <span>فونت:</span>
+                    <span>${invoiceConfig.fontFamily || 'iranian-sans'}</span>
+                </div>
+                <div class="config-item">
+                    <span>گروه‌بندی:</span>
+                    <span>${invoiceConfig.itemGrouping || 'by-duration'}</span>
+                </div>
+                <div class="config-item">
+                    <span>نمایش محاسبات:</span>
+                    <span>${invoiceConfig.calculationDisplay || 'detailed'}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="header">
+            <h1>مارفانت</h1>
+            <p>ارائه‌دهنده خدمات V2Ray و پروکسی</p>
+        </div>
+        
+        <div class="content">
+            <div class="invoice-info">
+                <div class="info-section">
+                    <h3>اطلاعات فاکتور</h3>
+                    <div class="info-row">
+                        <span class="info-label">شماره فاکتور:</span>
+                        <span class="info-value">INV-2025-PREVIEW</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">تاریخ صدور:</span>
+                        <span class="info-value">${new Date().toLocaleDateString('fa-IR')}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">وضعیت:</span>
+                        <span class="info-value">پیش‌نمایش</span>
+                    </div>
+                </div>
+                
+                <div class="info-section">
+                    <h3>اطلاعات نماینده</h3>
+                    <div class="info-row">
+                        <span class="info-label">نام کامل:</span>
+                        <span class="info-value">احمد محمدی</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">نام کاربری:</span>
+                        <span class="info-value">ahmad_admin</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">تلگرام:</span>
+                        <span class="info-value">@ahmad_tech</span>
+                    </div>
+                </div>
+            </div>
+            
+            <table class="items-table">
+                <thead>
+                    <tr>
+                        <th>شرح خدمات</th>
+                        <th>تعداد</th>
+                        <th>قیمت واحد</th>
+                        <th>مبلغ کل</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>اشتراک حجمی V2Ray - ماه ۱</td>
+                        <td>۵</td>
+                        <td>۳۵۰,۰۰۰ تومان</td>
+                        <td>۱,۷۵۰,۰۰۰ تومان</td>
+                    </tr>
+                    <tr>
+                        <td>اشتراک فوری V2Ray - ماه ۳</td>
+                        <td>۳</td>
+                        <td>۷۵۰,۰۰۰ تومان</td>
+                        <td>۲,۲۵۰,۰۰۰ تومان</td>
+                    </tr>
+                    <tr>
+                        <td>اشتراک نامحدود - ماه ۶</td>
+                        <td>۲</td>
+                        <td>۱,۵۰۰,۰۰۰ تومان</td>
+                        <td>۳,۰۰۰,۰۰۰ تومان</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="total-section">
+                <div class="total-row">
+                    <span>جمع کل خدمات:</span>
+                    <span>۷,۰۰۰,۰۰۰ تومان</span>
+                </div>
+                <div class="total-row">
+                    <span>تخفیف نماینده:</span>
+                    <span>-۷۰۰,۰۰۰ تومان</span>
+                </div>
+                <div class="total-row final">
+                    <span>مبلغ قابل پرداخت:</span>
+                    <span>۶,۳۰۰,۰۰۰ تومان</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>با تشکر از اعتماد شما | www.marfanet.com | support@marfanet.com</p>
+            <p style="margin-top: 10px; font-size: 12px;">این فاکتور با سیستم Alpha 35 تولید شده است</p>
+        </div>
+    </div>
+</body>
+</html>`;
+
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      res.send(sampleInvoiceHTML);
+      
+    } catch (error) {
+      console.error('Error generating invoice preview:', error);
+      res.status(500).json({ message: "خطا در تولید پیش‌نمایش فاکتور" });
+    }
+  });
+
   app.patch("/api/invoices/:id/status", async (req, res) => {
     try {
       const id = parseInt(req.params.id);

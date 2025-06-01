@@ -313,11 +313,24 @@ export function registerRoutes(app: Express): Server {
       const jsonData = JSON.parse(req.file.buffer.toString());
       const processor = new BatchProcessor();
       
+      // Extract actual data array from PHPMyAdmin export format
+      let dataArray = [];
+      if (Array.isArray(jsonData)) {
+        for (let i = 0; i < jsonData.length; i++) {
+          if (jsonData[i].type === "table" && jsonData[i].data && Array.isArray(jsonData[i].data)) {
+            dataArray = jsonData[i].data;
+            break;
+          }
+        }
+      } else {
+        dataArray = jsonData;
+      }
+      
       // Create invoice batch
       const batch = await storage.createInvoiceBatch({
         batchName: `JSON_${new Date().toISOString().split('T')[0]}`,
         fileName: req.file.originalname,
-        totalInvoices: jsonData.length || 0,
+        totalInvoices: dataArray.length || 0,
         totalAmount: "0"
       });
 
@@ -325,47 +338,93 @@ export function registerRoutes(app: Express): Server {
       let totalAmount = 0;
 
       // Process each invoice in the JSON file
-      for (const invoiceData of jsonData) {
+      for (const invoiceData of dataArray) {
         try {
+          // Skip entries with no subscriptions or data
+          if (!invoiceData.admin_username || 
+              !invoiceData.total_subscriptions || 
+              parseInt(invoiceData.total_subscriptions) === 0) {
+            continue;
+          }
+
           // Find representative by admin username
           const representative = await storage.getRepresentativeByAdminUsername(
-            invoiceData.adminUsername || invoiceData.representative
+            invoiceData.admin_username
           );
 
           if (representative) {
-            // Calculate pricing based on representative rates
-            const baseAmount = parseFloat(invoiceData.amount || invoiceData.baseAmount || "0");
-            const calculatedAmount = processor.calculateInvoiceAmount(baseAmount, representative);
-
-            const invoice = await storage.createInvoice({
-              invoiceNumber: invoiceData.invoiceNumber || `INV-${Date.now()}-${processedCount}`,
-              representativeId: representative.id,
-              batchId: batch.id,
-              totalAmount: calculatedAmount.toString(),
-              baseAmount: baseAmount.toString(),
-              status: "pending",
-              invoiceData: invoiceData,
-              autoCalculated: true,
-              priceSource: "representative_rate"
-            });
-
-            // Create commission record
-            if (representative.collaboratorId) {
-              await storage.createCommissionRecord({
-                collaboratorId: representative.collaboratorId,
-                representativeId: representative.id,
-                invoiceId: invoice.id,
-                batchId: batch.id,
-                revenueType: invoiceData.serviceType || "unlimited",
-                baseRevenueAmount: baseAmount.toString(),
-                commissionRate: "10.00", // Default 10%
-                commissionAmount: (baseAmount * 0.1).toString(),
-                calculationMethod: "automatic"
-              });
+            // Calculate total revenue based on subscription types
+            const limitedSubs = parseInt(invoiceData.limited_subscriptions || "0");
+            const unlimitedSubs = parseInt(invoiceData.unlimited_subscriptions || "0");
+            
+            let baseAmount = 0;
+            
+            // Calculate limited subscriptions revenue
+            if (limitedSubs > 0) {
+              const limited1Month = parseInt(invoiceData.limited_1_month || "0");
+              const limited2Month = parseInt(invoiceData.limited_2_month || "0");
+              const limited3Month = parseInt(invoiceData.limited_3_month || "0");
+              
+              // Use representative pricing or default rates
+              const rate1Month = parseFloat(representative.limitedPrice1Month || "50000");
+              const rate2Month = parseFloat(representative.limitedPrice2Month || "90000");
+              const rate3Month = parseFloat(representative.limitedPrice3Month || "120000");
+              
+              baseAmount += (limited1Month * rate1Month) + 
+                           (limited2Month * rate2Month) + 
+                           (limited3Month * rate3Month);
+            }
+            
+            // Calculate unlimited subscriptions revenue
+            if (unlimitedSubs > 0) {
+              const unlimited1Month = parseInt(invoiceData.unlimited_1_month || "0");
+              const unlimited2Month = parseInt(invoiceData.unlimited_2_month || "0");
+              const unlimited3Month = parseInt(invoiceData.unlimited_3_month || "0");
+              
+              // Use representative pricing or default rates
+              const rateUnlimited1 = parseFloat(representative.unlimitedPrice1Month || "80000");
+              const rateUnlimited2 = parseFloat(representative.unlimitedPrice2Month || "150000");
+              const rateUnlimited3 = parseFloat(representative.unlimitedPrice3Month || "200000");
+              
+              baseAmount += (unlimited1Month * rateUnlimited1) + 
+                           (unlimited2Month * rateUnlimited2) + 
+                           (unlimited3Month * rateUnlimited3);
             }
 
-            processedCount++;
-            totalAmount += calculatedAmount;
+            if (baseAmount > 0) {
+              const invoice = await storage.createInvoice({
+                invoiceNumber: `${invoiceData.admin_username}-${Date.now()}`,
+                representativeId: representative.id,
+                batchId: batch.id,
+                totalAmount: baseAmount.toString(),
+                baseAmount: baseAmount.toString(),
+                status: "pending",
+                invoiceData: invoiceData,
+                autoCalculated: true,
+                priceSource: "representative_rate"
+              });
+
+              // Create commission record if representative has collaborator
+              if (representative.collaboratorId) {
+                const commissionRate = 10.00; // 10% commission
+                const commissionAmount = baseAmount * (commissionRate / 100);
+                
+                await storage.createCommissionRecord({
+                  collaboratorId: representative.collaboratorId,
+                  representativeId: representative.id,
+                  invoiceId: invoice.id,
+                  batchId: batch.id,
+                  revenueType: limitedSubs > 0 ? "limited" : "unlimited",
+                  baseRevenueAmount: baseAmount.toString(),
+                  commissionRate: commissionRate.toString(),
+                  commissionAmount: commissionAmount.toString(),
+                  calculationMethod: "automatic"
+                });
+              }
+
+              processedCount++;
+              totalAmount += baseAmount;
+            }
           }
         } catch (itemError) {
           console.error('Error processing invoice item:', itemError);

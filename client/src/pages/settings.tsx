@@ -64,14 +64,22 @@ export default function Settings() {
     staleTime: 30000
   });
 
+  // Load existing settings
+  const existingSettings = settings?.reduce((acc, setting) => {
+    acc[setting.key] = setting.value;
+    return acc;
+  }, {} as Record<string, string>) || {};
+
   // Save setting mutation
   const saveSettingMutation = useMutation({
     mutationFn: async (setting: { key: string; value: string; description?: string }) => {
-      return apiRequest('/api/settings', {
+      const response = await fetch('/api/settings', {
         method: 'POST',
-        body: JSON.stringify(setting),
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(setting)
       });
+      if (!response.ok) throw new Error('Failed to save setting');
+      return response.json();
     },
     onSuccess: () => {
       toast({

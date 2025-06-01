@@ -235,6 +235,74 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  // Statistics API - Real-time dashboard metrics
+  app.get("/api/stats", async (req, res) => {
+    try {
+      const stats = await storage.getStats();
+      res.json(stats);
+    } catch (error) {
+      console.error('Error fetching stats:', error);
+      res.status(500).json({ message: "خطا در دریافت آمار" });
+    }
+  });
+
+  // Invoice System v2.0 API Endpoints
+  app.get("/api/invoices", async (req, res) => {
+    try {
+      const invoices = await storage.getInvoices();
+      res.json(invoices || []);
+    } catch (error) {
+      console.error('Error fetching invoices:', error);
+      res.status(500).json({ message: "خطا در دریافت فاکتورها" });
+    }
+  });
+
+  app.get("/api/invoices/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const invoice = await storage.getInvoiceById(id);
+      if (!invoice) {
+        return res.status(404).json({ message: "فاکتور یافت نشد" });
+      }
+      res.json(invoice);
+    } catch (error) {
+      console.error('Error fetching invoice:', error);
+      res.status(500).json({ message: "خطا در دریافت فاکتور" });
+    }
+  });
+
+  app.post("/api/invoices/batch", async (req, res) => {
+    try {
+      const batch = await storage.createInvoiceBatch(req.body);
+      res.json(batch);
+    } catch (error) {
+      console.error('Error creating invoice batch:', error);
+      res.status(500).json({ message: "خطا در ایجاد دسته فاکتور" });
+    }
+  });
+
+  app.post("/api/invoices", async (req, res) => {
+    try {
+      const invoice = await storage.createInvoice(req.body);
+      res.json(invoice);
+    } catch (error) {
+      console.error('Error creating invoice:', error);
+      res.status(500).json({ message: "خطا در ایجاد فاکتور" });
+    }
+  });
+
+  app.patch("/api/invoices/:id/status", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { status } = req.body;
+      await storage.updateInvoiceStatus(id, status);
+      res.json({ message: "وضعیت فاکتور بروزرسانی شد" });
+    } catch (error) {
+      console.error('Error updating invoice status:', error);
+      res.status(500).json({ message: "خطا در بروزرسانی وضعیت فاکتور" });
+    }
+  });
+
   // Health check endpoint
   app.get("/api/health", (req, res) => {
     res.json({ 

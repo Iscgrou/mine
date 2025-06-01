@@ -39,6 +39,25 @@ export interface IStorage {
   createLedgerEntry(entry: InsertFinancialLedger): Promise<FinancialLedger>;
   getRepresentativeLedger(representativeId: number): Promise<FinancialLedger[]>;
 
+  // Invoice System v2.0 Methods
+  getInvoices(): Promise<(Invoice & { representative: Representative | null, batch: InvoiceBatch | null })[]>;
+  getInvoiceById(id: number): Promise<(Invoice & { representative: Representative | null, items: InvoiceItem[], batch: InvoiceBatch | null }) | undefined>;
+  createInvoiceBatch(batch: InsertInvoiceBatch): Promise<InvoiceBatch>;
+  createInvoice(invoice: InsertInvoice): Promise<Invoice>;
+  createInvoiceItem(item: InsertInvoiceItem): Promise<InvoiceItem>;
+  updateInvoiceStatus(id: number, status: string): Promise<void>;
+  
+  // Statistics Engine Methods
+  getStats(): Promise<{
+    totalReps: number;
+    activeReps: number;
+    monthlyInvoices: number;
+    monthlyRevenue: string;
+    overduePayments: number;
+  }>;
+  updateStatistic(key: string, value: string, dataType?: string): Promise<void>;
+  getStatistic(key: string): Promise<StatisticsCache | undefined>;
+
   // File import methods
   createFileImport(fileImport: InsertFileImport): Promise<FileImport>;
   updateFileImport(id: number, updates: Partial<InsertFileImport>): Promise<void>;
@@ -182,6 +201,118 @@ export class DatabaseStorage implements IStorage {
       .from(financialLedger)
       .where(eq(financialLedger.representativeId, representativeId))
       .orderBy(financialLedger.transactionDate);
+  }
+
+  // Invoice System v2.0 Implementation
+  async getInvoices(): Promise<(Invoice & { representative: Representative | null, batch: InvoiceBatch | null })[]> {
+    const results = await db.select().from(invoices)
+      .leftJoin(representatives, eq(invoices.representativeId, representatives.id))
+      .leftJoin(invoiceBatches, eq(invoices.batchId, invoiceBatches.id))
+      .orderBy(desc(invoices.createdAt));
+    
+    return results.map(result => ({
+      ...result.invoices,
+      representative: result.representatives,
+      batch: result.invoice_batches
+    }));
+  }
+
+  async getInvoiceById(id: number): Promise<(Invoice & { representative: Representative | null, items: InvoiceItem[], batch: InvoiceBatch | null }) | undefined> {
+    const [invoice] = await db.select().from(invoices)
+      .leftJoin(representatives, eq(invoices.representativeId, representatives.id))
+      .leftJoin(invoiceBatches, eq(invoices.batchId, invoiceBatches.id))
+      .where(eq(invoices.id, id));
+    
+    if (!invoice) return undefined;
+
+    const items = await db.select().from(invoiceItems)
+      .where(eq(invoiceItems.invoiceId, id));
+
+    return {
+      ...invoice.invoices,
+      representative: invoice.representatives,
+      batch: invoice.invoice_batches,
+      items
+    };
+  }
+
+  async createInvoiceBatch(batch: InsertInvoiceBatch): Promise<InvoiceBatch> {
+    const [newBatch] = await db.insert(invoiceBatches).values(batch).returning();
+    return newBatch;
+  }
+
+  async createInvoice(invoice: InsertInvoice): Promise<Invoice> {
+    const [newInvoice] = await db.insert(invoices).values(invoice).returning();
+    return newInvoice;
+  }
+
+  async createInvoiceItem(item: InsertInvoiceItem): Promise<InvoiceItem> {
+    const [newItem] = await db.insert(invoiceItems).values(item).returning();
+    return newItem;
+  }
+
+  async updateInvoiceStatus(id: number, status: string): Promise<void> {
+    await db.update(invoices)
+      .set({ status, updatedAt: new Date() })
+      .where(eq(invoices.id, id));
+  }
+
+  // Statistics Engine Implementation
+  async getStats(): Promise<{
+    totalReps: number;
+    activeReps: number;
+    monthlyInvoices: number;
+    monthlyRevenue: string;
+    overduePayments: number;
+  }> {
+    const totalReps = await db.select({ count: sql<number>`count(*)` }).from(representatives);
+    const activeReps = await db.select({ count: sql<number>`count(*)` }).from(representatives)
+      .where(eq(representatives.status, 'active'));
+
+    const currentMonth = new Date();
+    currentMonth.setDate(1);
+    currentMonth.setHours(0, 0, 0, 0);
+
+    const monthlyInvoices = await db.select({ count: sql<number>`count(*)` }).from(invoices)
+      .where(sql`${invoices.createdAt} >= ${currentMonth}`);
+
+    const monthlyRevenue = await db.select({ 
+      total: sql<string>`COALESCE(SUM(${invoices.totalAmount}), '0')` 
+    }).from(invoices)
+      .where(sql`${invoices.createdAt} >= ${currentMonth}`);
+
+    const overduePayments = await db.select({ count: sql<number>`count(*)` }).from(invoices)
+      .where(and(
+        eq(invoices.status, 'pending'),
+        sql`${invoices.dueDate} < NOW()`
+      ));
+
+    return {
+      totalReps: totalReps[0]?.count || 0,
+      activeReps: activeReps[0]?.count || 0,
+      monthlyInvoices: monthlyInvoices[0]?.count || 0,
+      monthlyRevenue: monthlyRevenue[0]?.total || '0',
+      overduePayments: overduePayments[0]?.count || 0,
+    };
+  }
+
+  async updateStatistic(key: string, value: string, dataType = "number"): Promise<void> {
+    await db.insert(statisticsCache)
+      .values({ metricKey: key, metricValue: value, dataType })
+      .onConflictDoUpdate({
+        target: statisticsCache.metricKey,
+        set: { 
+          metricValue: value,
+          calculatedAt: new Date(),
+          dataType
+        }
+      });
+  }
+
+  async getStatistic(key: string): Promise<StatisticsCache | undefined> {
+    const [stat] = await db.select().from(statisticsCache)
+      .where(eq(statisticsCache.metricKey, key));
+    return stat || undefined;
   }
 
   // File import methods

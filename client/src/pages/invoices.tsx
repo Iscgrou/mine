@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Upload, FileText, Download, Calculator } from "lucide-react";
+import { Upload, FileText, Download, Calculator, Send, Trash2, Edit, Check } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 
 interface Invoice {
@@ -28,6 +28,8 @@ interface Invoice {
   dueDate: string | null;
   autoCalculated: boolean;
   priceSource: string;
+  telegramSent: boolean;
+  sentToRepresentative: boolean;
 }
 
 interface InvoiceBatch {
@@ -78,17 +80,37 @@ export default function InvoicesPage() {
     },
   });
 
-  // Commission calculation mutation
-  const calculateCommissionMutation = useMutation({
+  // Send to Telegram mutation
+  const sendToTelegramMutation = useMutation({
     mutationFn: async (invoiceId: number) => {
-      return apiRequest(`/api/invoices/${invoiceId}/calculate-commission`, {
+      const response = await fetch(`/api/invoices/${invoiceId}/send-telegram`, {
         method: "POST",
       });
+      if (!response.ok) throw new Error("Failed to send");
+      return response.json();
     },
     onSuccess: () => {
       toast({
-        title: "کمیسیون محاسبه شد",
-        description: "کمیسیون همکاران بروزرسانی گردید",
+        title: "ارسال به تلگرام",
+        description: "فاکتور با موفقیت ارسال شد",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/invoices"] });
+    },
+  });
+
+  // Delete invoice mutation
+  const deleteInvoiceMutation = useMutation({
+    mutationFn: async (invoiceId: number) => {
+      const response = await fetch(`/api/invoices/${invoiceId}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) throw new Error("Failed to delete");
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "فاکتور حذف شد",
+        description: "فاکتور با موفقیت حذف گردید",
       });
       queryClient.invalidateQueries({ queryKey: ["/api/invoices"] });
     },
@@ -223,16 +245,47 @@ export default function InvoicesPage() {
                         {new Date(invoice.createdAt).toLocaleDateString('fa-IR')}
                       </td>
                       <td className="p-3">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => calculateCommissionMutation.mutate(invoice.id)}
-                          disabled={calculateCommissionMutation.isPending}
-                          className="mr-2"
-                        >
-                          <Calculator className="h-4 w-4 mr-1" />
-                          محاسبه کمیسیون
-                        </Button>
+                        <div className="flex gap-2">
+                          {/* Send to Telegram */}
+                          <Button
+                            size="sm"
+                            variant={invoice.telegramSent ? "secondary" : "outline"}
+                            onClick={() => sendToTelegramMutation.mutate(invoice.id)}
+                            disabled={sendToTelegramMutation.isPending || invoice.telegramSent}
+                            title="ارسال به تلگرام"
+                          >
+                            {invoice.telegramSent ? (
+                              <Check className="h-4 w-4" />
+                            ) : (
+                              <Send className="h-4 w-4" />
+                            )}
+                          </Button>
+
+                          {/* Edit Invoice */}
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {/* Edit functionality */}}
+                            title="ویرایش فاکتور"
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+
+                          {/* Delete Invoice */}
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => {
+                              if (window.confirm('آیا از حذف این فاکتور اطمینان دارید؟')) {
+                                deleteInvoiceMutation.mutate(invoice.id);
+                              }
+                            }}
+                            disabled={deleteInvoiceMutation.isPending}
+                            title="حذف فاکتور"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </td>
                     </tr>
                   ))}

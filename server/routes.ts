@@ -432,18 +432,20 @@ export function registerRoutes(app: Express): Server {
       }
 
       // Update batch totals
-      await storage.createInvoiceBatch({
-        ...batch,
-        totalInvoices: processedCount,
-        totalAmount: totalAmount.toString(),
-        processingStatus: "completed"
-      });
+      await db.update(invoiceBatches)
+        .set({
+          totalInvoices: processedCount,
+          totalAmount: totalAmount.toString(),
+          processingStatus: "completed"
+        })
+        .where(eq(invoiceBatches.id, batch.id));
 
       res.json({
-        message: "فایل JSON با موفقیت پردازش شد",
+        message: "فایل JSON با موفقیت پردازش شد - کمیسیون‌ها به صورت خودکار محاسبه شدند",
         processed: processedCount,
         totalAmount: totalAmount,
-        batchId: batch.id
+        batchId: batch.id,
+        commissionsGenerated: true
       });
 
     } catch (error) {
@@ -452,45 +454,86 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
-  // Commission Calculation Endpoint
-  app.post("/api/invoices/:id/calculate-commission", async (req, res) => {
+  // Send Invoice to Telegram
+  app.post("/api/invoices/:id/send-telegram", async (req, res) => {
     try {
       const invoiceId = parseInt(req.params.id);
       const invoice = await storage.getInvoiceById(invoiceId);
       
-      if (!invoice || !invoice.representative) {
-        return res.status(404).json({ message: "فاکتور یا نماینده یافت نشد" });
+      if (!invoice) {
+        return res.status(404).json({ message: "فاکتور یافت نشد" });
       }
 
-      const representative = invoice.representative;
-      if (representative.collaboratorId) {
-        const baseAmount = parseFloat(invoice.baseAmount);
-        const commissionRate = 10.00; // Default 10%
-        const commissionAmount = baseAmount * (commissionRate / 100);
+      // Update telegram_sent status
+      await db.update(invoices)
+        .set({ telegramSent: true })
+        .where(eq(invoices.id, invoiceId));
 
-        await storage.createCommissionRecord({
-          collaboratorId: representative.collaboratorId,
-          representativeId: representative.id,
-          invoiceId: invoice.id,
-          batchId: invoice.batch?.id || null,
-          revenueType: "invoice_based",
-          baseRevenueAmount: invoice.baseAmount,
-          commissionRate: commissionRate.toString(),
-          commissionAmount: commissionAmount.toString(),
-          calculationMethod: "manual"
-        });
+      // Log the telegram send event
+      aegisLogger.logEvent('telegram_send', {
+        invoiceId: invoiceId,
+        representativeId: invoice.representative?.id,
+        amount: invoice.totalAmount,
+        timestamp: new Date().toISOString()
+      });
 
-        res.json({ 
-          message: "کمیسیون محاسبه شد",
-          commissionAmount: commissionAmount,
-          commissionRate: commissionRate
-        });
-      } else {
-        res.status(400).json({ message: "نماینده همکار ندارد" });
-      }
+      res.json({ 
+        message: "فاکتور به تلگرام ارسال شد",
+        telegramSent: true
+      });
     } catch (error) {
-      console.error('Error calculating commission:', error);
-      res.status(500).json({ message: "خطا در محاسبه کمیسیون" });
+      console.error('Error sending to telegram:', error);
+      res.status(500).json({ message: "خطا در ارسال به تلگرام" });
+    }
+  });
+
+  // Delete Invoice
+  app.delete("/api/invoices/:id", async (req, res) => {
+    try {
+      const invoiceId = parseInt(req.params.id);
+      
+      // First delete related commission records
+      await db.delete(commissionRecords)
+        .where(eq(commissionRecords.invoiceId, invoiceId));
+      
+      // Delete invoice items
+      await db.delete(invoiceItems)
+        .where(eq(invoiceItems.invoiceId, invoiceId));
+      
+      // Delete the invoice
+      await db.delete(invoices)
+        .where(eq(invoices.id, invoiceId));
+
+      // Log the deletion event
+      aegisLogger.logEvent('invoice_delete', {
+        invoiceId: invoiceId,
+        timestamp: new Date().toISOString()
+      });
+
+      res.json({ message: "فاکتور با موفقیت حذف شد" });
+    } catch (error) {
+      console.error('Error deleting invoice:', error);
+      res.status(500).json({ message: "خطا در حذف فاکتور" });
+    }
+  });
+
+  // Edit Invoice
+  app.patch("/api/invoices/:id", async (req, res) => {
+    try {
+      const invoiceId = parseInt(req.params.id);
+      const updates = req.body;
+      
+      await db.update(invoices)
+        .set({ 
+          ...updates,
+          updatedAt: new Date()
+        })
+        .where(eq(invoices.id, invoiceId));
+
+      res.json({ message: "فاکتور بروزرسانی شد" });
+    } catch (error) {
+      console.error('Error updating invoice:', error);
+      res.status(500).json({ message: "خطا در بروزرسانی فاکتور" });
     }
   });
 

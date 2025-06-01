@@ -77,12 +77,6 @@ interface NewRepresentativeForm {
   collaborationLevel: 'basic' | 'advanced' | 'premium';
   introducerType: 'direct' | 'collaborator';
   introducerCollaboratorId: number | null;
-  commissionRates: {
-    limited1Month: string;
-    limited3Month: string;
-    limited6Month: string;
-    unlimited: string;
-  };
   initialPassword: string;
   notes: string;
 }
@@ -202,20 +196,22 @@ export default function RepresentativeManagement() {
     setNewRepForm({
       fullName: '',
       adminUsername: '',
+      collaboratorId: '',
       phoneNumber: '',
       telegramId: '',
       storeName: '',
       storeAddress: '',
+      limitedPrice1Month: '50000',
+      limitedPrice2Month: '90000',
+      limitedPrice3Month: '120000',
+      limitedPrice4Month: '150000',
+      limitedPrice5Month: '180000',
+      limitedPrice6Month: '200000',
+      unlimitedMonthlyPrice: '80000',
       nationalId: '',
       collaborationLevel: 'basic',
       introducerType: 'direct',
       introducerCollaboratorId: null,
-      commissionRates: {
-        limited1Month: '15',
-        limited3Month: '18',
-        limited6Month: '20',
-        unlimited: '25'
-      },
       initialPassword: '',
       notes: ''
     });
@@ -412,62 +408,104 @@ export default function RepresentativeManagement() {
                     </div>
                   )}
                   
+                  {/* Limited Subscription Pricing (1-6 months) */}
                   <div>
-                    <Label>نرخ کمیسیون (درصد)</Label>
-                    <div className="grid grid-cols-2 gap-4 mt-2">
+                    <Label>قیمت‌گذاری اشتراک محدود (تومان)</Label>
+                    <div className="grid grid-cols-3 gap-4 mt-2">
                       <div>
-                        <Label htmlFor="limited1Month">محدود 1 ماهه</Label>
+                        <Label htmlFor="limitedPrice1Month">1 ماه</Label>
                         <Input
-                          id="limited1Month"
+                          id="limitedPrice1Month"
                           type="number"
-                          value={newRepForm.commissionRates.limited1Month}
+                          value={newRepForm.limitedPrice1Month}
                           onChange={(e) => setNewRepForm(prev => ({
                             ...prev,
-                            commissionRates: { ...prev.commissionRates, limited1Month: e.target.value }
+                            limitedPrice1Month: e.target.value
                           }))}
-                          placeholder="15"
+                          placeholder="50000"
                         />
                       </div>
                       <div>
-                        <Label htmlFor="limited3Month">محدود 3 ماهه</Label>
+                        <Label htmlFor="limitedPrice2Month">2 ماه</Label>
                         <Input
-                          id="limited3Month"
+                          id="limitedPrice2Month"
                           type="number"
-                          value={newRepForm.commissionRates.limited3Month}
+                          value={newRepForm.limitedPrice2Month}
                           onChange={(e) => setNewRepForm(prev => ({
                             ...prev,
-                            commissionRates: { ...prev.commissionRates, limited3Month: e.target.value }
+                            limitedPrice2Month: e.target.value
                           }))}
-                          placeholder="18"
+                          placeholder="90000"
                         />
                       </div>
                       <div>
-                        <Label htmlFor="limited6Month">محدود 6 ماهه</Label>
+                        <Label htmlFor="limitedPrice3Month">3 ماه</Label>
                         <Input
-                          id="limited6Month"
+                          id="limitedPrice3Month"
                           type="number"
-                          value={newRepForm.commissionRates.limited6Month}
+                          value={newRepForm.limitedPrice3Month}
                           onChange={(e) => setNewRepForm(prev => ({
                             ...prev,
-                            commissionRates: { ...prev.commissionRates, limited6Month: e.target.value }
+                            limitedPrice3Month: e.target.value
                           }))}
-                          placeholder="20"
+                          placeholder="120000"
                         />
                       </div>
                       <div>
-                        <Label htmlFor="unlimited">نامحدود</Label>
+                        <Label htmlFor="limitedPrice4Month">4 ماه</Label>
                         <Input
-                          id="unlimited"
+                          id="limitedPrice4Month"
                           type="number"
-                          value={newRepForm.commissionRates.unlimited}
+                          value={newRepForm.limitedPrice4Month}
                           onChange={(e) => setNewRepForm(prev => ({
                             ...prev,
-                            commissionRates: { ...prev.commissionRates, unlimited: e.target.value }
+                            limitedPrice4Month: e.target.value
                           }))}
-                          placeholder="25"
+                          placeholder="150000"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="limitedPrice5Month">5 ماه</Label>
+                        <Input
+                          id="limitedPrice5Month"
+                          type="number"
+                          value={newRepForm.limitedPrice5Month}
+                          onChange={(e) => setNewRepForm(prev => ({
+                            ...prev,
+                            limitedPrice5Month: e.target.value
+                          }))}
+                          placeholder="180000"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="limitedPrice6Month">6 ماه</Label>
+                        <Input
+                          id="limitedPrice6Month"
+                          type="number"
+                          value={newRepForm.limitedPrice6Month}
+                          onChange={(e) => setNewRepForm(prev => ({
+                            ...prev,
+                            limitedPrice6Month: e.target.value
+                          }))}
+                          placeholder="200000"
                         />
                       </div>
                     </div>
+                  </div>
+
+                  {/* Unlimited Subscription Pricing */}
+                  <div>
+                    <Label htmlFor="unlimitedMonthlyPrice">قیمت اشتراک نامحدود ماهانه (تومان)</Label>
+                    <Input
+                      id="unlimitedMonthlyPrice"
+                      type="number"
+                      value={newRepForm.unlimitedMonthlyPrice}
+                      onChange={(e) => setNewRepForm(prev => ({
+                        ...prev,
+                        unlimitedMonthlyPrice: e.target.value
+                      }))}
+                      placeholder="80000"
+                    />
                   </div>
                 </TabsContent>
               </Tabs>

@@ -27,7 +27,11 @@ const navigationItems = [
     href: "/collaborators",
     icon: "fas fa-handshake",
   },
-
+  {
+    name: "صورتحساب‌ها",
+    href: "/invoices",
+    icon: "fas fa-file-invoice",
+  },
   {
     name: "مرکز تحلیل و گزارش",
     href: "/analytics",

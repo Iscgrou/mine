@@ -2,6 +2,7 @@ import {
   users, representatives, fileImports, settings, backups, crmInteractions, crmCallPreparations, 
   crmRepresentativeProfiles, crmTasks, financialLedger,
   collaborators, commissionRecords, collaboratorPayouts,
+  invoices, invoiceBatches, invoiceItems, statisticsCache,
   type User, type InsertUser, type Representative, type InsertRepresentative,
   type FileImport, type InsertFileImport,
   type Setting, type InsertSetting, type Backup, type InsertBackup,
@@ -10,7 +11,9 @@ import {
   type CrmRepresentativeProfile, type InsertCrmRepresentativeProfile,
   type FinancialLedger, type InsertFinancialLedger,
   type Collaborator, type InsertCollaborator, type CommissionRecord, type InsertCommissionRecord,
-  type CollaboratorPayout, type InsertCollaboratorPayout
+  type CollaboratorPayout, type InsertCollaboratorPayout,
+  type Invoice, type InsertInvoice, type InvoiceBatch, type InsertInvoiceBatch,
+  type InvoiceItem, type InsertInvoiceItem, type StatisticsCache, type InsertStatisticsCache
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, or, like, isNull, sql } from "drizzle-orm";

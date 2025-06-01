@@ -45,7 +45,59 @@ export const representatives = pgTable("representatives", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// Clean slate - invoice system removed as requested
+// Invoice System v2.0 - JSON-based with real-time processing
+export const invoiceBatches = pgTable("invoice_batches", {
+  id: serial("id").primaryKey(),
+  batchName: text("batch_name").notNull(), // Persian date format
+  uploadDate: timestamp("upload_date").defaultNow(),
+  fileName: text("file_name").notNull(), // Original JSON file name
+  totalInvoices: integer("total_invoices").default(0),
+  totalAmount: decimal("total_amount", { precision: 15, scale: 2 }).default("0"),
+  processingStatus: text("processing_status").default("pending"), // pending, processing, completed, failed
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const invoices = pgTable("invoices", {
+  id: serial("id").primaryKey(),
+  invoiceNumber: text("invoice_number").notNull().unique(),
+  representativeId: integer("representative_id").references(() => representatives.id),
+  batchId: integer("batch_id").references(() => invoiceBatches.id),
+  totalAmount: decimal("total_amount", { precision: 15, scale: 2 }).notNull(),
+  baseAmount: decimal("base_amount", { precision: 15, scale: 2 }).notNull(),
+  discountAmount: decimal("discount_amount", { precision: 15, scale: 2 }).default("0"),
+  taxAmount: decimal("tax_amount", { precision: 15, scale: 2 }).default("0"),
+  status: text("status").default("pending"), // pending, paid, overdue, cancelled
+  dueDate: timestamp("due_date"),
+  paidDate: timestamp("paid_date"),
+  invoiceData: jsonb("invoice_data"), // Complete JSON structure
+  autoCalculated: boolean("auto_calculated").default(true),
+  priceSource: text("price_source").default("representative_rate"), // representative_rate, manual, override
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const invoiceItems = pgTable("invoice_items", {
+  id: serial("id").primaryKey(),
+  invoiceId: integer("invoice_id").references(() => invoices.id).notNull(),
+  description: text("description").notNull(),
+  serviceType: text("service_type").notNull(), // limited, unlimited
+  durationMonths: integer("duration_months").notNull(),
+  quantity: decimal("quantity", { precision: 10, scale: 3 }).default("1"),
+  unitPrice: decimal("unit_price", { precision: 15, scale: 2 }).notNull(),
+  totalPrice: decimal("total_price", { precision: 15, scale: 2 }).notNull(),
+  commissionRate: decimal("commission_rate", { precision: 5, scale: 2 }),
+  commissionAmount: decimal("commission_amount", { precision: 12, scale: 2 }),
+});
+
+// Real-time Statistics Engine
+export const statisticsCache = pgTable("statistics_cache", {
+  id: serial("id").primaryKey(),
+  metricKey: text("metric_key").notNull().unique(),
+  metricValue: text("metric_value").notNull(),
+  dataType: text("data_type").default("number"), // number, currency, percentage, count
+  calculatedAt: timestamp("calculated_at").defaultNow(),
+  validUntil: timestamp("valid_until"),
+});
 
 // File imports tracking
 export const fileImports = pgTable("file_imports", {
@@ -90,16 +142,19 @@ export const collaborators = pgTable("collaborators", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// Commission Records for detailed tracking
+// Commission Records for detailed tracking - Enhanced for invoice integration
 export const commissionRecords = pgTable("commission_records", {
   id: serial("id").primaryKey(),
   collaboratorId: integer("collaborator_id").references(() => collaborators.id).notNull(),
   representativeId: integer("representative_id").references(() => representatives.id).notNull(),
+  invoiceId: integer("invoice_id").references(() => invoices.id),
+  batchId: integer("batch_id").references(() => invoiceBatches.id),
   transactionDate: timestamp("transaction_date").defaultNow().notNull(),
   revenueType: text("revenue_type").notNull(), // 'volume', 'unlimited'
   baseRevenueAmount: decimal("base_revenue_amount", { precision: 12, scale: 2 }).notNull(),
-  commissionRate: decimal("commission_rate", { precision: 5, scale: 2 }).notNull(), // Percentage
+  commissionRate: decimal("commission_rate", { precision: 5, scale: 2 }).notNull(),
   commissionAmount: decimal("commission_amount", { precision: 12, scale: 2 }).notNull(),
+  calculationMethod: text("calculation_method").default("automatic"), // automatic, manual, override
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -135,7 +190,7 @@ export const backups = pgTable("backups", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-// Relations
+// Relations - Enhanced for Invoice Integration
 export const collaboratorsRelations = relations(collaborators, ({ many }) => ({
   representatives: many(representatives),
   commissionRecords: many(commissionRecords),
@@ -143,12 +198,38 @@ export const collaboratorsRelations = relations(collaborators, ({ many }) => ({
 }));
 
 export const representativesRelations = relations(representatives, ({ many, one }) => ({
+  invoices: many(invoices),
   ledgerEntries: many(financialLedger),
   collaborator: one(collaborators, {
     fields: [representatives.collaboratorId],
     references: [collaborators.id],
   }),
   commissionRecords: many(commissionRecords),
+}));
+
+export const invoiceBatchesRelations = relations(invoiceBatches, ({ many }) => ({
+  invoices: many(invoices),
+  commissionRecords: many(commissionRecords),
+}));
+
+export const invoicesRelations = relations(invoices, ({ one, many }) => ({
+  representative: one(representatives, {
+    fields: [invoices.representativeId],
+    references: [representatives.id],
+  }),
+  batch: one(invoiceBatches, {
+    fields: [invoices.batchId],
+    references: [invoiceBatches.id],
+  }),
+  items: many(invoiceItems),
+  commissionRecords: many(commissionRecords),
+}));
+
+export const invoiceItemsRelations = relations(invoiceItems, ({ one }) => ({
+  invoice: one(invoices, {
+    fields: [invoiceItems.invoiceId],
+    references: [invoices.id],
+  }),
 }));
 
 export const commissionRecordsRelations = relations(commissionRecords, ({ one }) => ({
@@ -159,6 +240,14 @@ export const commissionRecordsRelations = relations(commissionRecords, ({ one })
   representative: one(representatives, {
     fields: [commissionRecords.representativeId],
     references: [representatives.id],
+  }),
+  invoice: one(invoices, {
+    fields: [commissionRecords.invoiceId],
+    references: [invoices.id],
+  }),
+  batch: one(invoiceBatches, {
+    fields: [commissionRecords.batchId],
+    references: [invoiceBatches.id],
   }),
 }));
 
@@ -194,7 +283,26 @@ export const insertRepresentativeSchema = createInsertSchema(representatives).om
   updatedAt: true,
 });
 
-// Clean slate - invoice schemas removed as requested
+// Invoice System v2.0 Schemas
+export const insertInvoiceBatchSchema = createInsertSchema(invoiceBatches).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertInvoiceSchema = createInsertSchema(invoices).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertInvoiceItemSchema = createInsertSchema(invoiceItems).omit({
+  id: true,
+});
+
+export const insertStatisticsCacheSchema = createInsertSchema(statisticsCache).omit({
+  id: true,
+  calculatedAt: true,
+});
 
 // Collaborator schemas moved below to avoid duplicates
 
@@ -241,7 +349,18 @@ export type InsertUser = z.infer<typeof insertUserSchema>;
 export type Representative = typeof representatives.$inferSelect;
 export type InsertRepresentative = z.infer<typeof insertRepresentativeSchema>;
 
-// Clean slate - invoice types removed as requested
+// Invoice System v2.0 Types
+export type InvoiceBatch = typeof invoiceBatches.$inferSelect;
+export type InsertInvoiceBatch = z.infer<typeof insertInvoiceBatchSchema>;
+
+export type Invoice = typeof invoices.$inferSelect;
+export type InsertInvoice = z.infer<typeof insertInvoiceSchema>;
+
+export type InvoiceItem = typeof invoiceItems.$inferSelect;
+export type InsertInvoiceItem = z.infer<typeof insertInvoiceItemSchema>;
+
+export type StatisticsCache = typeof statisticsCache.$inferSelect;
+export type InsertStatisticsCache = z.infer<typeof insertStatisticsCacheSchema>;
 
 export type FileImport = typeof fileImports.$inferSelect;
 export type InsertFileImport = z.infer<typeof insertFileImportSchema>;

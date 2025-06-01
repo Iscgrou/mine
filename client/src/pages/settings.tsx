@@ -574,26 +574,57 @@ export default function Settings() {
             </CardContent>
           </Card>
         );
-                              <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-                                <i className="fas fa-chart-line text-white"></i>
-                              </div>
-                              <h1 className="text-2xl font-bold text-gray-800">{companyName}</h1>
-                            </div>
-                            <p className="text-gray-600">تهران، خیابان ولیعصر، پلاک ۱۲۳</p>
-                            <p className="text-gray-600">تلفن: ۰۲۱-۱۲۳۴۵۶۷۸</p>
-                          </div>
-                          <div className="text-left">
-                            <h2 className="text-xl font-bold text-primary mb-2">فاکتور</h2>
-                            <p className="text-gray-600">شماره: {invoicePrefix}-۲۰۲۵-۰۰۱۲۳</p>
-                            <p className="text-gray-600">تاریخ: ۱۴۰۳/۱۰/۰۹</p>
-                          </div>
-                        </div>
 
-                        {/* Representative Info */}
-                        <div className="bg-gray-50 p-4 rounded-lg mb-6">
-                          <h3 className="font-semibold text-gray-800 mb-3">اطلاعات نماینده</h3>
-                          <div className="grid grid-cols-2 gap-4 text-sm">
-                            <div>
+      default:
+        return null;
+    }
+  };
+
+  if (settingsLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <i className="fas fa-spinner fa-spin text-3xl text-primary mb-4"></i>
+          <p className="text-muted-foreground">در حال بارگذاری تنظیمات...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container mx-auto px-4 py-6 max-w-6xl">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-foreground mb-2">تنظیمات سیستم</h1>
+        <p className="text-muted-foreground">مدیریت تنظیمات کلی سیستم مارفانت</p>
+      </div>
+
+      {/* Tab Navigation */}
+      <div className="flex flex-wrap gap-2 mb-6 border-b border-border">
+        {[
+          { id: "company", label: "اطلاعات شرکت", icon: "fa-building" },
+          { id: "invoice", label: "فاکتور Alpha 35", icon: "fa-file-invoice" },
+          { id: "api", label: "کلیدهای API", icon: "fa-key" }
+        ].map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setSelectedTab(tab.id)}
+            className={`px-4 py-2 rounded-t-lg font-medium transition-colors ${
+              selectedTab === tab.id
+                ? 'bg-primary text-white border-b-2 border-primary'
+                : 'bg-muted text-muted-foreground hover:bg-muted/80'
+            }`}
+          >
+            <i className={`fas ${tab.icon} ml-2`}></i>
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Tab Content */}
+      {renderTabContent()}
+    </div>
+  );
+}
                               <span className="text-gray-600">نام کامل:</span>
                               <span className="font-medium mr-2">احمد محمدی</span>
                             </div>

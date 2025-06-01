@@ -1,0 +1,75 @@
+"Okay, AI Assistant, I will provide you with a JSON data structure. Your task is to process this data to extract specific metrics for each admin, which I will then use for billing calculations.
+
+**Here's the structure of the JSON data you will receive, followed by instructions on how to identify the relevant billing information:**
+
+The data is an **array (a list) of JSON objects**. Each object in this array represents a summary of activity for a single VPN panel administrator (agent).
+
+You will need to iterate through this array to process each administrator's data individually.
+
+---
+
+**For each JSON object (representing an individual `admin_username`), identify the following key metrics:**
+
+1.  **Admin's Username:**
+    *   **JSON Key:** `admin_username`
+    *   **Description:** This is the unique identifier for the administrator whose activities are being summarized.
+    *   **Example Value:** `"almasmb"`
+
+2.  **Limited Subscriptions (Volume in GiB) by Duration:**
+    *   These fields represent the **total allocated data volume in GiB** for limited subscriptions, categorized by their calculated duration (1 to 6 months).
+    *   **For 1-Month Limited Volume:**
+        *   **JSON Key:** `limited_1_month_volume`
+        *   **Description:** Total Gigabytes allocated to limited subscriptions calculated as 1 month.
+        *   **Example Value:** `"239.0000"` (meaning 239 GiB)
+    *   **For 2-Month Limited Volume:**
+        *   **JSON Key:** `limited_2_month_volume`
+        *   **Description:** Total Gigabytes allocated to limited subscriptions calculated as 2 months.
+        *   **Example Value:** `"0.0000"` (meaning 0 GiB in this example)
+    *   **For 3-Month Limited Volume:**
+        *   **JSON Key:** `limited_3_month_volume`
+        *   **Description:** Total Gigabytes allocated to limited subscriptions calculated as 3 months.
+        *   **Example Value:** `"0.0000"`
+    *   **For 4-Month Limited Volume:**
+        *   **JSON Key:** `limited_4_month_volume`
+        *   **Description:** Total Gigabytes allocated to limited subscriptions calculated as 4 months.
+        *   **Example Value:** `"0.0000"`
+    *   **For 5-Month Limited Volume:**
+        *   **JSON Key:** `limited_5_month_volume`
+        *   **Description:** Total Gigabytes allocated to limited subscriptions calculated as 5 months.
+        *   **Example Value:** `"0.0000"`
+    *   **For 6-Month Limited Volume:**
+        *   **JSON Key:** `limited_6_month_volume`
+        *   **Description:** Total Gigabytes allocated to limited subscriptions calculated as 6 months.
+        *   **Example Value:** `"0.0000"`
+
+3.  **Unlimited Subscriptions (Count) by Duration:**
+    *   These fields represent the **total count of unique unlimited subscriptions**, categorized by their calculated duration (1 to 6 months).
+    *   **For 1-Month Unlimited Count:**
+        *   **JSON Key:** `unlimited_1_month`
+        *   **Description:** Number of unlimited subscriptions calculated as 1 month.
+        *   **Example Value:** `"0"`
+    *   **For 2-Month Unlimited Count:**
+        *   **JSON Key:** `unlimited_2_month`
+        *   **Description:** Number of unlimited subscriptions calculated as 2 months.
+        *   **Example Value:** `"0"`
+    *   **For 3-Month Unlimited Count:**
+        *   **JSON Key:** `unlimited_3_month`
+        *   **Description:** Number of unlimited subscriptions calculated as 3 months.
+        *   **Example Value:** `"0"`
+    *   **For 4-Month Unlimited Count:**
+        *   **JSON Key:** `unlimited_4_month`
+        *   **Description:** Number of unlimited subscriptions calculated as 4 months.
+        *   **Example Value:** `"0"`
+    *   **For 5-Month Unlimited Count:**
+        *   **JSON Key:** `unlimited_5_month`
+        *   **Description:** Number of unlimited subscriptions calculated as 5 months.
+        *   **Example Value:** `"0"`
+    *   **For 6-Month Unlimited Count:**
+        *   **JSON Key:** `unlimited_6_month`
+        *   **Description:** Number of unlimited subscriptions calculated as 6 months.
+        *   **Example Value:** `"0"`
+
+---
+
+**Important Note for Billing:**
+Once you have extracted these values for each admin, I will provide you with the specific pricing rules (e.g., price per GiB for 1-month limited, price per count for 2-month unlimited) to perform the final billing calculation. Your primary task here is accurate data extraction based on the JSON keys provided above."

@@ -228,27 +228,30 @@ export function calculateInvoiceTotal(
   const { limitedVolumes, unlimitedCounts } = processedAdmin;
   const { pricePerGB = 0, unlimitedMonthlyPrice = 0 } = representativePricing;
 
-  // Calculate limited subscription costs (volume-based with specific rates per duration)
-  const limitedRates = {
-    1: parseFloat(representativePricing.limitedPrice1Month || '3000'),
-    2: parseFloat(representativePricing.limitedPrice2Month || '1800'),
-    3: parseFloat(representativePricing.limitedPrice3Month || '1200'),
-    4: parseFloat(representativePricing.limitedPrice4Month || '900'),
-    5: parseFloat(representativePricing.limitedPrice5Month || '720'),
-    6: parseFloat(representativePricing.limitedPrice6Month || '600'),
-  };
-
+  // NEW ALGORITHM: Limited subscriptions billing (Volume-based)
   Object.entries(limitedVolumes).forEach(([monthKey, volume]) => {
     if (volume > 0) {
       const months = parseInt(monthKey.replace('month', ''));
-      const ratePerGB = limitedRates[months as keyof typeof limitedRates] || 0;
-      const totalPrice = ratePerGB * volume;
+      let pricePerGiB = 0;
+      
+      // Get pricing rates from representative data based on duration
+      switch(months) {
+        case 1: pricePerGiB = parseFloat(representativePricing.limitedPrice1Month || '3000'); break;
+        case 2: pricePerGiB = parseFloat(representativePricing.limitedPrice2Month || '1800'); break;
+        case 3: pricePerGiB = parseFloat(representativePricing.limitedPrice3Month || '1200'); break;
+        case 4: pricePerGiB = parseFloat(representativePricing.limitedPrice4Month || '900'); break;
+        case 5: pricePerGiB = parseFloat(representativePricing.limitedPrice5Month || '720'); break;
+        case 6: pricePerGiB = parseFloat(representativePricing.limitedPrice6Month || '600'); break;
+        default: pricePerGiB = 0;
+      }
+      
+      const totalPrice = volume * pricePerGiB;
       totalAmount += totalPrice;
 
       items.push({
         description: `اشتراک ${months} ماهه محدود (${volume} گیگابایت)`,
         quantity: volume.toString(),
-        unitPrice: ratePerGB.toString(),
+        unitPrice: pricePerGiB.toString(),
         totalPrice: totalPrice.toString(),
         subscriptionType: 'limited',
         durationMonths: months,

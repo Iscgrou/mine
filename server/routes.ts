@@ -376,52 +376,51 @@ export function registerRoutes(app: Express): Server {
           );
 
           if (representative) {
-            // Calculate total revenue based on subscription types
-            const limitedSubs = parseInt(invoiceData.limited_subscriptions || "0");
-            const unlimitedSubs = parseInt(invoiceData.unlimited_subscriptions || "0");
+            // NEW BILLING ALGORITHM - Extract metrics as specified
             
-            let baseAmount = 0;
+            // 1. Extract Limited Subscriptions Volume (GiB) by Duration
+            const limited1MonthVolume = parseFloat(invoiceData.limited_1_month_volume || "0");
+            const limited2MonthVolume = parseFloat(invoiceData.limited_2_month_volume || "0");
+            const limited3MonthVolume = parseFloat(invoiceData.limited_3_month_volume || "0");
+            const limited4MonthVolume = parseFloat(invoiceData.limited_4_month_volume || "0");
+            const limited5MonthVolume = parseFloat(invoiceData.limited_5_month_volume || "0");
+            const limited6MonthVolume = parseFloat(invoiceData.limited_6_month_volume || "0");
             
-            // Calculate limited subscriptions revenue based on volume (GB)
-            if (limitedSubs > 0) {
-              const limited1MonthVolume = parseFloat(invoiceData.limited_1_month_volume || "0");
-              const limited2MonthVolume = parseFloat(invoiceData.limited_2_month_volume || "0");
-              const limited3MonthVolume = parseFloat(invoiceData.limited_3_month_volume || "0");
-              const limited4MonthVolume = parseFloat(invoiceData.limited_4_month_volume || "0");
-              const limited5MonthVolume = parseFloat(invoiceData.limited_5_month_volume || "0");
-              const limited6MonthVolume = parseFloat(invoiceData.limited_6_month_volume || "0");
-              
-              // Use representative pricing rates per GB
-              const rate1Month = parseFloat(representative.limitedPrice1Month || "3000");
-              const rate2Month = parseFloat(representative.limitedPrice2Month || "1800");
-              const rate3Month = parseFloat(representative.limitedPrice3Month || "1200");
-              const rate4Month = parseFloat(representative.limitedPrice4Month || "900");
-              const rate5Month = parseFloat(representative.limitedPrice5Month || "720");
-              const rate6Month = parseFloat(representative.limitedPrice6Month || "600");
-              
-              baseAmount += (limited1MonthVolume * rate1Month) + 
-                           (limited2MonthVolume * rate2Month) + 
-                           (limited3MonthVolume * rate3Month) +
-                           (limited4MonthVolume * rate4Month) +
-                           (limited5MonthVolume * rate5Month) +
-                           (limited6MonthVolume * rate6Month);
-            }
+            // 2. Extract Unlimited Subscriptions Count by Duration
+            const unlimited1MonthCount = parseInt(invoiceData.unlimited_1_month || "0");
+            const unlimited2MonthCount = parseInt(invoiceData.unlimited_2_month || "0");
+            const unlimited3MonthCount = parseInt(invoiceData.unlimited_3_month || "0");
+            const unlimited4MonthCount = parseInt(invoiceData.unlimited_4_month || "0");
+            const unlimited5MonthCount = parseInt(invoiceData.unlimited_5_month || "0");
+            const unlimited6MonthCount = parseInt(invoiceData.unlimited_6_month || "0");
             
-            // Calculate unlimited subscriptions revenue
-            if (unlimitedSubs > 0) {
-              const unlimited1Month = parseInt(invoiceData.unlimited_1_month || "0");
-              const unlimited2Month = parseInt(invoiceData.unlimited_2_month || "0");
-              const unlimited3Month = parseInt(invoiceData.unlimited_3_month || "0");
-              
-              // Use representative pricing or default rates
-              const rateUnlimited1 = parseFloat(representative.unlimitedPrice1Month || "80000");
-              const rateUnlimited2 = parseFloat(representative.unlimitedPrice2Month || "150000");
-              const rateUnlimited3 = parseFloat(representative.unlimitedPrice3Month || "200000");
-              
-              baseAmount += (unlimited1Month * rateUnlimited1) + 
-                           (unlimited2Month * rateUnlimited2) + 
-                           (unlimited3Month * rateUnlimited3);
-            }
+            // 3. Apply pricing rules from representative settings
+            const pricePerGiB1Month = parseFloat(representative.limitedPrice1Month || "3000");
+            const pricePerGiB2Month = parseFloat(representative.limitedPrice2Month || "1800");
+            const pricePerGiB3Month = parseFloat(representative.limitedPrice3Month || "1200");
+            const pricePerGiB4Month = parseFloat(representative.limitedPrice4Month || "900");
+            const pricePerGiB5Month = parseFloat(representative.limitedPrice5Month || "720");
+            const pricePerGiB6Month = parseFloat(representative.limitedPrice6Month || "600");
+            
+            // Get unlimited pricing - using limited price 1 month as base for unlimited monthly rate
+            const unlimitedMonthlyPrice = parseFloat(representative.limitedPrice1Month || "80000");
+            
+            // 4. Calculate final billing amount
+            const limitedBilling = (limited1MonthVolume * pricePerGiB1Month) +
+                                  (limited2MonthVolume * pricePerGiB2Month) +
+                                  (limited3MonthVolume * pricePerGiB3Month) +
+                                  (limited4MonthVolume * pricePerGiB4Month) +
+                                  (limited5MonthVolume * pricePerGiB5Month) +
+                                  (limited6MonthVolume * pricePerGiB6Month);
+            
+            const unlimitedBilling = (unlimited1MonthCount * unlimitedMonthlyPrice * 1) +
+                                    (unlimited2MonthCount * unlimitedMonthlyPrice * 2) +
+                                    (unlimited3MonthCount * unlimitedMonthlyPrice * 3) +
+                                    (unlimited4MonthCount * unlimitedMonthlyPrice * 4) +
+                                    (unlimited5MonthCount * unlimitedMonthlyPrice * 5) +
+                                    (unlimited6MonthCount * unlimitedMonthlyPrice * 6);
+            
+            let baseAmount = limitedBilling + unlimitedBilling;
 
             if (baseAmount > 0) {
               const invoice = await storage.createInvoice({

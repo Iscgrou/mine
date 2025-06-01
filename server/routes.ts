@@ -5,7 +5,6 @@ import { aegisLogger } from "./aegis-logger";
 import { db } from "./db";
 import { invoices, invoiceBatches, invoiceItems, commissionRecords, collaborators } from "@shared/schema";
 import { eq, sql } from "drizzle-orm";
-import { inArray } from "drizzle-orm";
 import multer from "multer";
 import path from "path";
 import { BatchProcessor } from "./batch-processor";
@@ -685,14 +684,18 @@ export function registerRoutes(app: Express): Server {
 
       const invoiceIds = allInvoices.map(inv => inv.id);
       
-      // Delete commission records for these specific invoices (using inArray)
+      // Delete commission records for these specific invoices
       if (invoiceIds.length > 0) {
-        await db.delete(commissionRecords)
-          .where(inArray(commissionRecords.invoiceId, invoiceIds));
+        for (const invoiceId of invoiceIds) {
+          await db.delete(commissionRecords)
+            .where(eq(commissionRecords.invoiceId, invoiceId));
+        }
         
-        // Delete invoice items for these specific invoices (using inArray)
-        await db.delete(invoiceItems)
-          .where(inArray(invoiceItems.invoiceId, invoiceIds));
+        // Delete invoice items for these specific invoices
+        for (const invoiceId of invoiceIds) {
+          await db.delete(invoiceItems)
+            .where(eq(invoiceItems.invoiceId, invoiceId));
+        }
       }
       
       // Delete all invoices

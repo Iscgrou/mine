@@ -162,14 +162,6 @@ export const commissionRecordsRelations = relations(commissionRecords, ({ one })
     fields: [commissionRecords.representativeId],
     references: [representatives.id],
   }),
-  invoice: one(invoices, {
-    fields: [commissionRecords.invoiceId],
-    references: [invoices.id],
-  }),
-  batch: one(invoiceBatches, {
-    fields: [commissionRecords.batchId],
-    references: [invoiceBatches.id],
-  }),
 }));
 
 export const collaboratorPayoutsRelations = relations(collaboratorPayouts, ({ one }) => ({
@@ -190,40 +182,7 @@ export const financialLedgerRelations = relations(financialLedger, ({ one }) => 
   }),
 }));
 
-export const invoiceBatchesRelations = relations(invoiceBatches, ({ many }) => ({
-  invoices: many(invoices),
-}));
-
-export const invoicesRelations = relations(invoices, ({ one, many }) => ({
-  representative: one(representatives, {
-    fields: [invoices.representativeId],
-    references: [representatives.id],
-  }),
-  batch: one(invoiceBatches, {
-    fields: [invoices.batchId],
-    references: [invoiceBatches.id],
-  }),
-  items: many(invoiceItems),
-  payments: many(payments),
-}));
-
-export const invoiceItemsRelations = relations(invoiceItems, ({ one }) => ({
-  invoice: one(invoices, {
-    fields: [invoiceItems.invoiceId],
-    references: [invoices.id],
-  }),
-}));
-
-export const paymentsRelations = relations(payments, ({ one }) => ({
-  invoice: one(invoices, {
-    fields: [payments.invoiceId],
-    references: [invoices.id],
-  }),
-  representative: one(representatives, {
-    fields: [payments.representativeId],
-    references: [representatives.id],
-  }),
-}));
+// Clean slate - invoice relations removed as requested
 
 // Zod schemas
 export const insertUserSchema = createInsertSchema(users).omit({
@@ -237,24 +196,7 @@ export const insertRepresentativeSchema = createInsertSchema(representatives).om
   updatedAt: true,
 });
 
-export const insertInvoiceBatchSchema = createInsertSchema(invoiceBatches).omit({
-  id: true,
-  createdAt: true,
-});
-
-export const insertInvoiceSchema = createInsertSchema(invoices).omit({
-  id: true,
-  createdAt: true,
-});
-
-export const insertInvoiceItemSchema = createInsertSchema(invoiceItems).omit({
-  id: true,
-});
-
-export const insertPaymentSchema = createInsertSchema(payments).omit({
-  id: true,
-  createdAt: true,
-});
+// Clean slate - invoice schemas removed as requested
 
 // Collaborator schemas moved below to avoid duplicates
 
@@ -301,17 +243,7 @@ export type InsertUser = z.infer<typeof insertUserSchema>;
 export type Representative = typeof representatives.$inferSelect;
 export type InsertRepresentative = z.infer<typeof insertRepresentativeSchema>;
 
-export type InvoiceBatch = typeof invoiceBatches.$inferSelect;
-export type InsertInvoiceBatch = z.infer<typeof insertInvoiceBatchSchema>;
-
-export type Invoice = typeof invoices.$inferSelect;
-export type InsertInvoice = z.infer<typeof insertInvoiceSchema>;
-
-export type InvoiceItem = typeof invoiceItems.$inferSelect;
-export type InsertInvoiceItem = z.infer<typeof insertInvoiceItemSchema>;
-
-export type Payment = typeof payments.$inferSelect;
-export type InsertPayment = z.infer<typeof insertPaymentSchema>;
+// Clean slate - invoice types removed as requested
 
 export type FileImport = typeof fileImports.$inferSelect;
 export type InsertFileImport = z.infer<typeof insertFileImportSchema>;

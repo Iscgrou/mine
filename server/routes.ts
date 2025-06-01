@@ -318,11 +318,18 @@ export function registerRoutes(app: Express): Server {
   app.get("/api/invoice/preview", async (req, res) => {
     try {
       const config = req.query.config;
-      let invoiceConfig = {};
+      let invoiceConfig: any = {
+        template: 'professional',
+        headerStyle: 'centered',
+        colorScheme: 'blue-professional',
+        fontFamily: 'iranian-sans',
+        itemGrouping: 'by-duration',
+        calculationDisplay: 'detailed'
+      };
       
       if (config) {
         try {
-          invoiceConfig = JSON.parse(Buffer.from(config as string, 'base64').toString());
+          invoiceConfig = { ...invoiceConfig, ...JSON.parse(Buffer.from(config as string, 'base64').toString()) };
         } catch (e) {
           console.warn('Failed to parse invoice config');
         }

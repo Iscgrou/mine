@@ -15,6 +15,7 @@ interface Invoice {
     id: number;
     fullName: string;
     adminUsername: string;
+    telegramId: string;
   } | null;
   batch: {
     id: number;
@@ -321,8 +322,8 @@ export default function InvoicesPage() {
                             size="sm"
                             variant={invoice.telegramSent ? "secondary" : "outline"}
                             onClick={() => {
-                              if (invoice.representative?.adminUsername) {
-                                window.open(`https://t.me/${invoice.representative.adminUsername}`, '_blank');
+                              if (invoice.representative?.telegramId) {
+                                window.open(`https://t.me/${invoice.representative.telegramId}`, '_blank');
                                 sendToTelegramMutation.mutate(invoice.id);
                               } else {
                                 toast({

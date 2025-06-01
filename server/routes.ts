@@ -447,7 +447,7 @@ export function registerRoutes(app: Express): Server {
                   invoiceId: invoice.id,
                   batchId: batch.id,
                   transactionDate: new Date(),
-                  revenueType: limitedSubs > 0 ? "limited" : "unlimited",
+                  revenueType: limitedBilling > 0 ? "limited" : "unlimited",
                   baseRevenueAmount: baseAmount.toString(),
                   commissionRate: commissionRate.toString(),
                   commissionAmount: commissionAmount.toString(),

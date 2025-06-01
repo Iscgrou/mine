@@ -218,7 +218,12 @@ export function processJSONData(data: any): JSONProcessingResult {
 export function calculateInvoiceTotal(
   processedAdmin: ProcessedAdminData,
   representativePricing: {
-    pricePerGB?: number;
+    limitedPrice1Month?: string;
+    limitedPrice2Month?: string;
+    limitedPrice3Month?: string;
+    limitedPrice4Month?: string;
+    limitedPrice5Month?: string;
+    limitedPrice6Month?: string;
     unlimitedMonthlyPrice?: number;
   }
 ): { totalAmount: number; items: any[] } {
@@ -226,9 +231,9 @@ export function calculateInvoiceTotal(
   const items: any[] = [];
 
   const { limitedVolumes, unlimitedCounts } = processedAdmin;
-  const { pricePerGB = 0, unlimitedMonthlyPrice = 0 } = representativePricing;
+  const { unlimitedMonthlyPrice = 0 } = representativePricing;
 
-  // NEW ALGORITHM: Limited subscriptions billing (Volume-based)
+  // VOLUME-BASED ALGORITHM: Limited subscriptions billing using admin-specific pricing
   Object.entries(limitedVolumes).forEach(([monthKey, volume]) => {
     if (volume > 0) {
       const months = parseInt(monthKey.replace('month', ''));
@@ -236,12 +241,12 @@ export function calculateInvoiceTotal(
       
       // Get pricing rates from representative data based on duration
       switch(months) {
-        case 1: pricePerGiB = parseFloat(representativePricing.limitedPrice1Month || '3000'); break;
-        case 2: pricePerGiB = parseFloat(representativePricing.limitedPrice2Month || '1800'); break;
-        case 3: pricePerGiB = parseFloat(representativePricing.limitedPrice3Month || '1200'); break;
-        case 4: pricePerGiB = parseFloat(representativePricing.limitedPrice4Month || '900'); break;
-        case 5: pricePerGiB = parseFloat(representativePricing.limitedPrice5Month || '720'); break;
-        case 6: pricePerGiB = parseFloat(representativePricing.limitedPrice6Month || '600'); break;
+        case 1: pricePerGiB = parseFloat(representativePricing.limitedPrice1Month || '900'); break;
+        case 2: pricePerGiB = parseFloat(representativePricing.limitedPrice2Month || '900'); break;
+        case 3: pricePerGiB = parseFloat(representativePricing.limitedPrice3Month || '900'); break;
+        case 4: pricePerGiB = parseFloat(representativePricing.limitedPrice4Month || '1200'); break;
+        case 5: pricePerGiB = parseFloat(representativePricing.limitedPrice5Month || '1400'); break;
+        case 6: pricePerGiB = parseFloat(representativePricing.limitedPrice6Month || '1600'); break;
         default: pricePerGiB = 0;
       }
       

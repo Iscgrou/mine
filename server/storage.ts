@@ -394,6 +394,8 @@ export class DatabaseStorage implements IStorage {
     return created;
   }
 
+
+
   async updateCollaborator(id: number, updates: Partial<InsertCollaborator>): Promise<Collaborator> {
     const [updated] = await db
       .update(collaborators)

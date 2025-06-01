@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { aegisLogger } from "./aegis-logger";
 import { db } from "./db";
-import { invoices, invoiceBatches, invoiceItems, commissionRecords } from "@shared/schema";
+import { invoices, invoiceBatches, invoiceItems, commissionRecords, collaborators } from "@shared/schema";
 import { eq, sql } from "drizzle-orm";
 import multer from "multer";
 import path from "path";
@@ -429,7 +429,8 @@ export function registerRoutes(app: Express): Server {
 
               // Create commission record if representative has collaborator
               if (representative.collaboratorId) {
-                const commissionRate = 10.00; // 10% commission
+                const collaborator = await storage.getCollaborator(representative.collaboratorId);
+                const commissionRate = parseFloat(collaborator?.commissionPercentage || "10.00");
                 const commissionAmount = baseAmount * (commissionRate / 100);
                 
                 await storage.createCommissionRecord({

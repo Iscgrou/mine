@@ -60,100 +60,42 @@ export default function Settings() {
 
   const { data: settings, isLoading: settingsLoading } = useQuery<Setting[]>({
     queryKey: ['/api/settings'],
+    retry: false,
+    staleTime: 30000
   });
 
+  // Save setting mutation
   const saveSettingMutation = useMutation({
-    mutationFn: (data: { key: string; value: string; description?: string }) =>
-      apiRequest('POST', '/api/settings', data),
+    mutationFn: async (setting: { key: string; value: string; description?: string }) => {
+      return apiRequest('/api/settings', {
+        method: 'POST',
+        body: JSON.stringify(setting),
+        headers: { 'Content-Type': 'application/json' }
+      });
+    },
     onSuccess: () => {
+      toast({
+        title: "تنظیمات ذخیره شد",
+        description: "تغییرات با موفقیت اعمال شد"
+      });
       queryClient.invalidateQueries({ queryKey: ['/api/settings'] });
-      toast({
-        title: "موفقیت",
-        description: "تنظیمات با موفقیت ذخیره شد",
-      });
-    },
-    onError: () => {
-      toast({
-        title: "خطا",
-        description: "خطا در ذخیره تنظیمات",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const saveApiKeyMutation = useMutation({
-    mutationFn: (data: { keyType: string; keyValue: string }) =>
-      apiRequest('POST', '/api/api-keys/validate', data),
-    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/api-keys/status'] });
-      toast({
-        title: "موفقیت",
-        description: "کلید API با موفقیت ذخیره شد",
-      });
     },
     onError: () => {
       toast({
-        title: "خطا",
-        description: "خطا در ذخیره کلید API",
-        variant: "destructive",
+        title: "خطا در ذخیره تنظیمات",
+        description: "لطفاً دوباره تلاش کنید",
+        variant: "destructive"
       });
-    },
-  });
-
-  // Danger Zone mutations
-  const systemResetMutation = useMutation({
-    mutationFn: () => apiRequest('POST', '/api/system/reset', {}),
-    onSuccess: (data: any) => {
-      toast({
-        title: "موفقیت",
-        description: data.message,
-      });
-    },
-    onError: () => {
-      toast({
-        title: "خطا",
-        description: "خطا در بازنشانی سیستم",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const emergencyBackupMutation = useMutation({
-    mutationFn: () => apiRequest('POST', '/api/system/backup-emergency', {}),
-    onSuccess: (data: any) => {
-      toast({
-        title: "موفقیت",
-        description: data.message,
-      });
-    },
-    onError: () => {
-      toast({
-        title: "خطا",
-        description: "خطا در ایجاد پشتیبان اضطراری",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const handleSaveVertexKey = () => {
-    if (!vertexApiKey.trim()) {
-      toast({
-        title: "خطا",
-        description: "لطفاً کلید API Vertex AI را وارد کنید", 
-        variant: "destructive",
-      });
-      return;
     }
-    saveApiKeyMutation.mutate({ keyType: 'google_cloud_credentials', keyValue: vertexApiKey });
-  };
+  });
 
   const handleSaveCompanySettings = () => {
-    saveSettingMutation.mutate({ key: 'companyName', value: companyName });
-    saveSettingMutation.mutate({ key: 'currency', value: currency });
-  };
-
-  const handleSaveInvoiceSettings = () => {
-    saveSettingMutation.mutate({ key: 'invoicePrefix', value: invoicePrefix });
+    saveSettingMutation.mutate({
+      key: 'company_settings',
+      value: JSON.stringify({ companyName, currency, invoicePrefix }),
+      description: 'Company Configuration Settings'
+    });
   };
 
   const renderTabContent = () => {
@@ -168,44 +110,44 @@ export default function Settings() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-2">نام شرکت</label>
                   <Input
                     value={companyName}
                     onChange={(e) => setCompanyName(e.target.value)}
-                    placeholder="نام شرکت"
-                    className="bg-input border-border text-foreground"
+                    placeholder="نام شرکت خود را وارد کنید"
                   />
                 </div>
+
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-2">واحد پول</label>
-                  <Input
+                  <select 
                     value={currency}
                     onChange={(e) => setCurrency(e.target.value)}
-                    placeholder="تومان"
-                    className="bg-input border-border text-foreground"
-                  />
+                    className="w-full p-2 border rounded-md"
+                  >
+                    <option value="تومان">تومان</option>
+                    <option value="ریال">ریال</option>
+                    <option value="درهم">درهم</option>
+                  </select>
                 </div>
+
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-2">پیشوند شماره فاکتور</label>
                   <Input
                     value={invoicePrefix}
                     onChange={(e) => setInvoicePrefix(e.target.value)}
-                    placeholder="INV"
-                    className="bg-input border-border text-foreground"
+                    placeholder="مثال: INV, MF"
                   />
                 </div>
-              </div>
-              <div className="mt-6 space-x-2">
-                <Button onClick={handleSaveCompanySettings} disabled={saveSettingMutation.isPending}>
-                  <i className="fas fa-save ml-2"></i>
-                  ذخیره اطلاعات شرکت
-                </Button>
-                <Button onClick={handleSaveInvoiceSettings} disabled={saveSettingMutation.isPending}>
-                  <i className="fas fa-save ml-2"></i>
-                  ذخیره تنظیمات فاکتور
-                </Button>
+
+                <div className="mt-6">
+                  <Button onClick={handleSaveCompanySettings} disabled={saveSettingMutation.isPending}>
+                    <i className="fas fa-save ml-2"></i>
+                    ذخیره اطلاعات شرکت
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -619,457 +561,6 @@ export default function Settings() {
           </button>
         ))}
       </div>
-
-      {/* Tab Content */}
-      {renderTabContent()}
-    </div>
-  );
-}
-                              <span className="text-gray-600">نام کامل:</span>
-                              <span className="font-medium mr-2">احمد محمدی</span>
-                            </div>
-                            <div>
-                              <span className="text-gray-600">نام کاربری ادمین:</span>
-                              <span className="font-medium mr-2">ahmad_admin</span>
-                            </div>
-                            {includeStoreName && (
-                              <div>
-                                <span className="text-gray-600">نام فروشگاه:</span>
-                                <span className="font-medium mr-2">فروشگاه تکنولوژی محمدی</span>
-                              </div>
-                            )}
-                            {includeTelegramId && (
-                              <div>
-                                <span className="text-gray-600">تلگرام:</span>
-                                <span className="font-medium mr-2">@ahmad_tech</span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Items Table */}
-                        <div className="mb-6">
-                          <table className="w-full border-collapse">
-                            <thead>
-                              <tr className="bg-primary text-white">
-                                <th className="border p-2 text-right">شرح خدمات</th>
-                                <th className="border p-2 text-center">تعداد</th>
-                                <th className="border p-2 text-center">قیمت واحد</th>
-                                <th className="border p-2 text-center">مبلغ کل</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr>
-                                <td className="border p-2">اشتراک حجمی - ماه ۱</td>
-                                <td className="border p-2 text-center">۱۰</td>
-                                <td className="border p-2 text-center">۵۰,۰۰۰ {currency}</td>
-                                <td className="border p-2 text-center">۵۰۰,۰۰۰ {currency}</td>
-                              </tr>
-                              <tr className="bg-gray-50">
-                                <td className="border p-2">اشتراک نامحدود - ماه ۱</td>
-                                <td className="border p-2 text-center">۵</td>
-                                <td className="border p-2 text-center">۱۲۰,۰۰۰ {currency}</td>
-                                <td className="border p-2 text-center">۶۰۰,۰۰۰ {currency}</td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-
-                        {/* Total */}
-                        <div className="flex justify-end">
-                          <div className="w-64">
-                            <div className="flex justify-between py-2 border-b">
-                              <span>جمع کل:</span>
-                              <span className="font-semibold">۱,۱۰۰,۰۰۰ {currency}</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Notes */}
-                        {includeNotes && (
-                          <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded">
-                            <h4 className="font-medium text-gray-800 mb-2">یادداشت:</h4>
-                            <p className="text-sm text-gray-600">لطفاً مبلغ فاکتور را تا تاریخ سررسید پرداخت نمایید.</p>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Custom Notes Section */}
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">یادداشت پیش‌فرض فاکتور</label>
-                  <textarea
-                    placeholder="متن یادداشت پیش‌فرض که در همه فاکتورها نمایش داده خواهد شد..."
-                    className="w-full p-3 border border-gray-300 rounded-lg resize-none"
-                    rows={4}
-                    defaultValue="لطفاً مبلغ فاکتور را تا تاریخ سررسید پرداخت نمایید. در صورت سوال با پشتیبانی تماس بگیرید."
-                  />
-                  <p className="text-xs text-gray-500 mt-1">این یادداشت در انتهای همه فاکتورها نمایش داده می‌شود</p>
-                </div>
-
-                {/* Save Settings */}
-                <div className="pt-4 border-t border-gray-200">
-                  <Button 
-                    className="w-full"
-                    onClick={() => {
-                      // Save invoice template settings
-                      saveSettingMutation.mutate({
-                        key: 'invoice_template_settings',
-                        value: JSON.stringify({
-                          templateStyle,
-                          includeStoreName,
-                          includeTelegramId,
-                          includeNotes,
-                          outputFormat
-                        }),
-                        description: 'Invoice template configuration'
-                      });
-                    }}
-                    disabled={saveSettingMutation.isPending}
-                  >
-                    <i className="fas fa-save ml-2"></i>
-                    ذخیره تنظیمات قالب فاکتور
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        );
-
-      case "grok":
-        return (
-          <Card className="bg-card border-border">
-            <CardHeader>
-              <CardTitle className="text-primary flex items-center gap-2">
-                <i className="fas fa-robot"></i>
-                Vertex AI Insight Engine
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {!apiKeysLoading && apiKeyStatus && (
-                  <div className={`p-3 rounded-lg border ${apiKeyStatus.vertexAI ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'}`}>
-                    <div className="flex items-center gap-2">
-                      <i className={`fas ${apiKeyStatus.vertexAI ? 'fa-check-circle text-green-600' : 'fa-exclamation-triangle text-red-600'}`}></i>
-                      <span className={`text-sm font-medium ${apiKeyStatus.vertexAI ? 'text-green-800' : 'text-red-800'}`}>
-                        {apiKeyStatus.vertexAI ? 'کلید Vertex AI تنظیم شده و آماده استفاده' : 'کلید Vertex AI تنظیم نشده - لطفاً کلید API را وارد کنید'}
-                      </span>
-                    </div>
-                  </div>
-                )}
-                
-                {apiKeysLoading && (
-                  <div className="p-3 rounded-lg border bg-gray-50 border-gray-200">
-                    <div className="flex items-center gap-2">
-                      <i className="fas fa-spinner fa-spin text-gray-600"></i>
-                      <span className="text-sm font-medium text-gray-800">
-                        در حال بررسی وضعیت کلیدها...
-                      </span>
-                    </div>
-                  </div>
-                )}
-                
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">کلید Vertex AI API</label>
-                  <Input
-                    type="password"
-                    value={vertexApiKey}
-                    onChange={(e) => setVertexApiKey(e.target.value)}
-                    placeholder="کلید API Vertex AI"
-                    className="bg-input border-border text-foreground"
-                  />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    کلید API برای استفاده از قابلیت‌های پیشرفته Vertex AI
-                  </p>
-                </div>
-
-                <div className="mt-6">
-                  <Button onClick={handleSaveVertexKey} disabled={saveApiKeyMutation.isPending}>
-                    <i className="fas fa-save ml-2"></i>
-                    ذخیره کلید Vertex AI
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        );
-
-      case "training":
-        return (
-          <Card className="bg-card border-border">
-            <CardHeader>
-              <CardTitle className="text-primary flex items-center gap-2">
-                <i className="fas fa-graduation-cap"></i>
-                راهنماهای آموزشی MarFanet
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-6">
-                {/* Overview */}
-                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                  <h3 className="font-semibold text-blue-800 mb-2">درباره راهنماهای کاربری</h3>
-                  <p className="text-blue-700 text-sm">
-                    راهنماهای جامع و حرفه‌ای برای استفاده از تمام بخش‌های سیستم MarFanet با پشتیبانی کامل از زبان فارسی
-                  </p>
-                </div>
-
-                {/* Admin Panel Guide */}
-                <div className="border border-gray-200 rounded-lg p-6">
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0">
-                      <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <i className="fas fa-tools text-blue-600 text-xl"></i>
-                      </div>
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">راهنمای پنل مدیریت</h3>
-                      <p className="text-gray-600 text-sm mb-4">
-                        راهنمای کامل برای مدیران سیستم شامل مدیریت نمایندگان، فاکتورها، تحلیل‌گری پیشرفته و تنظیمات سیستم
-                      </p>
-                      <div className="grid grid-cols-2 gap-4 mb-4">
-                        <div className="text-sm">
-                          <span className="font-medium">شامل موضوعات:</span>
-                          <ul className="list-disc list-inside mt-1 text-gray-600 space-y-1">
-                            <li>مدیریت 218 نماینده فعال</li>
-                            <li>صدور و پیگیری 68 فاکتور</li>
-                            <li>تحلیل‌گری با Vertex AI</li>
-                            <li>سیستم نظارت Aegis</li>
-                          </ul>
-                        </div>
-                        <div className="text-sm">
-                          <span className="font-medium">ویژگی‌ها:</span>
-                          <ul className="list-disc list-inside mt-1 text-gray-600 space-y-1">
-                            <li>طراحی حرفه‌ای RTL</li>
-                            <li>فونت فارسی Vazirmatn</li>
-                            <li>آماده چاپ PDF</li>
-                            <li>تصاویر و نمودار</li>
-                          </ul>
-                        </div>
-                      </div>
-                      <div className="flex gap-3">
-                        <Button 
-                          onClick={() => window.open('/docs/admin-panel-user-guide.html', '_blank')}
-                          className="flex items-center gap-2"
-                        >
-                          <i className="fas fa-eye"></i>
-                          پیش‌نمایش آنلاین
-                        </Button>
-                        <Button 
-                          variant="outline"
-                          onClick={() => {
-                            window.open('/api/docs/admin-guide/download', '_blank');
-                          }}
-                          className="flex items-center gap-2"
-                        >
-                          <i className="fas fa-download"></i>
-                          دانلود PDF
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* CRM Panel Guide */}
-                <div className="border border-gray-200 rounded-lg p-6">
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0">
-                      <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                        <i className="fas fa-users text-green-600 text-xl"></i>
-                      </div>
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-gray-900 mb-2">راهنمای پنل CRM</h3>
-                      <p className="text-gray-600 text-sm mb-4">
-                        راهنمای کاربری برای نمایندگان فروش شامل مدیریت مشتریان، تیکت‌ها و ویژگی‌های هوش مصنوعی
-                      </p>
-                      <div className="grid grid-cols-2 gap-4 mb-4">
-                        <div className="text-sm">
-                          <span className="font-medium">شامل موضوعات:</span>
-                          <ul className="list-disc list-inside mt-1 text-gray-600 space-y-1">
-                            <li>مدیریت 245 مشتری</li>
-                            <li>سیستم تیکت‌گذاری</li>
-                            <li>پردازش صوت فارسی</li>
-                            <li>آماده‌سازی هوشمند تماس</li>
-                          </ul>
-                        </div>
-                        <div className="text-sm">
-                          <span className="font-medium">ویژگی‌های ویژه:</span>
-                          <ul className="list-disc list-inside mt-1 text-gray-600 space-y-1">
-                            <li>تشخیص اصطلاحات V2Ray</li>
-                            <li>دقت 95% پردازش فارسی</li>
-                            <li>تقویم شمسی</li>
-                            <li>هوش مصنوعی Nova</li>
-                          </ul>
-                        </div>
-                      </div>
-                      <div className="flex gap-3">
-                        <Button 
-                          onClick={() => window.open('/docs/crm-panel-user-guide.html', '_blank')}
-                          className="flex items-center gap-2"
-                        >
-                          <i className="fas fa-eye"></i>
-                          پیش‌نمایش آنلاین
-                        </Button>
-                        <Button 
-                          variant="outline"
-                          onClick={() => {
-                            window.open('/api/docs/crm-guide/download', '_blank');
-                          }}
-                          className="flex items-center gap-2"
-                        >
-                          <i className="fas fa-download"></i>
-                          دانلود PDF
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* System Statistics */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="text-center p-4 bg-gray-50 rounded-lg">
-                    <div className="text-2xl font-bold text-blue-600">2.0</div>
-                    <div className="text-sm text-gray-600">نسخه راهنما</div>
-                  </div>
-                  <div className="text-center p-4 bg-gray-50 rounded-lg">
-                    <div className="text-2xl font-bold text-green-600">95%</div>
-                    <div className="text-sm text-gray-600">دقت پردازش فارسی</div>
-                  </div>
-                  <div className="text-center p-4 bg-gray-50 rounded-lg">
-                    <div className="text-2xl font-bold text-purple-600">Vertex AI</div>
-                    <div className="text-sm text-gray-600">هوش مصنوعی</div>
-                  </div>
-                  <div className="text-center p-4 bg-gray-50 rounded-lg">
-                    <div className="text-2xl font-bold text-orange-600">24/7</div>
-                    <div className="text-sm text-gray-600">پشتیبانی سیستم</div>
-                  </div>
-                </div>
-
-                {/* Instructions */}
-                <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                  <h4 className="font-medium text-yellow-800 mb-2">نحوه تبدیل به PDF:</h4>
-                  <ol className="list-decimal list-inside text-sm text-yellow-700 space-y-1">
-                    <li>روی دکمه "دانلود PDF" کلیک کنید یا پیش‌نمایش را باز کنید</li>
-                    <li>کلیدهای Ctrl+P (یا Cmd+P در Mac) را فشار دهید</li>
-                    <li>گزینه "Save as PDF" را انتخاب کنید</li>
-                    <li>تنظیمات مناسب صفحه را انتخاب کنید</li>
-                  </ol>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        );
-
-      case "danger":
-        return (
-          <Card className="bg-card border-border border-red-200">
-            <CardHeader>
-              <CardTitle className="text-red-600 flex items-center gap-2">
-                <i className="fas fa-exclamation-triangle"></i>
-                منطقه خطر
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-                  <h3 className="font-semibold text-red-800 mb-2">پاک کردن کامل داده‌ها</h3>
-                  <p className="text-red-700 text-sm mb-4">
-                    این عمل تمام اطلاعات شامل نمایندگان، فاکتورها، پرداخت‌ها و تنظیمات را حذف می‌کند
-                  </p>
-                  <Button 
-                    variant="destructive" 
-                    className="w-full"
-                    onClick={() => systemResetMutation.mutate()}
-                    disabled={systemResetMutation.isPending}
-                  >
-                    <i className="fas fa-trash ml-2"></i>
-                    {systemResetMutation.isPending ? "در حال پاک کردن..." : "پاک کردن کامل سیستم"}
-                  </Button>
-                </div>
-                
-                <div className="p-4 bg-orange-50 border border-orange-200 rounded-lg">
-                  <h3 className="font-semibold text-orange-800 mb-2">ایجاد پشتیبان اضطراری</h3>
-                  <p className="text-orange-700 text-sm mb-4">
-                    ایجاد نسخه پشتیبان کامل از تمام داده‌های سیستم
-                  </p>
-                  <Button 
-                    variant="outline" 
-                    className="w-full border-orange-300 text-orange-700 hover:bg-orange-100"
-                    onClick={() => emergencyBackupMutation.mutate()}
-                    disabled={emergencyBackupMutation.isPending}
-                  >
-                    <i className="fas fa-download ml-2"></i>
-                    {emergencyBackupMutation.isPending ? "در حال ایجاد پشتیبان..." : "ایجاد پشتیبان"}
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        );
-
-      default:
-        return (
-          <Card className="bg-card border-border">
-            <CardContent className="text-center py-8">
-              <i className="fas fa-cog text-4xl text-muted-foreground mb-4"></i>
-              <p className="text-muted-foreground">تب انتخاب شده یافت نشد</p>
-            </CardContent>
-          </Card>
-        );
-    }
-  };
-
-  if (settingsLoading) {
-    return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold text-foreground">تنظیمات</h1>
-        </div>
-        <div className="text-center py-8">
-          <i className="fas fa-spinner fa-spin text-2xl text-primary mb-2"></i>
-          <p>در حال بارگیری تنظیمات...</p>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-foreground">تنظیمات</h1>
-      </div>
-
-      {/* Tab Navigation */}
-      <Card className="bg-card border-border">
-        <CardContent className="p-0">
-          <div className="border-b border-border">
-            <nav className="flex space-x-8 px-6" dir="rtl">
-              {[
-                { id: 'company', label: 'شرکت', icon: 'fa-building' },
-                { id: 'invoice', label: 'قالب فاکتور', icon: 'fa-file-invoice' },
-                { id: 'grok', label: 'Vertex AI', icon: 'fa-robot' },
-                { id: 'training', label: 'آموزش', icon: 'fa-graduation-cap' },
-                { id: 'danger', label: 'منطقه خطر', icon: 'fa-exclamation-triangle' }
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setSelectedTab(tab.id)}
-                  className={`py-4 px-2 border-b-2 font-medium text-sm flex items-center gap-2 transition-colors ${
-                    selectedTab === tab.id
-                      ? 'border-primary text-primary'
-                      : 'border-transparent text-muted-foreground hover:text-foreground hover:border-gray-300'
-                  }`}
-                >
-                  <i className={`fas ${tab.icon}`}></i>
-                  {tab.label}
-                </button>
-              ))}
-            </nav>
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Tab Content */}
       {renderTabContent()}

@@ -27,14 +27,26 @@ export default function Settings() {
   const [vertexApiKey, setVertexApiKey] = useState("");
   const [selectedTab, setSelectedTab] = useState("company");
   
-  // Invoice template states
-  const [templateStyle, setTemplateStyle] = useState("modern");
-  const [includeStoreName, setIncludeStoreName] = useState(true);
-  const [includeTelegramId, setIncludeTelegramId] = useState(true);
-  const [includeNotes, setIncludeNotes] = useState(false);
-  const [logoFile, setLogoFile] = useState<File | null>(null);
-  const [outputFormat, setOutputFormat] = useState("pdf");
-  const [showPreview, setShowPreview] = useState(false);
+  // Alpha 35 Invoice Configuration States
+  const [invoiceConfig, setInvoiceConfig] = useState({
+    template: "professional",
+    headerStyle: "centered",
+    showLogo: true,
+    logoPosition: "top-left",
+    companyInfoDisplay: "full",
+    representativeInfoLevel: "detailed",
+    itemGrouping: "by-duration",
+    calculationDisplay: "detailed",
+    commissionVisibility: "hidden",
+    footerContent: "contact-info",
+    colorScheme: "blue-professional",
+    fontFamily: "iranian-sans",
+    paperSize: "a4",
+    margins: "standard",
+    watermark: false,
+    qrCode: true,
+    digitalSignature: false
+  });
 
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -204,129 +216,287 @@ export default function Settings() {
           <Card className="bg-card border-border">
             <CardHeader>
               <CardTitle className="text-primary flex items-center gap-2">
-                <i className="fas fa-file-invoice"></i>
-                تنظیمات قالب فاکتور
+                <i className="fas fa-cogs"></i>
+                سیستم پیکربندی فاکتور Alpha 35
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-6">
-                {/* Template Style Selection */}
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-3">انتخاب قالب طراحی</label>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {[
-                      { 
-                        id: 'modern_clean', 
-                        name: 'مدرن و پاک', 
-                        desc: 'طراحی مدرن با گرادیانت‌های هندسی، سایه‌های نرم و layout شبکه‌ای', 
-                        icon: 'fa-magic',
-                        colors: ['#4f46e5', '#10b981', '#667eea']
-                      },
-                      { 
-                        id: 'classic_formal', 
-                        name: 'کلاسیک و رسمی', 
-                        desc: 'ساختار رسمی اداری با حاشیه‌های دوبل و قالب‌بندی جدولی کلاسیک', 
-                        icon: 'fa-university',
-                        colors: ['#1f2937', '#d97706', '#374151']
-                      },
-                      { 
-                        id: 'persian_optimized', 
-                        name: 'بهینه شده فارسی', 
-                        desc: 'طراحی هنری با المان‌های فرهنگی ایرانی، خوشنویسی و رنگ‌های سنتی', 
-                        icon: 'fa-star-and-crescent',
-                        colors: ['#059669', '#dc2626', '#34d399']
-                      }
-                    ].map((style) => (
-                      <div
-                        key={style.id}
-                        className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
-                          templateStyle === style.id ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-gray-300'
-                        }`}
-                        onClick={() => setTemplateStyle(style.id)}
-                      >
-                        <div className="flex items-center gap-3 mb-2">
-                          <i className={`fas ${style.icon} text-lg ${templateStyle === style.id ? 'text-primary' : 'text-gray-400'}`}></i>
-                          <h3 className={`font-medium ${templateStyle === style.id ? 'text-primary' : 'text-gray-700'}`}>{style.name}</h3>
-                        </div>
-                        <p className="text-sm text-gray-600 mb-3">{style.desc}</p>
-                        
-                        {/* Color palette preview */}
-                        <div className="flex gap-2 mb-3">
-                          {style.colors.map((color, index) => (
-                            <div 
-                              key={index}
-                              className="w-4 h-4 rounded-full border border-gray-300"
-                              style={{ backgroundColor: color }}
-                            />
-                          ))}
-                        </div>
-                        
-                        {/* Preview button */}
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            window.open(`/api/invoice/preview/${style.id}`, '_blank');
-                          }}
-                          className="text-xs bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition-colors"
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                {/* Template & Layout Configuration */}
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4 text-foreground">قالب و طرح‌بندی</h3>
+                    
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium mb-2">نوع قالب</label>
+                        <select 
+                          value={invoiceConfig.template}
+                          onChange={(e) => setInvoiceConfig({...invoiceConfig, template: e.target.value})}
+                          className="w-full p-2 border rounded-md"
                         >
-                          پیش‌نمایش
-                        </button>
+                          <option value="professional">حرفه‌ای</option>
+                          <option value="modern">مدرن</option>
+                          <option value="classic">کلاسیک</option>
+                          <option value="minimalist">مینیمال</option>
+                          <option value="iranian-traditional">سنتی ایرانی</option>
+                        </select>
                       </div>
-                    ))}
+                      
+                      <div>
+                        <label className="block text-sm font-medium mb-2">سبک هدر</label>
+                        <select 
+                          value={invoiceConfig.headerStyle}
+                          onChange={(e) => setInvoiceConfig({...invoiceConfig, headerStyle: e.target.value})}
+                          className="w-full p-2 border rounded-md"
+                        >
+                          <option value="centered">متمرکز</option>
+                          <option value="left-aligned">چپ‌چین</option>
+                          <option value="split">دوطرفه</option>
+                          <option value="banner">بنری</option>
+                        </select>
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium mb-2">طرح رنگی</label>
+                        <select 
+                          value={invoiceConfig.colorScheme}
+                          onChange={(e) => setInvoiceConfig({...invoiceConfig, colorScheme: e.target.value})}
+                          className="w-full p-2 border rounded-md"
+                        >
+                          <option value="blue-professional">آبی حرفه‌ای</option>
+                          <option value="green-corporate">سبز شرکتی</option>
+                          <option value="gray-elegant">خاکستری شیک</option>
+                          <option value="persian-blue">آبی ایرانی</option>
+                          <option value="custom">سفارشی</option>
+                        </select>
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium mb-2">نوع فونت</label>
+                        <select 
+                          value={invoiceConfig.fontFamily}
+                          onChange={(e) => setInvoiceConfig({...invoiceConfig, fontFamily: e.target.value})}
+                          className="w-full p-2 border rounded-md"
+                        >
+                          <option value="iranian-sans">ایران Sans</option>
+                          <option value="vazir">وزیر</option>
+                          <option value="yekan">یکان</option>
+                          <option value="sahel">ساحل</option>
+                          <option value="custom">سفارشی</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Content Configuration */}
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4 text-foreground">محتوا و اطلاعات</h3>
+                    
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium mb-2">سطح جزئیات نماینده</label>
+                        <select 
+                          value={invoiceConfig.representativeInfoLevel}
+                          onChange={(e) => setInvoiceConfig({...invoiceConfig, representativeInfoLevel: e.target.value})}
+                          className="w-full p-2 border rounded-md"
+                        >
+                          <option value="basic">پایه (نام و کد)</option>
+                          <option value="detailed">تفصیلی (کامل)</option>
+                          <option value="contact-only">فقط تماس</option>
+                          <option value="business-focused">تجاری محور</option>
+                        </select>
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium mb-2">گروه‌بندی آیتم‌ها</label>
+                        <select 
+                          value={invoiceConfig.itemGrouping}
+                          onChange={(e) => setInvoiceConfig({...invoiceConfig, itemGrouping: e.target.value})}
+                          className="w-full p-2 border rounded-md"
+                        >
+                          <option value="by-duration">بر اساس مدت</option>
+                          <option value="by-type">بر اساس نوع (محدود/نامحدود)</option>
+                          <option value="by-volume">بر اساس حجم</option>
+                          <option value="flat">تخت (بدون گروه‌بندی)</option>
+                        </select>
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium mb-2">نمایش محاسبات</label>
+                        <select 
+                          value={invoiceConfig.calculationDisplay}
+                          onChange={(e) => setInvoiceConfig({...invoiceConfig, calculationDisplay: e.target.value})}
+                          className="w-full p-2 border rounded-md"
+                        >
+                          <option value="detailed">تفصیلی (همه فرمول‌ها)</option>
+                          <option value="summary">خلاصه</option>
+                          <option value="minimal">حداقلی</option>
+                          <option value="step-by-step">مرحله به مرحله</option>
+                        </select>
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium mb-2">نمایش کمیسیون</label>
+                        <select 
+                          value={invoiceConfig.commissionVisibility}
+                          onChange={(e) => setInvoiceConfig({...invoiceConfig, commissionVisibility: e.target.value})}
+                          className="w-full p-2 border rounded-md"
+                        >
+                          <option value="hidden">مخفی</option>
+                          <option value="summary-only">فقط خلاصه</option>
+                          <option value="detailed">تفصیلی</option>
+                          <option value="separate-section">بخش جداگانه</option>
+                        </select>
+                      </div>
+                    </div>
                   </div>
                 </div>
-
-                {/* Optional Elements */}
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-3">عناصر اختیاری فاکتور</label>
-                  <div className="space-y-3">
-                    {[
-                      { key: 'storeName', label: 'نام فروشگاه نماینده', state: includeStoreName, setState: setIncludeStoreName },
-                      { key: 'telegramId', label: 'شناسه تلگرام نماینده', state: includeTelegramId, setState: setIncludeTelegramId },
-                      { key: 'notes', label: 'بخش یادداشت و توضیحات', state: includeNotes, setState: setIncludeNotes }
-                    ].map((item) => (
-                      <div key={item.key} className="flex items-center justify-between">
-                        <span className="text-sm text-foreground">{item.label}</span>
-                        <label className="relative inline-flex items-center cursor-pointer">
-                          <input
-                            type="checkbox"
-                            className="sr-only peer"
-                            checked={item.state}
-                            onChange={(e) => item.setState(e.target.checked)}
+                
+                {/* Advanced Configuration */}
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4 text-foreground">تنظیمات پیشرفته</h3>
+                    
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium mb-2">اندازه کاغذ</label>
+                        <select 
+                          value={invoiceConfig.paperSize}
+                          onChange={(e) => setInvoiceConfig({...invoiceConfig, paperSize: e.target.value})}
+                          className="w-full p-2 border rounded-md"
+                        >
+                          <option value="a4">A4</option>
+                          <option value="letter">Letter</option>
+                          <option value="legal">Legal</option>
+                          <option value="custom">سفارشی</option>
+                        </select>
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium mb-2">حاشیه‌ها</label>
+                        <select 
+                          value={invoiceConfig.margins}
+                          onChange={(e) => setInvoiceConfig({...invoiceConfig, margins: e.target.value})}
+                          className="w-full p-2 border rounded-md"
+                        >
+                          <option value="narrow">باریک</option>
+                          <option value="standard">استاندارد</option>
+                          <option value="wide">پهن</option>
+                          <option value="custom">سفارشی</option>
+                        </select>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-4">
+                        <label className="flex items-center">
+                          <input 
+                            type="checkbox" 
+                            checked={invoiceConfig.showLogo}
+                            onChange={(e) => setInvoiceConfig({...invoiceConfig, showLogo: e.target.checked})}
+                            className="mr-2"
                           />
-                          <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                          نمایش لوگو
+                        </label>
+                        
+                        <label className="flex items-center">
+                          <input 
+                            type="checkbox" 
+                            checked={invoiceConfig.qrCode}
+                            onChange={(e) => setInvoiceConfig({...invoiceConfig, qrCode: e.target.checked})}
+                            className="mr-2"
+                          />
+                          QR Code
+                        </label>
+                        
+                        <label className="flex items-center">
+                          <input 
+                            type="checkbox" 
+                            checked={invoiceConfig.watermark}
+                            onChange={(e) => setInvoiceConfig({...invoiceConfig, watermark: e.target.checked})}
+                            className="mr-2"
+                          />
+                          واترمارک
+                        </label>
+                        
+                        <label className="flex items-center">
+                          <input 
+                            type="checkbox" 
+                            checked={invoiceConfig.digitalSignature}
+                            onChange={(e) => setInvoiceConfig({...invoiceConfig, digitalSignature: e.target.checked})}
+                            className="mr-2"
+                          />
+                          امضای دیجیتال
                         </label>
                       </div>
-                    ))}
+                    </div>
+                  </div>
+                  
+                  {/* Action Buttons */}
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <Button 
+                        variant="outline"
+                        onClick={() => {
+                          // Generate preview with current config
+                          window.open(`/api/invoice/preview?config=${btoa(JSON.stringify(invoiceConfig))}`, '_blank');
+                        }}
+                      >
+                        <i className="fas fa-eye ml-2"></i>
+                        پیش‌نمایش
+                      </Button>
+                      
+                      <Button 
+                        onClick={() => {
+                          // Save invoice configuration
+                          saveSettingMutation.mutate({
+                            key: 'invoice_config_alpha35',
+                            value: JSON.stringify(invoiceConfig),
+                            description: 'Alpha 35 Invoice Configuration System'
+                          });
+                        }}
+                        disabled={saveSettingMutation.isPending}
+                      >
+                        <i className="fas fa-save ml-2"></i>
+                        ذخیره تنظیمات
+                      </Button>
+                    </div>
+                    
+                    <Button 
+                      variant="outline"
+                      className="w-full"
+                      onClick={() => {
+                        // Reset to defaults
+                        setInvoiceConfig({
+                          template: "professional",
+                          headerStyle: "centered",
+                          showLogo: true,
+                          logoPosition: "top-left",
+                          companyInfoDisplay: "full",
+                          representativeInfoLevel: "detailed",
+                          itemGrouping: "by-duration",
+                          calculationDisplay: "detailed",
+                          commissionVisibility: "hidden",
+                          footerContent: "contact-info",
+                          colorScheme: "blue-professional",
+                          fontFamily: "iranian-sans",
+                          paperSize: "a4",
+                          margins: "standard",
+                          watermark: false,
+                          qrCode: true,
+                          digitalSignature: false
+                        });
+                      }}
+                    >
+                      <i className="fas fa-undo ml-2"></i>
+                      بازگردانی به پیش‌فرض
+                    </Button>
                   </div>
                 </div>
-
-                {/* Logo Upload */}
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">لوگوی شرکت</label>
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                    <i className="fas fa-cloud-upload-alt text-3xl text-gray-400 mb-2"></i>
-                    <p className="text-sm text-gray-600 mb-2">فایل لوگو را انتخاب کنید (PNG, JPG)</p>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => setLogoFile(e.target.files?.[0] || null)}
-                      className="hidden"
-                      id="logo-upload"
-                    />
-                    <label htmlFor="logo-upload" className="inline-block bg-primary text-white px-4 py-2 rounded-md cursor-pointer hover:bg-primary/90">
-                      انتخاب فایل
-                    </label>
-                    {logoFile && <p className="mt-2 text-sm text-green-600">فایل انتخاب شده: {logoFile.name}</p>}
-                  </div>
-                </div>
-
-                {/* Output Format */}
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">فرمت خروجی</label>
-                  <div className="flex gap-4">
-                    {[
-                      { id: 'pdf', label: 'PDF', icon: 'fa-file-pdf' },
+              </div>
+            </CardContent>
+          </Card>
+        );
                       { id: 'image', label: 'تصویر', icon: 'fa-image' },
                       { id: 'both', label: 'هر دو', icon: 'fa-copy' }
                     ].map((format) => (

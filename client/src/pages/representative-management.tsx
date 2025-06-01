@@ -170,12 +170,12 @@ export default function RepresentativeManagement() {
 
   // Filter representatives
   const filteredRepresentatives = representatives.filter((rep: Representative) => {
-    const matchesSearch = rep.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         rep.adminUsername.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchesSearch = rep.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         rep.adminUsername?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          rep.storeName?.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesStatus = statusFilter === 'all' || rep.status === statusFilter;
-    const matchesCollaboration = collaborationFilter === 'all' || rep.collaborationLevel === collaborationFilter;
+    const matchesCollaboration = collaborationFilter === 'all' || (rep.collaborationLevel && rep.collaborationLevel === collaborationFilter);
     
     return matchesSearch && matchesStatus && matchesCollaboration;
   }) || [];

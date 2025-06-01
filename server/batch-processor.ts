@@ -28,7 +28,7 @@ export class BatchProcessor {
       for (const repData of representatives) {
         try {
           // Check if representative already exists
-          const existing = await storage.getRepresentativeByUsername(repData.adminUsername);
+          const existing = await storage.getRepresentativeByAdminUsername(repData.adminUsername);
           if (existing) {
             skipped++;
             details.push(`Representative ${repData.adminUsername} already exists`);

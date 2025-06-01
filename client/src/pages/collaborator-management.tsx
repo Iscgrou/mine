@@ -34,6 +34,7 @@ interface Collaborator {
   totalEarningsToDate: string;
   totalPayoutsToDate: string;
   status: string;
+  commissionPercentage: string;
   dateJoined: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -493,7 +494,33 @@ export default function CollaboratorManagement() {
                         <Button
                           variant="outline"
                           size="sm"
-                          className="bg-red-50 border-red-200 text-red-700 hover:bg-red-100 hover:border-red-300"
+                          className="bg-green-50 border-green-200 text-green-700 hover:bg-green-100 hover:border-green-300"
+                          onClick={() => {
+                            const newPercentage = prompt(
+                              `تنظیم درصد کمیسیون برای ${collaborator.collaboratorName}:`,
+                              collaborator.commissionPercentage || '10'
+                            );
+                            if (newPercentage && !isNaN(parseFloat(newPercentage))) {
+                              fetch(`/api/collaborators/${collaborator.id}/commission`, {
+                                method: 'PATCH',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ commissionPercentage: newPercentage })
+                              }).then(() => {
+                                toast({ title: "درصد کمیسیون بروزرسانی شد" });
+                                queryClient.invalidateQueries({ queryKey: ["/api/collaborators"] });
+                              });
+                            }
+                          }}
+                          title={`درصد کمیسیون فعلی: ${collaborator.commissionPercentage || '10'}%`}
+                        >
+                          <Calculator className="w-4 h-4" />
+                          {collaborator.commissionPercentage || '10'}%
+                        </Button>
+                        
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100 hover:border-blue-300"
                           onClick={() => {
                             setSelectedCollaborator(collaborator);
                             setIsPayoutDialogOpen(true);
@@ -506,18 +533,10 @@ export default function CollaboratorManagement() {
                         <Button 
                           variant="outline" 
                           size="sm"
-                          className="bg-red-50 border-red-200 text-red-700 hover:bg-red-100 hover:border-red-300"
+                          className="bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100 hover:border-gray-300"
                         >
                           <Eye className="w-4 h-4" />
                           مشاهده
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          className="bg-red-50 border-red-200 text-red-700 hover:bg-red-100 hover:border-red-300"
-                        >
-                          <Edit3 className="w-4 h-4" />
-                          ویرایش
                         </Button>
                       </div>
                     </td>

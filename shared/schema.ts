@@ -139,6 +139,7 @@ export const collaborators = pgTable("collaborators", {
   totalEarningsToDate: decimal("total_earnings_to_date", { precision: 12, scale: 2 }).default("0"),
   totalPayoutsToDate: decimal("total_payouts_to_date", { precision: 12, scale: 2 }).default("0"),
   status: text("status").default("active"), // active, inactive, pending_approval
+  commissionPercentage: decimal("commission_percentage", { precision: 5, scale: 2 }).default("10.00"), // Commission percentage for this collaborator
   dateJoined: timestamp("date_joined").defaultNow(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),

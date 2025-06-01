@@ -87,6 +87,26 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
+  // Update collaborator commission percentage
+  app.patch("/api/collaborators/:id/commission", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { commissionPercentage } = req.body;
+      
+      await db.update(collaborators)
+        .set({ commissionPercentage: commissionPercentage.toString() })
+        .where(eq(collaborators.id, id));
+
+      res.json({ 
+        message: "درصد کمیسیون بروزرسانی شد",
+        commissionPercentage: commissionPercentage
+      });
+    } catch (error) {
+      console.error('Error updating commission percentage:', error);
+      res.status(500).json({ message: "خطا در بروزرسانی درصد کمیسیون" });
+    }
+  });
+
   // Delete collaborator
   app.delete("/api/collaborators/:id", async (req, res) => {
     try {
@@ -552,7 +572,8 @@ export function registerRoutes(app: Express): Server {
 
           if (existingCommission.length === 0) {
             const baseAmount = parseFloat(invoice.baseAmount);
-            const commissionRate = 10.00;
+            const collaborator = await storage.getCollaboratorById(representative.collaboratorId);
+            const commissionRate = parseFloat(collaborator?.commissionPercentage || "10.00");
             const commissionAmount = baseAmount * (commissionRate / 100);
 
             await db.insert(commissionRecords).values({

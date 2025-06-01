@@ -267,7 +267,19 @@ export default function InvoicesPage() {
                           <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => {/* Edit functionality */}}
+                            onClick={() => {
+                              const newAmount = prompt('مبلغ جدید را وارد کنید:', invoice.totalAmount);
+                              if (newAmount && newAmount !== invoice.totalAmount) {
+                                fetch(`/api/invoices/${invoice.id}`, {
+                                  method: 'PATCH',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({ totalAmount: newAmount, baseAmount: newAmount })
+                                }).then(() => {
+                                  toast({ title: "فاکتور بروزرسانی شد" });
+                                  queryClient.invalidateQueries({ queryKey: ["/api/invoices"] });
+                                });
+                              }
+                            }}
                             title="ویرایش فاکتور"
                           >
                             <Edit className="h-4 w-4" />

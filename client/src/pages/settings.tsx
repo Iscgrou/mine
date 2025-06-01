@@ -497,65 +497,83 @@ export default function Settings() {
             </CardContent>
           </Card>
         );
-                      { id: 'image', label: 'تصویر', icon: 'fa-image' },
-                      { id: 'both', label: 'هر دو', icon: 'fa-copy' }
-                    ].map((format) => (
-                      <label key={format.id} className="flex items-center cursor-pointer">
-                        <input
-                          type="radio"
-                          name="outputFormat"
-                          value={format.id}
-                          checked={outputFormat === format.id}
-                          onChange={(e) => setOutputFormat(e.target.value)}
-                          className="sr-only"
-                        />
-                        <div className={`flex items-center gap-2 px-4 py-2 border rounded-lg transition-all ${
-                          outputFormat === format.id ? 'border-primary bg-primary/5 text-primary' : 'border-gray-300 text-gray-600'
-                        }`}>
-                          <i className={`fas ${format.icon}`}></i>
-                          <span className="text-sm font-medium">{format.label}</span>
-                        </div>
-                      </label>
-                    ))}
-                  </div>
-                </div>
 
-                {/* Preview Area */}
+      case "api":
+        return (
+          <Card className="bg-card border-border">
+            <CardHeader>
+              <CardTitle className="text-primary flex items-center gap-2">
+                <i className="fas fa-key"></i>
+                مدیریت کلیدهای API
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                {/* API Key Status */}
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-2">پیش‌نمایش قالب</label>
-                  {!showPreview ? (
-                    <div className="border border-gray-200 rounded-lg p-6 bg-gray-50 text-center">
-                      <i className="fas fa-eye text-2xl text-gray-400 mb-2"></i>
-                      <p className="text-sm text-gray-600 mb-3">پیش‌نمایش فاکتور با تنظیمات انتخاب شده</p>
-                      <Button 
-                        variant="outline" 
-                        className="text-sm"
-                        onClick={() => setShowPreview(true)}
-                      >
-                        <i className="fas fa-search ml-2"></i>
-                        مشاهده پیش‌نمایش
-                      </Button>
+                  <h3 className="text-lg font-semibold mb-4 text-foreground">وضعیت کلیدهای API</h3>
+                  {apiKeysLoading ? (
+                    <div className="text-center py-4">
+                      <i className="fas fa-spinner fa-spin text-2xl text-primary"></i>
+                      <p className="mt-2 text-muted-foreground">بررسی وضعیت...</p>
                     </div>
                   ) : (
-                    <div className="border border-gray-200 rounded-lg p-4 bg-white">
-                      <div className="flex items-center justify-between mb-4">
-                        <h3 className="font-medium text-gray-800">پیش‌نمایش فاکتور - قالب {templateStyle === 'modern' ? 'مدرن' : templateStyle === 'classic' ? 'کلاسیک' : 'فارسی'}</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className={`p-4 rounded-lg border ${apiKeyStatus?.vertexAI ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}`}>
+                        <div className="flex items-center gap-2 mb-2">
+                          <i className={`fas fa-brain ${apiKeyStatus?.vertexAI ? 'text-green-600' : 'text-red-600'}`}></i>
+                          <span className="font-medium">Google Vertex AI</span>
+                        </div>
+                        <p className={`text-sm ${apiKeyStatus?.vertexAI ? 'text-green-700' : 'text-red-700'}`}>
+                          {apiKeyStatus?.vertexAI ? 'متصل و فعال' : 'نیاز به پیکربندی'}
+                        </p>
+                        {apiKeyStatus?.vertexAISet && (
+                          <p className="text-xs text-gray-600 mt-1">
+                            کلید: {apiKeyStatus.vertexAISet}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* API Key Configuration */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-4 text-foreground">پیکربندی کلیدهای API</h3>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">
+                        کلید Google Vertex AI
+                      </label>
+                      <div className="flex gap-2">
+                        <Input
+                          type="password"
+                          placeholder="کلید API خود را وارد کنید..."
+                          value={vertexApiKey}
+                          onChange={(e) => setVertexApiKey(e.target.value)}
+                          className="flex-1"
+                        />
                         <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => setShowPreview(false)}
+                          onClick={() => {
+                            saveSettingMutation.mutate({
+                              key: 'vertex_ai_key',
+                              value: vertexApiKey,
+                              description: 'Google Vertex AI API Key'
+                            });
+                          }}
+                          disabled={saveSettingMutation.isPending || !vertexApiKey}
                         >
-                          <i className="fas fa-times ml-1"></i>
-                          بستن
+                          <i className="fas fa-save ml-2"></i>
+                          ذخیره
                         </Button>
                       </div>
-                      
-                      {/* Sample Invoice Preview */}
-                      <div className={`invoice-preview ${templateStyle} bg-white border p-6 rounded text-right`} dir="rtl">
-                        {/* Header */}
-                        <div className="flex justify-between items-start mb-6">
-                          <div>
-                            <div className="flex items-center gap-3 mb-2">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        );
                               <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
                                 <i className="fas fa-chart-line text-white"></i>
                               </div>

@@ -641,6 +641,17 @@ export default function RepresentativeManagement() {
                       <span>{rep.phoneNumber || 'شماره ثبت نشده'}</span>
                     </div>
                     
+                    {/* Collaborator/Introducer Info */}
+                    <div className="flex items-center gap-2 text-sm bg-blue-50 p-2 rounded-lg">
+                      <Users className="w-4 h-4 text-blue-600" />
+                      <span className="font-medium text-blue-800">معرف:</span>
+                      <span className="text-blue-700">
+                        {rep.collaboratorId === 4 ? 'اونر' : 
+                         rep.collaboratorId === 2 ? 'بهنام' : 
+                         rep.collaboratorId === 3 ? 'سعید قراری' : 'نامشخص'}
+                      </span>
+                    </div>
+                    
                     {/* Collaboration Level */}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">

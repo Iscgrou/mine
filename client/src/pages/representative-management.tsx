@@ -1119,19 +1119,19 @@ export default function RepresentativeManagement() {
                 <div className="grid grid-cols-2 gap-4 mt-2">
                   <div>
                     <Label className="text-sm">یک ماه محدود</Label>
-                    <Input defaultValue={selectedRepresentative.commissionRates?.limited1Month || '15'} />
+                    <Input defaultValue={selectedRepresentative.limitedCommissionRate || '15'} />
                   </div>
                   <div>
                     <Label className="text-sm">سه ماه محدود</Label>
-                    <Input defaultValue={selectedRepresentative.commissionRates?.limited3Month || '18'} />
+                    <Input defaultValue={selectedRepresentative.limited3MonthCommissionRate || '18'} />
                   </div>
                   <div>
                     <Label className="text-sm">شش ماه محدود</Label>
-                    <Input defaultValue={selectedRepresentative.commissionRates?.limited6Month || '20'} />
+                    <Input defaultValue={selectedRepresentative.limited6MonthCommissionRate || '20'} />
                   </div>
                   <div>
                     <Label className="text-sm">نامحدود</Label>
-                    <Input defaultValue={selectedRepresentative.commissionRates?.unlimited || '25'} />
+                    <Input defaultValue={selectedRepresentative.unlimitedCommissionRate || '25'} />
                   </div>
                 </div>
               </div>

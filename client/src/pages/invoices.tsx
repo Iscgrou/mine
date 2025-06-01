@@ -321,8 +321,8 @@ export default function InvoicesPage() {
                             size="sm"
                             variant={invoice.telegramSent ? "secondary" : "outline"}
                             onClick={() => {
-                              if (invoice.representative?.telegramId) {
-                                window.open(`https://t.me/${invoice.representative.telegramId}`, '_blank');
+                              if (invoice.representative?.adminUsername) {
+                                window.open(`https://t.me/${invoice.representative.adminUsername}`, '_blank');
                                 sendToTelegramMutation.mutate(invoice.id);
                               } else {
                                 toast({

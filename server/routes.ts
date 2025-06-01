@@ -402,8 +402,13 @@ export function registerRoutes(app: Express): Server {
             const pricePerGiB5Month = parseFloat(representative.limitedPrice5Month || "720");
             const pricePerGiB6Month = parseFloat(representative.limitedPrice6Month || "600");
             
-            // Get unlimited pricing - using limited price 1 month as base for unlimited monthly rate
-            const unlimitedMonthlyPrice = parseFloat(representative.limitedPrice1Month || "80000");
+            // Get CORRECT unlimited pricing for each duration
+            const unlimitedPrice1Month = parseFloat(representative.unlimitedPrice1Month || "40000");
+            const unlimitedPrice2Month = parseFloat(representative.unlimitedPrice2Month || "80000");
+            const unlimitedPrice3Month = parseFloat(representative.unlimitedPrice3Month || "120000");
+            const unlimitedPrice4Month = parseFloat(representative.unlimitedPrice4Month || "160000");
+            const unlimitedPrice5Month = parseFloat(representative.unlimitedPrice5Month || "200000");
+            const unlimitedPrice6Month = parseFloat(representative.unlimitedPrice6Month || "240000");
             
             // 4. Calculate final billing amount
             const limitedBilling = (limited1MonthVolume * pricePerGiB1Month) +
@@ -413,12 +418,12 @@ export function registerRoutes(app: Express): Server {
                                   (limited5MonthVolume * pricePerGiB5Month) +
                                   (limited6MonthVolume * pricePerGiB6Month);
             
-            const unlimitedBilling = (unlimited1MonthCount * unlimitedMonthlyPrice * 1) +
-                                    (unlimited2MonthCount * unlimitedMonthlyPrice * 2) +
-                                    (unlimited3MonthCount * unlimitedMonthlyPrice * 3) +
-                                    (unlimited4MonthCount * unlimitedMonthlyPrice * 4) +
-                                    (unlimited5MonthCount * unlimitedMonthlyPrice * 5) +
-                                    (unlimited6MonthCount * unlimitedMonthlyPrice * 6);
+            const unlimitedBilling = (unlimited1MonthCount * unlimitedPrice1Month) +
+                                    (unlimited2MonthCount * unlimitedPrice2Month) +
+                                    (unlimited3MonthCount * unlimitedPrice3Month) +
+                                    (unlimited4MonthCount * unlimitedPrice4Month) +
+                                    (unlimited5MonthCount * unlimitedPrice5Month) +
+                                    (unlimited6MonthCount * unlimitedPrice6Month);
             
             let baseAmount = limitedBilling + unlimitedBilling;
 

@@ -95,13 +95,11 @@ export const commissionRecords = pgTable("commission_records", {
   id: serial("id").primaryKey(),
   collaboratorId: integer("collaborator_id").references(() => collaborators.id).notNull(),
   representativeId: integer("representative_id").references(() => representatives.id).notNull(),
-  invoiceId: integer("invoice_id").references(() => invoices.id).notNull(),
   transactionDate: timestamp("transaction_date").defaultNow().notNull(),
   revenueType: text("revenue_type").notNull(), // 'volume', 'unlimited'
   baseRevenueAmount: decimal("base_revenue_amount", { precision: 12, scale: 2 }).notNull(),
   commissionRate: decimal("commission_rate", { precision: 5, scale: 2 }).notNull(), // Percentage
   commissionAmount: decimal("commission_amount", { precision: 12, scale: 2 }).notNull(),
-  batchId: integer("batch_id").references(() => invoiceBatches.id),
   createdAt: timestamp("created_at").defaultNow(),
 });
 

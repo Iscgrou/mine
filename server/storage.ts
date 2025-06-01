@@ -279,10 +279,11 @@ export class DatabaseStorage implements IStorage {
       id: commissionRecords.id,
       collaboratorId: commissionRecords.collaboratorId,
       representativeId: commissionRecords.representativeId,
-      commissionAmount: commissionRecords.commissionAmount,
+      transactionDate: commissionRecords.transactionDate,
+      revenueType: commissionRecords.revenueType,
+      baseRevenueAmount: commissionRecords.baseRevenueAmount,
       commissionRate: commissionRecords.commissionRate,
-      calculationPeriod: commissionRecords.calculationPeriod,
-      notes: commissionRecords.notes,
+      commissionAmount: commissionRecords.commissionAmount,
       createdAt: commissionRecords.createdAt,
       collaborator: collaborators,
       representative: representatives
@@ -314,13 +315,11 @@ export class DatabaseStorage implements IStorage {
     return await db.select({
       id: collaboratorPayouts.id,
       collaboratorId: collaboratorPayouts.collaboratorId,
-      amount: collaboratorPayouts.amount,
-      payoutMethod: collaboratorPayouts.payoutMethod,
-      bankDetails: collaboratorPayouts.bankDetails,
+      payoutAmount: collaboratorPayouts.payoutAmount,
+      payoutDate: collaboratorPayouts.payoutDate,
       adminUserId: collaboratorPayouts.adminUserId,
+      paymentMethod: collaboratorPayouts.paymentMethod,
       notes: collaboratorPayouts.notes,
-      status: collaboratorPayouts.status,
-      processedAt: collaboratorPayouts.processedAt,
       createdAt: collaboratorPayouts.createdAt,
       collaborator: collaborators
     })

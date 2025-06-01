@@ -382,20 +382,29 @@ export function registerRoutes(app: Express): Server {
             
             let baseAmount = 0;
             
-            // Calculate limited subscriptions revenue
+            // Calculate limited subscriptions revenue based on volume (GB)
             if (limitedSubs > 0) {
-              const limited1Month = parseInt(invoiceData.limited_1_month || "0");
-              const limited2Month = parseInt(invoiceData.limited_2_month || "0");
-              const limited3Month = parseInt(invoiceData.limited_3_month || "0");
+              const limited1MonthVolume = parseFloat(invoiceData.limited_1_month_volume || "0");
+              const limited2MonthVolume = parseFloat(invoiceData.limited_2_month_volume || "0");
+              const limited3MonthVolume = parseFloat(invoiceData.limited_3_month_volume || "0");
+              const limited4MonthVolume = parseFloat(invoiceData.limited_4_month_volume || "0");
+              const limited5MonthVolume = parseFloat(invoiceData.limited_5_month_volume || "0");
+              const limited6MonthVolume = parseFloat(invoiceData.limited_6_month_volume || "0");
               
-              // Use representative pricing or default rates
-              const rate1Month = parseFloat(representative.limitedPrice1Month || "50000");
-              const rate2Month = parseFloat(representative.limitedPrice2Month || "90000");
-              const rate3Month = parseFloat(representative.limitedPrice3Month || "120000");
+              // Use representative pricing rates per GB
+              const rate1Month = parseFloat(representative.limitedPrice1Month || "3000");
+              const rate2Month = parseFloat(representative.limitedPrice2Month || "1800");
+              const rate3Month = parseFloat(representative.limitedPrice3Month || "1200");
+              const rate4Month = parseFloat(representative.limitedPrice4Month || "900");
+              const rate5Month = parseFloat(representative.limitedPrice5Month || "720");
+              const rate6Month = parseFloat(representative.limitedPrice6Month || "600");
               
-              baseAmount += (limited1Month * rate1Month) + 
-                           (limited2Month * rate2Month) + 
-                           (limited3Month * rate3Month);
+              baseAmount += (limited1MonthVolume * rate1Month) + 
+                           (limited2MonthVolume * rate2Month) + 
+                           (limited3MonthVolume * rate3Month) +
+                           (limited4MonthVolume * rate4Month) +
+                           (limited5MonthVolume * rate5Month) +
+                           (limited6MonthVolume * rate6Month);
             }
             
             // Calculate unlimited subscriptions revenue

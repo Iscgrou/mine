@@ -228,26 +228,33 @@ export function calculateInvoiceTotal(
   const { limitedVolumes, unlimitedCounts } = processedAdmin;
   const { pricePerGB = 0, unlimitedMonthlyPrice = 0 } = representativePricing;
 
-  // Calculate limited subscription costs (volume-based)
-  if (pricePerGB > 0) {
-    Object.entries(limitedVolumes).forEach(([monthKey, volume]) => {
-      if (volume > 0) {
-        const months = parseInt(monthKey.replace('month', ''));
-        const unitPrice = pricePerGB * months;
-        const totalPrice = unitPrice * volume;
-        totalAmount += totalPrice;
+  // Calculate limited subscription costs (volume-based with specific rates per duration)
+  const limitedRates = {
+    1: parseFloat(representativePricing.limitedPrice1Month || '3000'),
+    2: parseFloat(representativePricing.limitedPrice2Month || '1800'),
+    3: parseFloat(representativePricing.limitedPrice3Month || '1200'),
+    4: parseFloat(representativePricing.limitedPrice4Month || '900'),
+    5: parseFloat(representativePricing.limitedPrice5Month || '720'),
+    6: parseFloat(representativePricing.limitedPrice6Month || '600'),
+  };
 
-        items.push({
-          description: `اشتراک ${months} ماهه محدود (${volume} گیگابایت)`,
-          quantity: volume.toString(),
-          unitPrice: unitPrice.toString(),
-          totalPrice: totalPrice.toString(),
-          subscriptionType: 'limited',
-          durationMonths: months,
-        });
-      }
-    });
-  }
+  Object.entries(limitedVolumes).forEach(([monthKey, volume]) => {
+    if (volume > 0) {
+      const months = parseInt(monthKey.replace('month', ''));
+      const ratePerGB = limitedRates[months as keyof typeof limitedRates] || 0;
+      const totalPrice = ratePerGB * volume;
+      totalAmount += totalPrice;
+
+      items.push({
+        description: `اشتراک ${months} ماهه محدود (${volume} گیگابایت)`,
+        quantity: volume.toString(),
+        unitPrice: ratePerGB.toString(),
+        totalPrice: totalPrice.toString(),
+        subscriptionType: 'limited',
+        durationMonths: months,
+      });
+    }
+  });
 
   // Calculate unlimited subscription costs (count-based)
   if (unlimitedMonthlyPrice > 0) {

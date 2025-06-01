@@ -1,0 +1,44 @@
+[
+{
+    "type": "header",
+    "version": "5.2.2",
+    "comment": "Export to JSON plugin for PHPMyAdmin"
+},
+{
+    "type": "database",
+    "name": "marzban"
+},
+{
+    "type": "table",
+    "name": "invoice_test",
+    "database": "marzban",
+    "data": [
+        {
+            "admin_username": "pouyamb",
+            "user_usernames": "Elsa.user16,PhoneStore,manizh.khale,user.elsa15",
+            "total_reset_events_for_admin": "0",
+            "total_data_limit_gib": "200.0000",
+            "total_subscriptions": "4",
+            "limited_subscriptions": "4",
+            "unlimited_subscriptions": "0",
+            "limited_1_month": "0",
+            "limited_2_month": "2",
+            "limited_3_month": "2",
+            "limited_4_month": "0",
+            "limited_5_month": "0",
+            "limited_6_month": "0",
+            "limited_1_month_volume": "0.0000",
+            "limited_2_month_volume": "100.0000",
+            "limited_3_month_volume": "100.0000",
+            "limited_4_month_volume": "0.0000",
+            "limited_5_month_volume": "0.0000",
+            "limited_6_month_volume": "0.0000",
+            "unlimited_1_month": "0",
+            "unlimited_2_month": "0",
+            "unlimited_3_month": "0",
+            "unlimited_4_month": "0",
+            "unlimited_5_month": "0",
+            "unlimited_6_month": "0"
+        }
+    ]
+}]

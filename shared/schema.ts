@@ -72,6 +72,8 @@ export const invoices = pgTable("invoices", {
   invoiceData: jsonb("invoice_data"), // Complete JSON structure
   autoCalculated: boolean("auto_calculated").default(true),
   priceSource: text("price_source").default("representative_rate"), // representative_rate, manual, override
+  telegramSent: boolean("telegram_sent").default(false),
+  sentToRepresentative: boolean("sent_to_representative").default(false),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

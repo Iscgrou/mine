@@ -470,7 +470,7 @@ export function registerRoutes(app: Express): Server {
 
       // Update telegram_sent status
       await db.update(invoices)
-        .set({ telegram_sent: true })
+        .set({ telegramSent: true })
         .where(eq(invoices.id, invoiceId));
 
       // Log the telegram send event

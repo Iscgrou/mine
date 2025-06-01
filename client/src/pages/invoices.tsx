@@ -58,10 +58,12 @@ export default function InvoicesPage() {
     mutationFn: async (file: File) => {
       const formData = new FormData();
       formData.append("file", file);
-      return apiRequest("/api/invoices/upload", {
+      const response = await fetch("/api/invoices/upload", {
         method: "POST",
         body: formData,
       });
+      if (!response.ok) throw new Error("Upload failed");
+      return response.json();
     },
     onSuccess: () => {
       toast({
@@ -209,8 +211,8 @@ export default function InvoicesPage() {
                   <tr className="border-b">
                     <th className="text-right p-3">شماره فاکتور</th>
                     <th className="text-right p-3">نماینده</th>
-                    <th className="text-right p-3">مبلغ کل</th>
-                    <th className="text-right p-3">مبلغ پایه</th>
+                    <th className="text-right p-3">مبلغ نهایی</th>
+                    <th className="text-right p-3">مبلغ قبل کمیسیون</th>
                     <th className="text-right p-3">وضعیت</th>
                     <th className="text-right p-3">تاریخ</th>
                     <th className="text-right p-3">عملیات</th>

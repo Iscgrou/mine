@@ -1,0 +1,87 @@
+Restoring Invoice Calculation Logic Based on JSON Input File & JSON Pricing Structure
+
+Chronos, there has been a critical misunderstanding, and I apologize for any confusion caused by previous references to .ods files. The actual input file containing weekly sales data for our representatives is a JSON file, structured as an export from phpMyAdmin, an example of which I have provided. The core invoice calculation logic, which is fundamental to MarFanet's operations, has been inadvertently removed or is not functioning correctly and needs to be re-implemented with the highest priority, using this JSON input.
+
+The system MUST calculate invoice amounts for each representative based on:
+
+    The sales data parsed from the imported JSON file (specifically the objects within the data array where type is "table" and name is "a").
+    The pricing structure defined in a separate, dedicated JSON configuration file (or a JSON object fetched from a secure configuration source/database, as we discussed for pricing).
+
+I. Understanding the Data Sources (Corrected):
+
+    Input JSON File Structure (Sales Data - As per the example provided):
+        The relevant data is an array of objects found under a data key, within an object where type is "table" and name is "a".
+        Each object in this data array represents a representative's sales and contains fields like:
+            "admin_username": The representative's identifier.
+            "limited_1_month": Quantity of 1-month standard (volume-based) subscriptions sold.
+            "limited_2_month": Quantity of 2-month standard subscriptions sold.
+            ...and so on for limited_3_month through limited_6_month.
+            "unlimited_1_month": Quantity of 1-month unlimited subscriptions sold.
+            "unlimited_2_month": Quantity of 2-month unlimited subscriptions sold.
+            ...and so on for unlimited_3_month through unlimited_6_month.
+            (Other fields like user_usernames, total_data_limit_gib are present but not directly used in this specific price calculation, though user_usernames will be needed for the "Details of Created Customers" section within the invoice document itself.)
+        Values in these quantity fields are strings representing numbers (e.g., "10", "0") and will need to be parsed to numbers for calculation.
+
+    JSON Pricing Configuration File/Object (Pricing Structure - Remains as previously discussed):
+        Assumption: There is a separate JSON file (e.g., pricing_config.json) or a retrievable JSON object that defines prices.
+        Structure (Example):
+
+        {
+          "default_pricing": { // Or representative-specific keys
+            "volume_based_subscriptions": {
+              "1_month_price_toman": 50000,
+              "2_month_price_toman": 95000,
+              // ... up to 6_month_price_toman
+            },
+            "unlimited_subscriptions": {
+              "1_month_price_toman": 150000,
+              "2_month_price_toman": 290000,
+              // ... up to 6_month_price_toman
+              // OR "price_per_month_unlimited_toman" if that's the model
+            }
+          }
+        }
+
+        Action (Chronos): Confirm how this pricing JSON is accessed and how an admin_username from the input JSON links to its specific pricing structure (default or custom).
+
+II. Re-Implementation of Invoice Calculation Algorithm (Based on JSON Input):
+
+    Directive (Chronos - This logic MUST be restored and function flawlessly with the JSON input):
+    For each representative object processed from the data array within the imported sales JSON file:
+        Fetch Applicable Pricing: Retrieve the correct pricing set from the separate pricing JSON configuration based on the admin_username.
+        Parse Quantities: Convert the string values for limited_X_month and unlimited_X_month fields from the sales JSON data into numbers.
+        Calculate Total for Standard (Volume-Based) Subscriptions:
+            TotalVolumePrice = (Numeric_value_of sales_json.limited_1_month * pricing_json.volume_based_subscriptions.1_month_price_toman)
+            + (Numeric_value_of sales_json.limited_2_month * pricing_json.volume_based_subscriptions.2_month_price_toman)
+            ... (for 3, 4, 5, and 6 months)
+        Calculate Total for Unlimited Subscriptions:
+            TotalUnlimitedPrice = (Numeric_value_of sales_json.unlimited_1_month * pricing_json.unlimited_subscriptions.1_month_price_toman)
+            + (Numeric_value_of sales_json.unlimited_2_month * pricing_json.unlimited_subscriptions.2_month_price_toman)
+            ... (for 3, 4, 5, and 6 months)
+            Alternative for Unlimited (If applicable in pricing_config.json): If the pricing JSON stores a single price_per_month_unlimited_toman, then the calculation for unlimited_1_month is Quantity * price_per_month_unlimited_toman * 1; for unlimited_2_month it's Quantity * price_per_month_unlimited_toman * 2, etc. Implement based on the actual structure of your pricing_config.json.
+        Calculate Final Invoice Amount for the Representative:
+            FinalInvoiceAmount = TotalVolumePrice + TotalUnlimitedPrice
+        Currency: All calculations and stored amounts MUST be in Toman (تومان).
+
+III. Your Task (Chronos):
+
+    Acknowledge Correction: Confirm understanding that the sales data input is a JSON file with the provided structure, not an .ods file.
+    Detail JSON Input Parsing: Explain how the backend will parse the uploaded sales JSON file, specifically how it will access the array of representative data objects.
+    Re-confirm JSON Pricing Access: (As before) How the separate pricing JSON is accessed and linked to representatives.
+    Implement/Restore Backend Logic: Provide the complete, robust backend code that:
+        Accepts the uploaded sales JSON file.
+        Correctly parses it to iterate through representative sales data.
+        Accurately implements the calculation algorithm described above, using the correct numeric fields from the sales JSON and prices from the pricing JSON.
+    Error Handling: Ensure robust error handling (e.g., if the sales JSON structure is invalid, if required numeric fields are missing or non-numeric, if a price is missing in the pricing JSON).
+    Testing Strategy: Outline how you will test this re-implemented logic with the sample sales JSON structure and a sample pricing JSON to ensure 100% accuracy.
+    Integration with Financial Ledger: Ensure these correctly calculated invoice amounts are recorded as debits in the "Advanced Financial Ledger & Dynamic Debtor/Creditor System."
+
+Final Instruction to Chronos:
+
+"Chronos, my apologies for any prior confusion regarding the input file format. The sales data for invoice generation is provided as a JSON file, structured as per the example I've shared (an export from phpMyAdmin). The invoice calculation logic based on this JSON input and our separate JSON pricing configuration must be immediately and flawlessly restored.
+
+    First, confirm your strategy for parsing the uploaded sales JSON file and linking admin_username entries to their respective pricing structures from the pricing_config.json.
+    Then, proceed to re-implement the full invoice calculation algorithm in the backend as detailed, ensuring all quantities are correctly parsed from the sales JSON as numbers.
+    Provide the code and outline your rigorous testing plan.
+
+This is a top-priority fix. The integrity of our billing system relies on accurately processing this JSON input."

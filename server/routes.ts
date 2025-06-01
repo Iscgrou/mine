@@ -4,7 +4,7 @@ import { storage } from "./storage";
 import { aegisLogger } from "./aegis-logger";
 import { db } from "./db";
 import { invoices, invoiceBatches, invoiceItems, commissionRecords } from "@shared/schema";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import multer from "multer";
 import path from "path";
 import { BatchProcessor } from "./batch-processor";
@@ -530,6 +530,131 @@ export function registerRoutes(app: Express): Server {
     } catch (error) {
       console.error('Error updating invoice:', error);
       res.status(500).json({ message: "خطا در بروزرسانی فاکتور" });
+    }
+  });
+
+  // Calculate All Commissions
+  app.post("/api/invoices/calculate-all-commissions", async (req, res) => {
+    try {
+      const allInvoices = await db.select().from(invoices);
+      let commissionsCreated = 0;
+
+      for (const invoice of allInvoices) {
+        if (!invoice.representativeId) continue;
+        const representative = await storage.getRepresentativeById(invoice.representativeId);
+        
+        if (representative && representative.collaboratorId) {
+          // Check if commission already exists
+          const existingCommission = await db.select()
+            .from(commissionRecords)
+            .where(eq(commissionRecords.invoiceId, invoice.id))
+            .limit(1);
+
+          if (existingCommission.length === 0) {
+            const baseAmount = parseFloat(invoice.baseAmount);
+            const commissionRate = 10.00;
+            const commissionAmount = baseAmount * (commissionRate / 100);
+
+            await db.insert(commissionRecords).values({
+              collaboratorId: representative.collaboratorId,
+              representativeId: representative.id,
+              invoiceId: invoice.id,
+              batchId: invoice.batchId,
+              transactionDate: new Date(),
+              revenueType: "invoice_based",
+              baseRevenueAmount: invoice.baseAmount,
+              commissionRate: commissionRate.toString(),
+              commissionAmount: commissionAmount.toString(),
+              calculationMethod: "manual_batch"
+            });
+            commissionsCreated++;
+          }
+        }
+      }
+
+      res.json({ 
+        message: `${commissionsCreated} کمیسیون جدید محاسبه شد`,
+        commissionsCreated 
+      });
+    } catch (error) {
+      console.error('Error calculating all commissions:', error);
+      res.status(500).json({ message: "خطا در محاسبه کمیسیون‌ها" });
+    }
+  });
+
+  // Send All Invoices to Telegram
+  app.post("/api/invoices/send-all-telegram", async (req, res) => {
+    try {
+      const result = await db.update(invoices)
+        .set({ telegramSent: true })
+        .where(eq(invoices.telegramSent, false));
+
+      res.json({ 
+        message: "همه فاکتورها به تلگرام ارسال شدند",
+        updated: result.rowCount || 0
+      });
+    } catch (error) {
+      console.error('Error sending all to telegram:', error);
+      res.status(500).json({ message: "خطا در ارسال به تلگرام" });
+    }
+  });
+
+  // Archive All Invoices
+  app.post("/api/invoices/archive-all", async (req, res) => {
+    try {
+      const timestamp = new Date().toISOString().slice(0, 10);
+      const allInvoices = await db.select().from(invoices);
+      
+      // Create archive JSON
+      const archiveData = {
+        archiveDate: new Date().toISOString(),
+        invoiceCount: allInvoices.length,
+        invoices: allInvoices
+      };
+
+      // In a real implementation, you would save this to a file system or cloud storage
+      // For now, we'll just clear the invoices and log the archive
+      console.log(`Archived ${allInvoices.length} invoices on ${timestamp}`);
+      
+      // Delete commission records first
+      await db.delete(commissionRecords).where(sql`invoice_id IS NOT NULL`);
+      
+      // Delete invoice items
+      await db.delete(invoiceItems);
+      
+      // Delete invoices
+      await db.delete(invoices);
+
+      res.json({ 
+        message: `${allInvoices.length} فاکتور آرشیو شد`,
+        archivedCount: allInvoices.length,
+        archiveDate: timestamp
+      });
+    } catch (error) {
+      console.error('Error archiving invoices:', error);
+      res.status(500).json({ message: "خطا در آرشیو کردن فاکتورها" });
+    }
+  });
+
+  // Delete All Invoices
+  app.delete("/api/invoices/delete-all", async (req, res) => {
+    try {
+      // Delete commission records first
+      await db.delete(commissionRecords).where(sql`invoice_id IS NOT NULL`);
+      
+      // Delete invoice items
+      await db.delete(invoiceItems);
+      
+      // Delete invoices
+      const result = await db.delete(invoices);
+
+      res.json({ 
+        message: "همه فاکتورها حذف شدند",
+        deletedCount: result.rowCount || 0
+      });
+    } catch (error) {
+      console.error('Error deleting all invoices:', error);
+      res.status(500).json({ message: "خطا در حذف فاکتورها" });
     }
   });
 

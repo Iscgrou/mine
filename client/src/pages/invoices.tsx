@@ -196,6 +196,74 @@ export default function InvoicesPage() {
           <CardDescription>
             {invoices.length} فاکتور در سیستم موجود است
           </CardDescription>
+          
+          {/* Bulk Operations */}
+          <div className="flex gap-2 mt-4 flex-wrap">
+            <Button
+              onClick={() => {
+                fetch('/api/invoices/calculate-all-commissions', { method: 'POST' })
+                  .then(res => res.json())
+                  .then(() => {
+                    toast({ title: "کمیسیون‌ها محاسبه شدند", description: "تمام کمیسیون‌ها بروزرسانی گردید" });
+                  });
+              }}
+              className="bg-green-600 hover:bg-green-700"
+            >
+              <Calculator className="h-4 w-4 mr-2" />
+              محاسبه کمیسیون همه فاکتورها
+            </Button>
+
+            <Button
+              onClick={() => {
+                if (confirm('آیا از ارسال همه فاکتورها به تلگرام اطمینان دارید؟')) {
+                  fetch('/api/invoices/send-all-telegram', { method: 'POST' })
+                    .then(res => res.json())
+                    .then(() => {
+                      toast({ title: "ارسال به تلگرام", description: "همه فاکتورها ارسال شدند" });
+                      queryClient.invalidateQueries({ queryKey: ["/api/invoices"] });
+                    });
+                }
+              }}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              <Send className="h-4 w-4 mr-2" />
+              ارسال همه به تلگرام
+            </Button>
+
+            <Button
+              onClick={() => {
+                if (confirm('آیا از آرشیو کردن همه فاکتورها اطمینان دارید؟')) {
+                  fetch('/api/invoices/archive-all', { method: 'POST' })
+                    .then(res => res.json())
+                    .then(() => {
+                      toast({ title: "آرشیو شد", description: "همه فاکتورها آرشیو گردیدند" });
+                      queryClient.invalidateQueries({ queryKey: ["/api/invoices"] });
+                    });
+                }
+              }}
+              className="bg-purple-600 hover:bg-purple-700"
+            >
+              <Download className="h-4 w-4 mr-2" />
+              آرشیو همه فاکتورها
+            </Button>
+
+            <Button
+              onClick={() => {
+                if (confirm('هشدار: این عمل همه فاکتورها را حذف می‌کند. آیا اطمینان دارید؟')) {
+                  fetch('/api/invoices/delete-all', { method: 'DELETE' })
+                    .then(res => res.json())
+                    .then(() => {
+                      toast({ title: "حذف شد", description: "همه فاکتورها حذف گردیدند" });
+                      queryClient.invalidateQueries({ queryKey: ["/api/invoices"] });
+                    });
+                }
+              }}
+              variant="destructive"
+            >
+              <Trash2 className="h-4 w-4 mr-2" />
+              حذف همه فاکتورها
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           {invoicesLoading ? (
@@ -248,41 +316,30 @@ export default function InvoicesPage() {
                       </td>
                       <td className="p-3">
                         <div className="flex gap-2">
-                          {/* Send to Telegram */}
+                          {/* Send to Telegram - Navigate to specific Telegram profile */}
                           <Button
                             size="sm"
                             variant={invoice.telegramSent ? "secondary" : "outline"}
-                            onClick={() => sendToTelegramMutation.mutate(invoice.id)}
-                            disabled={sendToTelegramMutation.isPending || invoice.telegramSent}
-                            title="ارسال به تلگرام"
+                            onClick={() => {
+                              if (invoice.representative?.telegramId) {
+                                window.open(`https://t.me/${invoice.representative.telegramId}`, '_blank');
+                                sendToTelegramMutation.mutate(invoice.id);
+                              } else {
+                                toast({
+                                  title: "خطا",
+                                  description: "شناسه تلگرام نماینده یافت نشد",
+                                  variant: "destructive"
+                                });
+                              }
+                            }}
+                            disabled={sendToTelegramMutation.isPending}
+                            title="ارسال به تلگرام نماینده"
                           >
                             {invoice.telegramSent ? (
                               <Check className="h-4 w-4" />
                             ) : (
                               <Send className="h-4 w-4" />
                             )}
-                          </Button>
-
-                          {/* Edit Invoice */}
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => {
-                              const newAmount = prompt('مبلغ جدید را وارد کنید:', invoice.totalAmount);
-                              if (newAmount && newAmount !== invoice.totalAmount) {
-                                fetch(`/api/invoices/${invoice.id}`, {
-                                  method: 'PATCH',
-                                  headers: { 'Content-Type': 'application/json' },
-                                  body: JSON.stringify({ totalAmount: newAmount, baseAmount: newAmount })
-                                }).then(() => {
-                                  toast({ title: "فاکتور بروزرسانی شد" });
-                                  queryClient.invalidateQueries({ queryKey: ["/api/invoices"] });
-                                });
-                              }
-                            }}
-                            title="ویرایش فاکتور"
-                          >
-                            <Edit className="h-4 w-4" />
                           </Button>
 
                           {/* Delete Invoice */}

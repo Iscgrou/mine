@@ -410,7 +410,39 @@ export class DatabaseStorage implements IStorage {
 
   // Collaborator Program Methods
   async getCollaborators(): Promise<Collaborator[]> {
-    return await db.select().from(collaborators).orderBy(desc(collaborators.createdAt));
+    // Get all collaborators
+    const allCollaborators = await db.select().from(collaborators).orderBy(desc(collaborators.createdAt));
+    
+    // Calculate total commissions for each collaborator
+    const collaboratorsWithEarnings = await Promise.all(
+      allCollaborators.map(async (collaborator) => {
+        const commissions = await db
+          .select()
+          .from(commissionRecords)
+          .where(eq(commissionRecords.collaboratorId, collaborator.id));
+        
+        const totalCommissions = commissions.reduce((sum, record) => 
+          sum + parseFloat(record.commissionAmount || '0'), 0
+        );
+
+        // Update the collaborator's earnings in database
+        await db.update(collaborators)
+          .set({ 
+            currentAccumulatedEarnings: totalCommissions.toString(),
+            totalEarningsToDate: totalCommissions.toString(),
+            updatedAt: new Date()
+          })
+          .where(eq(collaborators.id, collaborator.id));
+
+        return {
+          ...collaborator,
+          currentAccumulatedEarnings: totalCommissions.toString(),
+          totalEarningsToDate: totalCommissions.toString()
+        };
+      })
+    );
+
+    return collaboratorsWithEarnings;
   }
 
   async getCollaborator(id: number): Promise<Collaborator | undefined> {

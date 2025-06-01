@@ -11,8 +11,7 @@ import CrmSidebar from "@/components/layout/crm-sidebar";
 import Header from "@/components/layout/header";
 import Dashboard from "@/pages/dashboard-enhanced";
 import Representatives from "@/pages/representatives-enhanced";
-import Invoices from "@/pages/invoices-enhanced";
-import InvoiceBatches from "@/pages/invoice-batches";
+
 import Analytics from "@/pages/analytics-enhanced";
 import ImportJSON from "@/pages/import-json";
 import Payments from "@/pages/payments";
@@ -86,8 +85,7 @@ function Router() {
             <Route path="/admin/dashboard" component={Dashboard} />
             <Route path="/admin/representatives" component={RepresentativeManagement} />
             <Route path="/admin/collaborators" component={CollaboratorManagement} />
-            <Route path="/admin/invoices" component={Invoices} />
-            <Route path="/admin/invoice-batches" component={InvoiceBatches} />
+
             <Route path="/admin/analytics" component={Analytics} />
             <Route path="/admin/crt-performance" component={CRTPerformance} />
             <Route path="/admin/import" component={ImportJSON} />
@@ -110,8 +108,7 @@ function Router() {
             <Route path="/" component={Dashboard} />
             <Route path="/dashboard" component={Dashboard} />
             <Route path="/representatives" component={Representatives} />
-            <Route path="/invoices" component={Invoices} />
-            <Route path="/invoice-batches" component={InvoiceBatches} />
+
             <Route path="/analytics" component={Analytics} />
             <Route path="/import" component={ImportJSON} />
             <Route path="/payments" component={Payments} />

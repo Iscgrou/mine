@@ -1,16 +1,14 @@
 import { 
-  users, representatives, invoices, invoiceItems, payments, 
-  fileImports, settings, backups, crmInteractions, crmCallPreparations, 
-  crmRepresentativeProfiles, crmTasks, invoiceBatches, financialLedger,
+  users, representatives, fileImports, settings, backups, crmInteractions, crmCallPreparations, 
+  crmRepresentativeProfiles, crmTasks, financialLedger,
   collaborators, commissionRecords, collaboratorPayouts,
   type User, type InsertUser, type Representative, type InsertRepresentative,
-  type Invoice, type InsertInvoice, type InvoiceItem, type InsertInvoiceItem,
-  type Payment, type InsertPayment, type FileImport, type InsertFileImport,
+  type FileImport, type InsertFileImport,
   type Setting, type InsertSetting, type Backup, type InsertBackup,
   type CrmInteraction, type InsertCrmInteraction,
   type CrmCallPreparation, type InsertCrmCallPreparation,
   type CrmRepresentativeProfile, type InsertCrmRepresentativeProfile,
-  type InvoiceBatch, type InsertInvoiceBatch, type FinancialLedger, type InsertFinancialLedger,
+  type FinancialLedger, type InsertFinancialLedger,
   type Collaborator, type InsertCollaborator, type CommissionRecord, type InsertCommissionRecord,
   type CollaboratorPayout, type InsertCollaboratorPayout
 } from "@shared/schema";

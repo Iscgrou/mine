@@ -45,56 +45,7 @@ export const representatives = pgTable("representatives", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// Invoice batches for organizing uploads by date
-export const invoiceBatches = pgTable("invoice_batches", {
-  id: serial("id").primaryKey(),
-  batchName: text("batch_name").notNull(), // Persian date format: ۱۴۰۳-۰۳-۰۵
-  uploadDate: timestamp("upload_date").defaultNow(),
-  fileName: text("file_name"), // Original .ods file name
-  totalInvoices: integer("total_invoices").default(0),
-  totalAmount: decimal("total_amount", { precision: 12, scale: 2 }).default("0"),
-  createdAt: timestamp("created_at").defaultNow(),
-});
-
-// Invoices table
-export const invoices = pgTable("invoices", {
-  id: serial("id").primaryKey(),
-  invoiceNumber: text("invoice_number").notNull().unique(),
-  representativeId: integer("representative_id").references(() => representatives.id),
-  batchId: integer("batch_id").references(() => invoiceBatches.id),
-  totalAmount: decimal("total_amount", { precision: 15, scale: 2 }).notNull(),
-  status: text("status").default("pending"), // pending, paid, overdue, cancelled
-  dueDate: timestamp("due_date"),
-  paidDate: timestamp("paid_date"),
-  invoiceData: jsonb("invoice_data"), // Store detailed invoice breakdown
-  telegramSent: boolean("telegram_sent").default(false),
-  sentToRepresentative: boolean("sent_to_representative").default(false),
-  createdAt: timestamp("created_at").defaultNow(),
-});
-
-// Invoice items for detailed breakdown
-export const invoiceItems = pgTable("invoice_items", {
-  id: serial("id").primaryKey(),
-  invoiceId: integer("invoice_id").references(() => invoices.id),
-  description: text("description").notNull(),
-  quantity: decimal("quantity", { precision: 10, scale: 3 }),
-  unitPrice: decimal("unit_price", { precision: 15, scale: 2 }),
-  totalPrice: decimal("total_price", { precision: 15, scale: 2 }),
-  subscriptionType: text("subscription_type"), // standard, unlimited
-  durationMonths: integer("duration_months"),
-});
-
-// Payments table
-export const payments = pgTable("payments", {
-  id: serial("id").primaryKey(),
-  invoiceId: integer("invoice_id").references(() => invoices.id),
-  representativeId: integer("representative_id").references(() => representatives.id),
-  amount: decimal("amount", { precision: 12, scale: 2 }).notNull(),
-  paymentType: text("payment_type").default("full"), // full, partial
-  paymentMethod: text("payment_method"),
-  notes: text("notes"),
-  createdAt: timestamp("created_at").defaultNow(),
-});
+// Clean slate - invoice system removed as requested
 
 // File imports tracking
 export const fileImports = pgTable("file_imports", {
@@ -194,8 +145,6 @@ export const collaboratorsRelations = relations(collaborators, ({ many }) => ({
 }));
 
 export const representativesRelations = relations(representatives, ({ many, one }) => ({
-  invoices: many(invoices),
-  payments: many(payments),
   ledgerEntries: many(financialLedger),
   collaborator: one(collaborators, {
     fields: [representatives.collaboratorId],

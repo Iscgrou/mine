@@ -493,6 +493,7 @@ export default function CollaboratorManagement() {
                         <Button
                           variant="outline"
                           size="sm"
+                          className="bg-red-50 border-red-200 text-red-700 hover:bg-red-100 hover:border-red-300"
                           onClick={() => {
                             setSelectedCollaborator(collaborator);
                             setIsPayoutDialogOpen(true);
@@ -502,8 +503,21 @@ export default function CollaboratorManagement() {
                           <Banknote className="w-4 h-4" />
                           پرداخت
                         </Button>
-                        <Button variant="ghost" size="sm">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          className="bg-red-50 border-red-200 text-red-700 hover:bg-red-100 hover:border-red-300"
+                        >
                           <Eye className="w-4 h-4" />
+                          مشاهده
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          className="bg-red-50 border-red-200 text-red-700 hover:bg-red-100 hover:border-red-300"
+                        >
+                          <Edit3 className="w-4 h-4" />
+                          ویرایش
                         </Button>
                       </div>
                     </td>

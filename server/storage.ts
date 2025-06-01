@@ -120,15 +120,39 @@ export class DatabaseStorage implements IStorage {
 
   // Representative methods
   async getRepresentatives(): Promise<Representative[]> {
-    return await db
-      .select()
+    const results = await db
+      .select({
+        id: representatives.id,
+        fullName: representatives.fullName,
+        adminUsername: representatives.adminUsername,
+        phoneNumber: representatives.phoneNumber,
+        telegramId: representatives.telegramId,
+        storeName: representatives.storeName,
+        status: representatives.status,
+        createdAt: representatives.createdAt,
+        updatedAt: representatives.updatedAt,
+        collaboratorId: representatives.collaboratorId,
+        limitedPrice1Month: representatives.limitedPrice1Month,
+        limitedPrice2Month: representatives.limitedPrice2Month,
+        limitedPrice3Month: representatives.limitedPrice3Month,
+        limitedPrice4Month: representatives.limitedPrice4Month,
+        limitedPrice5Month: representatives.limitedPrice5Month,
+        limitedPrice6Month: representatives.limitedPrice6Month,
+        collaboratorName: collaborators.collaboratorName
+      })
       .from(representatives)
       .leftJoin(collaborators, eq(representatives.collaboratorId, collaborators.id))
-      .orderBy(desc(representatives.createdAt))
-      .then(results => results.map(result => ({
-        ...result.representatives,
-        collaboratorName: result.collaborators?.collaboratorName || null
-      })));
+      .orderBy(desc(representatives.createdAt));
+    
+    return results.map(result => ({
+      ...result,
+      // Add default values for missing fields
+      storeAddress: null,
+      nationalId: null,
+      unlimitedMonthlyPrice: null,
+      collaborationLevel: 'basic' as const,
+      verificationStatus: 'pending' as const
+    }));
   }
 
   async getRepresentativeById(id: number): Promise<Representative | undefined> {

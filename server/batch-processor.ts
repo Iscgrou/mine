@@ -13,6 +13,57 @@ export interface BatchProcessorResult {
 
 export class BatchProcessor {
   
+  // Process representative file upload
+  async processRepresentativeFile(buffer: Buffer, filename: string): Promise<any> {
+    try {
+      const jsonData = JSON.parse(buffer.toString('utf-8'));
+      
+      let processed = 0;
+      let skipped = 0;
+      const details: string[] = [];
+      
+      // Handle array of representatives or single representative
+      const representatives = Array.isArray(jsonData) ? jsonData : [jsonData];
+      
+      for (const repData of representatives) {
+        try {
+          // Check if representative already exists
+          const existing = await storage.getRepresentativeByUsername(repData.adminUsername);
+          if (existing) {
+            skipped++;
+            details.push(`Representative ${repData.adminUsername} already exists`);
+            continue;
+          }
+          
+          // Create new representative
+          await storage.createRepresentative({
+            fullName: repData.fullName || repData.name,
+            adminUsername: repData.adminUsername,
+            phoneNumber: repData.phoneNumber,
+            telegramId: repData.telegramId,
+            storeName: repData.storeName,
+            collaboratorId: repData.collaboratorId || null
+          });
+          
+          processed++;
+          details.push(`Representative ${repData.adminUsername} added successfully`);
+        } catch (error) {
+          skipped++;
+          details.push(`Failed to process ${repData.adminUsername}: ${error}`);
+        }
+      }
+      
+      return {
+        processed,
+        skipped,
+        details,
+        message: `Processed ${processed} representatives, skipped ${skipped}`
+      };
+    } catch (error) {
+      throw new Error(`Failed to process JSON file: ${error}`);
+    }
+  }
+  
   // Invoice calculation method for JSON processing
   calculateInvoiceAmount(baseAmount: number, representative: any): number {
     // Apply representative-specific pricing based on service type

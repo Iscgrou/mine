@@ -1,0 +1,213 @@
+Admin_username 	telegeram_id	آی دی تلگرام
+aghaimb	آقایی	moonparts1
+almasmb	الماس موبایل (اکانت مرفانت)	Mmmr20
+amireza	امپراتور موبایل امیر رضا	Amireezz
+amirmob	امیر ام	amirmobileguilan
+amirsht	امیر رشتی	AmirRashti
+armatl	آرماتل	arman2rj
+asiamb	آسیا	saeedasia1
+badiz	تلگرامشون رو پاک کردند	
+baranmob	باران معرفی سام	Mobile_Baran
+caflmb	معرفی پویا سیلور	ندارد
+callmb	کال موبایل	ندارد
+clascmb	موبایل کلاسیک	tahatp7
+danmb	دانیال موبایل	Danielo_is_here
+darkmb	دارک	Mr_DarkLight
+digimb46	دیجی موبایل خالی	digimobile_46
+digitl	دیجی تل(صیانت، شایان)	shayanbozorg
+digitlakn	دیجی تل لاکانی	MRZ1366
+drszesf	معرفی آقای نقدی (مرفانت)	qdoomdh
+edalat	عدالت عطارزاده	Emad_Edalat
+ehsanmb	احسان موبایل	ehsan0800
+emdadrayn	امداد رایان	Hadika2
+emojimb	ایموجی موبایل	emoji_mobile
+ferdowsimb	فردوسی ارسال فاکتور واتس اپ	shahinziyae
+gardmb	موبایل گاردن	MIR7476
+ghadirmob	موبایل قدیر	ghadir_mobilee
+ghasrmb	قصر موبایل	ندارد
+gitmob	گیت اونر	farid_shabanzadeh
+hadimb	Hadi	hadi2913
+hezaremb	هزاره کالا و دی	alihezare3evvom
+hsmus	حسام	aiyob2020
+idehmb	ایده موبایل	ندارد
+imanmsd	Iman	V2Box_iman
+iranstore	ایران استور	ندارد
+isanmb	آیسان تجارت	mamadsunny
+istmb	معرفی کامبیز ذولفقاری	Nachir_kurdi
+khalilzade	خلیل زاده	Akhm1991
+khanemob	خانه موبایل	Atarasa
+loutoosmb	لوتوس	Abed_2519
+mahdimb	مهدی	siawnat
+martinmb	مارتین	ندارد
+mashreghi	مشرقی	Arman_mashreghi
+mehrcall	مهرکال	Omid_khalili
+mehrnmob	مهران	nimadani
+mhmaddbr	تسویه با آقای پورتقی	ronecance
+miladatp	عطاپور	Milad_atapour1993
+miladbgh	میلاد باقری	imiladbi
+mildtmb	 عطاپور	عدالت
+minaiemob	مینایی	Mikaeil55
+misaghmb	میثاق رامتین	Misaq_alizadeh 
+mjtbsabet	مجتبی ثابت	sabet_ss
+mobogap	گپ	vahid_sn
+mobshahr	موبایل شهر	davood_khodajouy
+mobzen	موبایل 09	ندارد
+mohamadshr	mohamadshr	mohamadshryfy
+mrmobmb	آقای موبایل	mr_mobile1_m
+naeinimb	نائینی معرفی خلیل‌ زاده	ali_naeini
+nimachtg	نیما چیتگر	Nimachitgar
+novinmob	نوین موبایل	Sajjadsaadatt
+omidagt	امید	parsehmb
+onlinmb	آنلاین	ندارد
+pacmobi	پکس موبی	MamadVampire
+pourmmd	پورمحمد	MPourmohammad
+pouyamb	سیلور استار	ندارد
+powrmb	پاور 	PediFazeli
+rashamob	راشا	YeAshenast2
+rastgarmb	رستگار	ندارد
+sabzianmb	سبزیان	Hsbebeh
+saedsalehi	saeed salehi	sepehr_1369
+sajadhsm	سجاد حسامی	Ssajad1365
+sammob	سام	nimajeto
+senator	سناتور	ندارد
+shahinmb	شاهین	Shahin2750
+sianatmb	دی جی تل شایان صیانت	shayanbozorg
+sinasizmob	سینا ۱۳۰۰	sina_61615
+sorena	سورنا	nimaazarnia
+tahammd	طاها مددخواه ۲	PA_PA69
+tahamobteh	طاها	mamadzall
+takmob	موبایل تک	hesamnight
+viratl	ویراتل	Mohamad4643
+zabihimb	زبیحی	Amir_zabihi8659
+xmomb	موبایل ایکس 	homayoon_mp
+
+Admin_username 	store_name	آی دی تلگرام
+adakmb	آداک 	Marfanet_vpn
+aladesf	علاالدین 	Marfanet_vpn
+almasmsb	الماس موبایل	Marfanet_vpn
+amikamsb	آمیکا 	Marfanet_vpn
+amitsesf	آمیتیس موبایل	Marfanet_vpn
+amrzvesf	امیر رضوانی 	Marfanet_vpn
+ansresf	انصاری موبایل	Marfanet_vpn
+aphmeesf	——	Marfanet_vpn
+aramesf	آرام موبایل	Marfanet_vpn
+aryaesf	آریا موبایل	Marfanet_vpn
+atimesf	آتیماه موبایل	Marfanet_vpn
+avatkmsb	آواتک	Marfanet_vpn
+baranmsb	باران اصفهان	Marfanet_vpn
+bdhesf	بدیهی 	Marfanet_vpn
+bgiesf	بیگی اصفهان	Marfanet_vpn
+bhrzesf	بهروز موبایل	Marfanet_vpn
+bkrnesf	بکرانی	Marfanet_vpn
+bnfshmsb	بفش موبایل	Marfanet_vpn
+brndesf	برند شاپ	Marfanet_vpn
+brtesf	برتر موبایل	Marfanet_vpn
+carbiesf	کاربیست	Marfanet_vpn
+dgtesf	دیجی تل جزینی	Marfanet_vpn
+dprsesf	دی پارسه	Marfanet_vpn
+drmbesf	دکتر موبایل	Marfanet_vpn
+dryesf	داریوش موبایل	Marfanet_vpn
+dtaesf	دیتا	Marfanet_vpn
+ehsanmsb	احسان موبایل	Marfanet_vpn
+emthesf	امتحانی	Marfanet_vpn
+erfnesf	عرفان موبایل	Marfanet_vpn
+eshesf	اصفهان همراه	Marfanet_vpn
+espdesf	اسپادانا	Marfanet_vpn
+fanousesf	فانوس موبایل	Marfanet_vpn
+fardadesf	فرداد +98 990 809 4995 	Marfanet_vpn
+farddesf	فرداد	Marfanet_vpn
+frbdesf	فربود	Marfanet_vpn
+frmzesf	فرامرز	Marfanet_vpn
+ghmtesf	غنیمت	Marfanet_vpn
+haminesf	حمید موبایل	Marfanet_vpn
+hmdsesf	حمید شکری	Marfanet_vpn
+hsnpuresf	حسین پور	Marfanet_vpn
+idalesf	ایده آل	Marfanet_vpn
+ifncesf	آیفون سیتی	Marfanet_vpn
+ilandesf	آیلند	Marfanet_vpn
+imnhmesf	ایمان همراه	Marfanet_vpn
+irsaesf	ایرسا	Marfanet_vpn
+itlesf	ایتالیا	Marfanet_vpn
+jntsesf	رسا (جابه‌جا شده با جفت شیش)	Marfanet_vpn
+khsresf	خسروی	Marfanet_vpn
+khymesf	خیام	Marfanet_vpn
+kianesf	کیان	Marfanet_vpn
+korshesf	کوروش	Marfanet_vpn
+mahaesf	مها	Marfanet_vpn
+mahuresf	ماهور	Marfanet_vpn
+mbentesf	انتخاب	Marfanet_vpn
+mbhmesf	موبایل باران (علی)	Marfanet_vpn
+mbicmesf	موبیکام	Marfanet_vpn
+misclesf	میس کال 	Marfanet_vpn
+mjidesf	مجید	Marfanet_vpn
+mntzresf	منتظری	Marfanet_vpn
+mrjnbesf	مستر جانبی	Marfanet_vpn
+mtinesf	متین	Marfanet_vpn
+mzbgf941		Marfanet_vpn
+mzbmil945		Marfanet_vpn
+mzbnim946		Marfanet_vpn
+mzbsf940		Marfanet_vpn
+mzbsff943		Marfanet_vpn
+mzbsfu942		Marfanet_vpn
+mzbssf944		Marfanet_vpn
+neginesf	نگین 	Marfanet_vpn
+nourbesf	نورباران	Marfanet_vpn
+ordbesf	اردیبهشت	Marfanet_vpn
+owndesf	آوند	Marfanet_vpn
+ownsesf	اونس	Marfanet_vpn
+phmiesf	پارسا هاشمی	Marfanet_vpn
+pmhdesf	پارسا حدادی	Marfanet_vpn
+prnesf	پارسیان	Marfanet_vpn
+prsemsb	پارسه	Marfanet_vpn
+prsnhesf	پارسیان همراه	Marfanet_vpn
+pryaesf	پوریا	Marfanet_vpn
+pshiesf	پارسا شفیعی	Marfanet_vpn
+pstdesf	پرساتل دهقانی	Marfanet_vpn
+rdnesf	رادین	Marfanet_vpn
+retesf	رئیسی تقوی	Marfanet_vpn
+rezaiesf	رضایی	Marfanet_vpn
+rsaesf	رسا	Marfanet_vpn
+rslesf	راسل	Marfanet_vpn
+rylesf	رویال	Marfanet_vpn
+saedmaesf	سعید ملک محمدی	Marfanet_vpn
+salesf	سال	Marfanet_vpn
+sbaesf	صبا	Marfanet_vpn
+scit2200		Marfanet_vpn
+scwom2201		Marfanet_vpn
+sdfesf	صدف	Marfanet_vpn
+sfrykesf	صفر یک	Marfanet_vpn
+shahresf	شهر موبایل	Marfanet_vpn
+shlesf	سهیل	Marfanet_vpn
+siblndesf	سیب لند	Marfanet_vpn
+sltesf	سلاطین	Marfanet_vpn
+sobhnesf	سبحان	Marfanet_vpn
+soleiesf	سلیمانی	Marfanet_vpn
+stresf	ساترا	Marfanet_vpn
+svbesf	سون بیت	Marfanet_vpn
+tapshesf	تپش	Marfanet_vpn
+tknesf	تکنو	Marfanet_vpn
+tkoesf	تیکو	Marfanet_vpn
+tkslmni	تیک سلیمانی	Marfanet_vpn
+tokesf	توکا	Marfanet_vpn
+trnmesf	ترنم	Marfanet_vpn
+wxot2204		Marfanet_vpn
+xmomb		Marfanet_vpn
+khnmb	کیهان 	Marfanet_vpn
+grnmb	گرین	Marfanet_vpn
+glrmb	گلوری	Marfanet_vpn
+lfsmb	لایف استور	Marfanet_vpn
+limb	لیمو	Marfanet_vpn
+mtkmb	مای تک	Marfanet_vpn
+mhmrmb	محمد رضایی	Marfanet_vpn
+mhbmb	محمد بخشایی	Marfanet_vpn
+maplmb	مستر اپل	Marfanet_vpn
+mhbdmb	محمد بدیعی	Marfanet_vpn
+mbjmb	موبوجوان	Marfanet_vpn
+mhjmb	مهاجر	Marfanet_vpn
+mhtmb	مهارت همراه	Marfanet_vpn
+mhrdmb	مهرداد	Marfanet_vpn
+htfmb	هاتف	Marfanet_vpn
+hftmb	هفت 	Marfanet_vpn
+hmrdmb	همراد	Marfanet_vpn
+hnamb	هونا 	Marfanet_vpn
+ykmb	یک	Marfanet_vpn

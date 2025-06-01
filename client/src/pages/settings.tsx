@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -25,6 +25,7 @@ export default function Settings() {
   const [currency, setCurrency] = useState("تومان");
   const [invoicePrefix, setInvoicePrefix] = useState("INV");
   const [vertexApiKey, setVertexApiKey] = useState("");
+  const [telegramToken, setTelegramToken] = useState("");
   const [selectedTab, setSelectedTab] = useState("company");
   
   // Alpha 35 Invoice Configuration States
@@ -69,6 +70,31 @@ export default function Settings() {
     acc[setting.key] = setting.value;
     return acc;
   }, {} as Record<string, string>) || {};
+
+  // Initialize state with existing settings
+  useEffect(() => {
+    if (settings && settings.length > 0) {
+      const companyNameSetting = settings.find(s => s.key === 'companyName' || s.key === 'company_name');
+      const currencySetting = settings.find(s => s.key === 'currency');
+      const telegramTokenSetting = settings.find(s => s.key === 'telegramToken' || s.key === 'telegram_bot_token');
+      const vertexKeySetting = settings.find(s => s.key === 'vertexApiKey');
+      const invoiceConfigSetting = settings.find(s => s.key === 'invoice_config_alpha35');
+
+      if (companyNameSetting) setCompanyName(companyNameSetting.value);
+      if (currencySetting) setCurrency(currencySetting.value);
+      if (telegramTokenSetting) setTelegramToken(telegramTokenSetting.value);
+      if (vertexKeySetting) setVertexApiKey(vertexKeySetting.value);
+      
+      if (invoiceConfigSetting) {
+        try {
+          const savedConfig = JSON.parse(invoiceConfigSetting.value);
+          setInvoiceConfig({ ...invoiceConfig, ...savedConfig });
+        } catch (e) {
+          console.warn('Failed to parse saved invoice config');
+        }
+      }
+    }
+  }, [settings]);
 
   // Save setting mutation
   const saveSettingMutation = useMutation({
@@ -490,7 +516,40 @@ export default function Settings() {
                 {/* API Key Configuration */}
                 <div>
                   <h3 className="text-lg font-semibold mb-4 text-foreground">پیکربندی کلیدهای API</h3>
-                  <div className="space-y-4">
+                  <div className="space-y-6">
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">
+                        توکن ربات تلگرام
+                      </label>
+                      <div className="flex gap-2">
+                        <Input
+                          type="password"
+                          placeholder="توکن ربات تلگرام خود را وارد کنید..."
+                          value={telegramToken}
+                          onChange={(e) => setTelegramToken(e.target.value)}
+                          className="flex-1"
+                        />
+                        <Button 
+                          onClick={() => {
+                            saveSettingMutation.mutate({
+                              key: 'telegramToken',
+                              value: telegramToken,
+                              description: 'توکن ربات تلگرام'
+                            });
+                          }}
+                          disabled={saveSettingMutation.isPending || !telegramToken}
+                        >
+                          <i className="fas fa-save ml-2"></i>
+                          ذخیره
+                        </Button>
+                      </div>
+                      {existingSettings.telegramToken && (
+                        <p className="text-sm text-green-600 mt-1">
+                          ✓ توکن تلگرام فعال: {existingSettings.telegramToken.substring(0, 10)}...
+                        </p>
+                      )}
+                    </div>
+
                     <div>
                       <label className="block text-sm font-medium text-foreground mb-2">
                         کلید Google Vertex AI
@@ -506,9 +565,9 @@ export default function Settings() {
                         <Button 
                           onClick={() => {
                             saveSettingMutation.mutate({
-                              key: 'vertex_ai_key',
+                              key: 'vertexApiKey',
                               value: vertexApiKey,
-                              description: 'Google Vertex AI API Key'
+                              description: 'کلید API Vertex AI'
                             });
                           }}
                           disabled={saveSettingMutation.isPending || !vertexApiKey}
@@ -517,6 +576,35 @@ export default function Settings() {
                           ذخیره
                         </Button>
                       </div>
+                      {existingSettings.vertexApiKey && (
+                        <p className="text-sm text-green-600 mt-1">
+                          ✓ کلید Vertex AI فعال و پیکربندی شده
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-foreground mb-2">
+                        کلید Google AI Studio
+                      </label>
+                      <div className="flex gap-2">
+                        <Input
+                          type="password"
+                          placeholder="کلید Google AI Studio..."
+                          value={existingSettings.aiApiKey || ""}
+                          readOnly
+                          className="flex-1"
+                        />
+                        <Button variant="outline" disabled>
+                          <i className="fas fa-check ml-2"></i>
+                          فعال
+                        </Button>
+                      </div>
+                      {existingSettings.aiApiKey && (
+                        <p className="text-sm text-green-600 mt-1">
+                          ✓ کلید Google AI Studio فعال: {existingSettings.aiApiKey.substring(0, 15)}...
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>

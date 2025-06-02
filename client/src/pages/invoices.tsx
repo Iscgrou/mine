@@ -83,21 +83,35 @@ export default function InvoicesPage() {
     },
   });
 
-  // Send to Telegram mutation
+  // Send to Telegram mutation with enhanced functionality
   const sendToTelegramMutation = useMutation({
     mutationFn: async (invoiceId: number) => {
       const response = await fetch(`/api/invoices/${invoiceId}/send-telegram`, {
         method: "POST",
       });
-      if (!response.ok) throw new Error("Failed to send");
+      if (!response.ok) throw new Error("Failed to prepare telegram message");
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      // Open the Telegram share URL or direct chat
+      if (data.telegramUrl) {
+        window.open(data.telegramUrl, '_blank');
+      } else if (data.directTelegramUrl) {
+        window.open(data.directTelegramUrl, '_blank');
+      }
+      
       toast({
-        title: "ارسال به تلگرام",
-        description: "فاکتور با موفقیت ارسال شد",
+        title: "آماده ارسال به تلگرام",
+        description: "پنجره تلگرام باز شد - فاکتور آماده ارسال است",
       });
       queryClient.invalidateQueries({ queryKey: ["/api/invoices"] });
+    },
+    onError: () => {
+      toast({
+        title: "خطا در آماده‌سازی",
+        description: "مشکل در آماده‌سازی پیام تلگرام",
+        variant: "destructive",
+      });
     },
   });
 

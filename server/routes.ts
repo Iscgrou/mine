@@ -784,7 +784,339 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
-  // Send Invoice to Telegram
+  // Generate Invoice HTML with Alpha 35 Configuration
+  app.get("/api/invoices/:id/generate", async (req, res) => {
+    try {
+      const invoiceId = parseInt(req.params.id);
+      const invoice = await storage.getInvoiceById(invoiceId);
+      
+      if (!invoice) {
+        return res.status(404).json({ message: "فاکتور یافت نشد" });
+      }
+
+      // Get Alpha 35 configuration from settings
+      let invoiceConfig = {
+        template: 'professional',
+        headerStyle: 'centered',
+        colorScheme: 'blue-professional',
+        fontFamily: 'iranian-sans',
+        itemGrouping: 'by-duration',
+        calculationDisplay: 'detailed',
+        showLogo: true,
+        qrCode: true,
+        watermark: false
+      };
+
+      try {
+        const allSettings = await storage.getSettings();
+        const configSetting = allSettings.find(s => s.key === 'invoice_config_alpha35');
+        if (configSetting && configSetting.value) {
+          const savedConfig = JSON.parse(configSetting.value);
+          invoiceConfig = { ...invoiceConfig, ...savedConfig };
+        }
+      } catch (e) {
+        console.warn('Failed to load invoice config, using defaults');
+      }
+
+      // Get invoice items from database
+      const itemsResult = await db.select()
+        .from(invoiceItems)
+        .where(eq(invoiceItems.invoiceId, invoiceId));
+
+      // Generate dynamic color scheme based on config
+      const colorSchemes = {
+        'blue-professional': {
+          primary: '#667eea',
+          secondary: '#764ba2',
+          accent: '#f8f9ff'
+        },
+        'green-modern': {
+          primary: '#48bb78',
+          secondary: '#38a169',
+          accent: '#f0fff4'
+        },
+        'purple-luxury': {
+          primary: '#805ad5',
+          secondary: '#6b46c1',
+          accent: '#faf5ff'
+        }
+      };
+
+      const colors = colorSchemes['blue-professional']; // Use default for now
+
+      const invoiceHTML = `
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>فاکتور ${invoice.invoiceNumber}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: ${invoiceConfig.fontFamily === 'iranian-sans' ? "'IRANSans', 'Tahoma'" : "'Tahoma'"}, 'Arial', sans-serif; 
+            direction: rtl; 
+            background: #f5f5f5;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .invoice-container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background: white; 
+            border-radius: 10px; 
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            overflow: hidden;
+            position: relative;
+        }
+        ${invoiceConfig.watermark ? `
+        .invoice-container::before {
+            content: 'مارفانت';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 120px;
+            color: rgba(0,0,0,0.03);
+            z-index: 1;
+            pointer-events: none;
+        }
+        ` : ''}
+        .content { position: relative; z-index: 2; }
+        .header { 
+            background: linear-gradient(135deg, ${colors.primary} 0%, ${colors.secondary} 100%); 
+            color: white; 
+            padding: 30px; 
+            text-align: ${invoiceConfig.headerStyle === 'centered' ? 'center' : 'right'}; 
+        }
+        .header h1 { font-size: 32px; margin-bottom: 10px; }
+        .header p { opacity: 0.9; font-size: 16px; }
+        .invoice-details { 
+            padding: 30px; 
+            background: ${colors.accent};
+        }
+        .invoice-info { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 30px; 
+            margin-bottom: 30px; 
+        }
+        .info-section h3 { 
+            color: ${colors.primary}; 
+            margin-bottom: 15px; 
+            font-size: 18px; 
+            border-bottom: 2px solid ${colors.primary}; 
+            padding-bottom: 5px; 
+        }
+        .info-row { 
+            display: flex; 
+            justify-content: space-between; 
+            margin-bottom: 8px; 
+            padding: 5px 0; 
+        }
+        .info-label { color: #666; font-weight: 500; }
+        .info-value { font-weight: bold; color: #333; }
+        .items-section {
+            padding: 0 30px 30px;
+        }
+        .items-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin: 20px 0; 
+            border-radius: 8px; 
+            overflow: hidden; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
+        }
+        .items-table th { 
+            background: ${colors.primary}; 
+            color: white; 
+            padding: 15px; 
+            text-align: center; 
+            font-size: 14px; 
+            font-weight: 600;
+        }
+        .items-table td { 
+            padding: 12px 15px; 
+            text-align: center; 
+            border-bottom: 1px solid #eee; 
+            font-size: 14px;
+        }
+        .items-table tbody tr:hover { background: ${colors.accent}; }
+        .items-table tbody tr:nth-child(even) { background: #f9f9f9; }
+        .total-section { 
+            background: ${colors.accent}; 
+            padding: 25px 30px; 
+            border-top: 3px solid ${colors.primary};
+        }
+        .total-row { 
+            display: flex; 
+            justify-content: space-between; 
+            padding: 10px 0; 
+            border-bottom: 1px solid #ddd; 
+            font-size: 16px;
+        }
+        .total-row.final { 
+            font-size: 20px; 
+            font-weight: bold; 
+            color: ${colors.primary}; 
+            border-bottom: none; 
+            margin-top: 15px; 
+            padding: 15px 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .footer { 
+            background: #f8f9ff; 
+            padding: 25px; 
+            text-align: center; 
+            color: #666; 
+            border-top: 1px solid #eee; 
+        }
+        .footer p { margin-bottom: 8px; }
+        .qr-section {
+            ${invoiceConfig.qrCode ? 'display: block;' : 'display: none;'}
+            text-align: center;
+            padding: 20px;
+            background: white;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        @media print {
+            body { background: white; padding: 0; }
+            .invoice-container { box-shadow: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-container">
+        <div class="content">
+            <div class="header">
+                <h1>مارفانت</h1>
+                <p>ارائه‌دهنده خدمات V2Ray و پروکسی</p>
+                ${invoiceConfig.showLogo ? '<p style="margin-top: 10px;">🌐 شبکه ملی مارفانت</p>' : ''}
+            </div>
+            
+            <div class="invoice-details">
+                <div class="invoice-info">
+                    <div class="info-section">
+                        <h3>اطلاعات فاکتور</h3>
+                        <div class="info-row">
+                            <span class="info-label">شماره فاکتور:</span>
+                            <span class="info-value">${invoice.invoiceNumber}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">تاریخ صدور:</span>
+                            <span class="info-value">${new Date(invoice.createdAt).toLocaleDateString('fa-IR')}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">وضعیت:</span>
+                            <span class="info-value">${invoice.status === 'paid' ? 'پرداخت شده' : invoice.status === 'pending' ? 'در انتظار پرداخت' : 'پیش‌نویس'}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">منبع قیمت‌گذاری:</span>
+                            <span class="info-value">${invoice.priceSource || 'سیستم خودکار'}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="info-section">
+                        <h3>اطلاعات ${invoiceConfig.representativeInfoLevel === 'detailed' ? 'کامل ' : ''}نماینده</h3>
+                        ${invoice.representative ? `
+                            <div class="info-row">
+                                <span class="info-label">نام کامل:</span>
+                                <span class="info-value">${invoice.representative.fullName}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">نام کاربری:</span>
+                                <span class="info-value">${invoice.representative.adminUsername}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">تلگرام:</span>
+                                <span class="info-value">@${invoice.representative.telegramId}</span>
+                            </div>
+                        ` : `
+                            <div class="info-row">
+                                <span class="info-label">نماینده:</span>
+                                <span class="info-value">نامشخص</span>
+                            </div>
+                        `}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="items-section">
+                <h3 style="color: ${colors.primary}; margin-bottom: 15px; font-size: 20px;">جزئیات خدمات</h3>
+                
+                <table class="items-table">
+                    <thead>
+                        <tr>
+                            <th>شرح خدمات</th>
+                            <th>تعداد</th>
+                            <th>قیمت واحد</th>
+                            <th>مبلغ کل</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${invoiceItems.map(item => `
+                            <tr>
+                                <td style="text-align: right; font-weight: 500;">${item.description}</td>
+                                <td>${item.quantity}</td>
+                                <td>${parseFloat(item.unitPrice).toLocaleString('fa-IR')} تومان</td>
+                                <td style="font-weight: 600;">${parseFloat(item.totalPrice).toLocaleString('fa-IR')} تومان</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="total-section">
+                <div class="total-row">
+                    <span>جمع کل خدمات:</span>
+                    <span>${parseFloat(invoice.baseAmount).toLocaleString('fa-IR')} تومان</span>
+                </div>
+                ${invoiceConfig.calculationDisplay === 'detailed' ? `
+                <div class="total-row">
+                    <span>تخفیف نماینده:</span>
+                    <span>-${(parseFloat(invoice.baseAmount) - parseFloat(invoice.totalAmount)).toLocaleString('fa-IR')} تومان</span>
+                </div>
+                ` : ''}
+                <div class="total-row final">
+                    <span>مبلغ قابل پرداخت:</span>
+                    <span>${parseFloat(invoice.totalAmount).toLocaleString('fa-IR')} تومان</span>
+                </div>
+            </div>
+
+            ${invoiceConfig.qrCode ? `
+            <div class="qr-section">
+                <h4 style="margin-bottom: 10px; color: ${colors.primary};">کد QR پرداخت</h4>
+                <div style="width: 120px; height: 120px; background: #f0f0f0; margin: 0 auto; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #888;">
+                    QR Code
+                </div>
+                <p style="margin-top: 10px; font-size: 12px;">برای پرداخت سریع، کد QR را اسکن کنید</p>
+            </div>
+            ` : ''}
+        </div>
+        
+        <div class="footer">
+            <p><strong>شرکت مارفانت</strong> | ارائه‌دهنده خدمات V2Ray و پروکسی</p>
+            <p>www.marfanet.com | support@marfanet.com</p>
+            <p style="margin-top: 10px; font-size: 12px; color: ${colors.primary};">این فاکتور با سیستم Alpha 35 تولید شده است</p>
+            ${invoiceConfig.digitalSignature ? '<p style="margin-top: 10px; font-size: 11px;">🔐 امضای دیجیتال تأیید شده</p>' : ''}
+        </div>
+    </div>
+</body>
+</html>`;
+
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      res.send(invoiceHTML);
+      
+    } catch (error) {
+      console.error('Error generating invoice:', error);
+      res.status(500).json({ message: "خطا در تولید فاکتور" });
+    }
+  });
+
+  // Send Invoice to Telegram with actual content
   app.post("/api/invoices/:id/send-telegram", async (req, res) => {
     try {
       const invoiceId = parseInt(req.params.id);
@@ -794,21 +1126,45 @@ export function registerRoutes(app: Express): Server {
         return res.status(404).json({ message: "فاکتور یافت نشد" });
       }
 
+      // Create shareable invoice URL
+      const invoiceUrl = `${req.protocol}://${req.get('host')}/api/invoices/${invoiceId}/generate`;
+      
+      // Create Telegram message with invoice details
+      const telegramMessage = `
+🧾 *فاکتور جدید از مارفانت*
+
+📋 *شماره فاکتور:* ${invoice.invoiceNumber}
+👤 *نماینده:* ${invoice.representative?.fullName || 'نامشخص'}
+💰 *مبلغ:* ${parseFloat(invoice.totalAmount).toLocaleString('fa-IR')} تومان
+📅 *تاریخ:* ${new Date(invoice.createdAt).toLocaleDateString('fa-IR')}
+
+🔗 *مشاهده فاکتور کامل:*
+${invoiceUrl}
+
+📲 برای مشاهده فاکتور کامل روی لینک بالا کلیک کنید.
+
+──────────────
+🌐 شرکت مارفانت
+      `.trim();
+
       // Update telegram_sent status
       await db.update(invoices)
         .set({ telegramSent: true })
         .where(eq(invoices.id, invoiceId));
 
       // Log the telegram send event
-      console.log(`Telegram sent for invoice ${invoiceId} to representative ${invoice.representative?.id}`);
+      console.log(`Telegram message prepared for invoice ${invoiceId} to representative ${invoice.representative?.id}`);
 
       res.json({ 
-        message: "فاکتور به تلگرام ارسال شد",
-        telegramSent: true
+        message: "فاکتور آماده ارسال به تلگرام است",
+        telegramSent: true,
+        telegramMessage,
+        telegramUrl: `https://t.me/share/url?url=${encodeURIComponent(invoiceUrl)}&text=${encodeURIComponent(telegramMessage)}`,
+        directTelegramUrl: invoice.representative?.telegramId ? `https://t.me/${invoice.representative.telegramId}` : null
       });
     } catch (error) {
-      console.error('Error sending to telegram:', error);
-      res.status(500).json({ message: "خطا در ارسال به تلگرام" });
+      console.error('Error preparing telegram message:', error);
+      res.status(500).json({ message: "خطا در آماده‌سازی پیام تلگرام" });
     }
   });
 

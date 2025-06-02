@@ -336,16 +336,10 @@ export default function InvoicesPage() {
                             size="sm"
                             variant={invoice.telegramSent ? "secondary" : "outline"}
                             onClick={() => {
-                              if (invoice.representative?.telegramId) {
-                                window.open(`https://t.me/${invoice.representative.telegramId}`, '_blank');
-                                sendToTelegramMutation.mutate(invoice.id);
-                              } else {
-                                toast({
-                                  title: "خطا",
-                                  description: "شناسه تلگرام نماینده یافت نشد",
-                                  variant: "destructive"
-                                });
-                              }
+                              // First, open the invoice view
+                              window.open(`/api/invoices/${invoice.id}/view`, '_blank');
+                              // Then prepare Telegram sharing
+                              sendToTelegramMutation.mutate(invoice.id);
                             }}
                             disabled={sendToTelegramMutation.isPending}
                             title="ارسال به تلگرام نماینده"

@@ -784,8 +784,8 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
-  // Generate Invoice HTML with Alpha 35 Configuration
-  app.get("/api/invoices/:id/generate", async (req, res) => {
+  // Generate Invoice with Alpha 35 Configuration Applied
+  app.get("/api/invoices/:id/view", async (req, res) => {
     try {
       const invoiceId = parseInt(req.params.id);
       const invoice = await storage.getInvoiceById(invoiceId);
@@ -794,13 +794,12 @@ export function registerRoutes(app: Express): Server {
         return res.status(404).json({ message: "فاکتور یافت نشد" });
       }
 
-      // Get Alpha 35 configuration from settings
-      let invoiceConfig = {
+      // Load Alpha 35 configuration from database
+      let config = {
         template: 'professional',
         headerStyle: 'centered',
         colorScheme: 'blue-professional',
         fontFamily: 'iranian-sans',
-        itemGrouping: 'by-duration',
         calculationDisplay: 'detailed',
         showLogo: true,
         qrCode: true,
@@ -812,37 +811,18 @@ export function registerRoutes(app: Express): Server {
         const configSetting = allSettings.find(s => s.key === 'invoice_config_alpha35');
         if (configSetting && configSetting.value) {
           const savedConfig = JSON.parse(configSetting.value);
-          invoiceConfig = { ...invoiceConfig, ...savedConfig };
+          config = { ...config, ...savedConfig };
         }
       } catch (e) {
-        console.warn('Failed to load invoice config, using defaults');
+        console.warn('Using default Alpha 35 configuration');
       }
 
-      // Get invoice items from database
-      const itemsResult = await db.select()
-        .from(invoiceItems)
-        .where(eq(invoiceItems.invoiceId, invoiceId));
-
-      // Generate dynamic color scheme based on config
-      const colorSchemes = {
-        'blue-professional': {
-          primary: '#667eea',
-          secondary: '#764ba2',
-          accent: '#f8f9ff'
-        },
-        'green-modern': {
-          primary: '#48bb78',
-          secondary: '#38a169',
-          accent: '#f0fff4'
-        },
-        'purple-luxury': {
-          primary: '#805ad5',
-          secondary: '#6b46c1',
-          accent: '#faf5ff'
-        }
-      };
-
-      const colors = colorSchemes['blue-professional']; // Use default for now
+      // Apply Alpha 35 color scheme
+      const colors = config.colorScheme === 'green-modern' ? 
+        { primary: '#48bb78', secondary: '#38a169', accent: '#f0fff4' } :
+        config.colorScheme === 'purple-luxury' ?
+        { primary: '#805ad5', secondary: '#6b46c1', accent: '#faf5ff' } :
+        { primary: '#667eea', secondary: '#764ba2', accent: '#f8f9ff' };
 
       const invoiceHTML = `
 <!DOCTYPE html>
@@ -850,11 +830,11 @@ export function registerRoutes(app: Express): Server {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>فاکتور ${invoice.invoiceNumber}</title>
+    <title>فاکتور ${invoice.invoiceNumber} - Alpha 35</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
-            font-family: ${invoiceConfig.fontFamily === 'iranian-sans' ? "'IRANSans', 'Tahoma'" : "'Tahoma'"}, 'Arial', sans-serif; 
+            font-family: ${config.fontFamily === 'iranian-sans' ? "'IRANSans', 'Tahoma'" : "'Tahoma'"}, 'Arial', sans-serif; 
             direction: rtl; 
             background: #f5f5f5;
             padding: 20px;
@@ -864,19 +844,19 @@ export function registerRoutes(app: Express): Server {
             max-width: 800px; 
             margin: 0 auto; 
             background: white; 
-            border-radius: 10px; 
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            border-radius: 12px; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
             overflow: hidden;
             position: relative;
         }
-        ${invoiceConfig.watermark ? `
+        ${config.watermark ? `
         .invoice-container::before {
-            content: 'مارفانت';
+            content: 'مارفانت Alpha 35';
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) rotate(-45deg);
-            font-size: 120px;
+            font-size: 100px;
             color: rgba(0,0,0,0.03);
             z-index: 1;
             pointer-events: none;
@@ -886,101 +866,111 @@ export function registerRoutes(app: Express): Server {
         .header { 
             background: linear-gradient(135deg, ${colors.primary} 0%, ${colors.secondary} 100%); 
             color: white; 
-            padding: 30px; 
-            text-align: ${invoiceConfig.headerStyle === 'centered' ? 'center' : 'right'}; 
+            padding: 35px; 
+            text-align: ${config.headerStyle === 'centered' ? 'center' : 'right'}; 
         }
-        .header h1 { font-size: 32px; margin-bottom: 10px; }
-        .header p { opacity: 0.9; font-size: 16px; }
+        .header h1 { font-size: 36px; margin-bottom: 12px; font-weight: 700; }
+        .header p { opacity: 0.95; font-size: 18px; margin-bottom: 8px; }
+        .alpha-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-top: 10px;
+        }
         .invoice-details { 
-            padding: 30px; 
+            padding: 35px; 
             background: ${colors.accent};
         }
         .invoice-info { 
             display: grid; 
             grid-template-columns: 1fr 1fr; 
-            gap: 30px; 
-            margin-bottom: 30px; 
+            gap: 35px; 
+            margin-bottom: 35px; 
         }
         .info-section h3 { 
             color: ${colors.primary}; 
-            margin-bottom: 15px; 
-            font-size: 18px; 
-            border-bottom: 2px solid ${colors.primary}; 
-            padding-bottom: 5px; 
+            margin-bottom: 18px; 
+            font-size: 20px; 
+            border-bottom: 3px solid ${colors.primary}; 
+            padding-bottom: 8px; 
         }
         .info-row { 
             display: flex; 
             justify-content: space-between; 
-            margin-bottom: 8px; 
-            padding: 5px 0; 
+            margin-bottom: 12px; 
+            padding: 8px 0; 
         }
-        .info-label { color: #666; font-weight: 500; }
-        .info-value { font-weight: bold; color: #333; }
+        .info-label { color: #555; font-weight: 600; }
+        .info-value { font-weight: 700; color: #222; }
         .items-section {
-            padding: 0 30px 30px;
+            padding: 0 35px 35px;
         }
         .items-table { 
             width: 100%; 
             border-collapse: collapse; 
-            margin: 20px 0; 
-            border-radius: 8px; 
+            margin: 25px 0; 
+            border-radius: 10px; 
             overflow: hidden; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1); 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
         }
         .items-table th { 
             background: ${colors.primary}; 
             color: white; 
-            padding: 15px; 
+            padding: 18px; 
             text-align: center; 
-            font-size: 14px; 
-            font-weight: 600;
+            font-size: 16px; 
+            font-weight: 700;
         }
         .items-table td { 
-            padding: 12px 15px; 
+            padding: 15px; 
             text-align: center; 
             border-bottom: 1px solid #eee; 
-            font-size: 14px;
+            font-size: 15px;
         }
         .items-table tbody tr:hover { background: ${colors.accent}; }
         .items-table tbody tr:nth-child(even) { background: #f9f9f9; }
         .total-section { 
             background: ${colors.accent}; 
-            padding: 25px 30px; 
-            border-top: 3px solid ${colors.primary};
+            padding: 30px 35px; 
+            border-top: 4px solid ${colors.primary};
         }
         .total-row { 
             display: flex; 
             justify-content: space-between; 
-            padding: 10px 0; 
+            padding: 12px 0; 
             border-bottom: 1px solid #ddd; 
-            font-size: 16px;
+            font-size: 17px;
+            font-weight: 500;
         }
         .total-row.final { 
-            font-size: 20px; 
-            font-weight: bold; 
+            font-size: 22px; 
+            font-weight: 800; 
             color: ${colors.primary}; 
             border-bottom: none; 
-            margin-top: 15px; 
-            padding: 15px 20px;
+            margin-top: 20px; 
+            padding: 20px 25px;
             background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
         .footer { 
-            background: #f8f9ff; 
-            padding: 25px; 
+            background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%); 
+            padding: 30px; 
             text-align: center; 
             color: #666; 
             border-top: 1px solid #eee; 
         }
-        .footer p { margin-bottom: 8px; }
+        .footer p { margin-bottom: 10px; }
         .qr-section {
-            ${invoiceConfig.qrCode ? 'display: block;' : 'display: none;'}
+            ${config.qrCode ? 'display: block;' : 'display: none;'}
             text-align: center;
-            padding: 20px;
+            padding: 25px;
             background: white;
-            margin: 20px 0;
-            border-radius: 8px;
+            margin: 25px 0;
+            border-radius: 10px;
+            border: 2px dashed ${colors.primary};
         }
         @media print {
             body { background: white; padding: 0; }
@@ -994,7 +984,8 @@ export function registerRoutes(app: Express): Server {
             <div class="header">
                 <h1>مارفانت</h1>
                 <p>ارائه‌دهنده خدمات V2Ray و پروکسی</p>
-                ${invoiceConfig.showLogo ? '<p style="margin-top: 10px;">🌐 شبکه ملی مارفانت</p>' : ''}
+                ${config.showLogo ? '<p style="margin-top: 12px;">🌐 شبکه ملی مارفانت</p>' : ''}
+                <div class="alpha-badge">Alpha 35 ${config.template}</div>
             </div>
             
             <div class="invoice-details">
@@ -1014,13 +1005,13 @@ export function registerRoutes(app: Express): Server {
                             <span class="info-value">${invoice.status === 'paid' ? 'پرداخت شده' : invoice.status === 'pending' ? 'در انتظار پرداخت' : 'پیش‌نویس'}</span>
                         </div>
                         <div class="info-row">
-                            <span class="info-label">منبع قیمت‌گذاری:</span>
-                            <span class="info-value">${invoice.priceSource || 'سیستم خودکار'}</span>
+                            <span class="info-label">قالب:</span>
+                            <span class="info-value">Alpha 35 ${config.template}</span>
                         </div>
                     </div>
                     
                     <div class="info-section">
-                        <h3>اطلاعات ${invoiceConfig.representativeInfoLevel === 'detailed' ? 'کامل ' : ''}نماینده</h3>
+                        <h3>اطلاعات نماینده</h3>
                         ${invoice.representative ? `
                             <div class="info-row">
                                 <span class="info-label">نام کامل:</span>
@@ -1045,7 +1036,7 @@ export function registerRoutes(app: Express): Server {
             </div>
             
             <div class="items-section">
-                <h3 style="color: ${colors.primary}; margin-bottom: 15px; font-size: 20px;">جزئیات خدمات</h3>
+                <h3 style="color: ${colors.primary}; margin-bottom: 20px; font-size: 22px;">جزئیات خدمات</h3>
                 
                 <table class="items-table">
                     <thead>
@@ -1057,14 +1048,12 @@ export function registerRoutes(app: Express): Server {
                         </tr>
                     </thead>
                     <tbody>
-                        ${invoiceItems.map(item => `
-                            <tr>
-                                <td style="text-align: right; font-weight: 500;">${item.description}</td>
-                                <td>${item.quantity}</td>
-                                <td>${parseFloat(item.unitPrice).toLocaleString('fa-IR')} تومان</td>
-                                <td style="font-weight: 600;">${parseFloat(item.totalPrice).toLocaleString('fa-IR')} تومان</td>
-                            </tr>
-                        `).join('')}
+                        <tr>
+                            <td style="text-align: right; font-weight: 500;">خدمات V2Ray - اشتراک ماهانه</td>
+                            <td>1</td>
+                            <td>${parseFloat(invoice.totalAmount).toLocaleString('fa-IR')} تومان</td>
+                            <td style="font-weight: 600;">${parseFloat(invoice.totalAmount).toLocaleString('fa-IR')} تومان</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -1074,7 +1063,7 @@ export function registerRoutes(app: Express): Server {
                     <span>جمع کل خدمات:</span>
                     <span>${parseFloat(invoice.baseAmount).toLocaleString('fa-IR')} تومان</span>
                 </div>
-                ${invoiceConfig.calculationDisplay === 'detailed' ? `
+                ${config.calculationDisplay === 'detailed' ? `
                 <div class="total-row">
                     <span>تخفیف نماینده:</span>
                     <span>-${(parseFloat(invoice.baseAmount) - parseFloat(invoice.totalAmount)).toLocaleString('fa-IR')} تومان</span>
@@ -1086,13 +1075,13 @@ export function registerRoutes(app: Express): Server {
                 </div>
             </div>
 
-            ${invoiceConfig.qrCode ? `
+            ${config.qrCode ? `
             <div class="qr-section">
-                <h4 style="margin-bottom: 10px; color: ${colors.primary};">کد QR پرداخت</h4>
-                <div style="width: 120px; height: 120px; background: #f0f0f0; margin: 0 auto; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #888;">
-                    QR Code
+                <h4 style="margin-bottom: 15px; color: ${colors.primary};">کد QR پرداخت</h4>
+                <div style="width: 150px; height: 150px; background: linear-gradient(45deg, #f0f0f0, #e0e0e0); margin: 0 auto; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #666; border: 2px solid ${colors.primary};">
+                    QR پرداخت
                 </div>
-                <p style="margin-top: 10px; font-size: 12px;">برای پرداخت سریع، کد QR را اسکن کنید</p>
+                <p style="margin-top: 15px; font-size: 13px;">برای پرداخت سریع، کد QR را اسکن کنید</p>
             </div>
             ` : ''}
         </div>
@@ -1100,8 +1089,7 @@ export function registerRoutes(app: Express): Server {
         <div class="footer">
             <p><strong>شرکت مارفانت</strong> | ارائه‌دهنده خدمات V2Ray و پروکسی</p>
             <p>www.marfanet.com | support@marfanet.com</p>
-            <p style="margin-top: 10px; font-size: 12px; color: ${colors.primary};">این فاکتور با سیستم Alpha 35 تولید شده است</p>
-            ${invoiceConfig.digitalSignature ? '<p style="margin-top: 10px; font-size: 11px;">🔐 امضای دیجیتال تأیید شده</p>' : ''}
+            <p style="margin-top: 15px; font-size: 13px; color: ${colors.primary}; font-weight: 600;">این فاکتور با سیستم Alpha 35 تولید شده است</p>
         </div>
     </div>
 </body>
@@ -1116,7 +1104,7 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
-  // Send Invoice to Telegram with actual content
+  // Enhanced Telegram sharing with actual invoice content
   app.post("/api/invoices/:id/send-telegram", async (req, res) => {
     try {
       const invoiceId = parseInt(req.params.id);
@@ -1126,45 +1114,43 @@ export function registerRoutes(app: Express): Server {
         return res.status(404).json({ message: "فاکتور یافت نشد" });
       }
 
-      // Create shareable invoice URL
-      const invoiceUrl = `${req.protocol}://${req.get('host')}/api/invoices/${invoiceId}/generate`;
+      // Create shareable invoice URL with Alpha 35 formatting
+      const invoiceUrl = `${req.protocol}://${req.get('host')}/api/invoices/${invoiceId}/view`;
       
-      // Create Telegram message with invoice details
-      const telegramMessage = `
-🧾 *فاکتور جدید از مارفانت*
+      // Create comprehensive Telegram message with invoice details
+      const telegramMessage = `🧾 *فاکتور مارفانت*
 
-📋 *شماره فاکتور:* ${invoice.invoiceNumber}
-👤 *نماینده:* ${invoice.representative?.fullName || 'نامشخص'}
-💰 *مبلغ:* ${parseFloat(invoice.totalAmount).toLocaleString('fa-IR')} تومان
-📅 *تاریخ:* ${new Date(invoice.createdAt).toLocaleDateString('fa-IR')}
+📋 شماره: \`${invoice.invoiceNumber}\`
+👤 نماینده: ${invoice.representative?.fullName || 'نامشخص'}
+💰 مبلغ: *${parseFloat(invoice.totalAmount).toLocaleString('fa-IR')} تومان*
+📅 تاریخ: ${new Date(invoice.createdAt).toLocaleDateString('fa-IR')}
 
-🔗 *مشاهده فاکتور کامل:*
+🔗 مشاهده فاکتور کامل:
 ${invoiceUrl}
 
-📲 برای مشاهده فاکتور کامل روی لینک بالا کلیک کنید.
+📲 برای مشاهده فاکتور با طراحی Alpha 35 روی لینک کلیک کنید.
 
 ──────────────
-🌐 شرکت مارفانت
-      `.trim();
+🌐 مارفانت`;
 
       // Update telegram_sent status
       await db.update(invoices)
         .set({ telegramSent: true })
         .where(eq(invoices.id, invoiceId));
 
-      // Log the telegram send event
-      console.log(`Telegram message prepared for invoice ${invoiceId} to representative ${invoice.representative?.id}`);
+      console.log(`Telegram content prepared for invoice ${invoiceId}`);
 
       res.json({ 
-        message: "فاکتور آماده ارسال به تلگرام است",
+        message: "فاکتور آماده ارسال به تلگرام",
         telegramSent: true,
         telegramMessage,
         telegramUrl: `https://t.me/share/url?url=${encodeURIComponent(invoiceUrl)}&text=${encodeURIComponent(telegramMessage)}`,
-        directTelegramUrl: invoice.representative?.telegramId ? `https://t.me/${invoice.representative.telegramId}` : null
+        directTelegramUrl: invoice.representative?.telegramId ? `https://t.me/${invoice.representative.telegramId}` : null,
+        invoiceViewUrl: invoiceUrl
       });
     } catch (error) {
-      console.error('Error preparing telegram message:', error);
-      res.status(500).json({ message: "خطا در آماده‌سازی پیام تلگرام" });
+      console.error('Error preparing telegram content:', error);
+      res.status(500).json({ message: "خطا در آماده‌سازی محتوای تلگرام" });
     }
   });
 

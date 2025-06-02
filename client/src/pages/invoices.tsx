@@ -343,17 +343,49 @@ export default function InvoicesPage() {
                                 });
                                 const data = await response.json();
                                 
+                                // Debug: log the response to see what we get
+                                console.log('Telegram response:', data);
+                                
                                 if (data.directTelegramUrl) {
-                                  // Open direct chat with admin
-                                  window.open(data.directTelegramUrl, '_blank');
-                                  
-                                  // Copy message to clipboard for easy pasting
-                                  if (navigator.clipboard && data.telegramMessage) {
-                                    await navigator.clipboard.writeText(data.telegramMessage);
-                                    toast({
-                                      title: "آماده ارسال",
-                                      description: "پیام در کلیپ‌بورد کپی شد. در تلگرام پیست کنید."
-                                    });
+                                  // Copy message to clipboard first
+                                  if (data.telegramMessage) {
+                                    try {
+                                      await navigator.clipboard.writeText(data.telegramMessage);
+                                      toast({
+                                        title: "پیام آماده شد",
+                                        description: "پیام در کلیپ‌بورد کپی شد. حالا چت تلگرام باز می‌شود."
+                                      });
+                                      
+                                      // Small delay to ensure toast shows before opening
+                                      setTimeout(() => {
+                                        window.open(data.directTelegramUrl, '_blank');
+                                      }, 500);
+                                    } catch (clipboardError) {
+                                      // Fallback: show the message content
+                                      console.warn('Clipboard failed, showing message:', clipboardError);
+                                      
+                                      // Create a temporary modal to show the message
+                                      const messageModal = document.createElement('div');
+                                      messageModal.style.cssText = `
+                                        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                                        background: rgba(0,0,0,0.5); z-index: 9999; display: flex;
+                                        align-items: center; justify-content: center;
+                                      `;
+                                      messageModal.innerHTML = `
+                                        <div style="background: white; padding: 20px; border-radius: 10px; max-width: 500px; direction: rtl;">
+                                          <h3 style="margin-bottom: 15px;">پیام برای ارسال به تلگرام:</h3>
+                                          <textarea readonly style="width: 100%; height: 200px; border: 1px solid #ccc; padding: 10px; font-family: monospace;">${data.telegramMessage}</textarea>
+                                          <div style="margin-top: 15px; text-align: center;">
+                                            <button onclick="navigator.clipboard.writeText('${data.telegramMessage.replace(/'/g, "\\'")}').then(() => alert('کپی شد!'))" style="margin: 5px; padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 5px;">کپی</button>
+                                            <button onclick="window.open('${data.directTelegramUrl}', '_blank')" style="margin: 5px; padding: 8px 16px; background: #28a745; color: white; border: none; border-radius: 5px;">باز کردن تلگرام</button>
+                                            <button onclick="this.parentElement.parentElement.parentElement.remove()" style="margin: 5px; padding: 8px 16px; background: #dc3545; color: white; border: none; border-radius: 5px;">بستن</button>
+                                          </div>
+                                        </div>
+                                      `;
+                                      document.body.appendChild(messageModal);
+                                    }
+                                  } else {
+                                    window.open(data.directTelegramUrl, '_blank');
                                   }
                                 } else {
                                   toast({

@@ -1117,21 +1117,42 @@ export function registerRoutes(app: Express): Server {
       // Create shareable invoice URL with Alpha 35 formatting
       const invoiceUrl = `${req.protocol}://${req.get('host')}/api/invoices/${invoiceId}/view`;
       
-      // Create comprehensive Telegram message with invoice details
-      const telegramMessage = `🧾 *فاکتور مارفانت*
+      // Get custom Telegram template from settings
+      let telegramTemplate = `🧾 *فاکتور مارفانت*
 
-📋 شماره: \`${invoice.invoiceNumber}\`
-👤 نماینده: ${invoice.representative?.fullName || 'نامشخص'}
-💰 مبلغ: *${parseFloat(invoice.totalAmount).toLocaleString('fa-IR')} تومان*
-📅 تاریخ: ${new Date(invoice.createdAt).toLocaleDateString('fa-IR')}
+📋 شماره: {invoiceNumber}
+👤 نماینده: {representativeName}
+💰 مبلغ: *{amount} تومان*
+📅 تاریخ: {date}
 
 🔗 مشاهده فاکتور کامل:
-${invoiceUrl}
+{invoiceUrl}
 
 📲 برای مشاهده فاکتور با طراحی Alpha 35 روی لینک کلیک کنید.
 
 ──────────────
 🌐 مارفانت`;
+
+      try {
+        const allSettings = await storage.getSettings();
+        const templateSetting = allSettings.find(s => s.key === 'invoice_config_alpha35');
+        if (templateSetting && templateSetting.value) {
+          const savedConfig = JSON.parse(templateSetting.value);
+          if (savedConfig.telegramTemplate) {
+            telegramTemplate = savedConfig.telegramTemplate;
+          }
+        }
+      } catch (e) {
+        console.warn('Using default Telegram template');
+      }
+
+      // Replace template variables with actual values
+      const telegramMessage = telegramTemplate
+        .replace(/\{invoiceNumber\}/g, invoice.invoiceNumber)
+        .replace(/\{representativeName\}/g, invoice.representative?.fullName || 'نامشخص')
+        .replace(/\{amount\}/g, parseFloat(invoice.totalAmount).toLocaleString('fa-IR'))
+        .replace(/\{date\}/g, new Date(invoice.createdAt).toLocaleDateString('fa-IR'))
+        .replace(/\{invoiceUrl\}/g, invoiceUrl);
 
       // Update telegram_sent status
       await db.update(invoices)

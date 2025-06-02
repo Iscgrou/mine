@@ -46,7 +46,8 @@ export default function Settings() {
     margins: "standard",
     watermark: false,
     qrCode: true,
-    digitalSignature: false
+    digitalSignature: false,
+    telegramTemplate: ""
   });
 
   const { toast } = useToast();
@@ -407,6 +408,37 @@ export default function Settings() {
                       </div>
                     </div>
                   </div>
+
+                  {/* Telegram Message Template */}
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4 text-foreground">قالب پیام تلگرام</h3>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">متن پیام ارسالی به ادمین</label>
+                      <textarea 
+                        value={invoiceConfig.telegramTemplate || `🧾 *فاکتور مارفانت*
+
+📋 شماره: {invoiceNumber}
+👤 نماینده: {representativeName}
+💰 مبلغ: *{amount} تومان*
+📅 تاریخ: {date}
+
+🔗 مشاهده فاکتور کامل:
+{invoiceUrl}
+
+📲 برای مشاهده فاکتور با طراحی Alpha 35 روی لینک کلیک کنید.
+
+──────────────
+🌐 مارفانت`}
+                        onChange={(e) => setInvoiceConfig({...invoiceConfig, telegramTemplate: e.target.value})}
+                        className="w-full p-3 border rounded-md h-40 font-mono text-sm"
+                        placeholder="قالب پیام تلگرام..."
+                        dir="rtl"
+                      />
+                      <p className="text-xs text-gray-500 mt-2">
+                        متغیرهای قابل استفاده: {'{invoiceNumber}'}, {'{representativeName}'}, {'{amount}'}, {'{date}'}, {'{invoiceUrl}'}
+                      </p>
+                    </div>
+                  </div>
                   
                   {/* Action Buttons */}
                   <div className="space-y-4">
@@ -460,7 +492,8 @@ export default function Settings() {
                           margins: "standard",
                           watermark: false,
                           qrCode: true,
-                          digitalSignature: false
+                          digitalSignature: false,
+                          telegramTemplate: ""
                         });
                       }}
                     >

@@ -335,11 +335,41 @@ export default function InvoicesPage() {
                           <Button
                             size="sm"
                             variant={invoice.telegramSent ? "secondary" : "outline"}
-                            onClick={() => {
-                              // First, open the invoice view
-                              window.open(`/api/invoices/${invoice.id}/view`, '_blank');
-                              // Then prepare Telegram sharing
-                              sendToTelegramMutation.mutate(invoice.id);
+                            onClick={async () => {
+                              try {
+                                // First prepare the Telegram content
+                                const response = await fetch(`/api/invoices/${invoice.id}/send-telegram`, {
+                                  method: 'POST'
+                                });
+                                const data = await response.json();
+                                
+                                if (data.directTelegramUrl) {
+                                  // Open direct chat with admin
+                                  window.open(data.directTelegramUrl, '_blank');
+                                  
+                                  // Copy message to clipboard for easy pasting
+                                  if (navigator.clipboard && data.telegramMessage) {
+                                    await navigator.clipboard.writeText(data.telegramMessage);
+                                    toast({
+                                      title: "آماده ارسال",
+                                      description: "پیام در کلیپ‌بورد کپی شد. در تلگرام پیست کنید."
+                                    });
+                                  }
+                                } else {
+                                  toast({
+                                    title: "خطا",
+                                    description: "شناسه تلگرام نماینده یافت نشد",
+                                    variant: "destructive"
+                                  });
+                                }
+                              } catch (error) {
+                                console.error('Error sending to Telegram:', error);
+                                toast({
+                                  title: "خطا",
+                                  description: "خطا در آماده‌سازی پیام تلگرام",
+                                  variant: "destructive"
+                                });
+                              }
                             }}
                             disabled={sendToTelegramMutation.isPending}
                             title="ارسال به تلگرام نماینده"

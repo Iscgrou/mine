@@ -794,7 +794,7 @@ export function registerRoutes(app: Express): Server {
         return res.status(404).json({ message: "فاکتور یافت نشد" });
       }
 
-      // Load Alpha 35 configuration from database
+      // Load Alpha 35 configuration and company settings from database
       let config = {
         template: 'professional',
         headerStyle: 'centered',
@@ -806,15 +806,30 @@ export function registerRoutes(app: Express): Server {
         watermark: false
       };
 
+      let companyInfo = {
+        companyName: 'مارفانت',
+        currency: 'تومان',
+        invoicePrefix: 'MF'
+      };
+
       try {
         const allSettings = await storage.getSettings();
+        
+        // Load Alpha 35 config
         const configSetting = allSettings.find(s => s.key === 'invoice_config_alpha35');
         if (configSetting && configSetting.value) {
           const savedConfig = JSON.parse(configSetting.value);
           config = { ...config, ...savedConfig };
         }
+
+        // Load company information
+        const companySetting = allSettings.find(s => s.key === 'company_settings');
+        if (companySetting && companySetting.value) {
+          const savedCompany = JSON.parse(companySetting.value);
+          companyInfo = { ...companyInfo, ...savedCompany };
+        }
       } catch (e) {
-        console.warn('Using default Alpha 35 configuration');
+        console.warn('Using default configuration and company info');
       }
 
       // Apply Alpha 35 color scheme
@@ -982,9 +997,9 @@ export function registerRoutes(app: Express): Server {
     <div class="invoice-container">
         <div class="content">
             <div class="header">
-                <h1>مارفانت</h1>
+                <h1>${companyInfo.companyName}</h1>
                 <p>ارائه‌دهنده خدمات V2Ray و پروکسی</p>
-                ${config.showLogo ? '<p style="margin-top: 12px;">🌐 شبکه ملی مارفانت</p>' : ''}
+                ${config.showLogo ? `<p style="margin-top: 12px;">🌐 شبکه ملی ${companyInfo.companyName}</p>` : ''}
                 <div class="alpha-badge">Alpha 35 ${config.template}</div>
             </div>
             
@@ -1051,8 +1066,8 @@ export function registerRoutes(app: Express): Server {
                         <tr>
                             <td style="text-align: right; font-weight: 500;">خدمات V2Ray - اشتراک ماهانه</td>
                             <td>1</td>
-                            <td>${parseFloat(invoice.totalAmount).toLocaleString('fa-IR')} تومان</td>
-                            <td style="font-weight: 600;">${parseFloat(invoice.totalAmount).toLocaleString('fa-IR')} تومان</td>
+                            <td>${parseFloat(invoice.totalAmount).toLocaleString('fa-IR')} ${companyInfo.currency}</td>
+                            <td style="font-weight: 600;">${parseFloat(invoice.totalAmount).toLocaleString('fa-IR')} ${companyInfo.currency}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -1061,17 +1076,17 @@ export function registerRoutes(app: Express): Server {
             <div class="total-section">
                 <div class="total-row">
                     <span>جمع کل خدمات:</span>
-                    <span>${parseFloat(invoice.baseAmount).toLocaleString('fa-IR')} تومان</span>
+                    <span>${parseFloat(invoice.baseAmount).toLocaleString('fa-IR')} ${companyInfo.currency}</span>
                 </div>
                 ${config.calculationDisplay === 'detailed' ? `
                 <div class="total-row">
                     <span>تخفیف نماینده:</span>
-                    <span>-${(parseFloat(invoice.baseAmount) - parseFloat(invoice.totalAmount)).toLocaleString('fa-IR')} تومان</span>
+                    <span>-${(parseFloat(invoice.baseAmount) - parseFloat(invoice.totalAmount)).toLocaleString('fa-IR')} ${companyInfo.currency}</span>
                 </div>
                 ` : ''}
                 <div class="total-row final">
                     <span>مبلغ قابل پرداخت:</span>
-                    <span>${parseFloat(invoice.totalAmount).toLocaleString('fa-IR')} تومان</span>
+                    <span>${parseFloat(invoice.totalAmount).toLocaleString('fa-IR')} ${companyInfo.currency}</span>
                 </div>
             </div>
 
@@ -1087,7 +1102,7 @@ export function registerRoutes(app: Express): Server {
         </div>
         
         <div class="footer">
-            <p><strong>شرکت مارفانت</strong> | ارائه‌دهنده خدمات V2Ray و پروکسی</p>
+            <p><strong>شرکت ${companyInfo.companyName}</strong> | ارائه‌دهنده خدمات V2Ray و پروکسی</p>
             <p>www.marfanet.com | support@marfanet.com</p>
             <p style="margin-top: 15px; font-size: 13px; color: ${colors.primary}; font-weight: 600;">این فاکتور با سیستم Alpha 35 تولید شده است</p>
         </div>

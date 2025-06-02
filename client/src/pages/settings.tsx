@@ -75,14 +75,28 @@ export default function Settings() {
   // Initialize state with existing settings
   useEffect(() => {
     if (settings && settings.length > 0) {
+      // Load company settings from JSON
+      const companySettingsSetting = settings.find(s => s.key === 'company_settings');
+      if (companySettingsSetting) {
+        try {
+          const companyData = JSON.parse(companySettingsSetting.value);
+          if (companyData.companyName) setCompanyName(companyData.companyName);
+          if (companyData.currency) setCurrency(companyData.currency);
+          if (companyData.invoicePrefix) setInvoicePrefix(companyData.invoicePrefix);
+        } catch (e) {
+          console.warn('Failed to parse company settings');
+        }
+      }
+
+      // Fallback to individual keys for backward compatibility
       const companyNameSetting = settings.find(s => s.key === 'companyName' || s.key === 'company_name');
       const currencySetting = settings.find(s => s.key === 'currency');
+      if (companyNameSetting && !companyName) setCompanyName(companyNameSetting.value);
+      if (currencySetting && !currency) setCurrency(currencySetting.value);
+
       const telegramTokenSetting = settings.find(s => s.key === 'telegramToken' || s.key === 'telegram_bot_token');
       const vertexKeySetting = settings.find(s => s.key === 'vertexApiKey');
       const invoiceConfigSetting = settings.find(s => s.key === 'invoice_config_alpha35');
-
-      if (companyNameSetting) setCompanyName(companyNameSetting.value);
-      if (currencySetting) setCurrency(currencySetting.value);
       if (telegramTokenSetting) setTelegramToken(telegramTokenSetting.value);
       if (vertexKeySetting) setVertexApiKey(vertexKeySetting.value);
       

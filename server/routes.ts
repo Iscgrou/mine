@@ -160,7 +160,21 @@ export function registerRoutes(app: Express): Server {
   app.put("/api/representatives/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
+      
+      // Validate that representative exists
+      const existingRep = await storage.getRepresentativeById(id);
+      if (!existingRep) {
+        return res.status(404).json({ message: "نماینده یافت نشد" });
+      }
+
+      // Log the update for debugging
+      console.log(`Updating representative ${id} with data:`, JSON.stringify(req.body, null, 2));
+      
+      // Update representative with new data
       const representative = await storage.updateRepresentative(id, req.body);
+      
+      console.log(`Representative ${id} updated successfully:`, JSON.stringify(representative, null, 2));
+      
       res.json(representative);
     } catch (error) {
       console.error('Error updating representative:', error);
@@ -788,11 +802,20 @@ export function registerRoutes(app: Express): Server {
   app.get("/api/invoices/:id/view", async (req, res) => {
     try {
       const invoiceId = parseInt(req.params.id);
+      
+      // Validate invoice ID
+      if (isNaN(invoiceId) || invoiceId <= 0) {
+        return res.status(400).json({ message: "شناسه فاکتور نامعتبر است" });
+      }
+      
       const invoice = await storage.getInvoiceById(invoiceId);
       
       if (!invoice) {
         return res.status(404).json({ message: "فاکتور یافت نشد" });
       }
+
+      // Log for debugging
+      console.log(`Generating invoice view for ID: ${invoiceId}, Invoice Number: ${invoice.invoiceNumber}`);
 
       // Load Alpha 35 configuration and company settings from database
       let config = {
@@ -1115,7 +1138,34 @@ export function registerRoutes(app: Express): Server {
       
     } catch (error) {
       console.error('Error generating invoice:', error);
-      res.status(500).json({ message: "خطا در تولید فاکتور" });
+      
+      // Send a fallback HTML page for broken invoices
+      const fallbackHTML = `
+<!DOCTYPE html>
+<html dir="rtl" lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>خطا در بارگیری فاکتور</title>
+    <style>
+        body { font-family: 'Tahoma', Arial, sans-serif; direction: rtl; padding: 40px; text-align: center; }
+        .error-container { max-width: 500px; margin: 0 auto; padding: 30px; border: 2px solid #dc3545; border-radius: 10px; background: #f8f9fa; }
+        .error-title { color: #dc3545; font-size: 24px; margin-bottom: 20px; }
+        .error-message { color: #6c757d; font-size: 16px; line-height: 1.6; }
+        .retry-button { margin-top: 20px; padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <h1 class="error-title">خطا در بارگیری فاکتور</h1>
+        <p class="error-message">متأسفانه فاکتور مورد نظر در حال حاضر قابل نمایش نیست.<br>لطفاً دوباره تلاش کنید یا با پشتیبانی تماس بگیرید.</p>
+        <button class="retry-button" onclick="window.location.reload()">تلاش مجدد</button>
+    </div>
+</body>
+</html>`;
+      
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      res.status(500).send(fallbackHTML);
     }
   });
 

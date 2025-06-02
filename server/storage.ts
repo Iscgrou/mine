@@ -175,11 +175,20 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateRepresentative(id: number, rep: Partial<InsertRepresentative>): Promise<Representative> {
+    // Clean and validate the data before update
+    const cleanData = Object.fromEntries(
+      Object.entries(rep).filter(([_, value]) => value !== undefined && value !== null)
+    );
+    
+    console.log(`Storage: Updating representative ${id} with:`, cleanData);
+    
     const [updated] = await db
       .update(representatives)
-      .set({ ...rep, updatedAt: new Date() })
+      .set({ ...cleanData, updatedAt: new Date() })
       .where(eq(representatives.id, id))
       .returning();
+      
+    console.log(`Storage: Representative ${id} updated result:`, updated);
     return updated;
   }
 

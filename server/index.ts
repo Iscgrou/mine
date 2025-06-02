@@ -21,10 +21,6 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Setup unified authentication with login page
-const authMiddleware = setupUnifiedAuth(app);
-app.use(authMiddleware);
-
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
@@ -63,6 +59,10 @@ app.use((req, res, next) => {
   
   // Register AI-powered CRT Performance Monitoring routes
   registerCRTPerformanceRoutes(app);
+
+  // Setup unified authentication AFTER API routes to prevent 403 errors
+  const authMiddleware = setupUnifiedAuth(app);
+  app.use(authMiddleware);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;

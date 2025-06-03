@@ -252,6 +252,13 @@ export function setupUnifiedAuth(app: Express) {
       return next();
     }
     
+    // Allow universal invoice access routes (CRITICAL for 403 fix)
+    if (req.path.startsWith('/invoice/') || 
+        req.path.startsWith('/view/') ||
+        req.path === '/api/invoice-access-health') {
+      return next();
+    }
+    
     // Allow public asset routes
     if (req.path.startsWith('/@') || 
         req.path.startsWith('/src') || 

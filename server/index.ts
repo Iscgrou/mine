@@ -5,6 +5,7 @@ import { createServer } from "http";
 import { setupUnifiedAuth } from "./auth-system";
 import { registerRepresentativesBalanceEndpoint } from "./representatives-balance-fix";
 import { registerCRTPerformanceRoutes } from "./crt-performance-monitor";
+import { createUniversalInvoiceAccess } from "./invoice-access-security";
 
 function log(message: string) {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
@@ -59,6 +60,9 @@ app.use((req, res, next) => {
   
   // Register AI-powered CRT Performance Monitoring routes
   registerCRTPerformanceRoutes(app);
+
+  // CRITICAL: Register Universal Invoice Access System BEFORE authentication
+  createUniversalInvoiceAccess(app);
 
   // Setup unified authentication AFTER API routes to prevent 403 errors
   const authMiddleware = setupUnifiedAuth(app);

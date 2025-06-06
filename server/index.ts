@@ -2,7 +2,7 @@ import express, { type Request, type Response, type NextFunction } from "express
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic } from "./vite";
 import { createServer } from "http";
-import { setupUnifiedAuth } from "./auth-system";
+import { setupAdaptiveAuth } from "./adaptive-auth";
 import { registerRepresentativesBalanceEndpoint } from "./representatives-balance-fix";
 import { registerCRTPerformanceRoutes } from "./crt-performance-monitor";
 import { createUniversalInvoiceAccess } from "./invoice-access-security";
@@ -64,8 +64,8 @@ app.use((req, res, next) => {
   // CRITICAL: Register Universal Invoice Access System BEFORE authentication
   createUniversalInvoiceAccess(app);
 
-  // Setup unified authentication AFTER API routes to prevent 403 errors
-  setupUnifiedAuth(app);
+  // Setup adaptive authentication system (no global blocking middleware)
+  setupAdaptiveAuth(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;

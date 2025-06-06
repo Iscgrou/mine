@@ -1,6 +1,6 @@
 /**
- * Unified Authentication System - MarFanet Project Chimera
- * Single source of truth for all authentication and session management
+ * Adaptive Authentication System - Complete 403 Error Resolution
+ * Simple, direct approach without complex middleware chains
  */
 
 import { type Express, type Request, type Response, type NextFunction } from "express";
@@ -35,14 +35,13 @@ const SECURE_CREDENTIALS = {
   }
 };
 
-// Production-ready session configuration
 const SESSION_CONFIG = {
   secret: 'marfanet-secure-session-2024-chimera',
   resave: false,
   saveUninitialized: false,
   rolling: true,
   cookie: { 
-    secure: false, // Set to true in production with HTTPS
+    secure: false,
     maxAge: 8 * 60 * 60 * 1000, // 8 hours
     httpOnly: true,
     sameSite: 'lax' as const
@@ -50,22 +49,21 @@ const SESSION_CONFIG = {
   name: 'marfanet.sid'
 };
 
-export function setupUnifiedAuth(app: Express) {
-  // Apply security middleware
+export function setupAdaptiveAuth(app: Express) {
+  // Apply basic security
   app.use(helmet({
-    contentSecurityPolicy: false, // Disable for development
+    contentSecurityPolicy: false,
     crossOriginEmbedderPolicy: false
   }));
 
-  // Apply general API rate limiting
-  app.use('/api', apiRateLimiter);
-
-  // Configure session middleware
+  // Configure session
   app.use(session(SESSION_CONFIG));
 
-  // Login page route
+  // Rate limiting for API endpoints only
+  app.use('/api', apiRateLimiter);
+
+  // Login page - serve directly without authentication
   app.get('/login', (req: Request, res: Response) => {
-    // Redirect if already authenticated
     if (req.session.authenticated) {
       const redirectPath = req.session.role === 'admin' ? '/admin' : '/crm';
       return res.redirect(redirectPath);
@@ -124,7 +122,7 @@ export function setupUnifiedAuth(app: Express) {
             <div id="error" class="error"></div>
           </form>
           <div class="footer">
-            سیستم مدیریت نمایندگان V2Ray - Project Chimera
+            سیستم مدیریت نمایندگان V2Ray - MarFanet
           </div>
         </div>
         
@@ -160,28 +158,28 @@ export function setupUnifiedAuth(app: Express) {
     `);
   });
 
-  // Login POST route with rate limiting
+  // Login POST endpoint
   app.post('/login', loginRateLimiter, async (req: Request, res: Response) => {
     try {
       const { username, password } = req.body;
       const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
       
       if (!username || !password || typeof username !== 'string' || typeof password !== 'string') {
-        console.log(`[SECURITY] Invalid login attempt from ${clientIP}`);
+        console.log(`[AUTH] Invalid login attempt from ${clientIP}`);
         return res.json({ success: false, message: 'نام کاربری و رمز عبور الزامی است' });
       }
 
       const userCredentials = SECURE_CREDENTIALS[username as keyof typeof SECURE_CREDENTIALS];
       
       if (!userCredentials) {
-        console.log(`[SECURITY] Login attempt with unknown username: ${username} from ${clientIP}`);
+        console.log(`[AUTH] Login attempt with unknown username: ${username} from ${clientIP}`);
         return res.json({ success: false, message: 'نام کاربری یا رمز عبور اشتباه است' });
       }
 
       const isValidPassword = await bcrypt.compare(password, userCredentials.passwordHash);
       
       if (!isValidPassword) {
-        console.log(`[SECURITY] Invalid password for user: ${username} from ${clientIP}`);
+        console.log(`[AUTH] Invalid password for user: ${username} from ${clientIP}`);
         return res.json({ success: false, message: 'نام کاربری یا رمز عبور اشتباه است' });
       }
 
@@ -191,7 +189,7 @@ export function setupUnifiedAuth(app: Express) {
       req.session.username = userCredentials.username;
       req.session.lastActivity = Date.now();
 
-      console.log(`[SECURITY] Successful login: ${username} (${userCredentials.role}) from IP: ${clientIP}`);
+      console.log(`[AUTH] Successful login: ${username} (${userCredentials.role}) from IP: ${clientIP}`);
       
       res.json({
         success: true,
@@ -206,7 +204,7 @@ export function setupUnifiedAuth(app: Express) {
     }
   });
 
-  // Logout route
+  // Logout endpoint
   app.post('/logout', (req: Request, res: Response) => {
     const username = req.session.username;
     
@@ -218,28 +216,38 @@ export function setupUnifiedAuth(app: Express) {
         }
         
         res.clearCookie('marfanet.sid');
-        console.log(`[SECURITY] User logged out: ${username}`);
+        console.log(`[AUTH] User logged out: ${username}`);
         res.json({ success: true, redirect: '/login' });
       });
     } else {
       res.clearCookie('marfanet.sid');
-      console.log(`[SECURITY] User logged out: ${username}`);
+      console.log(`[AUTH] User logged out: ${username}`);
       res.json({ success: true, redirect: '/login' });
     }
   });
 
-  // SIMPLIFIED: Only protect specific admin and CRM routes
-  app.use('/admin', (req: Request, res: Response, next: NextFunction) => {
-    if (!req.session.authenticated || req.session.role !== 'admin') {
-      return res.redirect('/login');
-    }
-    next();
-  });
+  // ADAPTIVE PROTECTION: Only protect admin and CRM routes specifically
+  const protectRoute = (requiredRole?: string) => {
+    return (req: Request, res: Response, next: NextFunction) => {
+      console.log(`[AUTH] Checking access to ${req.path} - Session: ${!!req.session?.authenticated}, Role: ${req.session?.role}`);
+      
+      if (!req.session?.authenticated) {
+        console.log(`[AUTH] Redirecting unauthenticated user to login`);
+        return res.redirect('/login');
+      }
 
-  app.use('/crm', (req: Request, res: Response, next: NextFunction) => {
-    if (!req.session.authenticated) {
-      return res.redirect('/login');
-    }
-    next();
-  });
+      if (requiredRole && req.session.role !== requiredRole) {
+        console.log(`[AUTH] Access denied - required role: ${requiredRole}, user role: ${req.session.role}`);
+        return res.redirect('/login');
+      }
+
+      next();
+    };
+  };
+
+  // Apply protection only to specific routes
+  app.use('/admin', protectRoute('admin'));
+  app.use('/crm', protectRoute());
+
+  console.log('[AUTH] Adaptive authentication system initialized - no global middleware blocking');
 }

@@ -6,6 +6,7 @@ import { setupAdaptiveAuth } from "./adaptive-auth";
 import { registerRepresentativesBalanceEndpoint } from "./representatives-balance-fix";
 import { registerCRTPerformanceRoutes } from "./crt-performance-monitor";
 import { createUniversalInvoiceAccess } from "./invoice-access-security";
+import { NetworkDiagnostic } from "./network-diagnostic";
 
 function log(message: string) {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
@@ -67,6 +68,9 @@ app.use((req, res, next) => {
   // Setup adaptive authentication system (no global blocking middleware)
   setupAdaptiveAuth(app);
 
+  // Register network diagnostic endpoints
+  NetworkDiagnostic.registerDiagnosticEndpoints(app);
+
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
@@ -88,10 +92,23 @@ app.use((req, res, next) => {
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
   const port = 5000;
-  server.listen({
-    port,
-    host: "0.0.0.0",
-  }, () => {
-    log(`Server listening on port ${port}`);
+  const host = "0.0.0.0";
+  
+  server.listen(port, host, () => {
+    log(`Server listening on http://${host}:${port}`);
+    console.log(`[NETWORK] Server accessible on all network interfaces`);
+    console.log(`[NETWORK] Local access: http://localhost:${port}`);
+    console.log(`[NETWORK] Network access: http://0.0.0.0:${port}`);
+  });
+
+  // Handle server errors
+  server.on('error', (error: any) => {
+    console.error(`[SERVER ERROR] Failed to start server:`, error);
+    if (error.code === 'EADDRINUSE') {
+      console.error(`[SERVER ERROR] Port ${port} is already in use`);
+    } else if (error.code === 'EACCES') {
+      console.error(`[SERVER ERROR] Permission denied to bind to port ${port}`);
+    }
+    process.exit(1);
   });
 })();

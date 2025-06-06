@@ -2,12 +2,11 @@ import express, { type Request, type Response, type NextFunction } from "express
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic } from "./vite";
 import { createServer } from "http";
-import { setupAdaptiveAuth } from "./adaptive-auth";
 import { registerRepresentativesBalanceEndpoint } from "./representatives-balance-fix";
 import { registerCRTPerformanceRoutes } from "./crt-performance-monitor";
 import { createUniversalInvoiceAccess } from "./invoice-access-security";
 import { NetworkDiagnostic } from "./network-diagnostic";
-import { SafariCompatibility } from "./safari-compatibility";
+import { ComprehensiveSecurity } from "./comprehensive-security";
 
 function log(message: string) {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
@@ -22,8 +21,8 @@ function log(message: string) {
 
 const app = express();
 
-// SAFARI COMPATIBILITY: Setup headers first
-SafariCompatibility.setupSafariHeaders(app);
+// COMPREHENSIVE SECURITY: Setup all security middleware first
+ComprehensiveSecurity.setupSecurityMiddleware(app);
 
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: false, limit: '50mb' }));
@@ -70,15 +69,13 @@ app.use((req, res, next) => {
   // CRITICAL: Register Universal Invoice Access System BEFORE authentication
   createUniversalInvoiceAccess(app);
 
-  // Setup adaptive authentication system (no global blocking middleware)
-  setupAdaptiveAuth(app);
+  // Setup comprehensive authentication and security
+  ComprehensiveSecurity.setupAuthentication(app);
+  ComprehensiveSecurity.setupRouteProtection(app);
+  ComprehensiveSecurity.setupHealthCheck(app);
 
   // Register network diagnostic endpoints
   NetworkDiagnostic.registerDiagnosticEndpoints(app);
-
-  // Register Safari compatibility endpoints
-  SafariCompatibility.createSafariTestEndpoint(app);
-  SafariCompatibility.addSafariRootHandler(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
@@ -101,9 +98,18 @@ app.use((req, res, next) => {
   const port = 5000;
   const host = "0.0.0.0";
   
-  // Set TCP keep-alive and other socket options for stability
-  server.keepAliveTimeout = 120000; // 2 minutes
-  server.headersTimeout = 125000; // 2 minutes 5 seconds
+  // Enhanced server configuration to prevent timeouts
+  server.keepAliveTimeout = 30000; // 30 seconds
+  server.headersTimeout = 35000; // 35 seconds
+  server.requestTimeout = 60000; // 1 minute
+  server.timeout = 120000; // 2 minutes
+  
+  // Set socket timeouts
+  server.on('connection', (socket) => {
+    socket.setTimeout(60000); // 1 minute per connection
+    socket.setKeepAlive(true, 30000);
+    socket.setNoDelay(true);
+  });
   
   server.listen(port, host, () => {
     log(`Server listening on http://${host}:${port}`);
@@ -111,20 +117,35 @@ app.use((req, res, next) => {
     console.log(`[NETWORK] Local access: http://localhost:${port}`);
     console.log(`[NETWORK] External access: Use your Replit URL or domain`);
     console.log(`[NETWORK] Server configured for maximum compatibility`);
+    console.log(`[SECURITY] Comprehensive security middleware active`);
     
-    // Test internal connectivity
+    // Test internal connectivity with shorter timeout
     setTimeout(async () => {
       try {
-        const response = await fetch(`http://localhost:${port}/ping`);
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+        
+        const response = await fetch(`http://localhost:${port}/health`, {
+          signal: controller.signal,
+          headers: { 'User-Agent': 'Internal-Health-Check' }
+        });
+        
+        clearTimeout(timeoutId);
+        
         if (response.ok) {
-          console.log(`[NETWORK] Internal connectivity test: PASSED`);
+          const data = await response.json();
+          console.log(`[NETWORK] Internal connectivity test: PASSED - ${data.status}`);
         } else {
           console.log(`[NETWORK] Internal connectivity test: FAILED - Status ${response.status}`);
         }
-      } catch (error) {
-        console.log(`[NETWORK] Internal connectivity test: ERROR -`, error);
+      } catch (error: any) {
+        if (error.name === 'AbortError') {
+          console.log(`[NETWORK] Internal connectivity test: TIMEOUT after 5 seconds`);
+        } else {
+          console.log(`[NETWORK] Internal connectivity test: ERROR -`, error.message);
+        }
       }
-    }, 2000);
+    }, 1000);
   });
 
   // Enhanced error handling for network issues

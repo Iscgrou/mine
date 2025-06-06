@@ -228,18 +228,53 @@ export function setupUnifiedAuth(app: Express) {
     }
   });
 
-  // SIMPLIFIED: Only protect specific admin and CRM routes
-  app.use('/admin', (req: Request, res: Response, next: NextFunction) => {
+  // Apply authentication to protected routes
+  app.use('/admin*', (req: Request, res: Response, next: NextFunction) => {
     if (!req.session.authenticated || req.session.role !== 'admin') {
+      console.log(`[SECURITY] Authentication required for /admin - redirecting to login`);
       return res.redirect('/login');
     }
     next();
   });
 
-  app.use('/crm', (req: Request, res: Response, next: NextFunction) => {
+  app.use('/crm*', (req: Request, res: Response, next: NextFunction) => {
     if (!req.session.authenticated) {
+      console.log(`[SECURITY] Authentication required for /crm - redirecting to login`);
       return res.redirect('/login');
     }
+    next();
+  });
+
+  // Apply global authentication middleware directly
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    // Always allow ALL API routes to prevent 403 errors
+    if (req.path.startsWith('/api/')) {
+      return next();
+    }
+    
+    // Allow universal invoice access routes (CRITICAL for 403 fix)
+    if (req.path.startsWith('/invoice/') || 
+        req.path.startsWith('/view/') ||
+        req.path === '/api/invoice-access-health') {
+      return next();
+    }
+    
+    // Allow public asset routes and root path
+    if (req.path.startsWith('/@') || 
+        req.path.startsWith('/src') || 
+        req.path.startsWith('/node_modules') ||
+        req.path === '/login' ||
+        req.path === '/logout' ||
+        req.path === '/' ||
+        req.path.includes('.') && !req.path.endsWith('.html')) {
+      return next();
+    }
+
+    // Require authentication for protected UI routes only
+    if (!req.session?.authenticated) {
+      return res.redirect('/login');
+    }
+
     next();
   });
 }

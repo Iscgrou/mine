@@ -6,6 +6,7 @@ import { setupUnifiedAuth } from "./auth-system";
 import { registerRepresentativesBalanceEndpoint } from "./representatives-balance-fix";
 import { registerCRTPerformanceRoutes } from "./crt-performance-monitor";
 import { createUniversalInvoiceAccess } from "./invoice-access-security";
+import { setupBrowserCompatibility } from "./browser-compatibility-security";
 
 function log(message: string) {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
@@ -58,6 +59,9 @@ app.use((req, res, next) => {
   // Register emergency fix for representatives balance API
   registerRepresentativesBalanceEndpoint(app);
   
+  // Setup browser compatibility layer FIRST for Safari/Chrome/Firefox
+  setupBrowserCompatibility(app);
+
   // Register AI-powered CRT Performance Monitoring routes
   registerCRTPerformanceRoutes(app);
 

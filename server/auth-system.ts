@@ -266,6 +266,7 @@ export function setupUnifiedAuth(app: Express) {
         req.path === '/login' ||
         req.path === '/logout' ||
         req.path === '/' ||
+        req.path === '/browser-test' ||
         req.path.includes('.') && !req.path.endsWith('.html')) {
       return next();
     }

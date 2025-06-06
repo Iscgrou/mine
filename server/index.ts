@@ -88,27 +88,62 @@ app.use((req, res, next) => {
     serveStatic(app);
   }
 
-  // ALWAYS serve the app on port 5000
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
+  // Configure server for maximum compatibility and accessibility
   const port = 5000;
   const host = "0.0.0.0";
+  
+  // Set TCP keep-alive and other socket options for stability
+  server.keepAliveTimeout = 120000; // 2 minutes
+  server.headersTimeout = 125000; // 2 minutes 5 seconds
   
   server.listen(port, host, () => {
     log(`Server listening on http://${host}:${port}`);
     console.log(`[NETWORK] Server accessible on all network interfaces`);
     console.log(`[NETWORK] Local access: http://localhost:${port}`);
-    console.log(`[NETWORK] Network access: http://0.0.0.0:${port}`);
+    console.log(`[NETWORK] External access: Use your Replit URL or domain`);
+    console.log(`[NETWORK] Server configured for maximum compatibility`);
+    
+    // Test internal connectivity
+    setTimeout(async () => {
+      try {
+        const response = await fetch(`http://localhost:${port}/ping`);
+        if (response.ok) {
+          console.log(`[NETWORK] Internal connectivity test: PASSED`);
+        } else {
+          console.log(`[NETWORK] Internal connectivity test: FAILED - Status ${response.status}`);
+        }
+      } catch (error) {
+        console.log(`[NETWORK] Internal connectivity test: ERROR -`, error);
+      }
+    }, 2000);
   });
 
-  // Handle server errors
+  // Enhanced error handling for network issues
   server.on('error', (error: any) => {
-    console.error(`[SERVER ERROR] Failed to start server:`, error);
+    console.error(`[SERVER ERROR] Server failed:`, error);
     if (error.code === 'EADDRINUSE') {
-      console.error(`[SERVER ERROR] Port ${port} is already in use`);
+      console.error(`[SERVER ERROR] Port ${port} is already in use - kill existing process`);
     } else if (error.code === 'EACCES') {
-      console.error(`[SERVER ERROR] Permission denied to bind to port ${port}`);
+      console.error(`[SERVER ERROR] Permission denied - check port access rights`);
+    } else if (error.code === 'ENOTFOUND') {
+      console.error(`[SERVER ERROR] Host resolution failed - check network configuration`);
     }
-    process.exit(1);
+  });
+
+  // Handle graceful shutdown
+  process.on('SIGTERM', () => {
+    console.log('[SERVER] Received SIGTERM, shutting down gracefully');
+    server.close(() => {
+      console.log('[SERVER] Server closed');
+      process.exit(0);
+    });
+  });
+
+  process.on('SIGINT', () => {
+    console.log('[SERVER] Received SIGINT, shutting down gracefully');
+    server.close(() => {
+      console.log('[SERVER] Server closed');
+      process.exit(0);
+    });
   });
 })();

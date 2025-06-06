@@ -245,8 +245,8 @@ export function setupUnifiedAuth(app: Express) {
     next();
   });
 
-  // Global authentication middleware for all routes
-  return (req: Request, res: Response, next: NextFunction) => {
+  // Apply global authentication middleware directly
+  app.use((req: Request, res: Response, next: NextFunction) => {
     // Always allow ALL API routes to prevent 403 errors
     if (req.path.startsWith('/api/')) {
       return next();
@@ -259,21 +259,22 @@ export function setupUnifiedAuth(app: Express) {
       return next();
     }
     
-    // Allow public asset routes
+    // Allow public asset routes and root path
     if (req.path.startsWith('/@') || 
         req.path.startsWith('/src') || 
         req.path.startsWith('/node_modules') ||
         req.path === '/login' ||
         req.path === '/logout' ||
+        req.path === '/' ||
         req.path.includes('.') && !req.path.endsWith('.html')) {
       return next();
     }
 
-    // Require authentication for UI routes only
+    // Require authentication for protected UI routes only
     if (!req.session?.authenticated) {
       return res.redirect('/login');
     }
 
     next();
-  };
+  });
 }

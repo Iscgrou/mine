@@ -65,8 +65,7 @@ app.use((req, res, next) => {
   createUniversalInvoiceAccess(app);
 
   // Setup unified authentication AFTER API routes to prevent 403 errors
-  const authMiddleware = setupUnifiedAuth(app);
-  app.use(authMiddleware);
+  setupUnifiedAuth(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;

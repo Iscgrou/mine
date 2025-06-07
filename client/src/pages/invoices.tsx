@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { Upload, FileText, Download, Calculator, Send, Trash2, Edit, Check } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
+import { getApiUrl } from "@/lib/api";
 
 interface Invoice {
   id: number;
@@ -50,7 +51,7 @@ export default function InvoicesPage() {
 
   // Fetch invoices with real-time updates
   const { data: invoices = [], isLoading: invoicesLoading } = useQuery<Invoice[]>({
-    queryKey: ["/api/invoices"],
+    queryKey: [getApiUrl("/invoices")],
     refetchInterval: 5000, // Real-time updates every 5 seconds
   });
 
@@ -59,7 +60,7 @@ export default function InvoicesPage() {
     mutationFn: async (file: File) => {
       const formData = new FormData();
       formData.append("file", file);
-      const response = await fetch("/api/invoices/upload", {
+      const response = await fetch(getApiUrl("/invoices/upload"), {
         method: "POST",
         body: formData,
       });
@@ -71,7 +72,7 @@ export default function InvoicesPage() {
         title: "فایل با موفقیت آپلود شد",
         description: "فاکتورها در حال پردازش هستند",
       });
-      queryClient.invalidateQueries({ queryKey: ["/api/invoices"] });
+      queryClient.invalidateQueries({ queryKey: [getApiUrl("/invoices")] });
       setSelectedFile(null);
     },
     onError: () => {
@@ -86,7 +87,7 @@ export default function InvoicesPage() {
   // Send to Telegram mutation with enhanced functionality
   const sendToTelegramMutation = useMutation({
     mutationFn: async (invoiceId: number) => {
-      const response = await fetch(`/api/invoices/${invoiceId}/send-telegram`, {
+      const response = await fetch(getApiUrl(`/invoices/${invoiceId}/send-telegram`), {
         method: "POST",
       });
       if (!response.ok) throw new Error("Failed to prepare telegram message");
@@ -104,7 +105,7 @@ export default function InvoicesPage() {
         title: "آماده ارسال به تلگرام",
         description: "پنجره تلگرام باز شد - فاکتور آماده ارسال است",
       });
-      queryClient.invalidateQueries({ queryKey: ["/api/invoices"] });
+      queryClient.invalidateQueries({ queryKey: [getApiUrl("/invoices")] });
     },
     onError: () => {
       toast({
@@ -118,7 +119,7 @@ export default function InvoicesPage() {
   // Delete invoice mutation
   const deleteInvoiceMutation = useMutation({
     mutationFn: async (invoiceId: number) => {
-      const response = await fetch(`/api/invoices/${invoiceId}`, {
+      const response = await fetch(getApiUrl(`/invoices/${invoiceId}`), {
         method: "DELETE",
       });
       if (!response.ok) throw new Error("Failed to delete");
@@ -129,7 +130,7 @@ export default function InvoicesPage() {
         title: "فاکتور حذف شد",
         description: "فاکتور با موفقیت حذف گردید",
       });
-      queryClient.invalidateQueries({ queryKey: ["/api/invoices"] });
+      queryClient.invalidateQueries({ queryKey: [getApiUrl("/invoices")] });
     },
   });
 
@@ -216,7 +217,7 @@ export default function InvoicesPage() {
           <div className="flex gap-2 mt-4 flex-wrap">
             <Button
               onClick={() => {
-                fetch('/api/invoices/calculate-all-commissions', { method: 'POST' })
+                fetch(getApiUrl('/invoices/calculate-all-commissions'), { method: 'POST' })
                   .then(res => res.json())
                   .then(() => {
                     toast({ title: "کمیسیون‌ها محاسبه شدند", description: "تمام کمیسیون‌ها بروزرسانی گردید" });
@@ -231,11 +232,11 @@ export default function InvoicesPage() {
             <Button
               onClick={() => {
                 if (confirm('آیا از ارسال همه فاکتورها به تلگرام اطمینان دارید؟')) {
-                  fetch('/api/invoices/send-all-telegram', { method: 'POST' })
+                  fetch(getApiUrl('/invoices/send-all-telegram'), { method: 'POST' })
                     .then(res => res.json())
                     .then(() => {
                       toast({ title: "ارسال به تلگرام", description: "همه فاکتورها ارسال شدند" });
-                      queryClient.invalidateQueries({ queryKey: ["/api/invoices"] });
+                      queryClient.invalidateQueries({ queryKey: [getApiUrl("/invoices")] });
                     });
                 }
               }}
@@ -248,11 +249,11 @@ export default function InvoicesPage() {
             <Button
               onClick={() => {
                 if (confirm('آیا از آرشیو کردن همه فاکتورها اطمینان دارید؟')) {
-                  fetch('/api/invoices/archive-all', { method: 'POST' })
+                  fetch(getApiUrl('/invoices/archive-all'), { method: 'POST' })
                     .then(res => res.json())
                     .then(() => {
                       toast({ title: "آرشیو شد", description: "همه فاکتورها آرشیو گردیدند" });
-                      queryClient.invalidateQueries({ queryKey: ["/api/invoices"] });
+                      queryClient.invalidateQueries({ queryKey: [getApiUrl("/invoices")] });
                     });
                 }
               }}
@@ -265,11 +266,11 @@ export default function InvoicesPage() {
             <Button
               onClick={() => {
                 if (confirm('هشدار: این عمل همه فاکتورها را حذف می‌کند. آیا اطمینان دارید؟')) {
-                  fetch('/api/invoices/delete-all', { method: 'DELETE' })
+                  fetch(getApiUrl('/invoices/delete-all'), { method: 'DELETE' })
                     .then(res => res.json())
                     .then(() => {
                       toast({ title: "حذف شد", description: "همه فاکتورها حذف گردیدند" });
-                      queryClient.invalidateQueries({ queryKey: ["/api/invoices"] });
+                      queryClient.invalidateQueries({ queryKey: [getApiUrl("/invoices")] });
                     });
                 }
               }}
@@ -338,7 +339,7 @@ export default function InvoicesPage() {
                             onClick={async () => {
                               try {
                                 // First prepare the Telegram content
-                                const response = await fetch(`/api/invoices/${invoice.id}/send-telegram`, {
+                                const response = await fetch(getApiUrl(`/invoices/${invoice.id}/send-telegram`), {
                                   method: 'POST'
                                 });
                                 const data = await response.json();

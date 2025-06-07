@@ -44,7 +44,7 @@ export interface IStorage {
   getInvoiceById(id: number): Promise<(Invoice & { representative: Representative | null, items: InvoiceItem[], batch: InvoiceBatch | null }) | undefined>;
   getInvoiceByNumber(invoiceNumber: string): Promise<Invoice | undefined>;
   createInvoiceBatch(batch: InsertInvoiceBatch): Promise<InvoiceBatch>;
-  createInvoice(invoice: InsertInvoice): Promise<Invoice>;
+  createInvoice(invoice: InsertInvoice, userId: string): Promise<Invoice>;
   createInvoiceItem(item: InsertInvoiceItem): Promise<InvoiceItem>;
   updateInvoiceStatus(id: number, status: string): Promise<void>;
   
@@ -122,37 +122,14 @@ export class DatabaseStorage implements IStorage {
   // Representative methods
   async getRepresentatives(): Promise<Representative[]> {
     const results = await db
-      .select({
-        id: representatives.id,
-        fullName: representatives.fullName,
-        adminUsername: representatives.adminUsername,
-        phoneNumber: representatives.phoneNumber,
-        telegramId: representatives.telegramId,
-        storeName: representatives.storeName,
-        status: representatives.status,
-        createdAt: representatives.createdAt,
-        updatedAt: representatives.updatedAt,
-        collaboratorId: representatives.collaboratorId,
-        limitedPrice1Month: representatives.limitedPrice1Month,
-        limitedPrice2Month: representatives.limitedPrice2Month,
-        limitedPrice3Month: representatives.limitedPrice3Month,
-        limitedPrice4Month: representatives.limitedPrice4Month,
-        limitedPrice5Month: representatives.limitedPrice5Month,
-        limitedPrice6Month: representatives.limitedPrice6Month,
-        collaboratorName: collaborators.collaboratorName
-      })
+      .select()
       .from(representatives)
       .leftJoin(collaborators, eq(representatives.collaboratorId, collaborators.id))
       .orderBy(desc(representatives.createdAt));
     
     return results.map(result => ({
-      ...result,
-      // Add default values for missing fields
-      storeAddress: null,
-      nationalId: null,
-      unlimitedMonthlyPrice: null,
-      collaborationLevel: 'basic' as const,
-      verificationStatus: 'pending' as const
+      ...result.representatives,
+      collaboratorName: result.collaborators?.collaboratorName
     }));
   }
 
@@ -288,8 +265,8 @@ export class DatabaseStorage implements IStorage {
     return newBatch;
   }
 
-  async createInvoice(invoice: InsertInvoice): Promise<Invoice> {
-    const [newInvoice] = await db.insert(invoices).values(invoice).returning();
+  async createInvoice(invoice: InsertInvoice, userId: string): Promise<Invoice> {
+    const [newInvoice] = await db.insert(invoices).values({ ...invoice, userId }).returning();
     return newInvoice;
   }
 
@@ -312,35 +289,21 @@ export class DatabaseStorage implements IStorage {
     monthlyRevenue: string;
     overduePayments: number;
   }> {
-    const totalReps = await db.select({ count: sql<number>`count(*)` }).from(representatives);
-    const activeReps = await db.select({ count: sql<number>`count(*)` }).from(representatives)
-      .where(eq(representatives.status, 'active'));
-
     const currentMonth = new Date();
     currentMonth.setDate(1);
     currentMonth.setHours(0, 0, 0, 0);
 
-    const monthlyInvoices = await db.select({ count: sql<number>`count(*)` }).from(invoices)
-      .where(sql`${invoices.createdAt} >= ${currentMonth}`);
+    const stats = await db.execute(sql`
+      SELECT
+        (SELECT COUNT(*) FROM ${representatives}) AS "totalReps",
+        (SELECT COUNT(*) FROM ${representatives} WHERE ${representatives.status} = 'active') AS "activeReps",
+        (SELECT COUNT(*) FROM ${invoices} WHERE ${invoices.createdAt} >= ${currentMonth}) AS "monthlyInvoices",
+        (SELECT COALESCE(SUM(${invoices.totalAmount}), '0') FROM ${invoices} WHERE ${invoices.createdAt} >= ${currentMonth}) AS "monthlyRevenue",
+        (SELECT COUNT(*) FROM ${invoices} WHERE ${invoices.status} = 'pending' AND ${invoices.dueDate} < NOW()) AS "overduePayments"
+    `);
 
-    const monthlyRevenue = await db.select({ 
-      total: sql<string>`COALESCE(SUM(${invoices.totalAmount}), '0')` 
-    }).from(invoices)
-      .where(sql`${invoices.createdAt} >= ${currentMonth}`);
-
-    const overduePayments = await db.select({ count: sql<number>`count(*)` }).from(invoices)
-      .where(and(
-        eq(invoices.status, 'pending'),
-        sql`${invoices.dueDate} < NOW()`
-      ));
-
-    return {
-      totalReps: totalReps[0]?.count || 0,
-      activeReps: activeReps[0]?.count || 0,
-      monthlyInvoices: monthlyInvoices[0]?.count || 0,
-      monthlyRevenue: monthlyRevenue[0]?.total || '0',
-      overduePayments: overduePayments[0]?.count || 0,
-    };
+    // @ts-ignore
+    return stats.rows[0];
   }
 
   async updateStatistic(key: string, value: string, dataType = "number"): Promise<void> {
@@ -494,23 +457,17 @@ export class DatabaseStorage implements IStorage {
 
   // Commission Methods
   async getCommissionRecords(): Promise<(CommissionRecord & { collaborator: Collaborator | null, representative: Representative | null })[]> {
-    return await db.select({
-      id: commissionRecords.id,
-      collaboratorId: commissionRecords.collaboratorId,
-      representativeId: commissionRecords.representativeId,
-      transactionDate: commissionRecords.transactionDate,
-      revenueType: commissionRecords.revenueType,
-      baseRevenueAmount: commissionRecords.baseRevenueAmount,
-      commissionRate: commissionRecords.commissionRate,
-      commissionAmount: commissionRecords.commissionAmount,
-      createdAt: commissionRecords.createdAt,
-      collaborator: collaborators,
-      representative: representatives
-    })
+    const results = await db.select()
     .from(commissionRecords)
     .leftJoin(collaborators, eq(commissionRecords.collaboratorId, collaborators.id))
     .leftJoin(representatives, eq(commissionRecords.representativeId, representatives.id))
     .orderBy(desc(commissionRecords.createdAt));
+
+    return results.map(result => ({
+      ...result.commission_records,
+      collaborator: result.collaborators,
+      representative: result.representatives
+    }));
   }
 
   async createCommissionRecord(record: InsertCommissionRecord): Promise<CommissionRecord> {

@@ -76,6 +76,7 @@ export const invoices = pgTable("invoices", {
   sentToRepresentative: boolean("sent_to_representative").default(false),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+  userId: text("user_id"),
 });
 
 export const invoiceItems = pgTable("invoice_items", {

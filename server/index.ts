@@ -1,8 +1,12 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import express, { type Request, type Response, type NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic } from "./vite";
 import { createServer } from "http";
 import { setupUnifiedAuth } from "./auth-system";
+import { isAuthenticated } from "./auth";
 import { registerRepresentativesBalanceEndpoint } from "./representatives-balance-fix";
 import { registerCRTPerformanceRoutes } from "./crt-performance-monitor";
 import { createUniversalInvoiceAccess } from "./invoice-access-security";
@@ -22,6 +26,9 @@ function log(message: string) {
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Protect all API routes
+app.use("/api/*", isAuthenticated);
 
 app.use((req, res, next) => {
   const start = Date.now();

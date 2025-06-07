@@ -7,7 +7,11 @@ import { type Express, type Request, type Response, type NextFunction } from "ex
 import session from "express-session";
 import bcrypt from "bcrypt";
 import helmet from "helmet";
+import csurf from "csurf";
 import { loginRateLimiter, apiRateLimiter } from "./auth-rate-limiter";
+import { db } from "./db";
+import { users } from "@shared/schema";
+import { eq } from "drizzle-orm";
 
 // Extend the Request interface for session typing
 declare module 'express-session' {
@@ -18,22 +22,6 @@ declare module 'express-session' {
     lastActivity?: number;
   }
 }
-
-// Secure credentials with properly hashed passwords
-const SECURE_CREDENTIALS = {
-  mgr: {
-    username: "mgr",
-    passwordHash: bcrypt.hashSync("m867945", 10),
-    role: "admin",
-    redirectPath: "/admin"
-  },
-  crm: {
-    username: "crm",
-    passwordHash: bcrypt.hashSync("c867945", 10),
-    role: "crm",
-    redirectPath: "/crm"
-  }
-};
 
 // Production-ready session configuration
 const SESSION_CONFIG = {
@@ -62,6 +50,9 @@ export function setupUnifiedAuth(app: Express) {
 
   // Configure session middleware
   app.use(session(SESSION_CONFIG));
+
+  // Add CSRF protection
+  app.use(csurf());
 
   // Login page route
   app.get('/login', (req: Request, res: Response) => {
@@ -112,6 +103,7 @@ export function setupUnifiedAuth(app: Express) {
         <div class="login-container">
           <h1>MarFanet</h1>
           <form id="loginForm">
+            <input type="hidden" name="_csrf" value="${req.csrfToken()}">
             <div class="form-group">
               <label for="username">نام کاربری:</label>
               <input type="text" id="username" name="username" required>
@@ -171,14 +163,15 @@ export function setupUnifiedAuth(app: Express) {
         return res.json({ success: false, message: 'نام کاربری و رمز عبور الزامی است' });
       }
 
-      const userCredentials = SECURE_CREDENTIALS[username as keyof typeof SECURE_CREDENTIALS];
+      const result = await db.select().from(users).where(eq(users.username, username)).limit(1);
+      const user = result[0];
       
-      if (!userCredentials) {
+      if (!user) {
         console.log(`[SECURITY] Login attempt with unknown username: ${username} from ${clientIP}`);
         return res.json({ success: false, message: 'نام کاربری یا رمز عبور اشتباه است' });
       }
 
-      const isValidPassword = await bcrypt.compare(password, userCredentials.passwordHash);
+      const isValidPassword = await bcrypt.compare(password, user.password);
       
       if (!isValidPassword) {
         console.log(`[SECURITY] Invalid password for user: ${username} from ${clientIP}`);
@@ -187,17 +180,19 @@ export function setupUnifiedAuth(app: Express) {
 
       // Successful authentication
       req.session.authenticated = true;
-      req.session.role = userCredentials.role;
-      req.session.username = userCredentials.username;
+      req.session.role = user.role ?? "user";
+      req.session.username = user.username;
       req.session.lastActivity = Date.now();
 
-      console.log(`[SECURITY] Successful login: ${username} (${userCredentials.role}) from IP: ${clientIP}`);
+      const redirectPath = user.role === 'admin' ? '/admin' : '/crm';
+
+      console.log(`[SECURITY] Successful login: ${username} (${user.role}) from IP: ${clientIP}`);
       
       res.json({
         success: true,
-        redirect: userCredentials.redirectPath,
-        role: userCredentials.role,
-        username: userCredentials.username
+        redirect: redirectPath,
+        role: user.role,
+        username: user.username
       });
 
     } catch (error) {
@@ -242,40 +237,6 @@ export function setupUnifiedAuth(app: Express) {
       console.log(`[SECURITY] Authentication required for /crm - redirecting to login`);
       return res.redirect('/login');
     }
-    next();
-  });
-
-  // Apply global authentication middleware directly
-  app.use((req: Request, res: Response, next: NextFunction) => {
-    // Always allow ALL API routes to prevent 403 errors
-    if (req.path.startsWith('/api/')) {
-      return next();
-    }
-    
-    // Allow universal invoice access routes (CRITICAL for 403 fix)
-    if (req.path.startsWith('/invoice/') || 
-        req.path.startsWith('/view/') ||
-        req.path === '/api/invoice-access-health') {
-      return next();
-    }
-    
-    // Allow public asset routes and root path
-    if (req.path.startsWith('/@') || 
-        req.path.startsWith('/src') || 
-        req.path.startsWith('/node_modules') ||
-        req.path === '/login' ||
-        req.path === '/logout' ||
-        req.path === '/' ||
-        req.path === '/browser-test' ||
-        req.path.includes('.') && !req.path.endsWith('.html')) {
-      return next();
-    }
-
-    // Require authentication for protected UI routes only
-    if (!req.session?.authenticated) {
-      return res.redirect('/login');
-    }
-
     next();
   });
 }

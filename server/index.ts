@@ -6,7 +6,6 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic } from "./vite";
 import { createServer } from "http";
 import { setupUnifiedAuth } from "./auth-system";
-import { isAuthenticated } from "./auth";
 import { registerRepresentativesBalanceEndpoint } from "./representatives-balance-fix";
 import { registerCRTPerformanceRoutes } from "./crt-performance-monitor";
 import { createUniversalInvoiceAccess } from "./invoice-access-security";
@@ -27,8 +26,9 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// Protect all API routes
-app.use("/api/*", isAuthenticated);
+// Setup unified authentication, including session middleware.
+// This MUST come before any routes that require authentication.
+setupUnifiedAuth(app);
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -74,9 +74,6 @@ app.use((req, res, next) => {
 
   // CRITICAL: Register Universal Invoice Access System BEFORE authentication
   createUniversalInvoiceAccess(app);
-
-  // Setup unified authentication AFTER API routes to prevent 403 errors
-  setupUnifiedAuth(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;

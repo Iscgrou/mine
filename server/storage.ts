@@ -219,7 +219,7 @@ export class DatabaseStorage implements IStorage {
       .select()
       .from(financialLedger)
       .where(eq(financialLedger.representativeId, representativeId))
-      .orderBy(financialLedger.transactionDate);
+      .orderBy(desc(financialLedger.transactionDate));
   }
 
   // Invoice System v2.0 Implementation
@@ -293,7 +293,7 @@ export class DatabaseStorage implements IStorage {
     currentMonth.setDate(1);
     currentMonth.setHours(0, 0, 0, 0);
 
-    const stats = await db.execute(sql`
+    const stats = await db.all(sql`
       SELECT
         (SELECT COUNT(*) FROM ${representatives}) AS "totalReps",
         (SELECT COUNT(*) FROM ${representatives} WHERE ${representatives.status} = 'active') AS "activeReps",
@@ -302,8 +302,7 @@ export class DatabaseStorage implements IStorage {
         (SELECT COUNT(*) FROM ${invoices} WHERE ${invoices.status} = 'pending' AND ${invoices.dueDate} < NOW()) AS "overduePayments"
     `);
 
-    // @ts-ignore
-    return stats.rows[0];
+    return stats[0] as any;
   }
 
   async updateStatistic(key: string, value: string, dataType = "number"): Promise<void> {
@@ -370,7 +369,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getSettings(): Promise<Setting[]> {
-    return await db.select().from(settings).orderBy(settings.key);
+    return await db.select().from(settings).orderBy(desc(settings.key));
   }
 
   // Backup methods
@@ -488,7 +487,7 @@ export class DatabaseStorage implements IStorage {
 
   // Payout Methods
   async getCollaboratorPayouts(): Promise<(CollaboratorPayout & { collaborator: Collaborator | null })[]> {
-    return await db.select({
+    const results = await db.select({
       id: collaboratorPayouts.id,
       collaboratorId: collaboratorPayouts.collaboratorId,
       payoutAmount: collaboratorPayouts.payoutAmount,
@@ -502,6 +501,14 @@ export class DatabaseStorage implements IStorage {
     .from(collaboratorPayouts)
     .leftJoin(collaborators, eq(collaboratorPayouts.collaboratorId, collaborators.id))
     .orderBy(desc(collaboratorPayouts.createdAt));
+
+    return results.map(result => {
+      const { collaborator, ...payout } = result;
+      return {
+        ...payout,
+        collaborator
+      };
+    });
   }
 
   async createCollaboratorPayout(payout: InsertCollaboratorPayout): Promise<CollaboratorPayout> {

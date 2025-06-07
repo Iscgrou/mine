@@ -114,12 +114,12 @@ class NovaAIEngine {
   private async gatherRepresentativeContext(representativeId: number): Promise<any> {
     try {
       // Get representative basic info
-      const repInfo = await db.execute(sql`
+      const repInfo = await db.all(sql`
         SELECT * FROM representatives WHERE id = ${representativeId}
       `);
 
       // Get interaction history
-      const interactions = await db.execute(sql`
+      const interactions = await db.all(sql`
         SELECT * FROM crm_interactions 
         WHERE representative_id = ${representativeId}
         ORDER BY created_at DESC 
@@ -127,13 +127,13 @@ class NovaAIEngine {
       `);
 
       // Get CRM profile if exists
-      const profile = await db.execute(sql`
+      const profile = await db.all(sql`
         SELECT * FROM crm_representative_profiles 
         WHERE representative_id = ${representativeId}
       `);
 
       // Get recent invoices and payments
-      const financialHistory = await db.execute(sql`
+      const financialHistory = await db.all(sql`
         SELECT i.*, p.amount as last_payment, p.created_at as last_payment_date
         FROM invoices i
         LEFT JOIN payments p ON i.id = p.invoice_id
@@ -143,10 +143,10 @@ class NovaAIEngine {
       `);
 
       return {
-        representative: repInfo.rows[0],
-        interactions: interactions.rows,
-        profile: profile.rows[0],
-        financialHistory: financialHistory.rows
+        representative: repInfo[0],
+        interactions: interactions,
+        profile: profile[0],
+        financialHistory: financialHistory
       };
 
     } catch (error) {
@@ -709,7 +709,7 @@ class NovaAIEngine {
   async generatePsycheProfile(representativeId: number): Promise<PsycheProfile> {
     try {
       // Analyze interaction history to build psyche profile
-      const interactions = await db.execute(sql`
+      const interactions = await db.all(sql`
         SELECT sentiment_score, manual_notes, outcome, duration
         FROM crm_interactions 
         WHERE representative_id = ${representativeId}

@@ -1,0 +1,124 @@
+# Issues Checklist
+
+This document lists all the identified issues and their status.
+
+## Client-Side Issues
+
+- [ ] `client/src/components/super-system-manager.tsx`:
+  - [ ] `totalReps` does not exist on type `{}`.
+- [ ] `client/src/components/system-data-sync.tsx`:
+  - [ ] `setIsInitializing` is not defined.
+  - [ ] `apiRequest` expects 0 type arguments but got 1.
+  - [ ] `success`, `created`, `counts`, `message` do not exist on type `Response`.
+  - [ ] `setIsRefreshing` is not defined.
+  - [ ] `currentStats`, `isInitializing`, `isRefreshing` are not defined.
+- [ ] `client/src/components/voice-navigation.tsx`:
+  - [ ] `SpeechRecognition` is not defined.
+  - [ ] `event` implicitly has an `any` type.
+- [ ] `client/src/hooks/use-notifications.tsx`:
+  - [ ] Module has no exported member `Notification`.
+- [ ] `client/src/lib/ods-processor.ts`:
+  - [ ] `items` implicitly has type `any[]`.
+  - [ ] `unlimitedMonthlyPrice` is possibly `undefined`.
+- [ ] `client/src/pages/aegis-test.tsx`:
+  - [ ] `error` is of type `unknown`.
+  - [ ] `length` does not exist on type `Response`.
+- [ ] `client/src/pages/analytics-enhanced.tsx`:
+  - [ ] `length` and `reduce` do not exist on type `{}`.
+- [ ] `client/src/pages/bulk-representative-update-batch3.tsx`:
+  - [ ] Conversion of type `Response` to `BatchResult` may be a mistake.
+  - [ ] Argument of type `{ method: string; }` is not assignable to parameter of type `string`.
+- [ ] `client/src/pages/crm-dashboard-enhanced.tsx`:
+  - [ ] Element implicitly has an `any` type.
+- [ ] `client/src/pages/dashboard.tsx`:
+  - [ ] Property `tasks` does not exist on type `IntrinsicAttributes`.
+- [ ] `client/src/pages/database-reconstruction.tsx`:
+  - [ ] Argument of type `{ method: string; }` is not assignable to parameter of type `string`.
+- [ ] `client/src/pages/representative-management.tsx`:
+  - [ ] `unlimitedPrice1Month` through `unlimitedPrice6Month` do not exist on type `Representative`.
+  - [ ] `limitedCommissionRate`, `limited3MonthCommissionRate`, `limited6MonthCommissionRate`, `unlimitedCommissionRate` do not exist on type `Representative`.
+- [ ] `client/src/pages/secure-api-upload.tsx`:
+  - [ ] Conversion of type `Response` to `{ success: boolean; message?: string | undefined; }` may be a mistake.
+- [ ] `client/src/utils/dynamic-layout.ts`:
+  - [ ] Argument of type `string` is not assignable to parameter of type `"hidden" | "open" | "closed"`.
+
+## Server-Side Issues
+
+- [ ] `server/advanced-task-automation.ts`:
+  - [ ] Expected 1 argument, but got 2.
+- [ ] `server/aegis-logger.ts`:
+  - [ ] `execute` does not exist on type `BetterSQLite3Database`.
+- [ ] `server/aegis-monitor.ts`:
+  - [ ] `execute` does not exist on type `BetterSQLite3Database`.
+  - [ ] `log` implicitly has an `any` type.
+  - [ ] Duplicate function implementation `cleanup`.
+- [ ] `server/crt-performance-monitor.ts`:
+  - [ ] `error` is of type `unknown`.
+- [ ] `server/cultural-communication-hub.ts`:
+  - [ ] Element implicitly has an `any` type.
+- [ ] `server/db.ts`:
+  - [ ] Could not find a declaration file for module `better-sqlite3`.
+- [ ] `server/enhanced-persian-voice-processor.ts`:
+  - [ ] Type `...[]` is not assignable to type `...[]`.
+- [ ] `server/final-v2ray-test.ts`:
+  - [ ] Duplicate function implementation `testCompleteV2RayPipeline`.
+  - [ ] `NovaAIEngine` does not exist on type `...`.
+- [ ] `server/layout-diagnostic-analyzer.ts`:
+  - [ ] Regular expression flag is only available when targeting 'es2018' or later.
+- [ ] `server/nova-ai-engine.ts`:
+  - [ ] `execute` does not exist on type `BetterSQLite3Database`.
+- [ ] `server/performance-cache.ts`:
+  - [ ] Type can only be iterated through when using the `--downlevelIteration` flag or with a `--target` of 'es2015' or higher.
+- [ ] `server/proactive-relationship-intelligence.ts`:
+  - [ ] Type `...` is not assignable to type `...`.
+- [ ] `server/project-phoenix-orchestrator.ts`:
+  - [ ] Argument of type `PhoenixAnalysisResult` is not assignable to parameter of type `string`.
+- [ ] `server/routes/backups.ts`:
+  - [ ] Cannot find module `flatted` or its corresponding type declarations.
+  - [ ] Module has no exported member `crm`.
+- [ ] `server/routes/crm.ts`:
+  - [ ] `getCRMEvents` and `createCRMEvent` do not exist on type `DatabaseStorage`.
+- [ ] `server/routes/invoices.ts`:
+  - [ ] Type `...` is not assignable to type `...`.
+  - [ ] No overload matches this call.
+- [ ] `server/routes/settings.ts`:
+  - [ ] `saveSetting` does not exist on type `DatabaseStorage`.
+- [ ] `server/storage.ts`:
+  - [ ] No overload matches this call.
+  - [ ] `execute` does not exist on type `BetterSQLite3Database`.
+  - [ ] Type `...` is not assignable to type `...`.
+- [ ] `server/stt-diagnostic.ts`:
+  - [ ] `error` is of type `unknown`.
+  - [ ] `model` implicitly has an `any` type.
+- [ ] `server/test-advanced-task-automation.ts`:
+  - [ ] Type can only be iterated through when using the `--downlevelIteration` flag or with a `--target` of 'es2015' or higher.
+  - [ ] `timeframe` does not exist on type `AutomatedTask`.
+- [ ] `server/test-complete-v2ray-pipeline.ts`:
+  - [ ] Duplicate function implementation `testCompleteV2RayPipeline`.
+- [ ] `server/test-cultural-communication-hub.ts`:
+  - [ ] Type can only be iterated through when using the `--downlevelIteration` flag or with a `--target` of 'es2015' or higher.
+- [ ] `server/test-endpoints.ts`:
+  - [ ] `heapUsed` does not exist in type `...`.
+- [ ] `server/test-enhanced-persian-voice.ts`:
+  - [ ] Type can only be iterated through when using the `--downlevelIteration` flag or with a `--target` of 'es2015' or higher.
+  - [ ] Type `...` is not assignable to type `...`.
+- [ ] `server/test-shamsi-calendar-integration.ts`:
+  - [ ] Type can only be iterated through when using the `--downlevelIteration` flag or with a `--target` of 'es2015' or higher.
+- [ ] `server/v2ray-market-dashboard.ts`:
+  - [ ] Type `...` is not assignable to type `...`.
+  - [ ] `region` does not exist on type `...`.
+  - [ ] `subscriptionType` does not exist on type `...`.
+- [ ] `server/v2ray-market-intelligence.ts`:
+  - [ ] `subscriptionType` does not exist on type `...`.
+  - [ ] Type `...` is not assignable to type `...`.
+- [ ] `server/vertex-ai-meta-optimizer.ts`:
+  - [ ] `error` is of type `unknown`.
+- [ ] `server/vertex-ai-orchestrator.ts`:
+  - [ ] Duplicate function implementation `executeComprehensiveAnalysis` and `loadBriefingDocument`.
+  - [ ] `error` is of type `unknown`.
+- [ ] `server/vite.ts`:
+  - [ ] Type `...` is not assignable to type `...`.
+- [ ] `server/voice-workflow-test.ts`:
+  - [ ] Module has no exported member `crmVoiceNotes`.
+  - [ ] `error` is of type `unknown`.
+  - [ ] `stage` does not exist in type `...`.

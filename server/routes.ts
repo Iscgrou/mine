@@ -8,7 +8,7 @@ import { eq, sql } from "drizzle-orm";
 import multer from "multer";
 import path from "path";
 import { BatchProcessor } from "./batch-processor";
-import { isAdmin } from "./auth";
+import { registerCrmRoutes } from "./routes/crm";
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -20,8 +20,11 @@ const upload = multer({
 export function registerRoutes(app: Express): Server {
   const server = createServer(app);
   
+  // Register CRM routes
+  registerCrmRoutes(app);
+  
   // Get collaborators endpoint
-  app.get("/api/collaborators", isAdmin, async (req, res) => {
+  app.get("/api/collaborators", async (req, res) => {
     try {
       const collaborators = await storage.getCollaborators();
       res.json(collaborators || []);
@@ -32,7 +35,7 @@ export function registerRoutes(app: Express): Server {
   });
 
   // Initialize system collaborators
-  app.post("/api/collaborators/initialize", isAdmin, async (req, res) => {
+  app.post("/api/collaborators/initialize", async (req, res) => {
     try {
       const systemCollaborators = [
         {
@@ -66,7 +69,7 @@ export function registerRoutes(app: Express): Server {
   });
 
   // Create collaborator
-  app.post("/api/collaborators", isAdmin, async (req, res) => {
+  app.post("/api/collaborators", async (req, res) => {
     try {
       const collaborator = await storage.createCollaborator(req.body);
       res.json(collaborator);
@@ -77,7 +80,7 @@ export function registerRoutes(app: Express): Server {
   });
 
   // Update collaborator
-  app.put("/api/collaborators/:id", isAdmin, async (req, res) => {
+  app.put("/api/collaborators/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const collaborator = await storage.updateCollaborator(id, req.body);
@@ -89,7 +92,7 @@ export function registerRoutes(app: Express): Server {
   });
 
   // Update collaborator commission percentage
-  app.patch("/api/collaborators/:id/commission", isAdmin, async (req, res) => {
+  app.patch("/api/collaborators/:id/commission", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const { commissionPercentage } = req.body;
@@ -109,7 +112,7 @@ export function registerRoutes(app: Express): Server {
   });
 
   // Delete collaborator
-  app.delete("/api/collaborators/:id", isAdmin, async (req, res) => {
+  app.delete("/api/collaborators/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       await storage.deleteCollaborator(id);
@@ -147,7 +150,7 @@ export function registerRoutes(app: Express): Server {
   });
 
   // Create representative
-  app.post("/api/representatives", isAdmin, async (req, res) => {
+  app.post("/api/representatives", async (req, res) => {
     try {
       const representative = await storage.createRepresentative(req.body);
       res.json(representative);
@@ -158,7 +161,7 @@ export function registerRoutes(app: Express): Server {
   });
 
   // Update representative
-  app.put("/api/representatives/:id", isAdmin, async (req, res) => {
+  app.put("/api/representatives/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       
@@ -184,7 +187,7 @@ export function registerRoutes(app: Express): Server {
   });
 
   // Delete representative
-  app.delete("/api/representatives/:id", isAdmin, async (req, res) => {
+  app.delete("/api/representatives/:id", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       await storage.deleteRepresentative(id);
@@ -208,7 +211,7 @@ export function registerRoutes(app: Express): Server {
   });
 
   // Batch processing endpoint for representative data uploads
-  app.post("/api/upload-representatives", isAdmin, upload.single('file'), async (req, res) => {
+  app.post("/api/upload-representatives", upload.single('file'), async (req, res) => {
     try {
       if (!req.file) {
         return res.status(400).json({ message: "فایل انتخاب نشده است" });
@@ -241,7 +244,7 @@ export function registerRoutes(app: Express): Server {
   });
 
   // Update setting
-  app.post("/api/settings", isAdmin, async (req, res) => {
+  app.post("/api/settings", async (req, res) => {
     try {
       const setting = await storage.setSetting(req.body);
       res.json(setting);
@@ -252,7 +255,7 @@ export function registerRoutes(app: Express): Server {
   });
 
   // Get backups
-  app.get("/api/backups", isAdmin, async (req, res) => {
+  app.get("/api/backups", async (req, res) => {
     try {
       const backups = await storage.getBackups();
       res.json(backups);
@@ -263,7 +266,7 @@ export function registerRoutes(app: Express): Server {
   });
 
   // Create backup
-  app.post("/api/backups", isAdmin, async (req, res) => {
+  app.post("/api/backups", async (req, res) => {
     try {
       const backup = await storage.createBackup(req.body);
       res.json(backup);
@@ -274,7 +277,7 @@ export function registerRoutes(app: Express): Server {
   });
 
   // Statistics API - Real-time dashboard metrics
-  app.get("/api/stats", isAdmin, async (req, res) => {
+  app.get("/api/stats", async (req, res) => {
     try {
       const stats = await storage.getStats();
       res.json(stats);
@@ -313,7 +316,7 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
-  app.post("/api/invoices/batch", isAdmin, async (req, res) => {
+  app.post("/api/invoices/batch", async (req, res) => {
     try {
       const batch = await storage.createInvoiceBatch(req.body);
       res.json(batch);
@@ -615,7 +618,7 @@ export function registerRoutes(app: Express): Server {
     }
   });
 
-  app.patch("/api/invoices/:id/status", isAdmin, async (req, res) => {
+  app.patch("/api/invoices/:id/status", async (req, res) => {
     try {
       const id = parseInt(req.params.id);
       const { status } = req.body;
@@ -628,7 +631,7 @@ export function registerRoutes(app: Express): Server {
   });
 
   // JSON Invoice Upload Endpoint
-  app.post("/api/invoices/upload", isAdmin, upload.single('file'), async (req, res) => {
+  app.post("/api/invoices/upload", upload.single('file'), async (req, res) => {
     try {
       if (!req.file) {
         return res.status(400).json({ message: "فایل انتخاب نشده است" });

@@ -224,7 +224,7 @@ export function setupUnifiedAuth(app: Express) {
   });
 
   // Apply authentication to protected routes
-  app.use('/admin*', (req: Request, res: Response, next: NextFunction) => {
+  app.use('/api/admin*', (req: Request, res: Response, next: NextFunction) => {
     if (!req.session.authenticated || req.session.role !== 'admin') {
       console.log(`[SECURITY] Authentication required for /admin - redirecting to login`);
       return res.redirect('/login');
@@ -232,7 +232,7 @@ export function setupUnifiedAuth(app: Express) {
     next();
   });
 
-  app.use('/crm*', (req: Request, res: Response, next: NextFunction) => {
+  app.use('/api/crm*', (req: Request, res: Response, next: NextFunction) => {
     if (!req.session.authenticated) {
       console.log(`[SECURITY] Authentication required for /crm - redirecting to login`);
       return res.redirect('/login');

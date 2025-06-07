@@ -115,7 +115,7 @@ class AegisMonitor {
   private async getAverageResponseTime(): Promise<number> {
     try {
       // Query recent API response times from logs
-      const result = await db.execute(sql`
+      const result = await db.all(sql`
         SELECT AVG(CAST(performance_data->>'duration' AS FLOAT)) as avg_duration
         FROM aegis_logs 
         WHERE event_type = 'api_response' 
@@ -123,7 +123,7 @@ class AegisMonitor {
         AND performance_data->>'duration' IS NOT NULL
       `);
       
-      return result.rows[0]?.avg_duration || 0;
+      return (result[0] as any)?.avg_duration || 0;
     } catch (error) {
       return 0;
     }
@@ -131,7 +131,7 @@ class AegisMonitor {
 
   private async getErrorRate(): Promise<number> {
     try {
-      const result = await db.execute(sql`
+      const result = await db.all(sql`
         WITH total_requests AS (
           SELECT COUNT(*) as total
           FROM aegis_logs 
@@ -152,7 +152,7 @@ class AegisMonitor {
         FROM total_requests total, error_requests
       `);
       
-      return result.rows[0]?.error_rate || 0;
+      return (result[0] as any)?.error_rate || 0;
     } catch (error) {
       return 0;
     }
@@ -165,13 +165,13 @@ class AegisMonitor {
 
   private async getDatabaseConnections(): Promise<number> {
     try {
-      const result = await db.execute(sql`
+      const result = await db.all(sql`
         SELECT COUNT(*) as active_connections
         FROM pg_stat_activity 
         WHERE state = 'active'
       `);
       
-      return result.rows[0]?.active_connections || 0;
+      return (result[0] as any)?.active_connections || 0;
     } catch (error) {
       return 0;
     }
@@ -179,7 +179,7 @@ class AegisMonitor {
 
   private async storeHealthMetrics(metrics: HealthMetrics): Promise<void> {
     try {
-      await db.execute(sql`
+      await db.run(sql`
         CREATE TABLE IF NOT EXISTS aegis_health_metrics (
           id SERIAL PRIMARY KEY,
           timestamp TIMESTAMP WITH TIME ZONE NOT NULL,
@@ -193,7 +193,7 @@ class AegisMonitor {
         )
       `);
 
-      await db.execute(sql`
+      await db.run(sql`
         INSERT INTO aegis_health_metrics (
           timestamp, cpu_usage, memory_usage, response_time, 
           error_rate, active_connections, database_connections
@@ -363,7 +363,7 @@ class AegisMonitor {
   }> {
     try {
       // Analyze AI request/response patterns from logs
-      const aiLogs = await db.execute(sql`
+      const aiLogs = await db.all(sql`
         SELECT 
           event_type,
           level,
@@ -378,12 +378,12 @@ class AegisMonitor {
         LIMIT 100
       `);
 
-      const requests = aiLogs.rows.filter(log => log.event_type === 'ai_request');
-      const responses = aiLogs.rows.filter(log => log.event_type === 'ai_response');
-      const errors = responses.filter(log => log.level === 'error');
+      const requests = aiLogs.filter((log: any) => log.event_type === 'ai_request');
+      const responses = aiLogs.filter((log: any) => log.event_type === 'ai_response');
+      const errors = responses.filter((log: any) => log.level === 'error');
 
       const averageResponseTime = responses
-        .map(log => {
+        .map((log: any) => {
           try {
             return JSON.parse(log.performance_data as string)?.duration || 0;
           } catch {
@@ -422,13 +422,6 @@ class AegisMonitor {
     }
   }
 
-  cleanup(): void {
-    if (this.monitoringInterval) {
-      clearInterval(this.monitoringInterval);
-    }
-    aegisLogger.info('AegisMonitor', 'Health monitoring system stopped');
-  }
-
   async performEmergencyCleanup(): Promise<void> {
     try {
       console.log('[AEGIS EMERGENCY] Starting emergency memory cleanup...');
@@ -465,6 +458,7 @@ class AegisMonitor {
     if (global.gc) {
       global.gc();
     }
+    aegisLogger.info('AegisMonitor', 'Health monitoring system stopped');
   }
 }
 

@@ -990,7 +990,7 @@ export function registerInvoiceRoutes(app: Express) {
         });
       }
 
-      const invoiceIds = allInvoices.map(inv => inv.id);
+      const invoiceIds = allInvoices.map((inv: any) => inv.id);
       
       // Delete commission records for these specific invoices
       if (invoiceIds.length > 0) {
@@ -1098,7 +1098,7 @@ export function registerInvoiceRoutes(app: Express) {
 
           if (existingCommission.length === 0) {
             const baseAmount = parseFloat(invoice.baseAmount);
-            const collaborator = await storage.getCollaborator(representative.collaboratorId);
+            const collaborator = await storage.getCollaboratorById(representative.collaboratorId);
             const commissionRate = parseFloat(collaborator?.commissionPercentage || "10.00");
             const commissionAmount = baseAmount * (commissionRate / 100);
 
@@ -1138,7 +1138,7 @@ export function registerInvoiceRoutes(app: Express) {
 
       res.json({ 
         message: "همه فاکتورها به تلگرام ارسال شدند",
-        updated: result.rowCount || 0
+        updated: result.rowCount
       });
     } catch (error) {
       console.error('Error sending all to telegram:', error);

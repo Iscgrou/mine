@@ -117,7 +117,7 @@ class AegisLogger {
   private async storeLogs(logs: AegisLogEntry[]): Promise<void> {
     try {
       // Create logs table if it doesn't exist
-      await db.execute(sql`
+      await db.run(sql`
         CREATE TABLE IF NOT EXISTS aegis_logs (
           id SERIAL PRIMARY KEY,
           timestamp TIMESTAMP WITH TIME ZONE NOT NULL,
@@ -137,7 +137,7 @@ class AegisLogger {
 
       // Insert logs in batch
       for (const log of logs) {
-        await db.execute(sql`
+        await db.run(sql`
           INSERT INTO aegis_logs (
             timestamp, event_type, level, source, user_id, session_id, 
             message, metadata, request_id, performance_data, error_data
